@@ -40,7 +40,7 @@ public class User {
             name = "USER_ROLE",
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
-    private List<Role> Role;
+    private List<Role> role;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "CONTACT_ID")
@@ -54,7 +54,7 @@ public class User {
         this.password = password;
         this.email = email;
         this.isActive = isActive;
-        Role = role;
+        this.role = role;
         this.contact = contact;
     }
 
@@ -107,11 +107,11 @@ public class User {
     }
 
     public List<com.sd.his.model.Role> getRole() {
-        return Role;
+        return role;
     }
 
     public void setRole(List<com.sd.his.model.Role> role) {
-        Role = role;
+        this.role = role;
     }
 
     public Contact getContact() {

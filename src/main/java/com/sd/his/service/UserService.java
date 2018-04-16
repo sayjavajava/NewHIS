@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 
 @Service(value = "userService")
 @Transactional
-public class userService implements UserDetailsService {
+public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
     private PermissionRepository permissionRepo;
     private RoleRepository roleRepo;
 
-    userService(UserRepository userRepository, PermissionRepository permissionRepo, RoleRepository roleRepo) {
+    UserService(UserRepository userRepository, PermissionRepository permissionRepo, RoleRepository roleRepo) {
         this.userRepository = userRepository;
         this.permissionRepo = permissionRepo;
         this.roleRepo = roleRepo;
@@ -127,6 +127,10 @@ public class userService implements UserDetailsService {
     public void savePermissions(Permission permission) {
         permission.setName("MANAGE_" + permission.getName().toUpperCase());
         permissionRepo.save(permission);
+    }
+
+    public User findByUsernameOrEmailAndActiveTrueAndDeletedFalse(String userName, String email) {
+        return userRepository.findByUsernameOrEmailAndActiveTrueAndDeletedFalse(userName, email);
     }
 
 }
