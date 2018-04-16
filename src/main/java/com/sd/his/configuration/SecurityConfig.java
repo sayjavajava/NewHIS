@@ -1,18 +1,12 @@
 package com.sd.his.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -30,14 +24,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Resource(name = "userService")
+    @Resource(name="userService")
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -57,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/v2/api-docs","/his/oauth/token","/swagger-ui.html","his/addpermissions","his/user","his/addroles", "/configuration/ui","/socket/**", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**");
+        web.ignoring().antMatchers("/v2/api-docs", "/his/oauth/token", "/swagger-ui.html", "his/addpermissions", "his/user", "his/addroles", "/configuration/ui", "/socket/**", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**");
     }
 
     @Bean

@@ -6,7 +6,7 @@ import com.sd.his.model.Role;
 import com.sd.his.model.User;
 import com.sd.his.model.wrapper.UserWrapper;
 import com.sd.his.service.CustomConfigService;
-import com.sd.his.service.UserService;
+import com.sd.his.service.HISUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class UserController {
     @Autowired
     private TokenStore tokenStore;
     @Autowired
-    private UserService userService;
+    private HISUserService userService;
     @Autowired
     private CustomConfigService customConfigService;
     @Autowired

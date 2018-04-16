@@ -30,10 +30,10 @@ public class User {
     private String email;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
-    private boolean isActive;
+    private boolean active;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean isDeleted;
+    private boolean deleted;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -53,7 +53,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.isActive = isActive;
+        this.active = isActive;
         this.role = role;
         this.contact = contact;
     }
@@ -91,19 +91,19 @@ public class User {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
     }
 
     public List<com.sd.his.model.Role> getRole() {

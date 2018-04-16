@@ -5,7 +5,7 @@ import com.sd.his.model.User;
 import com.sd.his.model.wrapper.AdminWrapper;
 import com.sd.his.request.AdminLoginRequestWrapper;
 import com.sd.his.response.GenericAPIResponse;
-import com.sd.his.service.UserService;
+import com.sd.his.service.HISUserService;
 import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
 import io.swagger.annotations.ApiOperation;
@@ -50,7 +50,7 @@ import java.util.ResourceBundle;
 public class UserAuthAPI {
 
     @Autowired
-    private UserService userService;
+    private HISUserService userService;
 
     private final Logger logger = LoggerFactory.getLogger(UserAuthAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");

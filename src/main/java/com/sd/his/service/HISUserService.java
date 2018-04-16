@@ -21,13 +21,13 @@ import java.util.stream.Collectors;
 
 @Service(value = "userService")
 @Transactional
-public class UserService implements UserDetailsService {
+public class HISUserService implements UserDetailsService {
 
     private UserRepository userRepository;
     private PermissionRepository permissionRepo;
     private RoleRepository roleRepo;
 
-    UserService(UserRepository userRepository, PermissionRepository permissionRepo, RoleRepository roleRepo) {
+    HISUserService(UserRepository userRepository, PermissionRepository permissionRepo, RoleRepository roleRepo) {
         this.userRepository = userRepository;
         this.permissionRepo = permissionRepo;
         this.roleRepo = roleRepo;

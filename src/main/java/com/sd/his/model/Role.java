@@ -42,7 +42,7 @@ public class Role implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "PERMISSION_ID", referencedColumnName = "ID")})
     private List<Permission> permissions;
 
-    @ManyToMany(mappedBy = "Role")
+    @ManyToMany(mappedBy = "role")
     @JsonBackReference
     private List<User> users;
 
