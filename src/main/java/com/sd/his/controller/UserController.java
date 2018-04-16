@@ -1,12 +1,10 @@
 package com.sd.his.controller;
 
-import com.sd.his.Utill.Notifications;
-import com.sd.his.Utill.UserWrapper;
 import com.sd.his.model.Contact;
 import com.sd.his.model.Permission;
 import com.sd.his.model.Role;
 import com.sd.his.model.User;
-
+import com.sd.his.model.wrapper.UserWrapper;
 import com.sd.his.service.CustomConfigService;
 import com.sd.his.service.userService;
 import org.slf4j.Logger;
@@ -14,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -22,16 +19,6 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.security.Principal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -39,16 +26,12 @@ public class UserController {
 
     @Autowired
     private TokenStore tokenStore;
-
     @Autowired
     private userService userService;
-
     @Autowired
     private CustomConfigService customConfigService;
-
     @Autowired
-    private BCryptPasswordEncoder bycrptpasswordencoder;
-
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private SimpMessagingTemplate template;
 
@@ -66,10 +49,10 @@ public class UserController {
         User usermodel = new User();
         usermodel.setEmail(user.getEmail());
         usermodel.setUsername("waqas");
-        usermodel.setPassword(bycrptpasswordencoder.encode(user.getPassword()));
+        usermodel.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         usermodel.setRole(userService.findRoleById(1));
         long timeMillis = System.currentTimeMillis();
-        usermodel.setContact(new Contact(user.getFirstName(), user.getLastname(), user.getPhoneNumber(), true, false, user.getGender(),
+        usermodel.setContact(new Contact(user.getFirstName(), user.getLastName(), user.getPhoneNumber(), true, false, user.getGender(),
                 user.getAddress(), user.getCity(), user.getState(), user.getCountry(), timeMillis, timeMillis, usermodel, usermodel
         ));
         usermodel.setActive(true);
@@ -105,8 +88,7 @@ public class UserController {
     public void saveRole(@RequestBody Role role) {
         List<Permission> obj = userService.findPermissionById(1);
         role.setPermissions(obj);
-        long timeMillis = System.currentTimeMillis();
-        role.setCreated_On(timeMillis);
+        role.setCreatedOn(System.currentTimeMillis());
         role.setDeleted(false);
         userService.saveRole(role);
     }
@@ -114,7 +96,7 @@ public class UserController {
     @PostMapping("/addpermissions")
     public void savePersmission(@RequestBody Permission permission) {
         permission.setActive(true);
-        permission.setCreated_On(new Date());
+        permission.setCreatedOn(System.currentTimeMillis());
         permission.setDeleted(false);
         userService.savePermissions(permission);
     }

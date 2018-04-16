@@ -7,21 +7,27 @@ import javax.persistence.*;
 public class Properties {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", unique = true, nullable = false)
     private Integer id;
+
     @Column(name = "CLIENT_ID")
     private String clientId;
+
     @Column(name = "CLIENT_SECRET")
     private String clientSecret;
-    @Column(name="AUTH_SERVER_SCHEM")
-    private String authServerSchem;
 
-    public Properties(String clientId, String clientSecret, String authServerSchem) {
+    @Column(name = "AUTH_SERVER_SCHEME")
+    private String authServerScheme;
+
+    public Properties(String clientId, String clientSecret, String authServerScheme) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
-        this.authServerSchem = authServerSchem;
+        this.authServerScheme = authServerScheme;
     }
 
-    public Properties(){}
+    public Properties() {
+    }
+
     public Integer getId() {
         return id;
     }
@@ -46,11 +52,11 @@ public class Properties {
         this.clientSecret = clientSecret;
     }
 
-    public String getAuthServerSchem() {
-        return authServerSchem;
+    public String getAuthServerScheme() {
+        return authServerScheme;
     }
 
-    public void setAuthServerSchem(String authServerSchem) {
-        this.authServerSchem = authServerSchem;
+    public void setAuthServerScheme(String authServerScheme) {
+        this.authServerScheme = authServerScheme;
     }
 }

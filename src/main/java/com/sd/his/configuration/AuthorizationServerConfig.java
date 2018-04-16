@@ -23,8 +23,8 @@ import javax.sql.DataSource;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-    static final String CLIEN_ID = "his";
-    static final String CLIENT_SECRET = "his-secret";
+    static final String CLIEN_ID = "HISClient";
+    static final String CLIENT_SECRET = "HISSecret";
     static final String GRANT_TYPE_PASSWORD = "password";
     static final String AUTHORIZATION_CODE = "authorization_code";
     static final String REFRESH_TOKEN = "refresh_token";
@@ -62,15 +62,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer configurer) throws Exception {
-        configurer.jdbc(dataSource)
-                .withClient(CLIEN_ID)
+        configurer.jdbc(dataSource);
+               /* .withClient(CLIEN_ID)
                 .authorizedGrantTypes(GRANT_TYPE_PASSWORD, REFRESH_TOKEN)
                 .authorities(AUTHORITIES)
                 .scopes(SCOPE_READ, SCOPE_WRITE)
               //  .resourceIds(RESOURCE_ID)
                 .secret(CLIENT_SECRET)
                 .refreshTokenValiditySeconds(REFRESH_TOKEN_VALIDITY_SECONDS)
-                .accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS);
+                .accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS);*/
 
     }
 

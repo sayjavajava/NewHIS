@@ -1,48 +1,46 @@
-/**
- *
- */
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
-/**
- * @author Siva
- */
 @Entity
 @Table(name = "PERMISSION")
 public class Permission {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", unique = true, nullable = false)
     private Integer id;
+
     @Column(nullable = false, unique = true)
     private String name;
-    @Column(name = "DESCRIPTION",length = 1024)
-    private String description;
-    @Column(name = "IS_ACTIVE")
-    private boolean isActive;
-    @Column(name = "IS_DELETED")
-    private boolean isDeleted;
-    @Column(name = "CREATED_ON")
-    private Date created_On;
-    @Column(name = "UPDATED_ON")
-    private boolean updated_On;
 
+    @Column(name = "DESCRIPTION", length = 1024)
+    private String description;
+
+    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
+    private boolean isActive;
+
+    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
+    private boolean isDeleted;
+
+    @Column(name = "CREATED_ON")
+    private long createdOn;
+
+    @Column(name = "UPDATED_ON")
+    private long updatedOn;
 
     public Permission() {
     }
 
-    public Permission(String name, String description, boolean isActive, boolean isDeleted, Date created_On, boolean updated_On, List<Role> roles) {
+    public Permission(String name, String description, boolean isActive, boolean isDeleted, long createdOn, long updatedOn, List<Role> roles) {
         this.name = name;
         this.description = description;
         this.isActive = isActive;
         this.isDeleted = isDeleted;
-        this.created_On = created_On;
-        this.updated_On = updated_On;
+        this.createdOn = createdOn;
+        this.updatedOn = updatedOn;
         this.roles = roles;
     }
 
@@ -50,46 +48,6 @@ public class Permission {
     @JsonBackReference
     private List<Role> roles;
 
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
-
-    public Date getCreated_On() {
-        return created_On;
-    }
-
-    public void setCreated_On(Date created_On) {
-        this.created_On = created_On;
-    }
-
-    public boolean isUpdated_On() {
-        return updated_On;
-    }
-
-    public void setUpdated_On(boolean updated_On) {
-        this.updated_On = updated_On;
-    }
 
     public Integer getId() {
         return id;
@@ -115,4 +73,43 @@ public class Permission {
         this.description = description;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public long getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(long createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public long getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(long updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
 }

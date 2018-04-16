@@ -1,7 +1,6 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "User")
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     @Id
@@ -19,16 +18,22 @@ public class User {
     private long id;
 
     @NotNull
-    @Column(name="USERNAME",unique = true)
+    @Column(name = "USERNAME", unique = true)
     private String username;
-    @Column(name="PASSWORD")
+
+    @Column(name = "PASSWORD")
     private String password;
+
     @NotNull
     @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Invalid Email")
-    @Column(name = "EMAIL",unique = true)
+    @Column(name = "EMAIL", unique = true)
     private String email;
-    @Column(name = "IS_ACTIVE")
+
+    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
     private boolean isActive;
+
+    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
+    private boolean isDeleted;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -40,24 +45,16 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "CONTACT_ID")
     private Contact contact;
+
     public User() {
     }
-    public User(String username, String password, String email, boolean isActive, List<com.sd.his.model.Role> role, Contact contact) {
+
+    public User(String username, String password, String email, boolean isActive, List<Role> role, Contact contact) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.isActive = isActive;
         Role = role;
-        this.contact = contact;
-    }
-
-
-
-    public Contact getContact() {
-        return contact;
-    }
-
-    public void setContact(Contact contact) {
         this.contact = contact;
     }
 
@@ -101,6 +98,14 @@ public class User {
         isActive = active;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
     public List<com.sd.his.model.Role> getRole() {
         return Role;
     }
@@ -109,4 +114,11 @@ public class User {
         Role = role;
     }
 
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
+    }
 }

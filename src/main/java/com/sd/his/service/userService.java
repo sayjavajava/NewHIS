@@ -6,9 +6,6 @@ import com.sd.his.model.User;
 import com.sd.his.repositiories.PermissionRepository;
 import com.sd.his.repositiories.RoleRepository;
 import com.sd.his.repositiories.UserRepository;
-import org.hibernate.engine.config.spi.ConfigurationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,31 +19,27 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service(value ="userService")
+@Service(value = "userService")
 @Transactional
 public class userService implements UserDetailsService {
 
-
-    private UserRepository userrepo;
+    private UserRepository userRepository;
     private PermissionRepository permissionRepo;
     private RoleRepository roleRepo;
 
-
-
-    userService(UserRepository userRepo, PermissionRepository permissionRepo, RoleRepository roleRepo) {
-        this.userrepo = userRepo;
+    userService(UserRepository userRepository, PermissionRepository permissionRepo, RoleRepository roleRepo) {
+        this.userRepository = userRepository;
         this.permissionRepo = permissionRepo;
         this.roleRepo = roleRepo;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userrepo.findByUsername(s);
+    public UserDetails loadUserByUsername(String userNameOrEmail) throws UsernameNotFoundException {
+        User user = userRepository.findByUsernameOrEmail(userNameOrEmail, userNameOrEmail);
         if (user == null) {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
 
-        //  logger.info("loadd:" + userId +"roles:"+ role);
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
                 user.isActive(), true, true, true, getAuthorities(user.getRole()));
 
@@ -58,14 +51,12 @@ public class userService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
-    //testing
     private Collection<? extends GrantedAuthority> getAuthorities(
             List<Role> roles) {
 
         List<String> perm = getPrivileges(roles);
         return getGrantedAuthorities(perm);
     }
-
 
     private List<String> getPrivileges(List<Role> roles) {
         List<String> privileges = new ArrayList<>();
@@ -94,7 +85,7 @@ public class userService implements UserDetailsService {
 
     public List<User> findAll() {
         List<User> list = new ArrayList<>();
-        userrepo.findAll().iterator().forEachRemaining(list::add);
+        userRepository.findAll().iterator().forEachRemaining(list::add);
         return list;
     }
 
@@ -102,21 +93,21 @@ public class userService implements UserDetailsService {
 
         User user = findOne(id);
         if (user != null) {
-            userrepo.delete(user);
+            userRepository.delete(user);
         }
         return user;
     }
 
     public User findOne(long id) {
-        return userrepo.findById(id);
+        return userRepository.findById(id);
     }
 
     public User save(User user) {
-        return userrepo.save(user);
+        return userRepository.save(user);
     }
 
     public List<Role> findRoleById(Integer id) {
-      return roleRepo.findById(id);
+        return roleRepo.findById(id);
     }
 
     public List<Permission> findPermissionById(Integer id) {
@@ -124,8 +115,6 @@ public class userService implements UserDetailsService {
         return permissionRepo.findById(id);
     }
 
-
-  //  @PreAuthorize("hasAuthority('api')")
     public List<Role> allRoles() {
         return roleRepo.findAll();
     }
@@ -139,7 +128,5 @@ public class userService implements UserDetailsService {
         permission.setName("MANAGE_" + permission.getName().toUpperCase());
         permissionRepo.save(permission);
     }
-
-
 
 }

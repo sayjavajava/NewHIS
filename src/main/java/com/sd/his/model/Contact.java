@@ -31,10 +31,8 @@ public class Contact implements Serializable {
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
     private Boolean isDeleted;
 
-
     @Column(name = "GENDER")
     private String gender;
-
 
     @Column(name = "PROFILE_IMG")
     private String profileImg;
@@ -60,22 +58,22 @@ public class Contact implements Serializable {
     @Column(name = "TYPE")
     private String type;
 
+    @OneToOne
+    @JoinColumn(name = "CREATED_BY")
+    @JsonBackReference(value = "createdBy")
+    private User createdBy;
 
     @Column(name = "CREATED_ON")
     private long createdOn;
-    @Column(name = "UPDATED_On")
-    private long updatedOn;
-
 
     @OneToOne
     @JsonBackReference
     @JoinColumn(name = "UPDATED_BY")
     private User updatedBy;
 
-    @OneToOne
-    @JoinColumn(name = "CREATED_BY")
-    @JsonBackReference(value = "createdBy")
-    private User createdBy;
+    @Column(name = "UPDATED_ON")
+    private long updatedOn;
+
 
     public Contact() {
     }
