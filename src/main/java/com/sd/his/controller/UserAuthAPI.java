@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ResourceBundle;
@@ -78,7 +77,8 @@ public class UserAuthAPI {
     public ResponseEntity<?> signIn(HttpServletRequest request,
                                     @RequestBody AdminLoginRequestWrapper loginReq) {
 
-        logger.info("Sign in up Admin requested by User Name: " + request.getRemoteUser().toString());
+        String loggeduser  =request.getRemoteUser().toString();
+        logger.info("Sign in up Admin requested by User Name: " + loggeduser);
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("admin.login.error"));
@@ -89,7 +89,7 @@ public class UserAuthAPI {
         try {
             // get requested user
             User dbAdmin = userService.findByUsernameOrEmailAndActiveTrueAndDeletedFalse(
-                    loginReq.getUserName(), loginReq.getUserName());
+                    loggeduser, loggeduser);
 
             if (!HISCoreUtil.isValidObject(dbAdmin)) {
                 response.setResponseMessage(messageBundle.getString("admin.not.found"));

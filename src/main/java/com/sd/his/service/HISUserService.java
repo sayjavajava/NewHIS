@@ -115,7 +115,7 @@ public class HISUserService implements UserDetailsService {
         return permissionRepo.findById(id);
     }
 
-    public List<Role> allRoles() {
+    public List<Role> findAllRoles() {
         return roleRepo.findAll();
     }
 
@@ -132,5 +132,7 @@ public class HISUserService implements UserDetailsService {
     public User findByUsernameOrEmailAndActiveTrueAndDeletedFalse(String userName, String email) {
         return userRepository.findByUsernameOrEmailAndActiveTrueAndDeletedFalse(userName, email);
     }
+
+
 
 }

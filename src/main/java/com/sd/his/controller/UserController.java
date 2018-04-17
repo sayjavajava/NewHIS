@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -19,6 +20,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -60,18 +62,6 @@ public class UserController {
         return user.getEmail();
     }
 
-    @RequestMapping(value = "/exit", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public void logout(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        logger.info("token:logout" + authHeader);
-        if (authHeader != null) {
-            String tokenValue = authHeader.replace("Bearer", "").trim();
-            OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
-            logger.info("token:logout" + accessToken);
-            tokenStore.removeAccessToken(accessToken);
-        }
-    }
 
     @DeleteMapping(path = {"user/{id}"})
     public User delete(@PathVariable("id") long id) {
@@ -81,7 +71,7 @@ public class UserController {
 
     @RequestMapping(value = "roles/all", method = RequestMethod.GET)
     public List<Role> listRoles() {
-        return userService.allRoles();
+        return userService.findAllRoles();
     }
 
     @PostMapping("/addroles")
@@ -104,6 +94,27 @@ public class UserController {
     @GetMapping("/allpermissions")
     public List<Permission> findAllPermission() {
         return userService.findAllPermissions();
+    }
+
+    @GetMapping("/currentuser")
+    public String currentUserName(Principal principal) {
+        return principal.getName();
+    }
+
+    @RequestMapping("/logout")
+    public ResponseEntity<String> logOut(HttpServletRequest request) {
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null) {
+            String tokenValue = authHeader.replace("Bearer", "").trim();
+            OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
+            tokenStore.removeAccessToken(accessToken);
+            logger.info("loggedout");
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.TEXT_PLAIN).body("you have Successfully logged Out");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.TEXT_PLAIN).body("You are not logged In");
+        }
+
     }
 
 

@@ -1,5 +1,7 @@
 package com.sd.his.model.wrapper;
 
+import java.util.List;
+
 /*
  * @author    : irfan
  * @Date      : 16-Apr-18
@@ -44,7 +46,7 @@ public class AdminWrapper {
     private String city;
     private String country;
     private String status;
-    //private List<PermissionWrapper> permission;
+    private List<PermissionWrapper> permission;
 
     public long getId() {
         return id;
@@ -207,12 +209,11 @@ public class AdminWrapper {
     }
 
 
-
-   /* public List<PermissionWrapper> getPermission() {
+    public List<PermissionWrapper> getPermission() {
         return permission;
     }
 
     public void setPermission(List<PermissionWrapper> permission) {
         this.permission = permission;
-    }*/
+    }
 }
