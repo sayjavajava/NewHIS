@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,8 @@ import java.util.ResourceBundle;
  * All rights reserved.
  * 
  */
+@RequestMapping("/admin/auth")
+@RestController
 public class UserAuthAPI {
 
     @Autowired
@@ -59,11 +62,11 @@ public class UserAuthAPI {
      * @return Response with Admin detail.
      * @author Irfan Nasim
      * @description API will return admin detail.
-     * @since 26-05-2017
+     * @since 16-04-2018
      */
-    @ApiOperation(httpMethod = "GET", value = "Fetch Logged In Admin",
+    @ApiOperation(httpMethod = "POST", value = "Admin LoggedIn",
             notes = "This method will return logged in Admin",
-            produces = "application/json", nickname = "getLoggedInAdmin",
+            produces = "application/json", nickname = "Logging In Admin",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Logged in Admin fetched", response = GenericAPIResponse.class),
@@ -73,8 +76,7 @@ public class UserAuthAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/signIn", method = RequestMethod.POST)
     public ResponseEntity<?> signIn(HttpServletRequest request,
-                                    @RequestBody AdminLoginRequestWrapper loginReq,
-                                    UriComponentsBuilder ucBuilder) {
+                                    @RequestBody AdminLoginRequestWrapper loginReq) {
 
         logger.info("Sign in up Admin requested by User Name: " + request.getRemoteUser().toString());
 
