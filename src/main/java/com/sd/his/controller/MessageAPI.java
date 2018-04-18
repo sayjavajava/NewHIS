@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 
 @RestController
-public class MessageController {
+public class MessageAPI {
 
     Notifications notifications = new Notifications(0);
-    private final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final Logger logger = LoggerFactory.getLogger(UserAPI.class);
 
     @Autowired
     private SimpMessagingTemplate template;

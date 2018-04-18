@@ -36,7 +36,8 @@ public enum ResponseEnum {
     ADMIN_LOGGEDIN_SUCCESS("ADM_SUC_01"),
     ADMIN_NOT_FOUND("ADM_ERR_02"),
     ADMIN_ACCESS_GRANTED("ADM_AUTH_SUC_01"),
-    EXCEPTION("SYS_ERR_01");
+    EXCEPTION("SYS_ERR_01"),
+    USER_LOGGEDOUT_FAILED("USR_ERR_01");
 
 
     private String value;
