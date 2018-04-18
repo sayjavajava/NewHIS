@@ -69,7 +69,7 @@ public class UserAPI {
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(admin);
 
-                return new ResponseEntity<>(admin, HttpStatus.OK);
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
         } catch (Exception ex) {
             logger.error("getLoggedInUser failed.", ex.fillInStackTrace());
