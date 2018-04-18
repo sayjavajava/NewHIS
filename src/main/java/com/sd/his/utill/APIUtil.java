@@ -1,7 +1,13 @@
 package com.sd.his.utill;
 
+import com.sd.his.model.Permission;
+import com.sd.his.model.Role;
 import com.sd.his.model.User;
 import com.sd.his.model.wrapper.AdminWrapper;
+import com.sd.his.model.wrapper.PermissionWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * @author    : irfan
@@ -28,7 +34,7 @@ import com.sd.his.model.wrapper.AdminWrapper;
 public class APIUtil {
     public static AdminWrapper buildAdminWrapper(User dbAdmin) {
         AdminWrapper admin = new AdminWrapper();
-        //List<PermissionWrapper> permissions = new ArrayList<>();
+        List<PermissionWrapper> permissions = new ArrayList<>();
 
         admin.setId(dbAdmin.getId());
         admin.setEmail(dbAdmin.getEmail());
@@ -49,13 +55,13 @@ public class APIUtil {
         admin.setCity(dbAdmin.getContact().getCity());
         admin.setCountry(dbAdmin.getContact().getCountry());
         admin.setStatus(dbAdmin.getContact().getStatus());
-
-        /*for (Permission per : dbAdmin.getPermissions()) {
-            PermissionWrapper permissionWrapper = new PermissionWrapper(per.getId(), per.getName(), per.getPermission(), per.getDescription());
-            permissions.add(permissionWrapper);
+        for (Role role : dbAdmin.getRole()) {
+            for (Permission per : role.getPermissions()) {
+                PermissionWrapper permissionWrapper = new PermissionWrapper(per.getName(), per.getDescription());
+                permissions.add(permissionWrapper);
+            }
+            admin.setPermission(permissions);
         }
-        admin.setPermission(permissions);*/
-
         return admin;
     }
 }
