@@ -1,5 +1,7 @@
 package com.sd.his.model.wrapper;
 
+import com.sd.his.model.Role;
+
 import java.util.List;
 
 /*
@@ -47,6 +49,13 @@ public class AdminWrapper {
     private String country;
     private String status;
     private List<PermissionWrapper> permission;
+
+    public AdminWrapper() {
+    }
+
+    public AdminWrapper(String email, String username, boolean active, List<Role> role, String firstName, String lastName, String phoneNumber, String gender, String address, String city, String country) {
+    }
+
 
     public long getId() {
         return id;

@@ -133,6 +133,9 @@ public class HISUserService implements UserDetailsService {
         return userRepository.findByUsernameOrEmailAndActiveTrueAndDeletedFalse(userName, email);
     }
 
+    public User findByUserName(String name) {
+        return userRepository.findByUsername(name);
+    }
 
 
 }

@@ -25,7 +25,7 @@ public class PermissionWrapper {
     String description;
     String name;
 
-    public PermissionWrapper(String description, String name) {
+    public PermissionWrapper(String name, String description) {
         this.description = description;
         this.name = name;
     }

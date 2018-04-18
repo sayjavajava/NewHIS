@@ -77,8 +77,8 @@ public class UserAuthAPI {
     public ResponseEntity<?> signIn(HttpServletRequest request,
                                     @RequestBody AdminLoginRequestWrapper loginReq) {
 
-        String loggeduser  =request.getRemoteUser().toString();
-        logger.info("Sign in up Admin requested by User Name: " + loggeduser);
+        String loggedInUser  =request.getRemoteUser().toString();
+        logger.info("Sign in up Admin requested by User Name: " + loggedInUser);
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("admin.login.error"));
@@ -89,7 +89,7 @@ public class UserAuthAPI {
         try {
             // get requested user
             User dbAdmin = userService.findByUsernameOrEmailAndActiveTrueAndDeletedFalse(
-                    loggeduser, loggeduser);
+                    loggedInUser, loggedInUser);
 
             if (!HISCoreUtil.isValidObject(dbAdmin)) {
                 response.setResponseMessage(messageBundle.getString("admin.not.found"));
