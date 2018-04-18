@@ -82,12 +82,12 @@ public class UserAPI {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ApiOperation(httpMethod = "GET", value = "Admin LoggedIn",
-            notes = "This method will return logged in User",
-            produces = "application/json", nickname = "Logging In ",
+    @ApiOperation(httpMethod = "GET", value = "Admin Loggout ",
+            notes = "This method will Log out the User",
+            produces = "application/json", nickname = "Logging Out ",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Logged in Admin fetched", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "User Logout success", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -101,7 +101,7 @@ public class UserAPI {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("user.logout.error"));
-        response.setResponseCode(ResponseEnum.USER_LOGGEDOUT_FAILED.getValue());
+        response.setResponseCode(ResponseEnum.USER_LOGGED_OUT_FAILED.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(authHeader);
 
@@ -111,9 +111,13 @@ public class UserAPI {
                 OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
                 tokenStore.removeAccessToken(accessToken);
 
+                response.setResponseMessage(messageBundle.getString("user.logout.success"));
+                response.setResponseCode(ResponseEnum.USER_LOGGED_OUT_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(null);
+
                 logger.info("User logging out ...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
-
             }
         } catch (Exception ex) {
             logger.error("logOutUser failed.", ex.fillInStackTrace());
