@@ -64,8 +64,8 @@ public class UserAPI {
                 logger.info("Checking loggedInUser ..." + user);
                 AdminWrapper admin = APIUtil.buildAdminWrapper(user);
 
-                response.setResponseMessage(messageBundle.getString("admin.login.error"));
-                response.setResponseCode(ResponseEnum.ADMIN_LOGGEDIN_FAILED.getValue());
+                response.setResponseMessage(messageBundle.getString("admin.login.success"));
+                response.setResponseCode(ResponseEnum.ADMIN_LOGGEDIN_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(admin);
 
