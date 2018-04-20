@@ -79,56 +79,6 @@ public class HISUserService implements UserDetailsService {
         return authorities;
     }
 
-    public List<Permission> findAllPermissions() {
-        return permissionRepo.findAll();
-    }
-
-    public List<User> findAll() {
-        List<User> list = new ArrayList<>();
-        userRepository.findAll().iterator().forEachRemaining(list::add);
-        return list;
-    }
-
-    public User DeleteProduct(long id) {
-
-        User user = findOne(id);
-        if (user != null) {
-            userRepository.delete(user);
-        }
-        return user;
-    }
-
-    public User findOne(long id) {
-        return userRepository.findById(id);
-    }
-
-    public User save(User user) {
-        return userRepository.save(user);
-    }
-
-    public List<Role> findRoleById(Integer id) {
-        return roleRepo.findById(id);
-    }
-
-    public List<Permission> findPermissionById(Integer id) {
-
-        return permissionRepo.findById(id);
-    }
-
-    public List<Role> findAllRoles() {
-        return roleRepo.findAll();
-    }
-
-    public void saveRole(Role role) {
-        role.setName("ROLE_" + role.getName().toUpperCase());
-        roleRepo.save(role);
-    }
-
-    public void savePermissions(Permission permission) {
-        permission.setName("MANAGE_" + permission.getName().toUpperCase());
-        permissionRepo.save(permission);
-    }
-
     public User findByUsernameOrEmailAndActiveTrueAndDeletedFalse(String userName, String email) {
         return userRepository.findByUsernameOrEmailAndActiveTrueAndDeletedFalse(userName, email);
     }
@@ -136,6 +86,5 @@ public class HISUserService implements UserDetailsService {
     public User findByUserName(String name) {
         return userRepository.findByUsername(name);
     }
-
 
 }

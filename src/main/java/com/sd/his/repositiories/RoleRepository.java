@@ -7,7 +7,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role,Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
+
     List<Role> findById(Integer id);
+
     List<Role> findByName(String name);
+
+    List<Role> findAllByActiveTrueAndDeletedFalse();
+
 }

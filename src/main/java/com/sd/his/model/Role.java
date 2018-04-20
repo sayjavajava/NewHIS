@@ -24,10 +24,10 @@ public class Role implements Serializable {
     private String description;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
-    private boolean isActive;
+    private boolean active;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean isDeleted;
+    private boolean deleted;
 
     @Column(name = "UPDATED_ON")
     private long updatedOn;
@@ -53,8 +53,8 @@ public class Role implements Serializable {
                 long createdOn, List<Permission> permissions, List<User> users) {
         this.name = name;
         this.description = description;
-        this.isActive = isActive;
-        this.isDeleted = isDeleted;
+        this.active = isActive;
+        this.deleted = isDeleted;
         this.updatedOn = updatedOn;
         this.createdOn = createdOn;
         this.permissions = permissions;
@@ -86,19 +86,19 @@ public class Role implements Serializable {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
     }
 
     public long getUpdatedOn() {

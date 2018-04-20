@@ -20,10 +20,10 @@ public class Permission {
     private String description;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
-    private boolean isActive;
+    private boolean active;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean isDeleted;
+    private boolean deleted;
 
     @Column(name = "CREATED_ON")
     private long createdOn;
@@ -37,8 +37,8 @@ public class Permission {
     public Permission(String name, String description, boolean isActive, boolean isDeleted, long createdOn, long updatedOn, List<Role> roles) {
         this.name = name;
         this.description = description;
-        this.isActive = isActive;
-        this.isDeleted = isDeleted;
+        this.active = isActive;
+        this.deleted = isDeleted;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
         this.roles = roles;
@@ -74,19 +74,19 @@ public class Permission {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
     }
 
     public long getCreatedOn() {

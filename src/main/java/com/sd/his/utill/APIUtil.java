@@ -5,6 +5,7 @@ import com.sd.his.model.Role;
 import com.sd.his.model.User;
 import com.sd.his.model.wrapper.AdminWrapper;
 import com.sd.his.model.wrapper.PermissionWrapper;
+import com.sd.his.model.wrapper.RoleWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,5 +64,31 @@ public class APIUtil {
             admin.setPermission(permissions);
         }
         return admin;
+    }
+
+
+    public static List<RoleWrapper> buildRoleWrapper(List<Role> dbRoles) {
+        List<RoleWrapper> rolesAndPermissions = new ArrayList<>();
+        for (Role role : dbRoles) {
+            RoleWrapper roleWrapper;
+            List<PermissionWrapper> rolePermissions = new ArrayList<>();
+            for (Permission permission : role.getPermissions()) {
+                PermissionWrapper rolePermission = new PermissionWrapper(permission);
+                rolePermissions.add(rolePermission);
+            }
+            roleWrapper = new RoleWrapper(role);
+            roleWrapper.setPermissions(rolePermissions);
+            rolesAndPermissions.add(roleWrapper);
+        }
+        return rolesAndPermissions;
+    }
+
+    public static List<PermissionWrapper> buildPermissionWrapper(List<Permission> dbPermissions) {
+        List<PermissionWrapper> permissionWrappers = new ArrayList<>();
+        for (Permission permission : dbPermissions) {
+            PermissionWrapper rolePermission = new PermissionWrapper(permission);
+            permissionWrappers.add(rolePermission);
+        }
+        return permissionWrappers;
     }
 }

@@ -1,8 +1,8 @@
 package com.sd.his.enums;
 
 /*
- * @author    : irfan
- * @Date      : 22-May-17
+ * @author    : Irfan Nasim
+ * @Date      : 18-Apr-17
  * @version   : ver. 1.0.0
  * 
  * ________________________________________________________________________________________________
@@ -13,8 +13,8 @@ package com.sd.his.enums;
  * 
  * ________________________________________________________________________________________________
  *
- * @Project   : adminportal
- * @Package   : com.sd.ap.enums
+ * @Project   : HIS
+ * @Package   : com.sd.his.enums
  * @FileName  : ResponseEnum
  *
  * Copyright © 
@@ -37,9 +37,13 @@ public enum ResponseEnum {
     ADMIN_NOT_FOUND("ADM_ERR_02"),
     ADMIN_ACCESS_GRANTED("ADM_AUTH_SUC_01"),
     EXCEPTION("SYS_ERR_01"),
+    INSUFFICIENT_PARAMETERS("SYS_ERR_02"),
     USER_LOGGED_OUT_FAILED("USR_ERR_01"),
-    USER_LOGGED_OUT_SUCCESS("USR_AUTH_SUC_02");
-
+    USER_LOGGED_OUT_SUCCESS("USR_AUTH_SUC_02"),
+    ROLE_PERMISSION_FETCH_FAILED("ROL_PER_ERR_01"),
+    ROLE_PERMISSION_FETCH_SUCCESS("ROL_PER_SUC_02"),
+    ROLE_PERMISSION_ASSIGN_SUCCESS("ROL_PER_SUC_02"),
+    ROLE_PERMISSION_ASSIGN_ERROR("ROL_PER_ERR_02");
 
     private String value;
 
