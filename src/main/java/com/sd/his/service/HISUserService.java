@@ -14,9 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service(value = "userService")
@@ -41,34 +39,31 @@ public class HISUserService implements UserDetailsService {
         }
 
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
-                user.isActive(), true, true, true, getAuthorities(user.getRole()));
+                user.isActive(), true, true, true, getAuthorities(user));
 
     }
 
-    private List<SimpleGrantedAuthority> getRoles(List<Role> authlist) {
-        return authlist.stream()
+    private List<SimpleGrantedAuthority> getRoles(List<Role> authList) {
+        return authList.stream()
                 .map(x -> new SimpleGrantedAuthority(x.getName()))
                 .collect(Collectors.toList());
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(
-            List<Role> roles) {
+    private Collection<? extends GrantedAuthority> getAuthorities(User user) {
 
-        List<String> perm = getPrivileges(roles);
+        List<String> perm = getPrivileges(user);
         return getGrantedAuthorities(perm);
     }
 
-    private List<String> getPrivileges(List<Role> roles) {
-        List<String> privileges = new ArrayList<>();
-        List<Permission> collection = new ArrayList<>();
-        for (Role role : roles) {
-            collection.addAll(role.getPermissions());
+    private List<String> getPrivileges(User user) {
+        List<String> privileges = user.getPermissions().stream().map(object -> Objects.toString(object.getPermission().getName(), null)).
+                collect(Collectors.toList());
+        List<Permission> rolePermissions = permissionRepo.findAllUserRolePermissions();
+        for (Permission per : rolePermissions) {
+            privileges.add(per.getName());
         }
-        for (Permission item : collection) {
-            privileges.add(item.getName());
-
-        }
-        return privileges;
+        Set<String> identicalPermissions = new HashSet<>(privileges);
+        return identicalPermissions.stream().collect(Collectors.toList());
     }
 
     private List<GrantedAuthority> getGrantedAuthorities(List<String> privileges) {

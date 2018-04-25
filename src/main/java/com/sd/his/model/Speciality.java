@@ -1,21 +1,44 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.List;
 
+/*
+ * @author    : irfan
+ * @Date      : 24-Apr-18
+ * @version   : ver. 1.0.0
+ * 
+ * ________________________________________________________________________________________________
+ *
+ *  Developer				Date		     Version		Operation		Description
+ * ________________________________________________________________________________________________ 
+ *	
+ * 
+ * ________________________________________________________________________________________________
+ *
+ * @Project   : HIS
+ * @Package   : com.sd.his.model
+ * @FileName  : ${FILE_NAME}
+ *
+ * Copyright © 
+ * SolutionDots, 
+ * All rights reserved.
+ * 
+ */
 @Entity
-@Table(name = "Role")
-public class Role implements Serializable {
+@Table(name = "SPECIALITY")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Speciality {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(name = "NAME")
-    @NotNull
     private String name;
 
     @Column(name = "DESCRIPTION")
@@ -33,18 +56,16 @@ public class Role implements Serializable {
     @Column(name = "CREATED_ON")
     private long createdOn;
 
-    @OneToMany(targetEntity = UserRole.class, mappedBy = "role", fetch = FetchType.LAZY)
-    private List<UserRole> roles;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "specialities", cascade = CascadeType.ALL)
+    private List<Organization> organizations;
 
-    @OneToMany(targetEntity = RolePermission.class, mappedBy = "role", fetch = FetchType.LAZY)
-    private List<RolePermission> rolePermissions;
-
-    public Role() {
+    public Speciality() {
     }
 
     @Override
     public String toString() {
-        return "Role{" +
+        return "Speciality{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
@@ -53,11 +74,11 @@ public class Role implements Serializable {
                 '}';
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -109,19 +130,11 @@ public class Role implements Serializable {
         this.createdOn = createdOn;
     }
 
-    public List<UserRole> getRoles() {
-        return roles;
+    public List<Organization> getOrganizations() {
+        return organizations;
     }
 
-    public void setRoles(List<UserRole> roles) {
-        this.roles = roles;
-    }
-
-    public List<RolePermission> getRolePermissions() {
-        return rolePermissions;
-    }
-
-    public void setRolePermissions(List<RolePermission> rolePermissions) {
-        this.rolePermissions = rolePermissions;
+    public void setOrganizations(List<Organization> organizations) {
+        this.organizations = organizations;
     }
 }

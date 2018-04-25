@@ -41,28 +41,27 @@ public class APIUtil {
         admin.setEmail(dbAdmin.getEmail());
         admin.setUserName(dbAdmin.getUsername());
         admin.setActive(dbAdmin.isActive());
-        //#TODO need to change
-        admin.setRole(dbAdmin.getRole().get(0).getName());
-        admin.setFirstName(dbAdmin.getContact().getFirstName());
-        admin.setLastName(dbAdmin.getContact().getLastName());
-        admin.setPhoneNumber(dbAdmin.getContact().getPhoneNumber());
-        admin.setDeleted(dbAdmin.getContact().getDeleted());
+        //admin.setRole(dbAdmin.getRole().get(0).getName());
+        admin.setFirstName(dbAdmin.getProfile().getFirstName());
+        admin.setLastName(dbAdmin.getProfile().getLastName());
+        admin.setPhoneNumber(dbAdmin.getProfile().getPhoneNumber());
+        admin.setDeleted(dbAdmin.getProfile().getDeleted());
         admin.setCreatedByFullName("");
-        admin.setCreatedOn(dbAdmin.getContact().getCreatedOn());
-        admin.setGender(dbAdmin.getContact().getGender());
-        admin.setProfileImg(dbAdmin.getContact().getProfileImg());
-        admin.setAddress(dbAdmin.getContact().getAddress());
-        admin.setState(dbAdmin.getContact().getState());
-        admin.setCity(dbAdmin.getContact().getCity());
-        admin.setCountry(dbAdmin.getContact().getCountry());
-        admin.setStatus(dbAdmin.getContact().getStatus());
-        for (Role role : dbAdmin.getRole()) {
+        admin.setCreatedOn(dbAdmin.getProfile().getCreatedOn());
+        admin.setGender(dbAdmin.getProfile().getGender());
+        admin.setProfileImg(dbAdmin.getProfile().getProfileImg());
+        admin.setAddress(dbAdmin.getProfile().getAddress());
+        admin.setState(dbAdmin.getProfile().getState());
+        admin.setCity(dbAdmin.getProfile().getCity());
+        admin.setCountry(dbAdmin.getProfile().getCountry());
+        admin.setStatus(dbAdmin.getProfile().getStatus());
+        /*for (Role role : dbAdmin.getRole()) {
             for (Permission per : role.getPermissions()) {
                 PermissionWrapper permissionWrapper = new PermissionWrapper(per.getName(), per.getDescription());
                 permissions.add(permissionWrapper);
             }
             admin.setPermission(permissions);
-        }
+        }*/
         return admin;
     }
 
@@ -72,10 +71,10 @@ public class APIUtil {
         for (Role role : dbRoles) {
             RoleWrapper roleWrapper;
             List<PermissionWrapper> rolePermissions = new ArrayList<>();
-            for (Permission permission : role.getPermissions()) {
+            /*for (Permission permission : role.getPermissions()) {
                 PermissionWrapper rolePermission = new PermissionWrapper(permission);
                 rolePermissions.add(rolePermission);
-            }
+            }*/
             roleWrapper = new RoleWrapper(role);
             roleWrapper.setPermissions(rolePermissions);
             rolesAndPermissions.add(roleWrapper);

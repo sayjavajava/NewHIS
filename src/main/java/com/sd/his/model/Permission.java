@@ -1,25 +1,24 @@
 package com.sd.his.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "PERMISSION")
 public class Permission {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(name = "DESCRIPTION", length = 1024)
+    @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
+    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private boolean active;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
@@ -31,29 +30,20 @@ public class Permission {
     @Column(name = "UPDATED_ON")
     private long updatedOn;
 
+    @OneToMany(targetEntity = UserPermission.class, mappedBy = "permission", fetch = FetchType.LAZY)
+    private List<UserPermission> users;
+
+    @OneToMany(targetEntity = RolePermission.class, mappedBy = "permission", fetch = FetchType.LAZY)
+    private List<RolePermission> roles;
+
     public Permission() {
     }
 
-    public Permission(String name, String description, boolean isActive, boolean isDeleted, long createdOn, long updatedOn, List<Role> roles) {
-        this.name = name;
-        this.description = description;
-        this.active = isActive;
-        this.deleted = isDeleted;
-        this.createdOn = createdOn;
-        this.updatedOn = updatedOn;
-        this.roles = roles;
-    }
-
-    @ManyToMany(mappedBy = "permissions")
-    @JsonBackReference
-    private List<Role> roles;
-
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -105,11 +95,19 @@ public class Permission {
         this.updatedOn = updatedOn;
     }
 
-    public List<Role> getRoles() {
+    public List<UserPermission> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserPermission> users) {
+        this.users = users;
+    }
+
+    public List<RolePermission> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<RolePermission> roles) {
         this.roles = roles;
     }
 }

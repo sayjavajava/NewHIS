@@ -43,5 +43,4 @@ public class RoleService {
         return roleRepository.findAllByActiveTrueAndDeletedFalse();
     }
 
-
 }

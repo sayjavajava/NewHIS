@@ -1,14 +1,12 @@
 package com.sd.his.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "CONTACT")
-public class Contact implements Serializable {
+@Table(name = "PROFILE")
+public class Profile implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -58,27 +56,19 @@ public class Contact implements Serializable {
     @Column(name = "TYPE")
     private String type;
 
-    @OneToOne
-    @JoinColumn(name = "CREATED_BY")
-    @JsonBackReference(value = "createdBy")
-    private User createdBy;
-
     @Column(name = "CREATED_ON")
     private long createdOn;
-
-    @OneToOne
-    @JsonBackReference
-    @JoinColumn(name = "UPDATED_BY")
-    private User updatedBy;
 
     @Column(name = "UPDATED_ON")
     private long updatedOn;
 
 
-    public Contact() {
+    public Profile() {
     }
 
-    public Contact(String firstName, String lastName, String phoneNumber, Boolean isActive, Boolean isDeleted, String gender, String address, String city, String state, String country, long createdOn, long updatedOn, User updatedBy, User createdBy) {
+    public Profile(String firstName, String lastName, String phoneNumber, Boolean isActive, Boolean isDeleted,
+                   String gender, String profileImg, String address, String city, String state, String country,
+                   String status, Date dob, String type, long createdOn, long updatedOn) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -95,8 +85,6 @@ public class Contact implements Serializable {
         this.type = type;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
-        this.updatedBy = updatedBy;
-        this.createdBy = createdBy;
     }
 
     public long getId() {
@@ -233,21 +221,5 @@ public class Contact implements Serializable {
 
     public void setUpdatedOn(long updatedOn) {
         this.updatedOn = updatedOn;
-    }
-
-    public User getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(User updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
     }
 }
