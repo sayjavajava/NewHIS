@@ -1,4 +1,4 @@
-package com.sd.his.model.wrapper;
+package com.sd.his.wrapper;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
- * @Package   : com.sd.his.model.wrapper
+ * @Package   : com.sd.his.wrapper
  * @FileName  : AdminWrapper
  *
  * Copyright © 

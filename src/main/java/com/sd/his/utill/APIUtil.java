@@ -3,9 +3,9 @@ package com.sd.his.utill;
 import com.sd.his.model.Permission;
 import com.sd.his.model.Role;
 import com.sd.his.model.User;
-import com.sd.his.model.wrapper.AdminWrapper;
-import com.sd.his.model.wrapper.PermissionWrapper;
-import com.sd.his.model.wrapper.RoleWrapper;
+import com.sd.his.wrapper.AdminWrapper;
+import com.sd.his.wrapper.PermissionWrapper;
+import com.sd.his.wrapper.RoleWrapper;
 
 import java.util.ArrayList;
 import java.util.List;

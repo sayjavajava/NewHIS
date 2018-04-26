@@ -1,12 +1,10 @@
-package com.sd.his.model.wrapper;
+package com.sd.his.wrapper;
 
-import com.sd.his.model.Role;
-
-import java.util.List;
+import com.sd.his.model.Permission;
 
 /*
- * @author    : Irfan Nasim
- * @Date      : 20-Apr-18
+ * @author    : waqas kamran
+ * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
  * 
  * ________________________________________________________________________________________________
@@ -18,33 +16,43 @@ import java.util.List;
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
- * @Package   : com.sd.his.model.wrapper
- * @FileName  : RoleWrapper
+ * @Package   : com.sd.his.wrapper
+ * @FileName  : PermissionWrapper
  *
  * Copyright © 
  * SolutionDots, 
  * All rights reserved.
  * 
  */
-public class RoleWrapper {
-
+public class PermissionWrapper {
     long id;
     String name;
     String description;
     boolean deleted;
     boolean active;
-    List<PermissionWrapper> permissions;
 
-    public RoleWrapper() {
+    public PermissionWrapper() {
     }
 
-    public RoleWrapper(Role role) {
-        this.id = role.getId();
-        this.name = role.getName();
-        this.description = role.getDescription();
-        this.deleted = role.isDeleted();
-        this.active = role.isActive();
+    public PermissionWrapper(Permission permission) {
+        this.id = permission.getId();
+        this.name = permission.getName();
+        this.description = this.getDescription();
+        this.deleted = this.isDeleted();
+        this.active = this.isActive();
+    }
 
+    public PermissionWrapper(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public PermissionWrapper(long id, String name, String description, boolean deleted, boolean active) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.deleted = deleted;
+        this.active = active;
     }
 
     public long getId() {
@@ -85,13 +93,5 @@ public class RoleWrapper {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public List<PermissionWrapper> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(List<PermissionWrapper> permissions) {
-        this.permissions = permissions;
     }
 }

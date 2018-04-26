@@ -2,7 +2,7 @@ package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.User;
-import com.sd.his.model.wrapper.AdminWrapper;
+import com.sd.his.wrapper.AdminWrapper;
 import com.sd.his.response.GenericAPIResponse;
 import com.sd.his.service.HISUserService;
 import com.sd.his.utill.APIUtil;

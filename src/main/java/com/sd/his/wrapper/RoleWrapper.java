@@ -1,10 +1,12 @@
-package com.sd.his.model.wrapper;
+package com.sd.his.wrapper;
 
-import com.sd.his.model.Permission;
+import com.sd.his.model.Role;
+
+import java.util.List;
 
 /*
- * @author    : waqas kamran
- * @Date      : 17-Apr-18
+ * @author    : Irfan Nasim
+ * @Date      : 20-Apr-18
  * @version   : ver. 1.0.0
  * 
  * ________________________________________________________________________________________________
@@ -16,43 +18,33 @@ import com.sd.his.model.Permission;
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
- * @Package   : com.sd.his.model.wrapper
- * @FileName  : PermissionWrapper
+ * @Package   : com.sd.his.wrapper
+ * @FileName  : RoleWrapper
  *
  * Copyright © 
  * SolutionDots, 
  * All rights reserved.
  * 
  */
-public class PermissionWrapper {
+public class RoleWrapper {
+
     long id;
     String name;
     String description;
     boolean deleted;
     boolean active;
+    List<PermissionWrapper> permissions;
 
-    public PermissionWrapper() {
+    public RoleWrapper() {
     }
 
-    public PermissionWrapper(Permission permission) {
-        this.id = permission.getId();
-        this.name = permission.getName();
-        this.description = this.getDescription();
-        this.deleted = this.isDeleted();
-        this.active = this.isActive();
-    }
+    public RoleWrapper(Role role) {
+        this.id = role.getId();
+        this.name = role.getName();
+        this.description = role.getDescription();
+        this.deleted = role.isDeleted();
+        this.active = role.isActive();
 
-    public PermissionWrapper(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-
-    public PermissionWrapper(long id, String name, String description, boolean deleted, boolean active) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.deleted = deleted;
-        this.active = active;
     }
 
     public long getId() {
@@ -93,5 +85,13 @@ public class PermissionWrapper {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public List<PermissionWrapper> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<PermissionWrapper> permissions) {
+        this.permissions = permissions;
     }
 }

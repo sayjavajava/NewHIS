@@ -1,4 +1,4 @@
-package com.sd.his.model.wrapper;
+package com.sd.his.wrapper;
 
 public class UserWrapper {
     String email;
