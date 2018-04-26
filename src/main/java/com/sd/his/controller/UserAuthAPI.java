@@ -92,9 +92,7 @@ public class UserAuthAPI {
                                     @RequestBody AdminLoginRequestWrapper loginReq) {
 
         String loggedInUser = request.getRemoteUser().toString();
-        logger.info("Sign in up Admin requested by User Name: " + loggedInUser);
-
-        GenericAPIResponse response = new GenericAPIResponse();
+        logger.info("Sign in up Admin requested by User Name: " + loggedInUser);GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("admin.login.error"));
         response.setResponseCode(ResponseEnum.ADMIN_LOGGEDIN_FAILED.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
