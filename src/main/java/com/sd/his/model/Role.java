@@ -34,7 +34,7 @@ public class Role implements Serializable {
     private long createdOn;
 
     @OneToMany(targetEntity = UserRole.class, mappedBy = "role", fetch = FetchType.LAZY)
-    private List<UserRole> roles;
+    private List<UserRole> users;
 
     @OneToMany(targetEntity = RolePermission.class, mappedBy = "role", fetch = FetchType.LAZY)
     private List<RolePermission> rolePermissions;
@@ -109,12 +109,12 @@ public class Role implements Serializable {
         this.createdOn = createdOn;
     }
 
-    public List<UserRole> getRoles() {
-        return roles;
+    public List<UserRole> getUsers() {
+        return users;
     }
 
-    public void setRoles(List<UserRole> roles) {
-        this.roles = roles;
+    public void setUsers(List<UserRole> users) {
+        this.users = users;
     }
 
     public List<RolePermission> getRolePermissions() {
