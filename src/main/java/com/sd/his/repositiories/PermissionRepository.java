@@ -16,6 +16,9 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
     List<Permission> findAllByActiveTrueAndDeletedFalse();
 
     @Query("SELECT DISTINCT p FROM Permission p INNER JOIN p.roles rp INNER JOIN rp.role r INNER JOIN r.users ur INNER JOIN ur.user u WHERE u.id=:userId")
-    List<Permission> findAllUserAndUserRolePermissions(@Param("userId") long userId);
+    List<Permission> findAllUserRolePermissions(@Param("userId") long userId);
+
+    @Query("SELECT p FROM Permission p INNER JOIN p.users up WHERE up.user.id = :userId")
+    List<Permission> findAllUserPermissions(@Param("userId") long userId);
 
 }

@@ -6,7 +6,6 @@ import com.sd.his.model.User;
 import com.sd.his.repositiories.PermissionRepository;
 import com.sd.his.repositiories.RoleRepository;
 import com.sd.his.repositiories.UserRepository;
-import com.sd.his.wrapper.AdminWrapper;
 import com.sd.his.wrapper.PermissionWrapper;
 import com.sd.his.wrapper.UserWrapper;
 import org.springframework.security.core.GrantedAuthority;
@@ -61,7 +60,12 @@ public class HISUserService implements UserDetailsService {
     private List<String> getPrivileges(User user) {
         List<String> privileges = user.getPermissions().stream().map(object -> Objects.toString(object.getPermission().getName(), null)).
                 collect(Collectors.toList());
-        List<Permission> rolePermissions = permissionRepo.findAllUserAndUserRolePermissions(user.getId());
+        List<Permission> allPermissions = new ArrayList<>();
+        List<Permission> rolePermissions = permissionRepo.findAllUserRolePermissions(user.getId());
+        List<Permission> userPermissions = permissionRepo.findAllUserPermissions(user.getId());
+        allPermissions.addAll(rolePermissions);
+        allPermissions.addAll(userPermissions);
+
         for (Permission per : rolePermissions) {
             privileges.add(per.getName());
         }
@@ -100,11 +104,16 @@ public class HISUserService implements UserDetailsService {
     }
 
     private List<Permission> getIdenticalUserPermissions(User user) {
-        List<Permission> userPermissions = permissionRepo.findAllUserAndUserRolePermissions(user.getId());
-        Set<Permission> identicalPermissions = new HashSet<>(userPermissions);
-        userPermissions = new ArrayList<>(identicalPermissions);
+        List<Permission> allPermissions = new ArrayList<>();
+        List<Permission> rolePermissions = permissionRepo.findAllUserRolePermissions(user.getId());
+        List<Permission> userPermissions = permissionRepo.findAllUserPermissions(user.getId());
+        allPermissions.addAll(rolePermissions);
+        allPermissions.addAll(userPermissions);
 
-        return userPermissions;
+        Set<Permission> identicalPermissionsSet = new HashSet<>(allPermissions);
+        List<Permission> identicalPermissions = new ArrayList<>(identicalPermissionsSet);
+
+        return identicalPermissions;
     }
 
 }
