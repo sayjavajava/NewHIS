@@ -1,6 +1,11 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.User;
+
+import java.util.List;
+
 public class UserWrapper {
+    long id;
     String email;
     String userName;
     String password;
@@ -14,8 +19,33 @@ public class UserWrapper {
     String gender;
     String profileImg;
     String status;
+    List<PermissionWrapper> permissions;
 
     public UserWrapper() {
+    }
+
+    public UserWrapper(User user) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.userName = user.getUsername();
+        this.firstName = user.getProfile().getFirstName();
+        this.lastName = user.getProfile().getLastName();
+        this.phoneNumber = user.getProfile().getPhoneNumber();
+        this.address = user.getProfile().getAddress();
+        this.state = user.getProfile().getState();
+        this.city = user.getProfile().getCity();
+        this.country = user.getProfile().getCountry();
+        this.gender = user.getProfile().getGender();
+        this.profileImg = user.getProfile().getProfileImg();
+        this.status = user.getProfile().getStatus();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getEmail() {
@@ -120,5 +150,13 @@ public class UserWrapper {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<PermissionWrapper> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<PermissionWrapper> permissions) {
+        this.permissions = permissions;
     }
 }

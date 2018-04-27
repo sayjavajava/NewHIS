@@ -7,6 +7,7 @@ import com.sd.his.response.GenericAPIResponse;
 import com.sd.his.service.HISUserService;
 import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.UserWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -62,12 +63,12 @@ public class UserAPI {
             if (HISCoreUtil.isValidObject(name)) {
                 User user = userService.findByUserName(name);
                 logger.info("Checking loggedInUser ..." + user);
-                AdminWrapper admin = APIUtil.buildAdminWrapper(user);
+                UserWrapper userWrapper = userService.buildUserWrapper(user);
 
                 response.setResponseMessage(messageBundle.getString("admin.login.success"));
                 response.setResponseCode(ResponseEnum.ADMIN_LOGGEDIN_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(admin);
+                response.setResponseData(userWrapper);
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }

@@ -15,6 +15,7 @@ import com.sd.his.service.PermissionService;
 import com.sd.his.service.RoleService;
 import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.UserWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -39,23 +40,23 @@ import java.util.ResourceBundle;
  * @author    : Irfan Nasim
  * @Date      : 16-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.controller
  * @FileName  : UserAuthAPI
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 @RequestMapping("/user/auth")
 @RestController
@@ -92,7 +93,8 @@ public class UserAuthAPI {
                                     @RequestBody AdminLoginRequestWrapper loginReq) {
 
         String loggedInUser = request.getRemoteUser().toString();
-        logger.info("Sign in up Admin requested by User Name: " + loggedInUser);GenericAPIResponse response = new GenericAPIResponse();
+        logger.info("Sign in up Admin requested by User Name: " + loggedInUser);
+        GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("admin.login.error"));
         response.setResponseCode(ResponseEnum.ADMIN_LOGGEDIN_FAILED.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -153,7 +155,7 @@ public class UserAuthAPI {
             if (HISCoreUtil.isValidObject(dbAdmin)) {
                 if (BCrypt.checkpw(loginReq.getPassword(), dbAdmin.getPassword())) {
 
-                    AdminWrapper admin = APIUtil.buildAdminWrapper(dbAdmin);
+                    UserWrapper admin = userService.buildUserWrapper(dbAdmin);
                     response.setResponseData(admin);
                     response.setResponseMessage(messageBundle.getString("admin.login.success"));
                     response.setResponseCode(ResponseEnum.ADMIN_ACCESS_GRANTED.getValue());

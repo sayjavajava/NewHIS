@@ -1,8 +1,6 @@
 package com.sd.his.utill;
 
-import com.sd.his.model.Permission;
-import com.sd.his.model.Role;
-import com.sd.his.model.User;
+import com.sd.his.model.*;
 import com.sd.his.wrapper.AdminWrapper;
 import com.sd.his.wrapper.PermissionWrapper;
 import com.sd.his.wrapper.RoleWrapper;
@@ -19,7 +17,7 @@ import java.util.List;
  *
  *  Developer				Date		     Version		Operation		Description
  * ________________________________________________________________________________________________ 
- *	
+ *
  * 
  * ________________________________________________________________________________________________
  *
@@ -62,9 +60,14 @@ public class APIUtil {
             }
             admin.setPermission(permissions);
         }*/
+
+        for (UserRole userRole : dbAdmin.getRoles()){
+            PermissionWrapper permissionWrapper=new PermissionWrapper();
+        }
+
+
         return admin;
     }
-
 
     public static List<RoleWrapper> buildRoleWrapper(List<Role> dbRoles) {
         List<RoleWrapper> rolesAndPermissions = new ArrayList<>();
