@@ -1,9 +1,11 @@
 package com.sd.his.utill;
 
+import com.sd.his.model.ICDVersion;
 import com.sd.his.model.Permission;
 import com.sd.his.model.Role;
 import com.sd.his.model.User;
 import com.sd.his.wrapper.AdminWrapper;
+import com.sd.his.wrapper.ICDVersionWrapper;
 import com.sd.his.wrapper.PermissionWrapper;
 import com.sd.his.wrapper.RoleWrapper;
 
@@ -14,23 +16,23 @@ import java.util.List;
  * @author    : irfan
  * @Date      : 16-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.utill
  * @FileName  : APIUtil
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 public class APIUtil {
     public static AdminWrapper buildAdminWrapper(User dbAdmin) {
@@ -89,5 +91,14 @@ public class APIUtil {
             permissionWrappers.add(rolePermission);
         }
         return permissionWrappers;
+    }
+
+    public static List<ICDVersionWrapper> buildICDVersionWrapper(List<ICDVersion> iCDVersionList) {
+        List<ICDVersionWrapper> wrapperList = new ArrayList<>();
+        for (ICDVersion iCDVersion : iCDVersionList) {
+            ICDVersionWrapper wrapper = new ICDVersionWrapper(iCDVersion);
+            wrapperList.add(wrapper);
+        }
+        return wrapperList;
     }
 }
