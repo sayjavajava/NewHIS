@@ -1,5 +1,7 @@
 package com.sd.his.model;
 
+import com.sd.his.request.RoleAndPermissionCreateRequest;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -40,6 +42,13 @@ public class Role implements Serializable {
     private List<RolePermission> rolePermissions;
 
     public Role() {
+    }
+
+    public Role(RoleAndPermissionCreateRequest role) {
+        this.name = role.getName();
+        this.description = role.getDescription();
+        this.active = role.isStatus();
+        this.createdOn = System.currentTimeMillis();
     }
 
     @Override
