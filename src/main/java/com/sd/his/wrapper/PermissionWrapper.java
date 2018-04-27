@@ -37,9 +37,9 @@ public class PermissionWrapper {
     public PermissionWrapper(Permission permission) {
         this.id = permission.getId();
         this.name = permission.getName();
-        this.description = this.getDescription();
-        this.deleted = this.isDeleted();
-        this.active = this.isActive();
+        this.description = permission.getDescription();
+        this.deleted = permission.isDeleted();
+        this.active = permission.isActive();
     }
 
     public PermissionWrapper(String name, String description) {
