@@ -183,7 +183,7 @@ public class RoleAndPermissionAPI {
         try {
 
         } catch (Exception ex) {
-            logger.error("addRoleAndPermission failed.", ex.fillInStackTrace());
+            logger.error("updateRoleAndPermission failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));

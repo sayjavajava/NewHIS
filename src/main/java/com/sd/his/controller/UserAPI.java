@@ -2,10 +2,8 @@ package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.User;
-import com.sd.his.wrapper.AdminWrapper;
 import com.sd.his.response.GenericAPIResponse;
 import com.sd.his.service.HISUserService;
-import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.UserWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -83,7 +81,7 @@ public class UserAPI {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ApiOperation(httpMethod = "GET", value = "Admin Loggout ",
+    @ApiOperation(httpMethod = "GET", value = "Admin Logged out ",
             notes = "This method will Log out the User",
             produces = "application/json", nickname = "Logging Out ",
             response = GenericAPIResponse.class, protocols = "https")
