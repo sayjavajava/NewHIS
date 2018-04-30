@@ -1,29 +1,32 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.request.ICDCreateRequest;
+
 import javax.persistence.*;
+import java.util.Date;
 
 /*
  * @author    : Irfan Nasim
  * @Date      : 26-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
  * @FileName  : ICD
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 @Entity
 @Table(name = "ICD")
@@ -57,6 +60,13 @@ public class ICD {
     private long createdOn;
 
     public ICD() {
+    }
+
+    public ICD(ICDCreateRequest createRequest) {
+        this.code = createRequest.getCode();
+        this.createdOn = System.currentTimeMillis();
+        this.status = createRequest.isStatus();
+        this.title = createRequest.getTitle();
     }
 
     public Long getId() {
