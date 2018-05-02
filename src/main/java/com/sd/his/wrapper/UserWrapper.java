@@ -19,6 +19,7 @@ public class UserWrapper {
     String gender;
     String profileImg;
     String status;
+    String aboutMe;
     List<PermissionWrapper> permissions;
 
     public UserWrapper() {
@@ -38,6 +39,7 @@ public class UserWrapper {
         this.gender = user.getProfile().getGender();
         this.profileImg = user.getProfile().getProfileImg();
         this.status = user.getProfile().getStatus();
+        this.aboutMe = user.getProfile().getAboutMe();
     }
 
     public long getId() {
@@ -158,5 +160,13 @@ public class UserWrapper {
 
     public void setPermissions(List<PermissionWrapper> permissions) {
         this.permissions = permissions;
+    }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
     }
 }
