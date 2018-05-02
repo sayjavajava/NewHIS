@@ -62,10 +62,6 @@ public class Profile implements Serializable {
     @Column(name = "UPDATED_ON")
     private long updatedOn;
 
-    @Column(name = "ABOUT_ME")
-    private String aboutMe;
-
-
     public Profile() {
     }
 
@@ -224,13 +220,5 @@ public class Profile implements Serializable {
 
     public void setUpdatedOn(long updatedOn) {
         this.updatedOn = updatedOn;
-    }
-
-    public String getAboutMe() {
-        return aboutMe;
-    }
-
-    public void setAboutMe(String aboutMe) {
-        this.aboutMe = aboutMe;
     }
 }
