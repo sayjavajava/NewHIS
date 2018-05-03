@@ -14,7 +14,7 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "NAME")
     @NotNull
@@ -49,7 +49,7 @@ public class Role implements Serializable {
         this.description = role.getDescription();
         this.active = role.isActive();
         this.createdOn = role.getCreatedOn();
-        this.updatedOn=role.getUpdatedOn();
+        this.updatedOn = role.getUpdatedOn();
     }
 
     @Override
@@ -63,11 +63,11 @@ public class Role implements Serializable {
                 '}';
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

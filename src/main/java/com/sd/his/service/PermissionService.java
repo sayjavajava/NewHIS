@@ -55,8 +55,8 @@ public class PermissionService {
         return permissionRepository.save(permission);
     }
 
-    public List<Permission> getPermissionByRole(long roleid){
-         return this.permissionRepository.findByRoles((int) roleid);
+    public List<Permission> getPermissionByRole(long roleId){
+         return permissionRepository.findByRoles(roleId);
     }
 
 }
