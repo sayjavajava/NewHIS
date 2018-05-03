@@ -1,6 +1,7 @@
 package com.sd.his.repositiories;
 
 import com.sd.his.model.Permission;
+import com.sd.his.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,5 +23,8 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
     List<Permission> findAllUserPermissions(@Param("userId") long userId);
 
     Permission findByName(String name);
+
+    @Query("SELECT p FROM Permission p INNER JOIN p.roles pr  WHERE pr.role.id = :roleId")
+    List<Permission> findByRoles(@Param("roleId") int roleId);
 
 }

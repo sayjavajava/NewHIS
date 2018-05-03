@@ -44,8 +44,9 @@ public class Permission {
     public Permission(RoleAndPermissionCreateRequest permission) {
         this.name = permission.getName();
         this.description = permission.getDescription();
-        this.active = permission.isStatus();
-        this.createdOn = System.currentTimeMillis();
+        this.active = permission.isActive();
+        this.createdOn = permission.getCreatedOn();
+        this.updatedOn=permission.getUpdatedOn();
     }
 
     public Long getId() {

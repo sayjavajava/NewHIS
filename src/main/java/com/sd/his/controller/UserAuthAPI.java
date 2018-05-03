@@ -241,6 +241,8 @@ public class UserAuthAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+
     /**
      * @return Response with Save Authorities.
      * @author Irfan Nasim
@@ -281,6 +283,7 @@ public class UserAuthAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             //TODO implement the feature
+
         } catch (Exception ex) {
             logger.error("Assign Authorities to Roles api failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());

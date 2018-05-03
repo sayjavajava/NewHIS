@@ -26,10 +26,29 @@ public class RoleAndPermissionCreateRequest {
 
     String name;
     String description;
-    boolean status;
+    boolean active;
     String type;
+    long updatedOn;
+    long createdOn;
+
 
     public RoleAndPermissionCreateRequest() {
+    }
+
+    public long getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(long updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
+    public long getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(long createdOn) {
+        this.createdOn = createdOn;
     }
 
     public String getName() {
@@ -48,12 +67,12 @@ public class RoleAndPermissionCreateRequest {
         this.description = description;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getType() {

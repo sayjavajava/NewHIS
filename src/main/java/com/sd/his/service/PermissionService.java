@@ -1,6 +1,7 @@
 package com.sd.his.service;
 
 import com.sd.his.model.Permission;
+import com.sd.his.model.Role;
 import com.sd.his.repositiories.PermissionRepository;
 import com.sd.his.request.RoleAndPermissionCreateRequest;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * @author    : Irfan Nasim
@@ -52,4 +54,9 @@ public class PermissionService {
         Permission permission = new Permission(permissionRequest);
         return permissionRepository.save(permission);
     }
+
+    public List<Permission> getPermissionByRole(long roleid){
+         return this.permissionRepository.findByRoles((int) roleid);
+    }
+
 }

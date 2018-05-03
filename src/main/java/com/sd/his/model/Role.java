@@ -47,8 +47,9 @@ public class Role implements Serializable {
     public Role(RoleAndPermissionCreateRequest role) {
         this.name = role.getName();
         this.description = role.getDescription();
-        this.active = role.isStatus();
-        this.createdOn = System.currentTimeMillis();
+        this.active = role.isActive();
+        this.createdOn = role.getCreatedOn();
+        this.updatedOn=role.getUpdatedOn();
     }
 
     @Override
