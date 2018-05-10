@@ -4,23 +4,23 @@ package com.sd.his.enums;
  * @author    : Irfan Nasim
  * @Date      : 18-Apr-17
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.enums
  * @FileName  : ResponseEnum
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 
 public enum ResponseEnum {
@@ -44,10 +44,21 @@ public enum ResponseEnum {
     ROLE_PERMISSION_FETCH_SUCCESS("ROL_PER_SUC_02"),
     ROLE_PERMISSION_ASSIGN_SUCCESS("ROL_PER_SUC_02"),
     ROLE_PERMISSION_ASSIGN_ERROR("ROL_PER_ERR_02"),
-    ICD_CODE_VERSION_FETCH_FAILED("ICD_ERR_01"),
+    ICD_VERSION_FETCH_FAILED("ICD_ERR_01"),
     ICD_CODE_VERSION_FETCH_SUCCESS("ICD_SUC_01"),
     ICD_CODE_SAVE_SUCCESS("ICD_SAVE_SUC_01"),
-    ICD_CODE_SAVE_ERROR("ICD_ERR_02");
+    ICD_CODE_SAVE_ERROR("ICD_ERR_02"),
+    ICD_CODE_NOT_FOUND("ICD_ERR_03"),
+    ICD_CODE_FOUND("ICD_SUC_02"),
+    ICD_CODE_DELETE_SUCCESS("ICD_SUC_03"),
+    ICD_CODE_DELETE_ERROR("ICD_ERR_04"),
+    ICD_CODE_ALREADY_EXIST_ERROR("ICD_ERR_05"),
+    ICD_CODE_UPDATE_ERROR("ICD_CODE_UPDATE_ERR_06"),
+    ICD_CODE_UPDATE_SUCC("ICD_CODE_UPDATE_SUC_07"),
+    ICD_VERSION_SAVE_SUCC("ICD_VERSION_SUC_08"),
+    ICD_VERSION_SAVE_ERROR("ICD_VERSION_ERR_09"),
+    ICD_ASSOCIATE_SAVE_SUCCESS("ICD_ASSOCIATE_SUC_01"),
+    ICD_ASSOCIATED_FOUND_SUCCESS("ICD_ASSOCIATED_FOUND_SUC_02");
 
     private String value;
 

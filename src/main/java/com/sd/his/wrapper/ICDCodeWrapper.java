@@ -1,20 +1,35 @@
 package com.sd.his.wrapper;
 
-public class ICDWrapper {
+import com.sd.his.model.ICDCode;
+
+
+
+public class ICDCodeWrapper {
 
 
     private long id;
-    private String codeVersion;
     private String code;
     private String title;
     private boolean status;
     private boolean deleted;
     private long updatedOn;
     private long createdOn;
-    private ICDVersionWrapper iCDVersionWrapper;
+    private boolean checkedCode;
+    private String description;
+    private ICDVersionWrapper iCDVersion;
 
+    public ICDCodeWrapper() {
+    }
 
-    public ICDWrapper() {
+    public ICDCodeWrapper(ICDCode icd) {
+        this.id = icd.getId();
+        this.code = icd.getCode();
+        this.title = icd.getTitle();
+        this.status = icd.isStatus();
+        this.deleted = icd.isDeleted();
+        this.createdOn = icd.getCreatedOn();
+        this.updatedOn = icd.getUpdatedOn();
+        this.description = icd.getDescription();
     }
 
     public long getId() {
@@ -23,14 +38,6 @@ public class ICDWrapper {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getCodeVersion() {
-        return codeVersion;
-    }
-
-    public void setCodeVersion(String codeVersion) {
-        this.codeVersion = codeVersion;
     }
 
     public String getCode() {
@@ -82,10 +89,26 @@ public class ICDWrapper {
     }
 
     public ICDVersionWrapper getICDVersionWrapper() {
-        return iCDVersionWrapper;
+        return iCDVersion;
     }
 
     public void setICDVersionWrapper(ICDVersionWrapper iCDVersionWrapper) {
-        this.iCDVersionWrapper = iCDVersionWrapper;
+        this.iCDVersion = iCDVersionWrapper;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isCheckedCode() {
+        return checkedCode;
+    }
+
+    public void setCheckedCode(boolean checkedCode) {
+        this.checkedCode = checkedCode;
     }
 }

@@ -1,13 +1,8 @@
 package com.sd.his.utill;
 
-import com.sd.his.model.ICDVersion;
-import com.sd.his.model.Permission;
-import com.sd.his.model.Role;
-import com.sd.his.model.User;
-import com.sd.his.wrapper.AdminWrapper;
-import com.sd.his.wrapper.ICDVersionWrapper;
-import com.sd.his.wrapper.PermissionWrapper;
-import com.sd.his.wrapper.RoleWrapper;
+import com.sd.his.model.*;
+import com.sd.his.wrapper.*;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,4 +96,43 @@ public class APIUtil {
         }
         return wrapperList;
     }
+
+    public static List<ICDCodeWrapper> buildICDCodeWrapper(List<ICDCode> iCDs) {
+        List<ICDCodeWrapper> wrapperList = new ArrayList<>();
+        for (ICDCode icd : iCDs) {
+            ICDCodeWrapper wrapper = new ICDCodeWrapper(icd);
+            wrapperList.add(wrapper);
+        }
+        return wrapperList;
+    }
+    public static List<ICDCodeWrapper> buildICDCodesWrapper(List<ICDCode> iCDs) {
+        List<ICDCodeWrapper> wrapperList = new ArrayList<>();
+        for (ICDCode icd : iCDs) {
+            ICDCodeWrapper wrapper = new ICDCodeWrapper(icd);
+            wrapperList.add(wrapper);
+        }
+        return wrapperList;
+    }
+
+    public static List<ICDCodeVersionWrapper> buildICDCodeVersionWrapper(List<ICDCodeVersion> iCDCVs) {
+        List<ICDCodeVersionWrapper> wrapperList = new ArrayList<>();
+        for (ICDCodeVersion icdCodeVersion : iCDCVs) {
+            ICDCodeWrapper icdCodeWrapper = new ICDCodeWrapper(icdCodeVersion.getIcd());
+            ICDVersionWrapper icdVersionWrapper = new ICDVersionWrapper(icdCodeVersion.getVersion());
+            ICDCodeVersionWrapper wrapper = new ICDCodeVersionWrapper(icdCodeVersion, icdCodeWrapper, icdVersionWrapper);
+
+            wrapperList.add(wrapper);
+        }
+        return wrapperList;
+    }
+
+    public static List<ICDCodeWrapper> buildAssociatedICDCodesWrapper(List<ICDCodeVersion> iCDCVsByVId) {
+        List<ICDCodeWrapper> iCDCWrappers = new ArrayList<>();
+        for (ICDCodeVersion icdCodeVersion : iCDCVsByVId) {
+            ICDCodeWrapper wrapper = new ICDCodeWrapper(icdCodeVersion.getIcd());
+            iCDCWrappers.add(wrapper);
+        }
+        return iCDCWrappers;
+    }
+
 }
