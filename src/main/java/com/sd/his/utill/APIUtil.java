@@ -114,23 +114,24 @@ public class APIUtil {
         return wrapperList;
     }
 
-    public static List<ICDCodeVersionWrapper> buildICDCodeVersionWrapper(List<ICDCodeVersion> iCDCVs) {
-        List<ICDCodeVersionWrapper> wrapperList = new ArrayList<>();
-        for (ICDCodeVersion icdCodeVersion : iCDCVs) {
-            ICDCodeWrapper icdCodeWrapper = new ICDCodeWrapper(icdCodeVersion.getIcd());
-            ICDVersionWrapper icdVersionWrapper = new ICDVersionWrapper(icdCodeVersion.getVersion());
-            ICDCodeVersionWrapper wrapper = new ICDCodeVersionWrapper(icdCodeVersion, icdCodeWrapper, icdVersionWrapper);
-
-            wrapperList.add(wrapper);
+    public static List<ICDCodeVersionWrapper> buildICDCodeVersionWrapper(List<ICDCodeVersion> codeVersions) {
+        List<ICDCodeVersionWrapper> codeVersionWrappers = new ArrayList<>();
+        for (ICDCodeVersion codeVersion : codeVersions) {
+            ICDCodeWrapper codeWrapper = new ICDCodeWrapper(codeVersion.getIcd());
+            ICDVersionWrapper versionWrapper = new ICDVersionWrapper(codeVersion.getVersion());
+            ICDCodeVersionWrapper codeVersionWrapper = new ICDCodeVersionWrapper(codeVersion, codeWrapper, versionWrapper);
+            codeVersionWrappers.add(codeVersionWrapper);
         }
-        return wrapperList;
+        return codeVersionWrappers;
     }
 
     public static List<ICDCodeWrapper> buildAssociatedICDCodesWrapper(List<ICDCodeVersion> iCDCVsByVId) {
         List<ICDCodeWrapper> iCDCWrappers = new ArrayList<>();
+        List<ICDCodeVersionWrapper> codeVersionWrappers = new ArrayList<>();
         for (ICDCodeVersion icdCodeVersion : iCDCVsByVId) {
-            ICDCodeWrapper wrapper = new ICDCodeWrapper(icdCodeVersion.getIcd());
-            iCDCWrappers.add(wrapper);
+            ICDCodeWrapper icdCodeWrapper = new ICDCodeWrapper(icdCodeVersion.getIcd());
+            icdCodeWrapper.setDescriptionCodeVersion(icdCodeVersion.getDescription());
+            iCDCWrappers.add(icdCodeWrapper);
         }
         return iCDCWrappers;
     }

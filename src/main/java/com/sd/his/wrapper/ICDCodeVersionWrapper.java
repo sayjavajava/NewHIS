@@ -1,6 +1,7 @@
 package com.sd.his.wrapper;
 
 import com.sd.his.model.ICDCodeVersion;
+
 import java.util.List;
 
 /*
@@ -30,6 +31,7 @@ public class ICDCodeVersionWrapper {
     private long id;
     private ICDCodeWrapper icdCode;
     private ICDVersionWrapper icdVersion;
+    private String description;
 
     private String selectedICDVersionId;
     private List<ICDCodeWrapper> selectedICDCodes;
@@ -46,8 +48,14 @@ public class ICDCodeVersionWrapper {
     public ICDCodeVersionWrapper() {
     }
 
-    public ICDCodeVersionWrapper(ICDCodeVersion icdCodeVersion, ICDCodeWrapper code, ICDVersionWrapper version) {
+    public ICDCodeVersionWrapper(ICDCodeVersion icdCodeVersion) {
         this.id = icdCodeVersion.getId();
+        this.description = icdCodeVersion.getDescription();
+    }
+
+    public ICDCodeVersionWrapper(ICDCodeVersion codeVersion, ICDCodeWrapper code, ICDVersionWrapper version) {
+        this.id = codeVersion.getId();
+        this.description = codeVersion.getDescription();
         this.icdCode = code;
         this.icdVersion = version;
     }
@@ -92,5 +100,12 @@ public class ICDCodeVersionWrapper {
         this.selectedICDCodes = selectedICDCodes;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 }

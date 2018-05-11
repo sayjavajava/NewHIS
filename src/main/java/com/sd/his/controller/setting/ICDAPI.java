@@ -72,7 +72,7 @@ public class ICDAPI {
     @RequestMapping(value = "/versions", method = RequestMethod.GET)
     public ResponseEntity<?> getAllICDVersions(HttpServletRequest request) {
 
-        logger.info("versionsNotDeleted API initiated..");
+        logger.info("getAllICDVersions API initiated..");
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("icd.versions.not.found"));
@@ -91,13 +91,12 @@ public class ICDAPI {
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (Exception ex) {
-            logger.error("versionsNotDeleted failed.", ex.fillInStackTrace());
+            logger.error("getAllICDVersions failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-//        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ApiOperation(httpMethod = "GET", value = "codes Not Deleted ",
@@ -227,7 +226,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/code/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/code", method = RequestMethod.POST)
     public ResponseEntity<?> saveICDCode(HttpServletRequest request,
                                          @RequestBody ICDCodeCreateRequest createRequest) {
         logger.info("saveCode API initiated..");
@@ -284,7 +283,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/code/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/code", method = RequestMethod.PUT)
     public ResponseEntity<?> updateICDCode(HttpServletRequest request,
                                            @RequestBody ICDCodeCreateRequest createRequest) {
         logger.info("updateICDCode API initiated..");
@@ -513,9 +512,9 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/code/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/code", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteICDCode(HttpServletRequest request,
-                                           @RequestParam("icdId") long icdId) {
+                                           @RequestParam("codeId") long codeId) {
         logger.info("Delete ICDCode Api Called..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("icd.delete.error"));
@@ -524,7 +523,7 @@ public class ICDAPI {
         response.setResponseData(null);
 
         try {
-            if (icdId <= 0) {
+            if (codeId <= 0) {
                 response.setResponseMessage(messageBundle.getString("icd.save.error.code.version.empty"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -534,7 +533,7 @@ public class ICDAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            if (iCDService.deletedICD(icdId).equalsIgnoreCase(ResponseEnum.SUCCESS.getValue())) {
+            if (iCDService.deletedICD(codeId).equalsIgnoreCase(ResponseEnum.SUCCESS.getValue())) {
                 response.setResponseMessage(messageBundle.getString("icd.delete.success"));
                 response.setResponseCode(ResponseEnum.ICD_CODE_DELETE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -571,7 +570,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/version/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/version", method = RequestMethod.POST)
     public ResponseEntity<?> saveICDVersion(HttpServletRequest request,
                                             @RequestBody ICDVersionWrapper createRequest) {
         logger.info("saveICDVersion API initiated..");
@@ -794,7 +793,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/version/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/version", method = RequestMethod.PUT)
     public ResponseEntity<?> updateICDVersion(HttpServletRequest request,
                                               @RequestBody ICDVersionWrapper createRequest) {
         logger.info("updateICDVersion API initiated..");
@@ -860,7 +859,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/version/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/version", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteICDVersion(HttpServletRequest request,
                                               @RequestParam("iCDVersionId") long iCDVersionId) {
         logger.info("deleteICDVersion Api Called..");
@@ -914,7 +913,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/codeVersion/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/codeVersion", method = RequestMethod.POST)
     public ResponseEntity<?> saveCodeVersion(HttpServletRequest request,
                                              @RequestBody ICDCodeVersionWrapper createRequest) {
         logger.info("saveCodeVersion API initiated..");
@@ -965,7 +964,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/codeVersion/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/codeVersion", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteCodeVersion(HttpServletRequest request,
                                                @RequestParam("associateICDCVId") long associateICDCVId) {
         logger.info("deleteAssociateICDCV Api Called..");
@@ -1021,7 +1020,7 @@ public class ICDAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/version/codes", method = RequestMethod.GET)
     public ResponseEntity<?> getCodesByVersion(HttpServletRequest request,
-                                                @RequestParam("vesionId") long versionId) {
+                                               @RequestParam("versionId") long versionId) {
         logger.info("getAssociatedICDCVAgainstICDVId Api Called..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("icd.associated.not.found"));
@@ -1059,63 +1058,6 @@ public class ICDAPI {
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
 
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @ApiOperation(httpMethod = "POST", value = "update Code Version  ",
-            notes = "This method will return Status while updating  Code Version ",
-            produces = "application/json", nickname = "Update Code Version ",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Update Code Version  successfully ", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/codeVersion/update", method = RequestMethod.POST)
-    public ResponseEntity<?> updateCodeVersion(HttpServletRequest request,
-                                               @RequestBody ICDCodeVersionWrapper createRequest) {
-        logger.info("Update Code Version API initiated..");
-        GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseData(null);
-        response.setResponseMessage(messageBundle.getString("icd.update.error"));
-        response.setResponseCode(ResponseEnum.ICD_CODE_SAVE_ERROR.getValue());
-        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-
-        try {
-
-            if (HISCoreUtil.isListEmpty(createRequest.getSelectedICDCodes())) {
-                response.setResponseMessage(messageBundle.getString("icd.manage.list.empty"));
-                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("saveManageICDCV API - insufficient params.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-
-            if (!HISCoreUtil.isValidObject(createRequest.getSelectedICDVersionId())) {
-                response.setResponseMessage(messageBundle.getString("icd.manage.version.empty"));
-                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-            List<ICDCodeVersion> icdCodeVersions = iCDService.updateCVs(createRequest);
-            if (HISCoreUtil.isValidObject(icdCodeVersions)) {
-                response.setResponseData(null);
-                response.setResponseMessage(messageBundle.getString("icd.code.version.update.success"));
-                response.setResponseCode(ResponseEnum.ICD_ASSOCIATE_SAVE_SUCCESS.getValue());
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("saveICD failed.", e.fillInStackTrace());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

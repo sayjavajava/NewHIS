@@ -3,7 +3,6 @@ package com.sd.his.wrapper;
 import com.sd.his.model.ICDCode;
 
 
-
 public class ICDCodeWrapper {
 
 
@@ -16,6 +15,7 @@ public class ICDCodeWrapper {
     private long createdOn;
     private boolean checkedCode;
     private String description;
+    private String descriptionCodeVersion;
     private ICDVersionWrapper iCDVersion;
 
     public ICDCodeWrapper() {
@@ -110,5 +110,13 @@ public class ICDCodeWrapper {
 
     public void setCheckedCode(boolean checkedCode) {
         this.checkedCode = checkedCode;
+    }
+
+    public String getDescriptionCodeVersion() {
+        return descriptionCodeVersion;
+    }
+
+    public void setDescriptionCodeVersion(String descriptionCodeVersion) {
+        this.descriptionCodeVersion = descriptionCodeVersion;
     }
 }

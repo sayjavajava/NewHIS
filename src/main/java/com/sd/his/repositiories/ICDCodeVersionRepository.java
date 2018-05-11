@@ -11,7 +11,6 @@ import java.util.List;
 public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, Long> {
 
     List<ICDCodeVersion> findAllByOrderByVersion_name(Pageable pageable);
-
     List<ICDCodeVersion> findAllByOrderByVersion_name();
 
     List<ICDCodeVersion> findAllByVersion_idAndVersion_deletedFalseAndIcd_DeletedFalse(long iCDCVsById);
@@ -19,7 +18,6 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
     List<Long> deleteAllByVersion_id(long id);
 
     List<ICDCodeVersion> findAllByVersion_NameContainingAndVersion_DeletedFalse(String versionName, Pageable pageable);
-
     List<ICDCodeVersion> findAllByVersion_NameContainingAndVersion_DeletedFalse(String versionName);
 
 }

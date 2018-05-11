@@ -40,6 +40,9 @@ public class ICDCodeVersion {
     @JoinColumn(name = "ICD_VERSION_ID")
     private ICDVersion version;
 
+    @Column(name = "description",length = 400)
+    private String description;
+
     public ICDCodeVersion() {
     }
 
@@ -50,6 +53,14 @@ public class ICDCodeVersion {
 
     public Long getId() {
         return id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setId(Long id) {

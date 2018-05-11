@@ -23,32 +23,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ICDService {
+public class ICDService  {
 
     @Autowired
-    private ICDCodeRepository iCDCodeRepository;
+    private ICDCodeRepository codeRepository;
     @Autowired
-    private ICDCodeVersionRepository icdCodeVersionRepository;
+    private ICDVersionRepository versionRepository;
     @Autowired
-    private ICDVersionRepository iCDVersionRepository;
+    private ICDCodeVersionRepository codeVersionRepository;
 
 
     public List<ICDVersionWrapper> versiosNotDeleted() {
-        return APIUtil.buildICDVersionWrapper(this.iCDVersionRepository.findAllByDeletedFalse());
+        return APIUtil.buildICDVersionWrapper(this.versionRepository.findAllByDeletedFalse());
     }
 
     public List<ICDCodeWrapper> codesNotDeleted() {
-        return APIUtil.buildICDCodesWrapper(this.iCDCodeRepository.findAllByDeletedFalse());
+        return APIUtil.buildICDCodesWrapper(this.codeRepository.findAllByDeletedFalse());
     }
 
     @Transactional
     public ICDCode saveICD(ICDCodeCreateRequest createRequest) {
         ICDCode icd = new ICDCode(createRequest);
-        return iCDCodeRepository.save(icd);
+        return codeRepository.save(icd);
     }
 
     public boolean isICDCodeAlreadyExist(String iCDCode) {
-        ICDCode icd = iCDCodeRepository.findByCode(iCDCode);
+        ICDCode icd = codeRepository.findByCode(iCDCode);
         if (HISCoreUtil.isValidObject(icd)) {
             return true;
         }
@@ -56,7 +56,7 @@ public class ICDService {
     }
 
     public boolean isICDVersionNameAlreadyExist(String iCDVersionName) {
-        ICDVersion icd = iCDVersionRepository.findByNameAndDeletedFalse(iCDVersionName);
+        ICDVersion icd = versionRepository.findByNameAndDeletedFalse(iCDVersionName);
         if (HISCoreUtil.isValidObject(icd)) {
             return true;
         }
@@ -64,7 +64,7 @@ public class ICDService {
     }
 
     public boolean isICDCodeAlreadyExistAgainstICDCodeId(String iCDCode, long iCDCodeId) {
-        ICDCode icd = iCDCodeRepository.findByCodeAndIdNot(iCDCode, iCDCodeId);
+        ICDCode icd = codeRepository.findByCodeAndIdNot(iCDCode, iCDCodeId);
         if (HISCoreUtil.isValidObject(icd)) {
             return true;
         }
@@ -74,7 +74,7 @@ public class ICDService {
     public List<ICDCodeWrapper> findCodes(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
         List<ICDCodeWrapper> icds = new ArrayList<>();
-        List<ICDCode> paginatedICDs = iCDCodeRepository.findAllByDeletedFalse(pageable);
+        List<ICDCode> paginatedICDs = codeRepository.findAllByDeletedFalse(pageable);
         if (!HISCoreUtil.isListEmpty(paginatedICDs)) {
             icds = APIUtil.buildICDCodeWrapper(paginatedICDs);
         }
@@ -82,13 +82,13 @@ public class ICDService {
     }
 
     public int countCodes() {
-        return iCDCodeRepository.findAllByDeletedFalse().size();
+        return codeRepository.findAllByDeletedFalse().size();
     }
 
     public List<ICDVersionWrapper> findVersions(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
         List<ICDVersionWrapper> icdsVersion = new ArrayList<>();
-        List<ICDVersion> paginatedICDsVersion = iCDVersionRepository.findAllByDeletedFalse(pageable);
+        List<ICDVersion> paginatedICDsVersion = versionRepository.findAllByDeletedFalse(pageable);
         if (!HISCoreUtil.isListEmpty(paginatedICDsVersion)) {
             icdsVersion = APIUtil.buildICDVersionWrapper(paginatedICDsVersion);
         }
@@ -96,13 +96,13 @@ public class ICDService {
     }
 
     public int countVersion() {
-        return iCDVersionRepository.findAllByDeletedFalse().size();
+        return versionRepository.findAllByDeletedFalse().size();
     }
 
     public List<ICDCodeWrapper> searchCodes(String code, int offset, int limit) {
         List<ICDCodeWrapper> icds = new ArrayList<>();
         Pageable page = new PageRequest(offset, limit);
-        List<ICDCode> searchedICDs = iCDCodeRepository.findAllByCodeContainingAndDeletedFalse(code, page);
+        List<ICDCode> searchedICDs = codeRepository.findAllByCodeContainingAndDeletedFalse(code, page);
         if (!HISCoreUtil.isListEmpty(searchedICDs)) {
             icds = APIUtil.buildICDCodeWrapper(searchedICDs);
         }
@@ -110,14 +110,14 @@ public class ICDService {
     }
 
     public int countSearchCodes(String code) {
-        return iCDCodeRepository.findAllByCodeContainingAndDeletedFalse(code).size();
+        return codeRepository.findAllByCodeContainingAndDeletedFalse(code).size();
     }
 
     public List<ICDCodeVersionWrapper> searchCodeVersionByVersionName(int offset, int limit, String versionName) {
         List<ICDCodeVersionWrapper> codeVersionsWrapper = new ArrayList<>();
         Pageable pageable = new PageRequest(offset, limit);
 
-        List<ICDCodeVersion> searchedCVsByName = this.icdCodeVersionRepository.findAllByVersion_NameContainingAndVersion_DeletedFalse(versionName, pageable);
+        List<ICDCodeVersion> searchedCVsByName = this.codeVersionRepository.findAllByVersion_NameContainingAndVersion_DeletedFalse(versionName, pageable);
         if (!HISCoreUtil.isListEmpty(searchedCVsByName)) {
             codeVersionsWrapper = APIUtil.buildICDCodeVersionWrapper(searchedCVsByName);
         }
@@ -125,13 +125,13 @@ public class ICDService {
     }
 
     public int countSearchCodeVersionByVersionName(String versionName) {
-        return icdCodeVersionRepository.findAllByVersion_NameContainingAndVersion_DeletedFalse(versionName).size();
+        return codeVersionRepository.findAllByVersion_NameContainingAndVersion_DeletedFalse(versionName).size();
     }
 
     public List<ICDVersionWrapper> searchByVersion(String name, int offset, int limit) {
         List<ICDVersionWrapper> icdsVersion = new ArrayList<>();
         Pageable pageable = new PageRequest(offset, limit);
-        List<ICDVersion> searchedICDsVersion = iCDVersionRepository.findAllByNameContainingAndDeletedFalse(name, pageable);
+        List<ICDVersion> searchedICDsVersion = versionRepository.findAllByNameContainingAndDeletedFalse(name, pageable);
         if (!HISCoreUtil.isListEmpty(searchedICDsVersion)) {
             icdsVersion = APIUtil.buildICDVersionWrapper(searchedICDsVersion);
         }
@@ -139,15 +139,15 @@ public class ICDService {
     }
 
     public int countSearchByVersion(String name) {
-        return iCDVersionRepository.findAllByNameContainingAndDeletedFalse(name).size();
+        return versionRepository.findAllByNameContainingAndDeletedFalse(name).size();
     }
 
     @Transactional(rollbackOn = Throwable.class)
     public String deletedICD(Long icdId) {
-        ICDCode icd = iCDCodeRepository.findOne(icdId);
+        ICDCode icd = codeRepository.findOne(icdId);
         if (HISCoreUtil.isValidObject(icd)) {
             icd.setDeleted(true);
-            iCDCodeRepository.save(icd);
+            codeRepository.save(icd);
             return ResponseEnum.SUCCESS.getValue();
         } else {
             return ResponseEnum.NOT_FOUND.getValue();
@@ -156,10 +156,10 @@ public class ICDService {
 
     @Transactional(rollbackOn = Throwable.class)
     public String deletedICDVersion(long icdId) {
-        ICDVersion icdVersion = iCDVersionRepository.findOne(icdId);
+        ICDVersion icdVersion = versionRepository.findOne(icdId);
         if (HISCoreUtil.isValidObject(icdVersion)) {
             icdVersion.setDeleted(true);
-            iCDVersionRepository.save(icdVersion);
+            versionRepository.save(icdVersion);
             return ResponseEnum.SUCCESS.getValue();
         } else {
             return ResponseEnum.NOT_FOUND.getValue();
@@ -169,7 +169,7 @@ public class ICDService {
     @Transactional(rollbackOn = Throwable.class)
     public String deletedAssociateICDCV(long icdId) {
         if (icdId > 0) {
-            icdCodeVersionRepository.delete(icdId);
+            codeVersionRepository.delete(icdId);
             return ResponseEnum.SUCCESS.getValue();
         } else {
             return ResponseEnum.NOT_FOUND.getValue();
@@ -178,7 +178,7 @@ public class ICDService {
 
     @Transactional(rollbackOn = Throwable.class)
     public void updateICD(ICDCodeCreateRequest createRequest) {
-        ICDCode icdCode = this.iCDCodeRepository.findOne(createRequest.getId());
+        ICDCode icdCode = this.codeRepository.findOne(createRequest.getId());
         if (HISCoreUtil.isValidObject(icdCode)) {
             icdCode.setCode(createRequest.getCode());
             icdCode.setTitle(createRequest.getTitle());
@@ -187,17 +187,17 @@ public class ICDService {
             icdCode.setDeleted(false);
             icdCode.setUpdatedOn(System.currentTimeMillis());
         }
-        this.iCDCodeRepository.save(icdCode);
+        this.codeRepository.save(icdCode);
     }
 
     @Transactional(rollbackOn = Throwable.class)
     public ICDVersion saveICDVersion(ICDVersionWrapper createRequest) {
         ICDVersion icdVersion = new ICDVersion(createRequest);
-        return iCDVersionRepository.save(icdVersion);
+        return versionRepository.save(icdVersion);
     }
 
     public boolean isICDVersionNameAlreadyExistAgainstICDVersionNameId(String name, long id) {
-        ICDVersion icdVersion = iCDVersionRepository.findByNameAndDeletedFalseAndIdNot(name, id);
+        ICDVersion icdVersion = versionRepository.findByNameAndDeletedFalseAndIdNot(name, id);
         if (HISCoreUtil.isValidObject(icdVersion)) {
             return true;
         }
@@ -206,7 +206,7 @@ public class ICDService {
 
     @Transactional(rollbackOn = Throwable.class)
     public ICDVersion updateICDVersion(ICDVersionWrapper request) {
-        ICDVersion icdVersion = iCDVersionRepository.findOne(request.getId());
+        ICDVersion icdVersion = versionRepository.findOne(request.getId());
         if (HISCoreUtil.isValidObject(icdVersion)) {
             icdVersion.setUpdatedOn(System.currentTimeMillis());
             icdVersion.setName(request.getName());
@@ -218,40 +218,39 @@ public class ICDService {
 
     public List<ICDCodeVersionWrapper> codeVersions(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        List<ICDCodeVersionWrapper> icdcvs = new ArrayList<>();
-        List<ICDCodeVersion> paginatedICDs = this.icdCodeVersionRepository.findAllByOrderByVersion_name(pageable);
-        if (paginatedICDs != null) {
-            icdcvs = APIUtil.buildICDCodeVersionWrapper(paginatedICDs);
+        List<ICDCodeVersionWrapper> cvs = new ArrayList<>();
+        List<ICDCodeVersion> codeVersions = this.codeVersionRepository.findAllByOrderByVersion_name(pageable);
+        if (codeVersions != null) {
+            cvs = APIUtil.buildICDCodeVersionWrapper(codeVersions);
         }
-        return icdcvs;
+        return cvs;
     }
 
     public int countCodeVersions() {
-        return icdCodeVersionRepository.findAllByOrderByVersion_name().size();
+        return codeVersionRepository.findAllByOrderByVersion_name().size();
     }
 
     @Transactional(rollbackOn = Throwable.class)
     public List<ICDCodeVersion> saveAssociateICDCVs(ICDCodeVersionWrapper createRequest) {
         ICDCodeVersion associateICDCVs = null;
-        List<ICDCodeVersion> icdCodeVersions = new ArrayList<>();
+        List<ICDCodeVersion> codeVersions = new ArrayList<>();
 
-        ICDVersion icdVersion = this.iCDVersionRepository.findOne(Long.parseLong(createRequest.getSelectedICDVersionId()));
+        ICDVersion icdVersion = this.versionRepository.findOne(Long.parseLong(createRequest.getSelectedICDVersionId()));
 
-        this.icdCodeVersionRepository.deleteAllByVersion_id(icdVersion.getId());
-        this.icdCodeVersionRepository.flush();
+        this.codeVersionRepository.deleteAllByVersion_id(icdVersion.getId());
+        this.codeVersionRepository.flush();
 
         for (ICDCodeWrapper codeWrapper : createRequest.getiCDCodes()) {
             if (codeWrapper.isCheckedCode()) {
                 associateICDCVs = new ICDCodeVersion();
-                System.out.println(codeWrapper.isCheckedCode());
                 associateICDCVs.setVersion(icdVersion);
-                associateICDCVs.setIcd(this.iCDCodeRepository.findOne(codeWrapper.getId()));
-
-                icdCodeVersions.add(associateICDCVs);
+                associateICDCVs.setDescription(createRequest.getDescription());
+                associateICDCVs.setIcd(this.codeRepository.findOne(codeWrapper.getId()));
+                codeVersions.add(associateICDCVs);
             }
         }
 
-        return icdCodeVersionRepository.save(icdCodeVersions);
+        return codeVersionRepository.save(codeVersions);
     }
 
     @Transactional(rollbackOn = Throwable.class)
@@ -259,25 +258,25 @@ public class ICDService {
         ICDCodeVersion associateICDCVs = null;
         List<ICDCodeVersion> icdCodeVersions = new ArrayList<>();
 
-        ICDVersion icdVersion = this.iCDVersionRepository.findOne(Long.parseLong(createRequest.getSelectedICDVersionId()));
+        ICDVersion icdVersion = this.versionRepository.findOne(Long.parseLong(createRequest.getSelectedICDVersionId()));
 
-        this.icdCodeVersionRepository.deleteAllByVersion_id(icdVersion.getId());
-        this.icdCodeVersionRepository.flush();
+        this.codeVersionRepository.deleteAllByVersion_id(icdVersion.getId());
+        this.codeVersionRepository.flush();
 
         for (ICDCodeWrapper codeWrapper : createRequest.getSelectedICDCodes()) {
             associateICDCVs = new ICDCodeVersion();
             associateICDCVs.setVersion(icdVersion);
-            associateICDCVs.setIcd(this.iCDCodeRepository.findOne(codeWrapper.getId()));
+            associateICDCVs.setIcd(this.codeRepository.findOne(codeWrapper.getId()));
 
             icdCodeVersions.add(associateICDCVs);
         }
 
-        return icdCodeVersionRepository.save(icdCodeVersions);
+        return codeVersionRepository.save(icdCodeVersions);
     }
 
-    public List<ICDCodeWrapper> getAssociatedICDCVByVId(long iCDCVsId) {
-        if (iCDCVsId > 0) {
-            List<ICDCodeVersion> dbList = icdCodeVersionRepository.findAllByVersion_idAndVersion_deletedFalseAndIcd_DeletedFalse(iCDCVsId);
+    public List<ICDCodeWrapper> getAssociatedICDCVByVId(long versionId) {
+        if (versionId > 0) {
+            List<ICDCodeVersion> dbList = codeVersionRepository.findAllByVersion_idAndVersion_deletedFalseAndIcd_DeletedFalse(versionId);
             if (dbList != null && dbList.size() > 0) {
                 ///here we only want associated by version id
                 return APIUtil.buildAssociatedICDCodesWrapper(dbList);
