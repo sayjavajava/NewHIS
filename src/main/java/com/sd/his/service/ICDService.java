@@ -33,7 +33,7 @@ public class ICDService  {
     private ICDCodeVersionRepository codeVersionRepository;
 
 
-    public List<ICDVersionWrapper> versiosNotDeleted() {
+    public List<ICDVersionWrapper> versios() {
         return APIUtil.buildICDVersionWrapper(this.versionRepository.findAllByDeletedFalse());
     }
 

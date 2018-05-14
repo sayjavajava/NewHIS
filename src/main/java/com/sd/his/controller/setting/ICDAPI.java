@@ -59,12 +59,12 @@ public class ICDAPI {
     private final Logger logger = LoggerFactory.getLogger(ICDAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
-    @ApiOperation(httpMethod = "GET", value = "versions Not Deleted ",
+    @ApiOperation(httpMethod = "GET", value = "versions",
             notes = "This method will return   Versions ",
-            produces = "application/json", nickname = " versions Not Deleted ",
+            produces = "application/json", nickname = " versions",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "versions Not Deleted fetched", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "versions fetched", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -77,15 +77,15 @@ public class ICDAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("icd.versions.not.found"));
         response.setResponseCode(ResponseEnum.ICD_VERSION_FETCH_FAILED.getValue());
-        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ICD_VERSION_ERROR.getValue());
         response.setResponseData(null);
 
         try {
 
             logger.info("Versions Found Successfully");
-            response.setResponseData(iCDService.versiosNotDeleted());
+            response.setResponseData(iCDService.versios());
             response.setResponseMessage(messageBundle.getString("icd.versions.found.success"));
-            response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_FETCH_SUCCESS.getValue());
+            response.setResponseCode(ResponseEnum.ICD_VERSIONS_FETCH_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -139,9 +139,9 @@ public class ICDAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "GET", value = "code Versions",
+    @ApiOperation(httpMethod = "GET", value = "get All Code Versions",
             notes = "This method will return code Versions",
-            produces = "application/json", nickname = "code Versions ",
+            produces = "application/json", nickname = "codeVersions ",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
             @ApiResponse(code = 200, message = "code Versions fetched successfully", response = GenericAPIResponse.class),
@@ -154,11 +154,11 @@ public class ICDAPI {
                                                 @PathVariable("page") int page,
                                                 @RequestParam(value = "pageSize",
                                                         required = false, defaultValue = "10") int pageSize) {
-        logger.info("code Versions paginated..");
+        logger.info("getAllCodeVersions API Initiated..");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("icd.not-found"));
-        response.setResponseCode(ResponseEnum.ICD_CODE_NOT_FOUND.getValue());
+        response.setResponseMessage(messageBundle.getString("icd.code.version.not-found"));
+        response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
@@ -196,8 +196,8 @@ public class ICDAPI {
                 returnValues.put("pages", pages);
                 returnValues.put("data", cvs);
 
-                response.setResponseMessage(messageBundle.getString("icd.fetched.success"));
-                response.setResponseCode(ResponseEnum.ICD_CODE_FOUND.getValue());
+                response.setResponseMessage(messageBundle.getString("icd.code.version.found"));
+                response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_FETCH_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(returnValues);
                 logger.info("code Versions Fetched successfully...");
@@ -217,7 +217,7 @@ public class ICDAPI {
     }
 
     @ApiOperation(httpMethod = "POST", value = "saveCode ",
-            notes = "This method will return Status while saving Code",
+            notes = "This method will return Status of Code",
             produces = "application/json", nickname = "saveCode",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
@@ -232,7 +232,7 @@ public class ICDAPI {
         logger.info("saveCode API initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseData(null);
-        response.setResponseMessage(messageBundle.getString("icd.save.error"));
+        response.setResponseMessage(messageBundle.getString("icd.code.save.error"));
         response.setResponseCode(ResponseEnum.ICD_CODE_SAVE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
 
@@ -248,7 +248,7 @@ public class ICDAPI {
             }
 
             if (iCDService.isICDCodeAlreadyExist(createRequest.getCode())) {
-                response.setResponseMessage(messageBundle.getString("icd.already.exist"));
+                response.setResponseMessage(messageBundle.getString("icd.code.already.exist"));
                 response.setResponseCode(ResponseEnum.ICD_CODE_ALREADY_EXIST_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
 
@@ -257,7 +257,7 @@ public class ICDAPI {
             ICDCode icd = iCDService.saveICD(createRequest);
             if (HISCoreUtil.isValidObject(icd)) {
                 response.setResponseData(null);
-                response.setResponseMessage(messageBundle.getString("icd.save.success"));
+                response.setResponseMessage(messageBundle.getString("icd.code.save.success"));
                 response.setResponseCode(ResponseEnum.ICD_CODE_SAVE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
 
@@ -273,8 +273,8 @@ public class ICDAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "PUT", value = "Update ICDCode  ",
-            notes = "This method will return Status while Updating  ICDCode",
+    @ApiOperation(httpMethod = "PUT", value = "Update ICD Code  ",
+            notes = "This method will return Status of ICDCode",
             produces = "application/json", nickname = "Update  ICDCode",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
@@ -289,14 +289,14 @@ public class ICDAPI {
         logger.info("updateICDCode API initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseData(null);
-        response.setResponseMessage(messageBundle.getString("icd.update.error"));
+        response.setResponseMessage(messageBundle.getString("icd.code.update.error"));
         response.setResponseCode(ResponseEnum.ICD_CODE_UPDATE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
 
         try {
 
             if (createRequest.getId() <= 0) {
-                response.setResponseMessage(messageBundle.getString("icd.update.required"));
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
@@ -304,7 +304,7 @@ public class ICDAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             if (HISCoreUtil.isNull(createRequest.getCode())) {
-                response.setResponseMessage(messageBundle.getString("icd.update.code.required"));
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
@@ -313,7 +313,7 @@ public class ICDAPI {
             }
 
             if (iCDService.isICDCodeAlreadyExistAgainstICDCodeId(createRequest.getCode(), createRequest.getId())) {
-                response.setResponseMessage(messageBundle.getString("icd.already.exist"));
+                response.setResponseMessage(messageBundle.getString("icd.code.already.exist"));
                 response.setResponseCode(ResponseEnum.ICD_CODE_ALREADY_EXIST_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
 
@@ -524,7 +524,7 @@ public class ICDAPI {
 
         try {
             if (codeId <= 0) {
-                response.setResponseMessage(messageBundle.getString("icd.save.error.code.version.empty"));
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
@@ -562,7 +562,7 @@ public class ICDAPI {
 
     @ApiOperation(httpMethod = "POST", value = "Save ICD Version ",
             notes = "This method will return Status while saving ICD Version",
-            produces = "application/json", nickname = "Save ICD Versione",
+            produces = "application/json", nickname = "Save ICD Version",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Save ICD Version successfully ", response = GenericAPIResponse.class),
@@ -591,10 +591,10 @@ public class ICDAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             if (iCDService.isICDVersionNameAlreadyExist(createRequest.getName())) {
-                response.setResponseMessage(messageBundle.getString("icd.already.exist"));
-                response.setResponseCode(ResponseEnum.ICD_CODE_ALREADY_EXIST_ERROR.getValue());
+                response.setResponseMessage(messageBundle.getString("icd.code.already.exist"));
+                response.setResponseCode(ResponseEnum.ICD_VERSION_ALREADY_EXIST_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
-
+                logger.error("saveICDVersion API - insufficient params.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
@@ -602,7 +602,7 @@ public class ICDAPI {
             if (HISCoreUtil.isValidObject(icd)) {
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("icd.version.save.success"));
-                response.setResponseCode(ResponseEnum.ICD_VERSION_SAVE_SUCC.getValue());
+                response.setResponseCode(ResponseEnum.ICD_VERSION_SAVE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -617,12 +617,12 @@ public class ICDAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "GET", value = "Paginated ICDs",
-            notes = "This method will return Paginated ICDs",
-            produces = "application/json", nickname = "Get Paginated ICDs ",
+    @ApiOperation(httpMethod = "GET", value = "Paginated Versions",
+            notes = "This method will return Paginated  Versions",
+            produces = "application/json", nickname = "Get Paginated  Versions",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Paginated ICDs fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Paginated  Versions fetched successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -632,11 +632,11 @@ public class ICDAPI {
                                                      @PathVariable("page") int page,
                                                      @RequestParam(value = "pageSize",
                                                              required = false, defaultValue = "10") int pageSize) {
-        logger.info("getAllPaginatedICDVersions API called..");
+        logger.info("getAllPaginatedVersions API called..");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("icd.not-found"));
-        response.setResponseCode(ResponseEnum.ICD_CODE_NOT_FOUND.getValue());
+        response.setResponseMessage(messageBundle.getString("icd.version.not-found"));
+        response.setResponseCode(ResponseEnum.ICD_VERSIONS_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
@@ -674,7 +674,7 @@ public class ICDAPI {
                 returnValues.put("pages", pages);
                 returnValues.put("data", icdsWrappers);
 
-                response.setResponseMessage(messageBundle.getString("icd.fetched.success"));
+                response.setResponseMessage(messageBundle.getString("icd.versions.fetched.success"));
                 response.setResponseCode(ResponseEnum.ICD_CODE_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(returnValues);
@@ -683,7 +683,7 @@ public class ICDAPI {
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("get all paginated getAllPaginatedICDVersions failed.", ex.fillInStackTrace());
+            logger.error("get All Paginated ICD Versions failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -715,11 +715,11 @@ public class ICDAPI {
                                             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
                                             @RequestParam(value = "searchVersion") String searchVersion) {
 
-        logger.info("search By Version Searched ICDs Version");
+        logger.info("searchVersions API Called");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("icd.not-found"));
-        response.setResponseCode(ResponseEnum.ICD_CODE_NOT_FOUND.getValue());
+        response.setResponseMessage(messageBundle.getString("icd.versions.search.error"));
+        response.setResponseCode(ResponseEnum.ICD_VERSIONS_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
@@ -758,8 +758,8 @@ public class ICDAPI {
                 returnValues.put("pages", pages);
                 returnValues.put("data", icds);
 
-                response.setResponseMessage(messageBundle.getString("icd.fetched.success"));
-                response.setResponseCode(ResponseEnum.ICD_CODE_FOUND.getValue());
+                response.setResponseMessage(messageBundle.getString("icd.versions.search.success"));
+                response.setResponseCode(ResponseEnum.ICD_VERSIONS_FOUND_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(returnValues);
                 logger.info("searchICDVersion fetched successfully...");
@@ -788,7 +788,7 @@ public class ICDAPI {
             produces = "application/json", nickname = "Update  ICDVersion",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Update ICDVersion  successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Update ICDVersion  successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -799,18 +799,18 @@ public class ICDAPI {
         logger.info("updateICDVersion API initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseData(null);
-        response.setResponseMessage(messageBundle.getString("icd.update.error"));
-        response.setResponseCode(ResponseEnum.ICD_CODE_UPDATE_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("icd.version.update.error"));
+        response.setResponseCode(ResponseEnum.ICD_VERSION_UPDATE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
 
         try {
 
             if (createRequest.getId() <= 0) {
-                response.setResponseMessage(messageBundle.getString("icd.update.required"));
+                response.setResponseMessage(messageBundle.getString("icd.version.update.required"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
-                logger.error("updateICDVersion API - insufficient params.");
+                logger.error("updateICDVersion API - version id not available.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             if (HISCoreUtil.isNull(createRequest.getName())) {
@@ -832,8 +832,8 @@ public class ICDAPI {
             ICDVersion icdVersion = iCDService.updateICDVersion(createRequest);
             if (HISCoreUtil.isValidObject(icdVersion)) {
                 response.setResponseData(null);
-                response.setResponseMessage(messageBundle.getString("icd.update.success"));
-                response.setResponseCode(ResponseEnum.ICD_CODE_UPDATE_SUCC.getValue());
+                response.setResponseMessage(messageBundle.getString("icd.version.update.success"));
+                response.setResponseCode(ResponseEnum.ICD_VERSION_UPDATE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -854,7 +854,7 @@ public class ICDAPI {
             produces = "application/json", nickname = "Delete  ICD Version ",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Deleted  ICD Version successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Deleted  ICD Version successful", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -864,14 +864,14 @@ public class ICDAPI {
                                               @RequestParam("iCDVersionId") long iCDVersionId) {
         logger.info("deleteICDVersion Api Called..");
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("icd.delete.error"));
-        response.setResponseCode(ResponseEnum.ICD_CODE_DELETE_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("icd.version.delete.error"));
+        response.setResponseCode(ResponseEnum.ICD_VERSION_DELETE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
             if (iCDVersionId <= 0) {
-                response.setResponseMessage(messageBundle.getString("icd.version.required"));
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
@@ -882,10 +882,10 @@ public class ICDAPI {
 
             if (iCDService.deletedICDVersion(iCDVersionId).equalsIgnoreCase(ResponseEnum.SUCCESS.getValue())) {
                 response.setResponseMessage(messageBundle.getString("icd.version.delete.success"));
-                response.setResponseCode(ResponseEnum.ICD_CODE_DELETE_SUCCESS.getValue());
+                response.setResponseCode(ResponseEnum.ICD_VERSION_DELETE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(null);
-                logger.info("deleteICDVersion Deleted Successfully...");
+                logger.info("deleteICDVersion Successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
@@ -903,12 +903,12 @@ public class ICDAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "POST", value = "Save Associate ICDCV  ",
-            notes = "This method will return Status while saving  Associate ICDCV ",
-            produces = "application/json", nickname = "Save  Associate ICDCV ",
+    @ApiOperation(httpMethod = "POST", value = "saveCodeVersion",
+            notes = "This method will return Status while saving CodeVersion",
+            produces = "application/json", nickname = "saveCodeVersion",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Save  Associate ICDCV  successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "saveCodeVersion  successfully ", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -919,8 +919,8 @@ public class ICDAPI {
         logger.info("saveCodeVersion API initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseData(null);
-        response.setResponseMessage(messageBundle.getString("icd.save.error"));
-        response.setResponseCode(ResponseEnum.ICD_CODE_SAVE_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("icd.code.version.save.error"));
+        response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_SAVE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
 
         try {
@@ -938,8 +938,8 @@ public class ICDAPI {
             List<ICDCodeVersion> icdCodeVersions = iCDService.saveAssociateICDCVs(createRequest);
             if (HISCoreUtil.isValidObject(icdCodeVersions)) {
                 response.setResponseData(null);
-                response.setResponseMessage(messageBundle.getString("icd.associate.success"));
-                response.setResponseCode(ResponseEnum.ICD_ASSOCIATE_SAVE_SUCCESS.getValue());
+                response.setResponseMessage(messageBundle.getString("icd.code.version.save.success"));
+                response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_SAVE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -954,12 +954,12 @@ public class ICDAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "DELETE", value = "Delete associate ICDCV",
-            notes = "This method will return Deleted Status of   associate ICDCV",
-            produces = "application/json", nickname = "Delete   associate ICDCV ",
+    @ApiOperation(httpMethod = "DELETE", value = "deleteCodeVersion",
+            notes = "This method will return delete Code Version STATUS",
+            produces = "application/json", nickname = "deleteCodeVersion",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Deleted   associate ICDCV successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "delete Code Version successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -967,10 +967,10 @@ public class ICDAPI {
     @RequestMapping(value = "/codeVersion", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteCodeVersion(HttpServletRequest request,
                                                @RequestParam("associateICDCVId") long associateICDCVId) {
-        logger.info("deleteAssociateICDCV Api Called..");
+        logger.info("deleteCodeVersion Api Called..");
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("icd.delete.error"));
-        response.setResponseCode(ResponseEnum.ICD_CODE_DELETE_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("icd.code.version.delete.error"));
+        response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_DELETE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
@@ -986,8 +986,8 @@ public class ICDAPI {
             }
 
             if (iCDService.deletedAssociateICDCV(associateICDCVId).equalsIgnoreCase(ResponseEnum.SUCCESS.getValue())) {
-                response.setResponseMessage(messageBundle.getString("icd.version.delete.success"));
-                response.setResponseCode(ResponseEnum.ICD_CODE_DELETE_SUCCESS.getValue());
+                response.setResponseMessage(messageBundle.getString("icd.code.version.delete.success"));
+                response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_DELETE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(null);
                 logger.info("deleteAssociateICDCV Successfully...");
