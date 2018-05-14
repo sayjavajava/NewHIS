@@ -2,6 +2,8 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.request.ClinicalDepartmentCreateRequest;
+import com.sd.his.request.ClinicalDepartmentUpdateRequest;
 
 import javax.persistence.*;
 import java.util.List;
@@ -41,6 +43,9 @@ public class ClinicalDepartment {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "DESCRIPTION")
+    private String description;
+
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
     private boolean active;
 
@@ -57,8 +62,17 @@ public class ClinicalDepartment {
     @OneToMany(targetEntity = BranchClinicalDepartment.class, mappedBy = "clinicalDpt", fetch = FetchType.LAZY)
     private List<BranchClinicalDepartment> branches;
 
-    public ClinicalDepartment(String name) {
-        this.name = name;
+    public ClinicalDepartment() {
+    }
+
+    public ClinicalDepartment(ClinicalDepartmentCreateRequest createRequest) {
+        this.id = createRequest.getDepartmentId();
+        this.name = createRequest.getName();
+        this.description = createRequest.getDescription();
+        this.active = true;
+        this.deleted = false;
+        this.createdOn = System.currentTimeMillis();
+        this.updatedOn = System.currentTimeMillis();
     }
 
     @Override
@@ -85,6 +99,14 @@ public class ClinicalDepartment {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public boolean isActive() {

@@ -1,8 +1,6 @@
 package com.sd.his.service;
 
-import com.sd.his.model.Permission;
-import com.sd.his.model.Role;
-import com.sd.his.model.User;
+import com.sd.his.model.*;
 import com.sd.his.repositiories.PermissionRepository;
 import com.sd.his.repositiories.RoleRepository;
 import com.sd.his.repositiories.UserRepository;
@@ -26,6 +24,7 @@ public class HISUserService implements UserDetailsService {
     private UserRepository userRepository;
     private PermissionRepository permissionRepo;
     private RoleRepository roleRepo;
+
 
     HISUserService(UserRepository userRepository, PermissionRepository permissionRepo, RoleRepository roleRepo) {
         this.userRepository = userRepository;
@@ -89,6 +88,8 @@ public class HISUserService implements UserDetailsService {
         return userRepository.findByUsername(name);
     }
 
+
+
     public UserWrapper buildUserWrapper(User dbUser) {
         UserWrapper user = new UserWrapper(dbUser);
         List<PermissionWrapper> permissionWrappers = new ArrayList<>();
@@ -115,5 +116,8 @@ public class HISUserService implements UserDetailsService {
 
         return identicalPermissions;
     }
+
+
+
 
 }

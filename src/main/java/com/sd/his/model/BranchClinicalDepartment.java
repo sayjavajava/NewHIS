@@ -47,6 +47,11 @@ public class BranchClinicalDepartment {
     public BranchClinicalDepartment() {
     }
 
+    public BranchClinicalDepartment(Branch branch, ClinicalDepartment dpt) {
+        this.branch = branch;
+        this.clinicalDpt = dpt;
+    }
+
     public Long getId() {
         return id;
     }

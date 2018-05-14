@@ -4,23 +4,23 @@ package com.sd.his.enums;
  * @author    : Irfan Nasim
  * @Date      : 18-Apr-17
  * @version   : ver. 1.0.0
- *
+ * 
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________
- *
- *
+ * ________________________________________________________________________________________________ 
+ *	
+ * 
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.enums
  * @FileName  : ResponseEnum
  *
- * Copyright ©
- * SolutionDots,
+ * Copyright © 
+ * SolutionDots, 
  * All rights reserved.
- *
+ * 
  */
 
 public enum ResponseEnum {
@@ -71,7 +71,20 @@ public enum ResponseEnum {
     ICD_CODE_VERSION_SAVE_ERROR("ICD_CODE_VERSION_ERR_19"),
     ICD_CODE_VERSION_DELETE_SUCCESS("ICD_CODE_VERSION_DEL_SUC_17"),
     ICD_CODE_VERSION_FETCH_SUCCESS("ICD_SUC_16"),
-    ICD_CODE_VERSION_NOT_FOUND("ICD_CODE_VERSION_ERR_15");
+    ICD_CODE_VERSION_NOT_FOUND("ICD_CODE_VERSION_ERR_15"),
+    CLI_DPT_FETCH_SUCCESS("CLI_DPT_SUC_01"),
+    CLI_DPT_FETCH_ERROR("CLI_DPT_ERR_01"),
+    CLI_DPT_DELETE_SUCCESS("CLI_DPT_SUC_02"),
+    CLI_DPT_DELETE_ERROR("CLI_DPT_ERR_02"),
+    CLI_DPT_SAVE_ERROR("CLI_DPT_ERR_02"),
+    CLI_DPT_SAVE_SUCCESS("CLI_DPT_SUC_02"),
+    CLI_DPT_ALREADY_EXIST("CLI_DPT_ERR_04"),
+    CLI_DPT_UPDATE_SUCCESS("CLI_DPT_SUC_02"),
+    CLI_DPT_UPDATE_ERROR("CLI_DPT_ERR_04"),
+    CLI_DPT_NOT_FOUND("CLI_DPT_ERR_03"),
+    BRANCH_FETCH_FAILED("BR_ERR_01"),
+    BRANCH_FETCH_SUCCESS("BR_SUC_01"),
+    BRANCH_NOT_FOUND("BR_ERR_02");
 
     private String value;
 
