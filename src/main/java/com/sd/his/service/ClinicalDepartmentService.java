@@ -100,6 +100,7 @@ public class ClinicalDepartmentService {
     @Transactional(rollbackOn = Throwable.class)
     public ClinicalDepartment saveClinicalDepartment(ClinicalDepartmentCreateRequest createRequest) {
         ClinicalDepartment dpt = new ClinicalDepartment(createRequest);
+
         return departmentRepository.save(dpt);
     }
 
@@ -116,6 +117,6 @@ public class ClinicalDepartmentService {
     }
 
     public ClinicalDepartment findClinicalDepartmentByName(String name) {
-        return departmentRepository.findByName(name);
+        return departmentRepository.findByNameAndDeletedFalse(name);
     }
 }

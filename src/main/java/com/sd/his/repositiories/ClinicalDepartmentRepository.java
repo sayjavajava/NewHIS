@@ -42,7 +42,7 @@ public interface ClinicalDepartmentRepository extends JpaRepository<ClinicalDepa
 
     List<ClinicalDepartment> findByNameContainingAndActiveTrueAndDeletedFalse(String name);
 
-    ClinicalDepartment findByName(String name);
+    ClinicalDepartment findByNameAndDeletedFalse(String name);
 
     ClinicalDepartment findById(long id);
 

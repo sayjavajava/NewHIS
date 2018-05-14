@@ -47,8 +47,8 @@ import java.util.stream.IntStream;
  * All rights reserved.
  *
  */
-@RequestMapping("/setting/department")
 @RestController
+@RequestMapping("/setting/department")
 public class ClinicalDepartmentController {
 
     Logger logger = LoggerFactory.getLogger(ClinicalDepartmentController.class);
@@ -131,7 +131,7 @@ public class ClinicalDepartmentController {
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ApiOperation(httpMethod = "DELETE", value = "DELETE Clinical Department",
@@ -308,7 +308,7 @@ public class ClinicalDepartmentController {
 
         try {
 
-            if (HISCoreUtil.isNull(createRequest.getName()) || createRequest.getBranchId() <= 0) {
+            if (HISCoreUtil.isNull(createRequest.getName())) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -372,8 +372,7 @@ public class ClinicalDepartmentController {
         response.setResponseData(null);
 
         try {
-            if (HISCoreUtil.isNull(updateRequest.getName()) || updateRequest.getBranchId() <= 0
-                    || updateRequest.getId() <= 0) {
+            if (HISCoreUtil.isNull(updateRequest.getName()) || updateRequest.getId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());

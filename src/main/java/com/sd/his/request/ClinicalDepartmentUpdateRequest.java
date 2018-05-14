@@ -27,18 +27,9 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @JsonIgnoreProperties
 public class ClinicalDepartmentUpdateRequest {
 
-    private long branchId;
     private long id;
     private String name;
     private String description;
-
-    public long getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(long branchId) {
-        this.branchId = branchId;
-    }
 
     public long getId() {
         return id;

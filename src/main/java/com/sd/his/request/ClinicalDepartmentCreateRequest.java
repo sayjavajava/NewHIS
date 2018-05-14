@@ -29,7 +29,6 @@ public class ClinicalDepartmentCreateRequest {
 
     private String name;
     private String description;
-    private long branchId;
     private long departmentId;
 
     public String getName() {
@@ -46,14 +45,6 @@ public class ClinicalDepartmentCreateRequest {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public long getBranchId() {
-        return branchId;
-    }
-
-    public void setBranchId(long branchId) {
-        this.branchId = branchId;
     }
 
     public long getDepartmentId() {
