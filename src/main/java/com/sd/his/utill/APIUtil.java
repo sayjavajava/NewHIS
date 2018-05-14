@@ -1,6 +1,9 @@
 package com.sd.his.utill;
 
 import com.sd.his.model.*;
+import com.sd.his.wrapper.*;
+import org.springframework.data.domain.Page;
+import com.sd.his.model.*;
 import com.sd.his.wrapper.AdminWrapper;
 import com.sd.his.wrapper.PermissionWrapper;
 import com.sd.his.wrapper.RoleWrapper;
@@ -93,4 +96,53 @@ public class APIUtil {
         }
         return permissionWrappers;
     }
+
+    public static List<ICDVersionWrapper> buildICDVersionWrapper(List<ICDVersion> iCDVersionList) {
+        List<ICDVersionWrapper> wrapperList = new ArrayList<>();
+        for (ICDVersion iCDVersion : iCDVersionList) {
+            ICDVersionWrapper wrapper = new ICDVersionWrapper(iCDVersion);
+            wrapperList.add(wrapper);
+        }
+        return wrapperList;
+    }
+
+    public static List<ICDCodeWrapper> buildICDCodeWrapper(List<ICDCode> iCDs) {
+        List<ICDCodeWrapper> wrapperList = new ArrayList<>();
+        for (ICDCode icd : iCDs) {
+            ICDCodeWrapper wrapper = new ICDCodeWrapper(icd);
+            wrapperList.add(wrapper);
+        }
+        return wrapperList;
+    }
+    public static List<ICDCodeWrapper> buildICDCodesWrapper(List<ICDCode> iCDs) {
+        List<ICDCodeWrapper> wrapperList = new ArrayList<>();
+        for (ICDCode icd : iCDs) {
+            ICDCodeWrapper wrapper = new ICDCodeWrapper(icd);
+            wrapperList.add(wrapper);
+        }
+        return wrapperList;
+    }
+
+    public static List<ICDCodeVersionWrapper> buildICDCodeVersionWrapper(List<ICDCodeVersion> codeVersions) {
+        List<ICDCodeVersionWrapper> codeVersionWrappers = new ArrayList<>();
+        for (ICDCodeVersion codeVersion : codeVersions) {
+            ICDCodeWrapper codeWrapper = new ICDCodeWrapper(codeVersion.getIcd());
+            ICDVersionWrapper versionWrapper = new ICDVersionWrapper(codeVersion.getVersion());
+            ICDCodeVersionWrapper codeVersionWrapper = new ICDCodeVersionWrapper(codeVersion, codeWrapper, versionWrapper);
+            codeVersionWrappers.add(codeVersionWrapper);
+        }
+        return codeVersionWrappers;
+    }
+
+    public static List<ICDCodeWrapper> buildAssociatedICDCodesWrapper(List<ICDCodeVersion> iCDCVsByVId) {
+        List<ICDCodeWrapper> iCDCWrappers = new ArrayList<>();
+        List<ICDCodeVersionWrapper> codeVersionWrappers = new ArrayList<>();
+        for (ICDCodeVersion icdCodeVersion : iCDCVsByVId) {
+            ICDCodeWrapper icdCodeWrapper = new ICDCodeWrapper(icdCodeVersion.getIcd());
+            icdCodeWrapper.setDescriptionCodeVersion(icdCodeVersion.getDescription());
+            iCDCWrappers.add(icdCodeWrapper);
+        }
+        return iCDCWrappers;
+    }
+
 }
