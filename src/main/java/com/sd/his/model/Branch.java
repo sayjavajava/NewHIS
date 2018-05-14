@@ -77,6 +77,10 @@ public class Branch {
     @OneToMany(targetEntity = BranchServices.class, mappedBy = "branch", fetch = FetchType.LAZY)
     private List<BranchServices> services;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = BranchMedicalService.class, mappedBy = "branch", fetch = FetchType.LAZY)
+    private List<BranchMedicalService> medicalServices;
+
     public Branch() {
     }
 
@@ -196,5 +200,13 @@ public class Branch {
 
     public void setServices(List<BranchServices> services) {
         this.services = services;
+    }
+
+    public List<BranchMedicalService> getMedicalServices() {
+        return medicalServices;
+    }
+
+    public void setMedicalServices(List<BranchMedicalService> medicalServices) {
+        this.medicalServices = medicalServices;
     }
 }

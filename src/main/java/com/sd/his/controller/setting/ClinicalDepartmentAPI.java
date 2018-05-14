@@ -40,7 +40,7 @@ import java.util.stream.IntStream;
  *
  * @Project   : HIS
  * @Package   : com.sd.his.controller.setting
- * @FileName  : ClinicalDepartmentController
+ * @FileName  : ClinicalDepartmentAPI
  *
  * Copyright ©
  * SolutionDots,
@@ -49,9 +49,9 @@ import java.util.stream.IntStream;
  */
 @RestController
 @RequestMapping("/setting/department")
-public class ClinicalDepartmentController {
+public class ClinicalDepartmentAPI {
 
-    Logger logger = LoggerFactory.getLogger(ClinicalDepartmentController.class);
+    Logger logger = LoggerFactory.getLogger(ClinicalDepartmentAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @Autowired

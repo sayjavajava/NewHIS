@@ -2,14 +2,13 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sd.his.request.ClinicalDepartmentCreateRequest;
 
 import javax.persistence.*;
 import java.util.List;
 
 /*
  * @author    : Irfan Nasim
- * @Date      : 24-Apr-18
+ * @Date      : 14-May-18
  * @version   : ver. 1.0.0
  * 
  * ________________________________________________________________________________________________
@@ -22,7 +21,7 @@ import java.util.List;
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
- * @FileName  : ClinicalDepartment
+ * @FileName  : Tax
  *
  * Copyright © 
  * SolutionDots, 
@@ -30,9 +29,9 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name = "CLINICAL_DEPARTMENT")
+@Table(name = "TAX")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ClinicalDepartment {
+public class Tax {
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
@@ -45,7 +44,16 @@ public class ClinicalDepartment {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
+    @Column(name = "RATE")
+    private Double rate;
+
+    @Column(name = "FROM_DATE")
+    private Long fromDate;
+
+    @Column(name = "TO_DATE")
+    private Long toDate;
+
+    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private boolean active;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
@@ -58,31 +66,18 @@ public class ClinicalDepartment {
     private long createdOn;
 
     @JsonIgnore
-    @OneToMany(targetEntity = BranchClinicalDepartment.class, mappedBy = "clinicalDpt", fetch = FetchType.LAZY)
-    private List<BranchClinicalDepartment> branches;
+    @OneToMany(targetEntity = MedicalService.class, mappedBy = "tax", fetch = FetchType.LAZY)
+    private List<MedicalService> medicalServices;
 
-    @JsonIgnore
-    @OneToMany(targetEntity = ClinicalDepartmentMedicalService.class, mappedBy = "clinicalDpt", fetch = FetchType.LAZY)
-    private List<ClinicalDepartmentMedicalService> medicalServices;
-
-    public ClinicalDepartment() {
-    }
-
-    public ClinicalDepartment(ClinicalDepartmentCreateRequest createRequest) {
-        this.id = createRequest.getDepartmentId();
-        this.name = createRequest.getName();
-        this.description = createRequest.getDescription();
-        this.active = true;
-        this.deleted = false;
-        this.createdOn = System.currentTimeMillis();
-        this.updatedOn = System.currentTimeMillis();
+    public Tax() {
     }
 
     @Override
     public String toString() {
-        return "ClinicalDepartment{" +
+        return "Tax{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", rate=" + rate +
                 ", active=" + active +
                 ", deleted=" + deleted +
                 '}';
@@ -110,6 +105,30 @@ public class ClinicalDepartment {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Double getRate() {
+        return rate;
+    }
+
+    public void setRate(Double rate) {
+        this.rate = rate;
+    }
+
+    public Long getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(Long fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Long getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(Long toDate) {
+        this.toDate = toDate;
     }
 
     public boolean isActive() {
@@ -144,19 +163,11 @@ public class ClinicalDepartment {
         this.createdOn = createdOn;
     }
 
-    public List<BranchClinicalDepartment> getBranches() {
-        return branches;
-    }
-
-    public void setBranches(List<BranchClinicalDepartment> branches) {
-        this.branches = branches;
-    }
-
-    public List<ClinicalDepartmentMedicalService> getMedicalServices() {
+    public List<MedicalService> getMedicalServices() {
         return medicalServices;
     }
 
-    public void setMedicalServices(List<ClinicalDepartmentMedicalService> medicalServices) {
+    public void setMedicalServices(List<MedicalService> medicalServices) {
         this.medicalServices = medicalServices;
     }
 }

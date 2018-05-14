@@ -36,7 +36,7 @@ import java.util.ResourceBundle;
  *
  * @Project   : HIS
  * @Package   : com.sd.his.controller.setting
- * @FileName  : ${FILE_NAME}
+ * @FileName  : BranchAPI
  *
  * Copyright © 
  * SolutionDots, 
@@ -45,9 +45,9 @@ import java.util.ResourceBundle;
  */
 @RestController
 @RequestMapping("/setting/branch")
-public class BranchController {
+public class BranchAPI {
 
-    Logger logger = LoggerFactory.getLogger(BranchController.class);
+    Logger logger = LoggerFactory.getLogger(BranchAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @Autowired
