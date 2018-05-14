@@ -47,6 +47,11 @@ public class RolePermission {
     public RolePermission() {
     }
 
+    public RolePermission(Role role, Permission permission) {
+        this.role = role;
+        this.permission = permission;
+    }
+
     public Long getId() {
         return id;
     }

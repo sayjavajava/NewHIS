@@ -1,5 +1,7 @@
 package com.sd.his.model;
 
+import com.sd.his.request.RoleAndPermissionCreateRequest;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -37,6 +39,14 @@ public class Permission {
     private List<RolePermission> roles;
 
     public Permission() {
+    }
+
+    public Permission(RoleAndPermissionCreateRequest permission) {
+        this.name = permission.getName();
+        this.description = permission.getDescription();
+        this.active = permission.isActive();
+        this.createdOn = permission.getCreatedOn();
+        this.updatedOn=permission.getUpdatedOn();
     }
 
     public Long getId() {

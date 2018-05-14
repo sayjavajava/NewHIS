@@ -1,5 +1,6 @@
 package com.sd.his.wrapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.model.Permission;
 
 /*
@@ -24,6 +25,7 @@ import com.sd.his.model.Permission;
  * All rights reserved.
  * 
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PermissionWrapper {
     long id;
     String name;

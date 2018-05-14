@@ -26,22 +26,22 @@ import java.util.List;
  */
 public class AssignAuthoritiesRequestWrapper {
 
-    String role;
-    List<Integer> permissionsIds;
+    private List<Long> permissionIds;
+    private String selectedRole;
 
-    public String getRole() {
-        return role;
+    public List<Long> getPermissionIds() {
+        return permissionIds;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setPermissionIds(List<Long> permissionIds) {
+        this.permissionIds = permissionIds;
     }
 
-    public List<Integer> getPermissionsIds() {
-        return permissionsIds;
+    public String getSelectedRole() {
+        return selectedRole;
     }
 
-    public void setPermissionsIds(List<Integer> permissionsIds) {
-        this.permissionsIds = permissionsIds;
+    public void setSelectedRole(String selectedRole) {
+        this.selectedRole = selectedRole;
     }
 }

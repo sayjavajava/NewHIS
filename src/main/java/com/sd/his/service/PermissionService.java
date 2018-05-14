@@ -3,13 +3,14 @@ package com.sd.his.service;
 import com.sd.his.model.Permission;
 import com.sd.his.model.Role;
 import com.sd.his.repositiories.PermissionRepository;
-import com.sd.his.repositiories.RoleRepository;
+import com.sd.his.request.RoleAndPermissionCreateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * @author    : Irfan Nasim
@@ -45,5 +46,17 @@ public class PermissionService {
         return permissionRepository.findAllByActiveTrueAndDeletedFalse();
     }
 
+    public Permission getPermissionByName(String name) {
+        return permissionRepository.findByName(name);
+    }
+
+    public Permission save(RoleAndPermissionCreateRequest permissionRequest) {
+        Permission permission = new Permission(permissionRequest);
+        return permissionRepository.save(permission);
+    }
+
+    public List<Permission> getPermissionByRole(long roleId){
+         return permissionRepository.findByRoles(roleId);
+    }
 
 }

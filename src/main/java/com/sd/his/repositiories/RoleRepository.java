@@ -11,7 +11,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 
     List<Role> findById(Integer id);
 
-    List<Role> findByName(String name);
+    Role findByName(String name);
 
     List<Role> findAllByActiveTrueAndDeletedFalse();
 

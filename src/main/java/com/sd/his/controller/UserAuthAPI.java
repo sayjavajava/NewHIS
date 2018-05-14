@@ -4,17 +4,15 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Permission;
 import com.sd.his.model.Role;
 import com.sd.his.model.User;
-import com.sd.his.wrapper.AdminWrapper;
-import com.sd.his.wrapper.PermissionWrapper;
-import com.sd.his.wrapper.RoleWrapper;
 import com.sd.his.request.AdminLoginRequestWrapper;
-import com.sd.his.request.AssignAuthoritiesRequestWrapper;
 import com.sd.his.response.GenericAPIResponse;
 import com.sd.his.service.HISUserService;
 import com.sd.his.service.PermissionService;
 import com.sd.his.service.RoleService;
 import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.PermissionWrapper;
+import com.sd.his.wrapper.RoleWrapper;
 import com.sd.his.wrapper.UserWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -240,53 +238,4 @@ public class UserAuthAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    /**
-     * @return Response with Save Authorities.
-     * @author Irfan Nasim
-     * @description API will return response Authorities assigned or not.
-     * @since 20-04-2018
-     */
-    @ApiOperation(httpMethod = "POST", value = "Assigned Authorities to Roles",
-            notes = "This API will return Response Authorities are assigned or not",
-            produces = "application/json", nickname = "Assignment of Authorities to Roles",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Authorities Assinged to roles successfully", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/assignAuthorities", method = RequestMethod.GET)
-    public ResponseEntity<?> assignAuthoritiesToRoles(HttpServletRequest request,
-                                                      @RequestBody AssignAuthoritiesRequestWrapper authRequest) {
-
-        logger.info("Assign Authorities to Roles api called...");
-
-        GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("role.permission.assign.error"));
-        response.setResponseCode(ResponseEnum.ROLE_PERMISSION_ASSIGN_ERROR.getValue());
-        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-        response.setResponseData(null);
-
-        try {
-            if ((!HISCoreUtil.isValidObject(authRequest.getRole())) &&
-                    (HISCoreUtil.isListEmpty(authRequest.getPermissionsIds()))) {
-                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.info("assignAuthoritiesToRoles insufficient params");
-
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-            //TODO implement the feature
-        } catch (Exception ex) {
-            logger.error("Assign Authorities to Roles api failed.", ex.fillInStackTrace());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 }
