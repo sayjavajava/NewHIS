@@ -74,10 +74,6 @@ public class Branch {
     private List<BranchClinicalDepartment> clinicalDepartments;
 
     @JsonIgnore
-    @OneToMany(targetEntity = BranchServices.class, mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<BranchServices> services;
-
-    @JsonIgnore
     @OneToMany(targetEntity = BranchMedicalService.class, mappedBy = "branch", fetch = FetchType.LAZY)
     private List<BranchMedicalService> medicalServices;
 
@@ -192,14 +188,6 @@ public class Branch {
 
     public void setClinicalDepartments(List<BranchClinicalDepartment> clinicalDepartments) {
         this.clinicalDepartments = clinicalDepartments;
-    }
-
-    public List<BranchServices> getServices() {
-        return services;
-    }
-
-    public void setServices(List<BranchServices> services) {
-        this.services = services;
     }
 
     public List<BranchMedicalService> getMedicalServices() {

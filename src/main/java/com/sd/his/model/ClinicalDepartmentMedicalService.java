@@ -47,6 +47,11 @@ public class ClinicalDepartmentMedicalService {
     public ClinicalDepartmentMedicalService() {
     }
 
+    public ClinicalDepartmentMedicalService(ClinicalDepartment dpt, MedicalService medicalService) {
+        this.clinicalDpt = dpt;
+        this.medicalService = medicalService;
+    }
+
     public Long getId() {
         return id;
     }

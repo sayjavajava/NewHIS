@@ -501,7 +501,6 @@ public class ICDAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     @ApiOperation(httpMethod = "DELETE", value = "Delete ICDCode",
             notes = "This method will return Deleted Status of ICDCode",
             produces = "application/json", nickname = "Delete ICDCode ",

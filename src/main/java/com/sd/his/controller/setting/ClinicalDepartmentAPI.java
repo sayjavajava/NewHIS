@@ -57,6 +57,57 @@ public class ClinicalDepartmentAPI {
     @Autowired
     private ClinicalDepartmentService departmentService;
 
+    @ApiOperation(httpMethod = "GET", value = "All Clinical Departments",
+            notes = "This method will return All Clinical Department",
+            produces = "application/json", nickname = "All Clinical Department",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All Clinical Departments fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllClinicalDepartments(HttpServletRequest request) {
+
+        logger.error("getAllClinicalDepartments API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("cli.dpts.fetch.error"));
+        response.setResponseCode(ResponseEnum.CLI_DPT_FETCH_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("getAllClinicalDepartments - dpts fetching from DB");
+            List<ClinicalDepartmentWrapper> dpts = departmentService.getAllActiveClinicalDepartments();
+            logger.error("getAllClinicalDepartments - dpts fetched successfully");
+
+            if (HISCoreUtil.isListEmpty(dpts)) {
+                response.setResponseMessage(messageBundle.getString("cli.dpts.not.found.error"));
+                response.setResponseCode(ResponseEnum.CLI_DPT_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getAllClinicalDepartments API - dpts not found");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            response.setResponseMessage(messageBundle.getString("cli.dpts.fetch.success"));
+            response.setResponseCode(ResponseEnum.CLI_DPT_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(dpts);
+
+            logger.error("getAllClinicalDepartments API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllClinicalDepartments exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ApiOperation(httpMethod = "GET", value = "Paginated Clinical Departments",
             notes = "This method will return Paginated Clinical Department",
             produces = "application/json", nickname = "Paginated Clinical Department",
