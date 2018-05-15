@@ -1,37 +1,39 @@
 package com.sd.his.request;
 
 import com.sd.his.model.Tax;
+import com.sd.his.utill.DateUtil;
+import com.sd.his.utill.HISConstants;
 
 /*
  * @author    : irfan
  * @Date      : 14-May-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.request
  * @FileName  : SaveTaxRequest
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 public class SaveTaxRequest {
 
-    private Long id;
+    private long id;
     private String name;
     private String description;
-    private Double rate;
-    private Long fromDate;
-    private Long toDate;
+    private double rate;
+    private String fromDate;
+    private String toDate;
     private boolean active;
 
     public SaveTaxRequest() {
@@ -43,17 +45,16 @@ public class SaveTaxRequest {
         this.name = tax.getName();
         this.description = tax.getDescription();
         this.rate = tax.getRate();
-        this.fromDate = tax.getFromDate();
-        this.toDate = tax.getToDate();
+        this.fromDate = DateUtil.getDateFromMillis(tax.getFromDate(), HISConstants.DATE_FORMATE_THREE);
+        this.toDate = DateUtil.getDateFromMillis(tax.getToDate(), HISConstants.DATE_FORMATE_THREE);
         this.active = tax.isActive();
-
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -73,27 +74,27 @@ public class SaveTaxRequest {
         this.description = description;
     }
 
-    public Double getRate() {
+    public double getRate() {
         return rate;
     }
 
-    public void setRate(Double rate) {
+    public void setRate(double rate) {
         this.rate = rate;
     }
 
-    public Long getFromDate() {
+    public String getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Long fromDate) {
+    public void setFromDate(String fromDate) {
         this.fromDate = fromDate;
     }
 
-    public Long getToDate() {
+    public String getToDate() {
         return toDate;
     }
 
-    public void setToDate(Long toDate) {
+    public void setToDate(String toDate) {
         this.toDate = toDate;
     }
 
@@ -104,5 +105,4 @@ public class SaveTaxRequest {
     public void setActive(boolean active) {
         this.active = active;
     }
-
 }

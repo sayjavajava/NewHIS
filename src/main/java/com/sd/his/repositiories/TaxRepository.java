@@ -36,4 +36,12 @@ public interface TaxRepository extends JpaRepository<Tax, Long> {
 
     List<Tax> findAllByDeletedFalse();
 
+    List<Tax> findAllByNameAndIdNotAndDeletedFalse(String name,long id);
+
+    Tax findByNameAndDeletedFalse(String name);
+    Tax findById(long id);
+
+    List<Tax> findAllByNameContainingAndDeletedFalse(String name, Pageable pageable);
+    List<Tax> findAllByNameContainingAndDeletedFalse(String name);
+
 }

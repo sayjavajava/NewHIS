@@ -1,6 +1,7 @@
 package com.sd.his.utill;
 
 import com.sd.his.model.*;
+import com.sd.his.request.SaveTaxRequest;
 import com.sd.his.wrapper.*;
 import org.springframework.data.domain.Page;
 import com.sd.his.model.*;
@@ -145,4 +146,20 @@ public class APIUtil {
         return iCDCWrappers;
     }
 
+    public static void buildTax(Tax dbTax,SaveTaxRequest requestTax){
+        dbTax.setUpdatedOn(System.currentTimeMillis());
+        dbTax.setName(requestTax.getName());
+        dbTax.setDescription(requestTax.getDescription());
+        dbTax.setDeleted(false);
+        dbTax.setActive(requestTax.isActive());
+        dbTax.setFromDate(DateUtil.getMillisFromStringDate(requestTax.getFromDate(), HISConstants.DATE_FORMATE_THREE));
+        dbTax.setToDate(DateUtil.getMillisFromStringDate(requestTax.getToDate(), HISConstants.DATE_FORMATE_THREE));
+    }
+
+    public static void buildTaxWrapper(List<SaveTaxRequest> taxes, List<Tax> dbTaxes) {
+        for (Tax tax:dbTaxes){
+            SaveTaxRequest taxWrapper = new SaveTaxRequest(tax);
+            taxes.add(taxWrapper);
+        }
+    }
 }

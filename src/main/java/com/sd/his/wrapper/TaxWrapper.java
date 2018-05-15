@@ -1,37 +1,40 @@
 package com.sd.his.wrapper;
 
 import com.sd.his.model.Tax;
+import com.sd.his.utill.DateUtil;
+import com.sd.his.utill.HISConstants;
+import com.sun.deploy.association.utility.AppConstants;
 
 /*
  * @author    : irfan
  * @Date      : 14-May-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.wrapper
  * @FileName  : TaxWrapper
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 public class TaxWrapper {
 
-    private Long id;
+    private long id;
     private String name;
     private String description;
-    private Double rate;
-    private Long fromDate;
-    private Long toDate;
+    private double rate;
+    private String fromDate;
+    private String toDate;
     private boolean active;
     private boolean deleted;
     private long updatedOn;
@@ -46,8 +49,8 @@ public class TaxWrapper {
         this.name = tax.getName();
         this.description = tax.getDescription();
         this.rate = tax.getRate();
-        this.fromDate = tax.getFromDate();
-        this.toDate = tax.getToDate();
+        this.fromDate = DateUtil.getDateFromMillis(tax.getFromDate(), HISConstants.DATE_FORMATE_THREE);
+        this.toDate = DateUtil.getDateFromMillis(tax.getToDate(), HISConstants.DATE_FORMATE_THREE);
         this.active = tax.isActive();
         this.deleted = tax.isDeleted();
         this.updatedOn = tax.getUpdatedOn();
@@ -78,27 +81,32 @@ public class TaxWrapper {
         this.description = description;
     }
 
-    public Double getRate() {
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public double getRate() {
         return rate;
     }
 
-    public void setRate(Double rate) {
+    public void setRate(double rate) {
         this.rate = rate;
     }
 
-    public Long getFromDate() {
+    public String getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Long fromDate) {
+    public void setFromDate(String fromDate) {
         this.fromDate = fromDate;
     }
 
-    public Long getToDate() {
+    public String getToDate() {
         return toDate;
     }
 
-    public void setToDate(Long toDate) {
+    public void setToDate(String toDate) {
         this.toDate = toDate;
     }
 
