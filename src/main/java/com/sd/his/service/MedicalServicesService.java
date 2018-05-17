@@ -4,6 +4,7 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.*;
 import com.sd.his.repositiories.*;
 import com.sd.his.request.MedicalServiceRequest;
+import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.MedicalServiceWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +63,12 @@ public class MedicalServicesService {
         return medicalServicesRepository.findAllMedicalServiceWrappers().size();
     }
 
-    public MedicalService findByTitleAndStatusTrueAndDeletedFalse(String title) {
-        return medicalServicesRepository.findByTitleAndStatusTrueAndDeletedFalse(title);
+    public MedicalService findByTitleAndDeletedFalse(String title) {
+        return medicalServicesRepository.findByTitleAndDeletedFalse(title);
+    }
+
+    public MedicalService findByTitleAndDeletedFalseAgainstId(long id, String title) {
+        return medicalServicesRepository.findByIdNotAndTitleAndDeletedFalse(id, title);
     }
 
     public MedicalServiceWrapper findByTitleAndBranchAndDptDeletedFalse(String title, long branchId, long dptId) {
@@ -87,9 +92,37 @@ public class MedicalServicesService {
             clinicalDepartmentMedicalServiceRepository.save(clinicalDepartmentMedicalService);
 
             return medicalService;
-        } else {
-            return null;
         }
+        return null;
+    }
+
+    @Transactional(rollbackOn = Throwable.class)
+    public MedicalService updateMedicalService(MedicalServiceRequest createRequest) {
+        Branch branch = branchRepository.findOne(createRequest.getBranchId());
+        ClinicalDepartment dpt = clinicalDepartmentRepository.findOne(createRequest.getDptId());
+        Tax tax = taxRepository.findOne(createRequest.getTaxId());
+
+        MedicalService ms = medicalServicesRepository.findOne(createRequest.getId());
+
+        if (HISCoreUtil.isValidObject(branch) && HISCoreUtil.isValidObject(dpt) && HISCoreUtil.isValidObject(tax) && HISCoreUtil.isValidObject(ms)) {
+            APIUtil.buildMedicalService(ms, createRequest);
+
+            ms.setTax(tax);
+            medicalServicesRepository.save(ms);
+
+            BranchMedicalService branchMedicalService = branchMedicalServiceRepository.findByMedicalService_Id(ms.getId());
+            branchMedicalService.setBranch(branch);
+            branchMedicalService.setMedicalService(ms);
+            branchMedicalServiceRepository.save(branchMedicalService);
+
+            ClinicalDepartmentMedicalService clinicalDepartmentMedicalService = clinicalDepartmentMedicalServiceRepository.findByMedicalService_Id(ms.getId());
+            clinicalDepartmentMedicalService.setClinicalDpt(dpt);
+            clinicalDepartmentMedicalService.setMedicalService(ms);
+            clinicalDepartmentMedicalServiceRepository.save(clinicalDepartmentMedicalService);
+
+            return ms;
+        }
+        return null;
     }
 
     @Transactional(rollbackOn = Throwable.class)
@@ -109,5 +142,10 @@ public class MedicalServicesService {
         } else {
             return ResponseEnum.NOT_FOUND.getValue();
         }
+    }
+
+    @Transactional(rollbackOn = Throwable.class)
+    public MedicalServiceWrapper findOneByIdAndDeletedFalse(Long msId) {
+        return medicalServicesRepository.findOneByIdAndDeletedFalse(msId);
     }
 }

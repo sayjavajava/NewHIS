@@ -33,5 +33,5 @@ public interface ClinicalDepartmentMedicalServiceRepository extends JpaRepositor
 
     List<ClinicalDepartmentMedicalService> findAllByClinicalDpt_IdAndMedicalService_Id(long dptId, long msId);
 
-
+    ClinicalDepartmentMedicalService findByMedicalService_Id(long id);
 }

@@ -28,23 +28,23 @@ import java.util.stream.IntStream;
  * @author    : Irfan Nasim
  * @Date      : 15-May-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.controller.setting
  * @FileName  : ${FILE_NAME}
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 @RestController
 @RequestMapping("/setting/medicalService")
@@ -167,7 +167,7 @@ public class MedicalServiceAPI {
                 logger.error("saveMedicalService API - insufficient params.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            MedicalService alreadyMedicalService = medicalServicesService.findByTitleAndStatusTrueAndDeletedFalse(createRequest.getTitle());
+            MedicalService alreadyMedicalService = medicalServicesService.findByTitleAndDeletedFalse(createRequest.getTitle());
             if (HISCoreUtil.isValidObject(alreadyMedicalService)) {
                 response.setResponseMessage(messageBundle.getString("med.service.already.exist"));
                 response.setResponseCode(ResponseEnum.MED_SERVICE_ALREADY_EXIST.getValue());
@@ -249,5 +249,121 @@ public class MedicalServiceAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @ApiOperation(httpMethod = "GET", value = "Get Medical Service By Id",
+            notes = "This method will return Paginated Medical Services",
+            produces = "application/json", nickname = "Medical Service by Id",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Medical Service by Id fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getMedicalServiceById(HttpServletRequest request,
+                                                   @PathVariable("id") long id) {
+
+        logger.error("getMedicalServiceById API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("med.service.fetch.error"));
+        response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (id <= 0) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getMedicalServiceById API - insufficient params.");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            logger.error("getMedicalServiceById - Medical Service fetching from DB");
+            MedicalServiceWrapper mss = medicalServicesService.findOneByIdAndDeletedFalse(id);
+            logger.error("getMedicalServiceById - Medical Service fetched successfully");
+
+            if (HISCoreUtil.isValidObject(mss)) {
+                response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
+                response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(mss);
+
+                logger.error("getMedicalServiceById API successfully executed.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            logger.error("getMedicalServiceById exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "update Medical Service ",
+            notes = "This method will Update the Medical Service",
+            produces = "application/json", nickname = "Update Medical Service",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Medical Service Updated successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateMedicalService(HttpServletRequest request,
+                                                @RequestBody MedicalServiceRequest createRequest) {
+        logger.info("updateMedicalService API initiated..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("med.service.update.error"));
+        response.setResponseCode(ResponseEnum.MED_SERVICE_SAVE_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (HISCoreUtil.isNull(createRequest.getTitle()) ||
+                    createRequest.getId() <=0 ||
+                    createRequest.getBranchId() <= 0 ||
+                    createRequest.getDptId() <= 0 ||
+                    createRequest.getFee() <= -1) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                logger.error("updateMedicalService API - insufficient params.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (HISCoreUtil.isValidObject(medicalServicesService.findByTitleAndDeletedFalseAgainstId(createRequest.getId()  ,createRequest.getTitle()))) {
+                response.setResponseMessage(messageBundle.getString("med.service.already.exist"));
+                response.setResponseCode(ResponseEnum.MED_SERVICE_ALREADY_EXIST.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+
+                logger.error("updateMedicalService API - Already Exist.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (HISCoreUtil.isValidObject(medicalServicesService.updateMedicalService(createRequest))) {
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("med.service.save.success"));
+                response.setResponseCode(ResponseEnum.MED_SERVICE_SAVE_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+
+                logger.error("updateMedicalService API - Successfully saved.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("updateMedicalService API - updating failed.", e.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

@@ -4,23 +4,23 @@ package com.sd.his.wrapper;
  * @author    : Irfan Nasim
  * @Date      : 15-May-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.wrapper
  * @FileName  : MedicalServiceWrapper
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 public class MedicalServiceWrapper {
 
@@ -35,12 +35,14 @@ public class MedicalServiceWrapper {
     private String dptName;
     private long taxId;
     private double taxRate;
+    private String description;
+    private long duration;
 
     public MedicalServiceWrapper() {
     }
 
     public MedicalServiceWrapper(long id, String title, double fee, String cost, boolean status, long branchId,
-                                 String branchName, long dptId, String dptName, long taxId, double taxRate) {
+                                 String branchName, long dptId, String dptName, long taxId, double taxRate, String description, long duration) {
         this.id = id;
         this.title = title;
         this.fee = fee;
@@ -52,6 +54,8 @@ public class MedicalServiceWrapper {
         this.dptName = dptName;
         this.taxId = taxId;
         this.taxRate = taxRate;
+        this.description = description;
+        this.duration = duration;
     }
 
     public long getId() {
@@ -140,5 +144,21 @@ public class MedicalServiceWrapper {
 
     public void setTaxRate(double taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 }

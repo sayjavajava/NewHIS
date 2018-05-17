@@ -31,4 +31,6 @@ public interface BranchMedicalServiceRepository extends JpaRepository<BranchMedi
 
     List<BranchMedicalService> findAllByBranch_IdAndMedicalService_Id(long branchId, long msId);
 
+
+    BranchMedicalService findByMedicalService_Id(long aLong);
 }

@@ -35,18 +35,26 @@ import java.util.List;
 @Repository
 public interface MedicalServicesRepository extends JpaRepository<MedicalService, Long> {
 
-    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate) " +
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate, ms.description, ms.duration) " +
             "FROM MedicalService ms JOIN ms.departments cdms JOIN cdms.clinicalDpt cd JOIN ms.branches bms JOIN bms.branch b JOIN ms.tax t ")
     List<MedicalServiceWrapper> findAllPaginated(Pageable pageable);
 
-    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate) " +
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate, ms.description, ms.duration) " +
             "FROM MedicalService ms JOIN ms.departments cdms JOIN cdms.clinicalDpt cd JOIN ms.branches bms JOIN bms.branch b JOIN ms.tax t " +
             "WHERE ms.title = :title AND b.id = :branchId AND cd.id = :dptId AND ms.status = TRUE")
     MedicalServiceWrapper findOneByTitleAndDptAndBranch(@Param("title") String title, @Param("branchId") long branchId, @Param("dptId") long dptId);
 
-    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate) " +
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate, ms.description, ms.duration) " +
             "FROM MedicalService ms JOIN ms.departments cdms JOIN cdms.clinicalDpt cd JOIN ms.branches bms JOIN bms.branch b JOIN ms.tax t ")
     List<MedicalServiceWrapper> findAllMedicalServiceWrappers();
 
-    MedicalService findByTitleAndStatusTrueAndDeletedFalse(String title);
+    MedicalService findByTitleAndDeletedFalse(String title);
+
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate, ms.description, ms.duration) " +
+            "FROM MedicalService ms JOIN ms.departments cdms JOIN cdms.clinicalDpt cd JOIN ms.branches bms JOIN bms.branch b JOIN ms.tax t " +
+            "WHERE ms.id = :msId AND ms.deleted = FALSE")
+    MedicalServiceWrapper findOneByIdAndDeletedFalse(@Param("msId") Long msId);
+
+    MedicalService findByIdNotAndTitleAndDeletedFalse(long id,String title);
+
 }
