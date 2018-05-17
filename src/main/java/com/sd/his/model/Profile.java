@@ -1,8 +1,12 @@
 package com.sd.his.model;
 
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 @Entity
 @Table(name = "PROFILE")
@@ -12,7 +16,7 @@ public class Profile implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
-    private long id;
+    private Long id;
 
     @Column(name = "FIRST_NAME")
     private String firstName;
@@ -20,14 +24,52 @@ public class Profile implements Serializable {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-    @Column(name = "PHONE_NUMBER")
-    private String phoneNumber;
+    @Column(name = "HOME_PHONE")
+    private String homePhone;
+
+    @Column(name = "CELL_PHONE")
+    private String cellPhone;
+
+    @Column(name = "ACCOUNT_EXPIRY")
+    private String accountExpiry;
+
+
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
-    private Boolean isActive;
+    private Boolean active;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private Boolean isDeleted;
+    private Boolean deleted;
+
+    @Column(name = "IS_SEND_BILLING_REPORT", columnDefinition = "boolean default false")
+    private Boolean sendBillingReport;
+
+    @Column(name = "IS_USE_RECEPT_DASHBOARD", columnDefinition = "boolean default false")
+    private Boolean useReceptDashBoard;
+
+    @Column(name = "IS_OTHER_DOCTOR_DASHBOARD", columnDefinition = "boolean default false")
+    private Boolean otherDoctorDashBoard;
+
+    @Column(name = "IS_MANAGE_PATIENT_RECORDS", columnDefinition = "boolean default false")
+    private Boolean managePatientRecords;
+
+    @Column(name = "IS_MANAGE_PATIENT_INVOICES", columnDefinition = "boolean default false")
+    private Boolean managePatientInvoices;
+
+    @Column(name = "CHECK_UP_INTERVAL")
+    private Long checkUpInterval;
+
+/*   @ElementCollection
+    @Column(name = "WORKING_DAYS")
+    private Set<String> workingDays ;*/
+
+    @ElementCollection
+    @Column(name = "WORKING_DAYS")
+    private List<String> workingDays =new ArrayList<>();
+
+    @Column(name = "ALLOW_DISCOUNT")
+    private String allowDiscount;
+
 
     @Column(name = "GENDER")
     private String gender;
@@ -57,23 +99,31 @@ public class Profile implements Serializable {
     private String type;
 
     @Column(name = "CREATED_ON")
-    private long createdOn;
+    private Long createdOn;
 
     @Column(name = "UPDATED_ON")
-    private long updatedOn;
+    private Long updatedOn;
 
 
     public Profile() {
     }
 
-    public Profile(String firstName, String lastName, String phoneNumber, Boolean isActive, Boolean isDeleted,
-                   String gender, String profileImg, String address, String city, String state, String country,
-                   String status, Date dob, String type, long createdOn, long updatedOn) {
+    public Profile(String firstName, String lastName, String homePhone, String cellPhone, String accountExpiry, Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard, Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices, Long checkUpInterval, List<String> workingDays, String allowDiscount, String gender, String profileImg, String address, String city, String state, String country, String status, Date dob, String type, Long createdOn, Long updatedOn) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.isActive = isActive;
-        this.isDeleted = isDeleted;
+        this.homePhone = homePhone;
+        this.cellPhone = cellPhone;
+        this.accountExpiry = accountExpiry;
+        this.active = active;
+        this.deleted = deleted;
+        this.sendBillingReport = sendBillingReport;
+        this.useReceptDashBoard = useReceptDashBoard;
+        this.otherDoctorDashBoard = otherDoctorDashBoard;
+        this.managePatientRecords = managePatientRecords;
+        this.managePatientInvoices = managePatientInvoices;
+        this.checkUpInterval = checkUpInterval;
+        this.workingDays = workingDays;
+        this.allowDiscount = allowDiscount;
         this.gender = gender;
         this.profileImg = profileImg;
         this.address = address;
@@ -87,11 +137,11 @@ public class Profile implements Serializable {
         this.updatedOn = updatedOn;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -111,28 +161,108 @@ public class Profile implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getHomePhone() {
+        return homePhone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setHomePhone(String homePhone) {
+        this.homePhone = homePhone;
+    }
+
+    public String getCellPhone() {
+        return cellPhone;
+    }
+
+    public void setCellPhone(String cellPhone) {
+        this.cellPhone = cellPhone;
+    }
+
+    public String getAccountExpiry() {
+        return accountExpiry;
+    }
+
+    public void setAccountExpiry(String accountExpiry) {
+        this.accountExpiry = accountExpiry;
     }
 
     public Boolean getActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(Boolean active) {
-        isActive = active;
+        this.active = active;
     }
 
     public Boolean getDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
+    }
+
+    public Boolean getSendBillingReport() {
+        return sendBillingReport;
+    }
+
+    public void setSendBillingReport(Boolean sendBillingReport) {
+        this.sendBillingReport = sendBillingReport;
+    }
+
+    public Boolean getUseReceptDashBoard() {
+        return useReceptDashBoard;
+    }
+
+    public void setUseReceptDashBoard(Boolean useReceptDashBoard) {
+        this.useReceptDashBoard = useReceptDashBoard;
+    }
+
+    public Boolean getOtherDoctorDashBoard() {
+        return otherDoctorDashBoard;
+    }
+
+    public void setOtherDoctorDashBoard(Boolean otherDoctorDashBoard) {
+        this.otherDoctorDashBoard = otherDoctorDashBoard;
+    }
+
+    public Boolean getManagePatientRecords() {
+        return managePatientRecords;
+    }
+
+    public void setManagePatientRecords(Boolean managePatientRecords) {
+        this.managePatientRecords = managePatientRecords;
+    }
+
+    public Boolean getManagePatientInvoices() {
+        return managePatientInvoices;
+    }
+
+    public void setManagePatientInvoices(Boolean managePatientInvoices) {
+        this.managePatientInvoices = managePatientInvoices;
+    }
+
+    public Long getCheckUpInterval() {
+        return checkUpInterval;
+    }
+
+    public void setCheckUpInterval(Long checkUpInterval) {
+        this.checkUpInterval = checkUpInterval;
+    }
+
+    public List<String> getWorkingDays() {
+        return workingDays;
+    }
+
+    public void setWorkingDays(List<String> workingDays) {
+        this.workingDays = workingDays;
+    }
+
+    public String getAllowDiscount() {
+        return allowDiscount;
+    }
+
+    public void setAllowDiscount(String allowDiscount) {
+        this.allowDiscount = allowDiscount;
     }
 
     public String getGender() {
@@ -207,19 +337,19 @@ public class Profile implements Serializable {
         this.type = type;
     }
 
-    public long getCreatedOn() {
+    public Long getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(long createdOn) {
+    public void setCreatedOn(Long createdOn) {
         this.createdOn = createdOn;
     }
 
-    public long getUpdatedOn() {
+    public Long getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(long updatedOn) {
+    public void setUpdatedOn(Long updatedOn) {
         this.updatedOn = updatedOn;
     }
 }

@@ -18,6 +18,9 @@ public class Permission {
     @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "IS_SYS_DEFAULT", columnDefinition = "boolean default true", nullable = false)
+    private boolean sysDefault;
+
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private boolean active;
 
@@ -37,6 +40,14 @@ public class Permission {
     private List<RolePermission> roles;
 
     public Permission() {
+    }
+
+    public boolean isSysDefault() {
+        return sysDefault;
+    }
+
+    public void setSysDefault(boolean sysDefault) {
+        this.sysDefault = sysDefault;
     }
 
     public Long getId() {

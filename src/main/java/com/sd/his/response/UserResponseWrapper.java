@@ -1,17 +1,42 @@
-package com.sd.his.wrapper;
+package com.sd.his.response;/*
+ * @author    : waqas kamran
+ * @Date      : 17-Apr-18
+ * @version   : ver. 1.0.0
+ * 
+ * ________________________________________________________________________________________________
+ *
+ *  Developer				Date		     Version		Operation		Description
+ * ________________________________________________________________________________________________ 
+ *	
+ * 
+ * ________________________________________________________________________________________________
+ *
+ * @Project   : HIS
+ * @Package   : com.sd.his.*
+ * @FileName  : UserAuthAPI
+ *
+ * Copyright © 
+ * SolutionDots, 
+ * All rights reserved.
+ * 
+ */
 
 import com.sd.his.model.Branch;
-import com.sd.his.model.BranchUser;
+import com.sd.his.model.DutyShift;
 import com.sd.his.model.User;
+import com.sd.his.model.Vacation;
+import com.sd.his.request.WorkingDaysOfDoctor;
+import com.sd.his.wrapper.BranchWrapper;
+import sun.java2d.cmm.Profile;
 
 import java.util.List;
 
-public class UserWrapper {
+public class UserResponseWrapper {
+
     long id;
     String userType;
     String email;
     String userName;
-    String password;
     String firstName;
     String lastName;
     String phoneNumber;
@@ -22,16 +47,19 @@ public class UserWrapper {
     String gender;
     String profileImg;
     String status;
-    List<PermissionWrapper> permissions;
-    List<BranchWrapper> branches;
+    BranchWrapper branch;
+    DutyShift dutyShift;
+    com.sd.his.model.Profile profile;
+    Vacation vacation;
+    String workingDaysOfDoctor;
 
 
-    public UserWrapper() {
-    }
+   public UserResponseWrapper(){}
 
-    public UserWrapper(User user) {
+    public UserResponseWrapper(User user) {
         this.id = user.getId();
         this.email = user.getEmail();
+        this.userType=user.getUserType();
         this.userName = user.getUsername();
         this.firstName = user.getProfile().getFirstName();
         this.lastName = user.getProfile().getLastName();
@@ -45,24 +73,46 @@ public class UserWrapper {
         this.profileImg = user.getProfile().getProfileImg();
         this.status = user.getProfile().getStatus();
 
-
     }
 
-
-    public String getUserType() {
-        return userType;
+    public String getWorkingDaysOfDoctor() {
+        return workingDaysOfDoctor;
     }
 
-    public void setUserType(String userType) {
-        this.userType = userType;
+    public void setWorkingDaysOfDoctor(String workingDaysOfDoctor) {
+        this.workingDaysOfDoctor = workingDaysOfDoctor;
     }
 
-    public List<BranchWrapper> getBranches() {
-        return branches;
+    public Vacation getVacation() {
+        return vacation;
     }
 
-    public void setBranches(List<BranchWrapper> branches) {
-        this.branches = branches;
+    public void setVacation(Vacation vacation) {
+        this.vacation = vacation;
+    }
+
+    public com.sd.his.model.Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(com.sd.his.model.Profile profile) {
+        this.profile = profile;
+    }
+
+    public DutyShift getDutyShift() {
+        return dutyShift;
+    }
+
+    public void setDutyShift(DutyShift dutyShift) {
+        this.dutyShift = dutyShift;
+    }
+
+    public BranchWrapper getBranch() {
+        return branch;
+    }
+
+    public void setBranch(BranchWrapper branch) {
+        this.branch = branch;
     }
 
     public long getId() {
@@ -71,6 +121,14 @@ public class UserWrapper {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public String getEmail() {
@@ -87,14 +145,6 @@ public class UserWrapper {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getFirstName() {
@@ -175,13 +225,5 @@ public class UserWrapper {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public List<PermissionWrapper> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(List<PermissionWrapper> permissions) {
-        this.permissions = permissions;
     }
 }
