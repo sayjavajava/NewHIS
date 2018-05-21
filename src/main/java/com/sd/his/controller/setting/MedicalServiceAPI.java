@@ -316,7 +316,7 @@ public class MedicalServiceAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseEntity<?> updateMedicalService(HttpServletRequest request,
-                                                @RequestBody MedicalServiceRequest createRequest) {
+                                                  @RequestBody MedicalServiceRequest createRequest) {
         logger.info("updateMedicalService API initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("med.service.update.error"));
@@ -326,7 +326,7 @@ public class MedicalServiceAPI {
 
         try {
             if (HISCoreUtil.isNull(createRequest.getTitle()) ||
-                    createRequest.getId() <=0 ||
+                    createRequest.getId() <= 0 ||
                     createRequest.getBranchId() <= 0 ||
                     createRequest.getDptId() <= 0 ||
                     createRequest.getFee() <= -1) {
@@ -338,7 +338,7 @@ public class MedicalServiceAPI {
                 logger.error("updateMedicalService API - insufficient params.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            if (HISCoreUtil.isValidObject(medicalServicesService.findByTitleAndDeletedFalseAgainstId(createRequest.getId()  ,createRequest.getTitle()))) {
+            if (HISCoreUtil.isValidObject(medicalServicesService.findByTitleAndDeletedFalseAgainstId(createRequest.getId(), createRequest.getTitle()))) {
                 response.setResponseMessage(messageBundle.getString("med.service.already.exist"));
                 response.setResponseCode(ResponseEnum.MED_SERVICE_ALREADY_EXIST.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -348,8 +348,8 @@ public class MedicalServiceAPI {
             }
             if (HISCoreUtil.isValidObject(medicalServicesService.updateMedicalService(createRequest))) {
                 response.setResponseData(null);
-                response.setResponseMessage(messageBundle.getString("med.service.save.success"));
-                response.setResponseCode(ResponseEnum.MED_SERVICE_SAVE_SUCCESS.getValue());
+                response.setResponseMessage(messageBundle.getString("med.service.update.success"));
+                response.setResponseCode(ResponseEnum.MED_SERVICE_UPDATE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
 
                 logger.error("updateMedicalService API - Successfully saved.");
@@ -363,6 +363,105 @@ public class MedicalServiceAPI {
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * @return Response with all search Filtered Medical Services.
+     * @author Jamal
+     * @description API will return detail of all filtered  Medical Services.
+     * @since 17-05-2017
+     */
+    @ApiOperation(httpMethod = "GET", value = "Search  Medical Services ",
+            notes = "This method will return Searched  Medical Services",
+            produces = "application/json", nickname = "Get Searched  Medical Services",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Searched  Medical Services fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/search/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> searchMedicalServicesByParam(HttpServletRequest request,
+                                                          @PathVariable("page") int pageNo,
+                                                          @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                          @RequestParam(value = "serviceId") long serviceId,
+                                                          @RequestParam(value = "serviceName") String serviceName,
+                                                          @RequestParam(value = "branchId") long branchId,
+                                                          @RequestParam(value = "departmentId") long departId,
+                                                          @RequestParam(value = "serviceFee") double serviceFee) {
+
+        logger.info("searchMedicalServicesByParam API Called");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("med.service.search.not.found"));
+        response.setResponseCode(ResponseEnum.MED_SERVICE_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+
+            List<MedicalServiceWrapper> medS = this.medicalServicesService.searchMedicalServicesByParam(
+                    (serviceId > 0 ? serviceId : null),
+                    (serviceName.length() > 0 ? serviceName : null),
+                    (branchId > 0 ? branchId : null),
+                    (departId > 0 ? departId : null),
+                    (serviceFee > 0 ? serviceFee : null),
+                    pageNo, pageSize);
+            int medServCount = this.medicalServicesService.countSearchMedicalServicesByParam(
+                    (serviceId > 0 ? serviceId : null),
+                    (serviceName.length() > 0 ? serviceName : null),
+                    (branchId > 0 ? branchId : null),
+                    (departId > 0 ? departId : null),
+                    (serviceFee > 0 ? serviceFee : null));
+
+            if (!HISCoreUtil.isListEmpty(medS)) {
+                logger.info("searchMedicalServicesByParam fetched from DB successfully...");
+                Integer nextPage, prePage, currPage;
+                int[] pages;
+
+                if (medServCount > pageSize) {
+                    int remainder = medServCount % pageSize;
+                    int totalPages = medServCount / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = pageNo;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
+
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);
+                returnValues.put("data", medS);
+
+                response.setResponseMessage(messageBundle.getString("med.service.search.found"));
+                response.setResponseCode(ResponseEnum.MED_SERVICE_SEARCH_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+                logger.info("searchMedicalServicesByParam fetched successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            logger.error("searchMedicalServicesByParam Exception.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

@@ -55,6 +55,27 @@ public interface MedicalServicesRepository extends JpaRepository<MedicalService,
             "WHERE ms.id = :msId AND ms.deleted = FALSE")
     MedicalServiceWrapper findOneByIdAndDeletedFalse(@Param("msId") Long msId);
 
-    MedicalService findByIdNotAndTitleAndDeletedFalse(long id,String title);
+    MedicalService findByIdNotAndTitleAndDeletedFalse(long id, String title);
+
+
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate, ms.description, ms.duration) " +
+            "FROM MedicalService ms JOIN ms.departments cdms JOIN cdms.clinicalDpt cd JOIN ms.branches bms JOIN bms.branch b JOIN ms.tax t " +
+            "WHERE ms.deleted = false AND (ms.title LIKE  CONCAT('%',:serviceName,'%') OR b.id = :branchId OR cd.id = :departmentId OR ms.id = :serviceId OR ms.fee = :serviceFee)")
+    List<MedicalServiceWrapper> findAllByParam(@Param("serviceId") Long serviceId,
+                                         @Param("serviceName") String serviceName,
+                                         @Param("branchId") Long branchId,
+                                         @Param("departmentId") Long departmentId,
+                                         @Param("serviceFee") Double serviceFee,
+                                         Pageable pageable);
+
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate, ms.description, ms.duration) " +
+            "FROM MedicalService ms JOIN ms.departments cdms JOIN cdms.clinicalDpt cd JOIN ms.branches bms JOIN bms.branch b JOIN ms.tax t " +
+            "WHERE  ms.deleted = false AND (ms.title LIKE  CONCAT('%',:serviceName,'%') OR b.id = :branchId OR cd.id = :departmentId OR ms.id = :serviceId OR ms.fee = :serviceFee)")
+    List<MedicalServiceWrapper> countAllByParam(@Param("serviceId") Long serviceId,
+                                                @Param("serviceName") String serviceName,
+                                                @Param("branchId") Long branchId,
+                                                @Param("departmentId") Long departmentId,
+                                                @Param("serviceFee") Double serviceFee);
+
 
 }

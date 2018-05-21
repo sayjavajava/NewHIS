@@ -148,4 +148,28 @@ public class MedicalServicesService {
     public MedicalServiceWrapper findOneByIdAndDeletedFalse(Long msId) {
         return medicalServicesRepository.findOneByIdAndDeletedFalse(msId);
     }
+
+    public List<MedicalServiceWrapper> searchMedicalServicesByParam(
+            Long serviceId,
+            String serviceName,
+            Long branchId,
+            Long departmentId,
+            Double serviceFee,
+            int pageNo,
+            int pageSize) {
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+
+        return this.medicalServicesRepository.findAllByParam(serviceId,serviceName,branchId,departmentId,serviceFee,pageable);
+    }
+
+    public int countSearchMedicalServicesByParam(
+            Long serviceId,
+            String serviceName,
+            Long branchId,
+            Long departmentId,
+            Double serviceFee) {
+
+        return this.medicalServicesRepository.countAllByParam(serviceId,serviceName,branchId,departmentId,serviceFee).size();
+    }
+
 }
