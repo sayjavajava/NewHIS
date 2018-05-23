@@ -11,6 +11,7 @@ import com.sd.his.repositiories.UserRepository;
 import com.sd.his.request.BranchRequestWrapper;
 import com.sd.his.response.BranchResponseWrapper;
 import com.sd.his.response.UserResponseWrapper;
+import com.sd.his.wrapper.BranchWrapper;
 import com.sd.his.wrapper.ExamRooms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -219,5 +220,14 @@ public class BranchService {
         return allBranches;
     }
 
+    public List<BranchWrapper> getAllActiveBranches() {
+        List<Branch> dbBranch = branchRepository.findAllByActiveTrueAndDeletedFalse();
+        List<BranchWrapper> branchWrappers = new ArrayList<>();
 
+        for (Branch branch : dbBranch) {
+            BranchWrapper branchWrapper = new BranchWrapper(branch);
+            branchWrappers.add(branchWrapper);
+        }
+        return branchWrappers;
+    }
 }

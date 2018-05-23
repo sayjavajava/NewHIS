@@ -43,6 +43,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
 
     List<BranchResponseWrapper> findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalse(String name, Pageable pageable);
 
+    List<Branch> findAllByActiveTrueAndDeletedFalseOrderByNameAsc(Pageable pageable);
 
 }
 

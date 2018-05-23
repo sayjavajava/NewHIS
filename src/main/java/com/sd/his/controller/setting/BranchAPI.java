@@ -8,6 +8,7 @@ import com.sd.his.response.BranchResponseWrapper;
 import com.sd.his.response.GenericAPIResponse;
 import com.sd.his.service.BranchService;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.BranchWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -56,6 +57,55 @@ public class BranchAPI {
 
     private final Logger logger = LoggerFactory.getLogger(BranchAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
+
+    @ApiOperation(httpMethod = "GET", value = "All Branches",
+            notes = "This method will return all Branches",
+            produces = "application/json", nickname = "All Branches",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All Branches fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllBranches(HttpServletRequest request) {
+
+        logger.error("getAllBranches API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("branch.fetch.error"));
+        response.setResponseCode(ResponseEnum.BRANCH_FETCH_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("getAllBranches API - branches fetching from DB");
+            List<BranchWrapper> branches = branchService.getAllActiveBranches();
+            if (HISCoreUtil.isListEmpty(branches)) {
+                response.setResponseMessage(messageBundle.getString("branch.not-found"));
+                response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getAllBranches API - Branches not found");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            response.setResponseMessage(messageBundle.getString("branch.fetch.success"));
+            response.setResponseCode(ResponseEnum.BRANCH_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(branches);
+
+            logger.error("getAllBranches API - Branches successfully fetched.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllBranches API -  exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @ApiOperation(httpMethod = "POST", value = "Create Branch",
             notes = "This method will Create Branch",
@@ -124,8 +174,8 @@ public class BranchAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllBranches(HttpServletRequest request,
-                                         @PathVariable("page") int page,
-                                         @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+                                            @PathVariable("page") int page,
+                                            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         logger.info("getAllBranch paginated..");
 
         GenericAPIResponse response = new GenericAPIResponse();
