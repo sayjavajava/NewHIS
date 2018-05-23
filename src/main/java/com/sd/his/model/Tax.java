@@ -2,6 +2,10 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.request.SaveTaxRequest;
+import com.sd.his.utill.DateUtil;
+import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,23 +14,23 @@ import java.util.List;
  * @author    : Irfan Nasim
  * @Date      : 14-May-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
  * @FileName  : Tax
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 @Entity
 @Table(name = "TAX")
@@ -70,6 +74,18 @@ public class Tax {
     private List<MedicalService> medicalServices;
 
     public Tax() {
+    }
+
+    public Tax(SaveTaxRequest saveTaxRequest) {
+        this.name = saveTaxRequest.getName();
+        this.description = saveTaxRequest.getDescription();
+        this.rate = saveTaxRequest.getRate();
+        this.fromDate = DateUtil.getMillisFromStringDate(saveTaxRequest.getFromDate(), HISConstants.DATE_FORMATE_THREE);
+        this.toDate = DateUtil.getMillisFromStringDate(saveTaxRequest.getToDate(), HISConstants.DATE_FORMATE_THREE);
+        this.active = saveTaxRequest.isActive();
+        this.deleted = false;
+        this.createdOn = System.currentTimeMillis();
+        this.updatedOn = System.currentTimeMillis();
     }
 
     @Override

@@ -226,7 +226,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/code", method = RequestMethod.POST)
+    @RequestMapping(value = "/code/save", method = RequestMethod.POST)
     public ResponseEntity<?> saveICDCode(HttpServletRequest request,
                                          @RequestBody ICDCodeCreateRequest createRequest) {
         logger.info("saveCode API initiated..");
@@ -283,7 +283,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/code", method = RequestMethod.PUT)
+    @RequestMapping(value = "/code/update", method = RequestMethod.PUT)
     public ResponseEntity<?> updateICDCode(HttpServletRequest request,
                                            @RequestBody ICDCodeCreateRequest createRequest) {
         logger.info("updateICDCode API initiated..");
@@ -419,7 +419,7 @@ public class ICDAPI {
 
     /**
      * @return Response with all search Filtered ICDs.
-     * @author Irfan Nasim
+     * @author Jamal Nasim
      * @description API will return detail of all filtered ICDs.
      * @since 02-05-2017
      */
@@ -511,7 +511,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/code", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/code/delete", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteICDCode(HttpServletRequest request,
                                            @RequestParam("codeId") long codeId) {
         logger.info("Delete ICDCode Api Called..");
@@ -569,7 +569,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/version", method = RequestMethod.POST)
+    @RequestMapping(value = "/version/save", method = RequestMethod.POST)
     public ResponseEntity<?> saveICDVersion(HttpServletRequest request,
                                             @RequestBody ICDVersionWrapper createRequest) {
         logger.info("saveICDVersion API initiated..");
@@ -792,7 +792,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/version", method = RequestMethod.PUT)
+    @RequestMapping(value = "/version/update", method = RequestMethod.PUT)
     public ResponseEntity<?> updateICDVersion(HttpServletRequest request,
                                               @RequestBody ICDVersionWrapper createRequest) {
         logger.info("updateICDVersion API initiated..");
@@ -858,7 +858,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/version", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/version/delete", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteICDVersion(HttpServletRequest request,
                                               @RequestParam("iCDVersionId") long iCDVersionId) {
         logger.info("deleteICDVersion Api Called..");
@@ -912,7 +912,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/codeVersion", method = RequestMethod.POST)
+    @RequestMapping(value = "/codeVersion/save", method = RequestMethod.POST)
     public ResponseEntity<?> saveCodeVersion(HttpServletRequest request,
                                              @RequestBody ICDCodeVersionWrapper createRequest) {
         logger.info("saveCodeVersion API initiated..");
@@ -963,7 +963,7 @@ public class ICDAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/codeVersion", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/codeVersion/delete", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteCodeVersion(HttpServletRequest request,
                                                @RequestParam("associateICDCVId") long associateICDCVId) {
         logger.info("deleteCodeVersion Api Called..");
