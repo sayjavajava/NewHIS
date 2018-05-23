@@ -122,8 +122,8 @@ public class BranchAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "all/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> allBranches(HttpServletRequest request,
+    @RequestMapping(value = "/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllBranches(HttpServletRequest request,
                                          @PathVariable("page") int page,
                                          @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         logger.info("getAllBranch paginated..");
@@ -298,7 +298,7 @@ public class BranchAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(httpMethod = "GET", value = "Branch",
+    @ApiOperation(httpMethod = "GET", value = "Fetch Branch",
             notes = "This method will return Branch on base of id",
             produces = "application/json", nickname = "Get Single Branch",
             response = GenericAPIResponse.class, protocols = "https")
@@ -308,7 +308,7 @@ public class BranchAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getBranchById(HttpServletRequest request,
                                            @PathVariable("id") long id) {
 
