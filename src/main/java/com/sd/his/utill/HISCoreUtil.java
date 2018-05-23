@@ -1,5 +1,9 @@
 package com.sd.his.utill;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,4 +67,13 @@ public class HISCoreUtil {
         }
         return false;
     }
+
+    public static long convertDateToMilliSeconds(String myDate) {
+        //= "2014/10/29 18:10:45";
+        Instant instant = Instant.parse(myDate);
+
+        return instant.toEpochMilli();
+    }
+
+
 }

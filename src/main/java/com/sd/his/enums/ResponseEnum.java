@@ -1,27 +1,27 @@
 package com.sd.his.enums;
 
-/*
- * @author    : Irfan Nasim
- * @Date      : 18-Apr-17
- * @version   : ver. 1.0.0
- * 
- * ________________________________________________________________________________________________
- *
- *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
- * ________________________________________________________________________________________________
- *
- * @Project   : HIS
- * @Package   : com.sd.his.enums
- * @FileName  : ResponseEnum
- *
- * Copyright © 
- * SolutionDots, 
- * All rights reserved.
- * 
- */
+        /*
+         * @author    : Irfan Nasim
+         * @Date      : 18-Apr-17
+         * @version   : ver. 1.0.0
+         *
+         * ________________________________________________________________________________________________
+         *
+         *  Developer				Date		     Version		Operation		Description
+         * ________________________________________________________________________________________________
+         *
+         *
+         * ________________________________________________________________________________________________
+         *
+         * @Project   : HIS
+         * @Package   : com.sd.his.enums
+         * @FileName  : ResponseEnum
+         *
+         * Copyright ©
+         * SolutionDots,
+         * All rights reserved.
+         *
+         */
 
 public enum ResponseEnum {
 
@@ -42,6 +42,26 @@ public enum ResponseEnum {
     USER_LOGGED_OUT_SUCCESS("USR_AUTH_SUC_02"),
     ROLE_PERMISSION_FETCH_FAILED("ROL_PER_ERR_01"),
     ROLE_PERMISSION_FETCH_SUCCESS("ROL_PER_SUC_02"),
+    ROLE_PERMISSION_ASSIGN_SUCCESS("ROL_PER_SUC_02"),
+    ROLE_PERMISSION_ASSIGN_ERROR("ROL_PER_ERR_02"),
+    USER_ADD_ERROR("USER_ADD_ERROR_01"),
+    USER_ALREADY_EXIST_ERROR("User_Already_Exists"),
+    USER_FOUND("USER_SUC_01"),
+    USER_UPDATE_SUCCESS("USER_UPDATE_SUC_01)"),
+    USER_UPDATE_ERROR("USER_UPDATE_ERR_01)"),
+    USER_NOT_FOUND("USER_NOT_FOUND"),
+    USER_ADD_SUCCESS("USER_ADD_SUCCESS_01"),
+    USER_NOT_DELETED("USER_DEL_ERR_01"),
+    USER_DELETED_SUCCESS("USER_DEL_SUC_01"),
+    BRANCH_ADD_SUCCESS("BRANCH_ADD_SUCCESS_01"),
+    BRANCH_ALREADY_EXIST_ERROR("BRANCH_Already_Exists"),
+    BRANCH_NOT_FOUND("BRANCH_NOT_FOUND"),
+    BRANCH_FOUND("BRANCH_SUC_01"),
+    BRANCH_ADD_ERROR("BRANCH_ADD_ERR_01"),
+    BRANCH_DELETED_SUCCESS("BRANCH_DEL_SUC_01"),
+    BRANCH_UPDATE_ERROR("BRANCH_UPDATE_ERR_01)"),
+    BRANCH_UPDATE_SUCCESS("BRANCH_UPDATE_SUC_01)"),
+    BRANCH_NOT_DELETED("BRANCH_DEL_ERR_01"),
     ICD_CODE_SAVE_SUCCESS("ICD_SAVE_SUC_01"),
     ICD_CODE_SAVE_ERROR("ICD_ERR_02"),
     ICD_CODE_NOT_FOUND("ICD_ERR_03"),
@@ -82,9 +102,6 @@ public enum ResponseEnum {
     CLI_DPT_NOT_FOUND("CLI_DPT_ERR_03"),
     BRANCH_FETCH_FAILED("BR_ERR_01"),
     BRANCH_FETCH_SUCCESS("BR_SUC_01"),
-    BRANCH_NOT_FOUND("BR_ERR_02"),
-    ROLE_PERMISSION_ASSIGN_SUCCESS("ROL_PER_SUC_03"),
-    ROLE_PERMISSION_ASSIGN_ERROR("ROL_PER_ERR_02"),
     ROLE_ADD_SUCCESS("ROL_SUC_01"),
     ROLE_ADD_ERROR("ROL_ERR_01"),
     ROLE_ALREADY_EXIST_ERROR("ROL_ERR_02"),

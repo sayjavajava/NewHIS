@@ -42,6 +42,7 @@ public class PermissionWrapper {
         this.description = permission.getDescription();
         this.deleted = permission.isDeleted();
         this.active = permission.isActive();
+
     }
 
     public PermissionWrapper(String name, String description) {

@@ -1,10 +1,6 @@
-package com.sd.his.wrapper;
-
-import com.sd.his.model.Branch;
-
-/*
- * @author    : Irfan Nasim
- * @Date      : 14-May-18
+package com.sd.his.wrapper;/*
+ * @author    : waqas kamran
+ * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
  * 
  * ________________________________________________________________________________________________
@@ -16,49 +12,40 @@ import com.sd.his.model.Branch;
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
- * @Package   : com.sd.his.wrapper
- * @FileName  : $BranchWrapper
+ * @Package   : com.sd.his.*
+ * @FileName  : UserAuthAPI
  *
  * Copyright © 
  * SolutionDots, 
  * All rights reserved.
  * 
  */
+
+import com.sd.his.model.Branch;
+import com.sd.his.model.BranchUser;
+
+import java.util.List;
+
 public class BranchWrapper {
 
-    private Long id;
-    private String name;
-    private Integer noOfRooms;
-    private String billingName;
-    private String billingBranchName;
-    private String billingTaxId;
-    private boolean active;
-    private boolean deleted;
-    private long updatedOn;
-    private long createdOn;
+    String name;
+    String billingBranchName;
+    String billingTaxId;
+    int noOfRooms;
 
-    public BranchWrapper() {
-    }
+    boolean primaryBranch;
+    boolean primaryDr;
+    boolean billingBranch;
 
-    public BranchWrapper(Branch branch) {
-        this.id = branch.getId();
-        this.name = branch.getName();
-        this.noOfRooms = branch.getNoOfRooms();
-        this.billingName = branch.getBillingName();
-        this.billingBranchName = branch.getBillingBranchName();
-        this.billingTaxId = branch.getBillingTaxId();
-        this.active = branch.isActive();
-        this.deleted = branch.isDeleted();
-        this.updatedOn = branch.getUpdatedOn();
-        this.createdOn = branch.getCreatedOn();
-    }
+    public BranchWrapper(BranchUser branchUser) {
+        this.name = branchUser.getBranch().getName();
+        this.billingBranchName = branchUser.getBranch().getBillingBranchName();
+        this.billingTaxId = branchUser.getBranch().getBillingTaxId();
+        this.noOfRooms = branchUser.getBranch().getNoOfRooms();
+        this.primaryBranch = branchUser.isPrimaryBranch();
+        this.primaryDr = branchUser.isPrimaryDr();
+        this.billingBranch = branchUser.isBillingBranch();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -67,22 +54,6 @@ public class BranchWrapper {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getNoOfRooms() {
-        return noOfRooms;
-    }
-
-    public void setNoOfRooms(Integer noOfRooms) {
-        this.noOfRooms = noOfRooms;
-    }
-
-    public String getBillingName() {
-        return billingName;
-    }
-
-    public void setBillingName(String billingName) {
-        this.billingName = billingName;
     }
 
     public String getBillingBranchName() {
@@ -101,35 +72,35 @@ public class BranchWrapper {
         this.billingTaxId = billingTaxId;
     }
 
-    public boolean isActive() {
-        return active;
+    public int getNoOfRooms() {
+        return noOfRooms;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setNoOfRooms(int noOfRooms) {
+        this.noOfRooms = noOfRooms;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    public boolean isPrimaryBranch() {
+        return primaryBranch;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void setPrimaryBranch(boolean primaryBranch) {
+        this.primaryBranch = primaryBranch;
     }
 
-    public long getUpdatedOn() {
-        return updatedOn;
+    public boolean isPrimaryDr() {
+        return primaryDr;
     }
 
-    public void setUpdatedOn(long updatedOn) {
-        this.updatedOn = updatedOn;
+    public void setPrimaryDr(boolean primaryDr) {
+        this.primaryDr = primaryDr;
     }
 
-    public long getCreatedOn() {
-        return createdOn;
+    public boolean isBillingBranch() {
+        return billingBranch;
     }
 
-    public void setCreatedOn(long createdOn) {
-        this.createdOn = createdOn;
+    public void setBillingBranch(boolean billingBranch) {
+        this.billingBranch = billingBranch;
     }
 }

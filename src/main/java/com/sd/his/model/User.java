@@ -45,6 +45,10 @@ public class User {
     private String username;
 
     @NotNull
+    @Column(name = "USER_TYPE")
+    private String userType;
+
+    @NotNull
     @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
             message = "Invalid Email")
     @Column(name = "EMAIL", unique = true)
@@ -75,6 +79,14 @@ public class User {
     @OneToMany(targetEntity = BranchUser.class, mappedBy = "user", fetch = FetchType.LAZY)
     private List<BranchUser> branches;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = Vacation.class, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Vacation> vacations;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = UserDutyShift.class, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserDutyShift> dutyShifts;
+
     public User() {
     }
 
@@ -87,6 +99,14 @@ public class User {
                 ", active=" + active +
                 ", deleted=" + deleted +
                 '}';
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public Long getId() {

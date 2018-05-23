@@ -45,7 +45,7 @@ public class APIUtil {
         //admin.setRole(dbAdmin.getRole().get(0).getName());
         admin.setFirstName(dbAdmin.getProfile().getFirstName());
         admin.setLastName(dbAdmin.getProfile().getLastName());
-        admin.setPhoneNumber(dbAdmin.getProfile().getPhoneNumber());
+        admin.setPhoneNumber(dbAdmin.getProfile().getCellPhone());
         admin.setDeleted(dbAdmin.getProfile().getDeleted());
         admin.setCreatedByFullName("");
         admin.setCreatedOn(dbAdmin.getProfile().getCreatedOn());
