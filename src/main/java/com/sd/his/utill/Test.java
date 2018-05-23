@@ -1,5 +1,6 @@
 package com.sd.his.utill;
 
+import com.sd.his.model.EmailTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /*

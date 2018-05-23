@@ -1,6 +1,7 @@
 package com.sd.his.utill;
 
 import com.sd.his.model.*;
+import com.sd.his.request.EmailTemplateRequest;
 import com.sd.his.wrapper.*;
 import org.springframework.data.domain.Page;
 import com.sd.his.model.*;
@@ -145,4 +146,24 @@ public class APIUtil {
         return iCDCWrappers;
     }
 
+    public static EmailTemplate buildEmailTemplateRequest(EmailTemplate emailTemplate, EmailTemplateRequest createRequest) {
+        emailTemplate.setTitle(createRequest.getTitle());
+        emailTemplate.setSubject(createRequest.getSubject());
+        emailTemplate.setType(createRequest.getType());
+        emailTemplate.setEmailTemplate(createRequest.getEmailTemplate());
+        emailTemplate.setDeleted(false);
+        emailTemplate.setCreatedOn(System.currentTimeMillis());
+        emailTemplate.setUpdatedOn(System.currentTimeMillis());
+        emailTemplate.setActive(true);
+        return emailTemplate;
+    }
+
+    public static List<EmailTemplateRequest> buildEmailTemplatesRequest(List<EmailTemplate> dbEmailTemplates) {
+        List<EmailTemplateRequest> emailTemplates = new ArrayList<>();
+        for (EmailTemplate e:dbEmailTemplates){
+            EmailTemplateRequest emailTemplateRequest = new EmailTemplateRequest(e);
+            emailTemplates.add(emailTemplateRequest);
+        }
+        return emailTemplates;
+    }
 }
