@@ -34,4 +34,6 @@ public interface UserRepository extends JpaRepository<User, Long> ,PagingAndSort
     @Query("SELECT u FROM User u JOIN u.branches ub JOIN ub.branch WHERE u.active = TRUE AND u.deleted = FALSE ORDER BY u.username ")
     List<User> findAllUsers(Pageable pageable);
 
+    List<User> findAllByRoles_role_name(String role);
+
 }

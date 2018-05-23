@@ -21,24 +21,18 @@ package com.sd.his.repositiories;/*
  * 
  */
 
+
 import com.sd.his.model.Branch;
-import com.sd.his.model.BranchUser;
-import com.sd.his.model.User;
+import com.sd.his.model.Room;
+import com.sd.his.model.Vacation;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface BranchUserRepository extends JpaRepository<BranchUser,Long> {
-   @Query("SELECT b FROM Branch b INNER JOIN b.users bu where bu.user.id=:userId")
-    List<BranchUser> findByUser(@Param("userId") long userId);
+public interface RoomRepository extends JpaRepository<Room,Long> {
 
-   List<BranchUser> findAllByBranch(Branch branch);
-   BranchUser findByUser(User user);
-   BranchUser findByBranch(Branch branch);
+ //   Vacation findByName(String name);
 
-
+    Room findByBranch(Branch branch);
+    void deleteByBranch(Branch branch);
 }

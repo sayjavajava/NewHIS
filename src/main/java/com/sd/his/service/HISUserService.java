@@ -401,7 +401,7 @@ public class HISUserService implements UserDetailsService {
         if (usertype.equalsIgnoreCase(UserEnum.CASHIER.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
-            alreadyExistsUser.setPassword(new BCryptPasswordEncoder().encode(userCreateRequest.getPassword()));
+         //   alreadyExistsUser.setPassword(new BCryptPasswordEncoder().encode(userCreateRequest.getPassword()));
             alreadyExistsUser.setEmail(userCreateRequest.getEmail());
 
 
@@ -581,6 +581,16 @@ public class HISUserService implements UserDetailsService {
         for (User user : alluser) {
             UserWrapper userWrapper1 = new UserWrapper(user);
             userWrapper.add(userWrapper1);
+        }
+        return userWrapper;
+    }
+
+    public List<UserResponseWrapper> findByRole(String role) {
+        List<UserResponseWrapper> userWrapper = new ArrayList<>();
+        List<User> userRoles = userRepository.findAllByRoles_role_name(role);
+        for (User user : userRoles) {
+            UserResponseWrapper userResponseWrapper = new UserResponseWrapper(user);
+            userWrapper.add(userResponseWrapper);
         }
         return userWrapper;
     }

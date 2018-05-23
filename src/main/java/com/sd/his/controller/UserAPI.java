@@ -216,7 +216,7 @@ public class UserAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/all/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> versions(HttpServletRequest request,
+    public ResponseEntity<?> allUser(HttpServletRequest request,
                                       @PathVariable("page") int page,
                                       @RequestParam(value = "pageSize",
                                               required = false, defaultValue = "10") int pageSize) {
@@ -272,7 +272,7 @@ public class UserAPI {
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         }catch (Exception ex) {
-            logger.error("get all paginated getAllPaginatedUser failed.", ex.fillInStackTrace());
+            logger.error("get all paginated User failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -476,7 +476,7 @@ public class UserAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/search/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> searchAdmins(HttpServletRequest request,
+    public ResponseEntity<?> searchUser(HttpServletRequest request,
                                           @PathVariable("page") int page,
                                           @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
                                           @RequestParam(value = "name") String name,
@@ -544,6 +544,64 @@ logger.info("search:" + role);
                                                    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
                                                }
                                            }
+
+
+    @ApiOperation(httpMethod = "GET", value = "User By Role",
+            notes = "This method will return Users By Role",
+            produces = "application/json", nickname = "Get Users By role ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Users fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/role/", method = RequestMethod.GET)
+    public ResponseEntity<?> findUserByRole(HttpServletRequest request, @RequestParam(value = "name") String role){
+
+        logger.info("find User By Role..");
+        logger.info("user type..." + role);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.not.found"));
+        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+
+        try {
+            if(!HISCoreUtil.isNull(role)) {
+                List<UserResponseWrapper> userWrappers = userService.findByRole(role);
+
+
+                if (!HISCoreUtil.isListEmpty(userWrappers)) {
+                    response.setResponseMessage(messageBundle.getString("user.fetched.success"));
+                    response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    response.setResponseData(userWrappers);
+                    logger.info("user on base of role fetched successfully...");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }else {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Create User insufficient params");
+
+            }
+        }catch (Exception ex) {
+            logger.error("user by role failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }
 

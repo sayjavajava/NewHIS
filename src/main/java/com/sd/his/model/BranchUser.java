@@ -53,7 +53,6 @@ public class BranchUser {
     public BranchUser() {
     }
 
-
     public Long getId() {
         return id;
     }

@@ -2,8 +2,10 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.wrapper.ExamRooms;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -50,11 +52,48 @@ public class Branch {
     @Column(name = "BILLING_BRANCH_NAME")
     private String billingBranchName;
 
+    @Column(name = "CITY")
+    private String city;
+
+    @Column(name = "COUNTRY")
+    private String country;
+
+    @Column(name = "ADDRESS")
+    private String address;
+
+    @Column(name = "FAX")
+    private String fax;
+
+
+    @Column(name = "OFFICE_PHONE")
+    private Long officePhone;
+
+    @Column(name = "FORMATTED_ADDRESS")
+    private String formattedAddress;
+
+    @Column(name = "STATE")
+    private String state;
+
+    @Column(name = "OFFICE_START_TIME")
+    private String officeStartTime;
+
+    @Column(name = "OFFICE_END_TIME")
+    private String officeEndTime;
+
     @Column(name = "BILLING_TAX_ID")
     private String billingTaxId;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private boolean active;
+
+    @Column(name = "ZIP_CODE")
+    private Integer zipCode;
+
+    @Column(name = "ALLOW_ONLINE_SCHEDULE", columnDefinition = "boolean default true")
+    private boolean allowOnlineSchedule;
+
+    @Column(name = "SHOW_BRANCH_INFO_ONLINE", columnDefinition = "boolean default true")
+    private boolean showBranchInfoOnline;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
     private boolean deleted;
@@ -68,6 +107,10 @@ public class Branch {
     @JsonIgnore
     @OneToMany(targetEntity = BranchUser.class, mappedBy = "branch", fetch = FetchType.LAZY)
     private List<BranchUser> users;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = Room.class, mappedBy = "branch", fetch = FetchType.LAZY)
+    private List<Room> rooms;
 
     @JsonIgnore
     @OneToMany(targetEntity = BranchClinicalDepartment.class, mappedBy = "branch", fetch = FetchType.LAZY)
@@ -92,6 +135,110 @@ public class Branch {
                 ", active=" + active +
                 ", deleted=" + deleted +
                 '}';
+    }
+
+    public Integer getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(Integer zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    public boolean isAllowOnlineSchedule() {
+        return allowOnlineSchedule;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Long getOfficePhone() {
+        return officePhone;
+    }
+
+    public void setOfficePhone(Long officePhone) {
+        this.officePhone = officePhone;
+    }
+
+    public String getFormattedAddress() {
+        return formattedAddress;
+    }
+
+    public void setFormattedAddress(String formattedAddress) {
+        this.formattedAddress = formattedAddress;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getOfficeStartTime() {
+        return officeStartTime;
+    }
+
+    public void setOfficeStartTime(String officeStartTime) {
+        this.officeStartTime = officeStartTime;
+    }
+
+    public String getOfficeEndTime() {
+        return officeEndTime;
+    }
+
+    public void setOfficeEndTime(String officeEndTime) {
+        this.officeEndTime = officeEndTime;
+    }
+
+    public void setAllowOnlineSchedule(boolean allowOnlineSchedule) {
+        this.allowOnlineSchedule = allowOnlineSchedule;
+    }
+
+    public boolean isShowBranchInfoOnline() {
+        return showBranchInfoOnline;
+    }
+
+    public void setShowBranchInfoOnline(boolean showBranchInfoOnline) {
+        this.showBranchInfoOnline = showBranchInfoOnline;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
     }
 
     public Long getId() {
