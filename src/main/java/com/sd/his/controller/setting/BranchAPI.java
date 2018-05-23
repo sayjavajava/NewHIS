@@ -8,7 +8,6 @@ import com.sd.his.response.BranchResponseWrapper;
 import com.sd.his.response.GenericAPIResponse;
 import com.sd.his.service.BranchService;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.BranchWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -49,7 +48,7 @@ import java.util.stream.IntStream;
  *
  */
 @RestController
-@RequestMapping("/branch")
+@RequestMapping("/setting/branch")
 public class BranchAPI {
 
     @Autowired
@@ -68,7 +67,7 @@ public class BranchAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAllBranches(HttpServletRequest request) {
 
         logger.error("getAllBranches API initiated");
@@ -80,7 +79,7 @@ public class BranchAPI {
 
         try {
             logger.error("getAllBranches API - branches fetching from DB");
-            List<BranchWrapper> branches = branchService.getAllActiveBranches();
+            List<BranchResponseWrapper> branches = branchService.getAllActiveBranches();
             if (HISCoreUtil.isListEmpty(branches)) {
                 response.setResponseMessage(messageBundle.getString("branch.not-found"));
                 response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
@@ -173,9 +172,9 @@ public class BranchAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllBranches(HttpServletRequest request,
-                                            @PathVariable("page") int page,
-                                            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+    public ResponseEntity<?> getAllPaginatedBranches(HttpServletRequest request,
+                                                     @PathVariable("page") int page,
+                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         logger.info("getAllBranch paginated..");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -409,7 +408,7 @@ public class BranchAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/name", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllBranches(HttpServletRequest request) {
+    public ResponseEntity<?> getAllBranchesName(HttpServletRequest request) {
         logger.info("getAllBranch Name..");
 
         GenericAPIResponse response = new GenericAPIResponse();

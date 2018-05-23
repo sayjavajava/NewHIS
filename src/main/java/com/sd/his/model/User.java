@@ -84,6 +84,10 @@ public class User {
     private List<Vacation> vacations;
 
     @JsonIgnore
+    @OneToMany(targetEntity = UserMedicalService.class, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserMedicalService> medicalServices;
+
+    @JsonIgnore
     @OneToMany(targetEntity = UserDutyShift.class, mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserDutyShift> dutyShifts;
 
@@ -189,4 +193,27 @@ public class User {
         this.branches = branches;
     }
 
+    public List<Vacation> getVacations() {
+        return vacations;
+    }
+
+    public void setVacations(List<Vacation> vacations) {
+        this.vacations = vacations;
+    }
+
+    public List<UserMedicalService> getMedicalServices() {
+        return medicalServices;
+    }
+
+    public void setMedicalServices(List<UserMedicalService> medicalServices) {
+        this.medicalServices = medicalServices;
+    }
+
+    public List<UserDutyShift> getDutyShifts() {
+        return dutyShifts;
+    }
+
+    public void setDutyShifts(List<UserDutyShift> dutyShifts) {
+        this.dutyShifts = dutyShifts;
+    }
 }

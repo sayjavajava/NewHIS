@@ -75,6 +75,10 @@ public class MedicalService {
     @OneToMany(targetEntity = ClinicalDepartmentMedicalService.class, mappedBy = "medicalService", fetch = FetchType.LAZY)
     private List<ClinicalDepartmentMedicalService> departments;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = UserMedicalService.class, mappedBy = "medicalService", fetch = FetchType.LAZY)
+    private List<UserMedicalService> users;
+
     public MedicalService() {
     }
 
@@ -193,5 +197,13 @@ public class MedicalService {
 
     public void setDepartments(List<ClinicalDepartmentMedicalService> departments) {
         this.departments = departments;
+    }
+
+    public List<UserMedicalService> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserMedicalService> users) {
+        this.users = users;
     }
 }

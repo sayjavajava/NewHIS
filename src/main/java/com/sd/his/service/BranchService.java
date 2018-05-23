@@ -220,14 +220,7 @@ public class BranchService {
         return allBranches;
     }
 
-    public List<BranchWrapper> getAllActiveBranches() {
-        List<Branch> dbBranch = branchRepository.findAllByActiveTrueAndDeletedFalse();
-        List<BranchWrapper> branchWrappers = new ArrayList<>();
-
-        for (Branch branch : dbBranch) {
-            BranchWrapper branchWrapper = new BranchWrapper(branch);
-            branchWrappers.add(branchWrapper);
-        }
-        return branchWrappers;
+    public List<BranchResponseWrapper> getAllActiveBranches() {
+       return branchRepository.findAllByActiveTrueAndDeletedFalse();
     }
 }
