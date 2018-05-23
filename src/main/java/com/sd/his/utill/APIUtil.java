@@ -1,14 +1,10 @@
 package com.sd.his.utill;
 
 import com.sd.his.model.*;
+import com.sd.his.request.EmailTemplateRequest;
 import com.sd.his.request.MedicalServiceRequest;
 import com.sd.his.request.SaveTaxRequest;
 import com.sd.his.wrapper.*;
-import org.springframework.data.domain.Page;
-import com.sd.his.model.*;
-import com.sd.his.wrapper.AdminWrapper;
-import com.sd.his.wrapper.PermissionWrapper;
-import com.sd.his.wrapper.RoleWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,23 +13,23 @@ import java.util.List;
  * @author    : irfan
  * @Date      : 16-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
+ * ________________________________________________________________________________________________
  *
- * 
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.utill
  * @FileName  : APIUtil
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 public class APIUtil {
     public static AdminWrapper buildAdminWrapper(User dbAdmin) {
@@ -66,8 +62,8 @@ public class APIUtil {
             admin.setPermission(permissions);
         }*/
 
-        for (UserRole userRole : dbAdmin.getRoles()){
-            PermissionWrapper permissionWrapper=new PermissionWrapper();
+        for (UserRole userRole : dbAdmin.getRoles()) {
+            PermissionWrapper permissionWrapper = new PermissionWrapper();
         }
 
 
@@ -116,6 +112,7 @@ public class APIUtil {
         }
         return wrapperList;
     }
+
     public static List<ICDCodeWrapper> buildICDCodesWrapper(List<ICDCode> iCDs) {
         List<ICDCodeWrapper> wrapperList = new ArrayList<>();
         for (ICDCode icd : iCDs) {
@@ -147,7 +144,7 @@ public class APIUtil {
         return iCDCWrappers;
     }
 
-    public static void buildTax(Tax dbTax,SaveTaxRequest requestTax){
+    public static void buildTax(Tax dbTax, SaveTaxRequest requestTax) {
         dbTax.setUpdatedOn(System.currentTimeMillis());
         dbTax.setName(requestTax.getName());
         dbTax.setDescription(requestTax.getDescription());
@@ -158,11 +155,12 @@ public class APIUtil {
     }
 
     public static void buildTaxWrapper(List<SaveTaxRequest> taxes, List<Tax> dbTaxes) {
-        for (Tax tax:dbTaxes){
+        for (Tax tax : dbTaxes) {
             SaveTaxRequest taxWrapper = new SaveTaxRequest(tax);
             taxes.add(taxWrapper);
         }
     }
+
     public static void buildMedicalService(MedicalService ms, MedicalServiceRequest createRequest) {
         ms.setDeleted(false);
         ms.setTitle(createRequest.getTitle());
@@ -171,5 +169,26 @@ public class APIUtil {
         ms.setDuration(createRequest.getDuration());
         ms.setDescription(createRequest.getDescription());
         ms.setStatus(createRequest.isStatus());
+    }
+
+    public static EmailTemplate buildEmailTemplateRequest(EmailTemplate emailTemplate, EmailTemplateRequest createRequest) {
+        emailTemplate.setTitle(createRequest.getTitle());
+        emailTemplate.setSubject(createRequest.getSubject());
+        emailTemplate.setType(createRequest.getType());
+        emailTemplate.setEmailTemplate(createRequest.getEmailTemplate());
+        emailTemplate.setDeleted(false);
+        emailTemplate.setCreatedOn(System.currentTimeMillis());
+        emailTemplate.setUpdatedOn(System.currentTimeMillis());
+        emailTemplate.setActive(true);
+        return emailTemplate;
+    }
+
+    public static List<EmailTemplateRequest> buildEmailTemplatesRequest(List<EmailTemplate> dbEmailTemplates) {
+        List<EmailTemplateRequest> emailTemplates = new ArrayList<>();
+        for (EmailTemplate e : dbEmailTemplates) {
+            EmailTemplateRequest emailTemplateRequest = new EmailTemplateRequest(e);
+            emailTemplates.add(emailTemplateRequest);
+        }
+        return emailTemplates;
     }
 }
