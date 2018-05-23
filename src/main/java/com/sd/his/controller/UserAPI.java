@@ -399,7 +399,7 @@ public class UserAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "Delete", value = "Delete User",
+    @ApiOperation(httpMethod = "DELETE", value = "Delete User",
             notes = "This method will Delete User on base of id",
             produces = "application/json", nickname = "Delete Single User",
             response = GenericAPIResponse.class, protocols = "https")

@@ -1,5 +1,6 @@
 package com.sd.his.controller.setting;
 
+
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Branch;
 import com.sd.his.request.BranchRequestWrapper;
@@ -111,7 +112,6 @@ public class BranchAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     @ApiOperation(httpMethod = "GET", value = "Paginated Branches",
             notes = "This method will return Paginated Branches",
             produces = "application/json", nickname = "Get Paginated Branches ",
@@ -187,7 +187,7 @@ public class BranchAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "Delete", value = "Delete Branch",
+    @ApiOperation(httpMethod = "DELETE", value = "Delete Branch",
             notes = "This method will Delete Branch on base of id",
             produces = "application/json", nickname = "Delete Branch ",
             response = GenericAPIResponse.class, protocols = "https")
