@@ -395,13 +395,11 @@ public class HISUserService implements UserDetailsService {
     }
 
     public User updateUser(UserCreateRequest userCreateRequest, User alreadyExistsUser) {
-
-
-        String usertype = userCreateRequest.getUserType();
-        if (usertype.equalsIgnoreCase(UserEnum.CASHIER.toString())) {
+        String userType = userCreateRequest.getUserType();
+        if (userType.equalsIgnoreCase(UserEnum.CASHIER.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
-         //   alreadyExistsUser.setPassword(new BCryptPasswordEncoder().encode(userCreateRequest.getPassword()));
+            //   alreadyExistsUser.setPassword(new BCryptPasswordEncoder().encode(userCreateRequest.getPassword()));
             alreadyExistsUser.setEmail(userCreateRequest.getEmail());
 
 
@@ -417,24 +415,19 @@ public class HISUserService implements UserDetailsService {
             updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
             updateProfile.setActive(userCreateRequest.isActive());
             updateProfile.setAllowDiscount(userCreateRequest.getAllowDiscount());
-            updateProfile.setUpdatedOn(userCreateRequest.getUpdatedOn());
-            //  Branch branch = branchRepository.findByName(userCreateRequest.getPrimaryBranch());
-
+            updateProfile.setUpdatedOn(System.currentTimeMillis());
             alreadyExistsUser.setProfile(updateProfile);
 
             userRepository.save(alreadyExistsUser);
-
-
             return alreadyExistsUser;
         }
 
-        if (usertype.equalsIgnoreCase(UserEnum.RECEPTIONIST.toString())) {
+        if (userType.equalsIgnoreCase(UserEnum.RECEPTIONIST.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
             alreadyExistsUser.setEmail(userCreateRequest.getEmail());
 
             Profile updateProfile = alreadyExistsUser.getProfile();
-            logger.info("last name: " + updateProfile.getLastName());
             updateProfile.setCellPhone(userCreateRequest.getCellPhone());
             updateProfile.setFirstName(userCreateRequest.getFirstName());
             updateProfile.setLastName(userCreateRequest.getLastName());
@@ -446,18 +439,14 @@ public class HISUserService implements UserDetailsService {
             updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
             updateProfile.setActive(userCreateRequest.isActive());
             updateProfile.setAllowDiscount(userCreateRequest.getAllowDiscount());
-            updateProfile.setUpdatedOn(userCreateRequest.getUpdatedOn());
-            //Branch branch = branchRepository.findByName(userCreateRequest.getPrimaryBranch());
-
+            updateProfile.setUpdatedOn(System.currentTimeMillis());
             alreadyExistsUser.setProfile(updateProfile);
 
             userRepository.saveAndFlush(alreadyExistsUser);
-
             return alreadyExistsUser;
         }
 
-        if (usertype.equalsIgnoreCase(UserEnum.NURSE.toString())) {
-
+        if (userType.equalsIgnoreCase(UserEnum.NURSE.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
             alreadyExistsUser.setEmail(userCreateRequest.getEmail());
@@ -473,18 +462,17 @@ public class HISUserService implements UserDetailsService {
             updateProfile.setOtherDoctorDashBoard(userCreateRequest.isOtherDoctorDashBoard());
             updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
             updateProfile.setActive(userCreateRequest.isActive());
-            updateProfile.setUpdatedOn(userCreateRequest.getUpdatedOn());
+            updateProfile.setUpdatedOn(System.currentTimeMillis());
             updateProfile.setManagePatientRecords(userCreateRequest.isManagePatientRecords());
             updateProfile.setManagePatientInvoices(userCreateRequest.isManagePatientInvoices());
 
             alreadyExistsUser.setProfile(updateProfile);
 
             userRepository.save(alreadyExistsUser);
-
             return alreadyExistsUser;
         }
-        if (usertype.equalsIgnoreCase(UserEnum.DOCTOR.toString())) {
 
+        if (userType.equalsIgnoreCase(UserEnum.DOCTOR.toString())) {
             Vacation vacation = vacationRepository.findByUser(alreadyExistsUser);
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
@@ -500,13 +488,7 @@ public class HISUserService implements UserDetailsService {
             updateProfile.setOtherDoctorDashBoard(userCreateRequest.isOtherDoctorDashBoard());
             updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
             updateProfile.setActive(userCreateRequest.isActive());
-            updateProfile.setUpdatedOn(userCreateRequest.getUpdatedOn());
-
-         /*   updateProfile.setVacationFrom(HISCoreUtil.convertDateToMilliSeconds(userCreateRequest.getDateFrom()));
-            updateProfile.setVacationFrom(HISCoreUtil.convertDateToMilliSeconds(userCreateRequest.getDateTo()));
-            updateProfile.setCheckUpInterval(userCreateRequest.getInterval());
-            updateProfile.setDutyTimmingShift1(userCreateRequest.isShift1());
-            updateProfile.setDutyTimmingShift2(userCreateRequest.isShift2());*/
+            updateProfile.setUpdatedOn(System.currentTimeMillis());
 
             List<String> daysList = new ArrayList<>(Arrays.asList(userCreateRequest.getSelectedWorkingDays()));
             updateProfile.setWorkingDays(daysList);
@@ -548,7 +530,6 @@ public class HISUserService implements UserDetailsService {
         UserDutyShift userDutyShift = userDutyShiftRepository.findByUser(user);
         Vacation vacation = vacationRepository.findByUser(user);
 
-        List<String> workingDays = user.getProfile().getWorkingDays();
         userResponseWrapper.setDutyShift(userDutyShift.getDutyShift());
         userResponseWrapper.setVacation(vacation);
 
@@ -561,14 +542,9 @@ public class HISUserService implements UserDetailsService {
     }
 
 
-    public void deleteUser(User user) {
-
-        BranchUser branchUser = branchUserRepository.findByUser(user);
-        UserRole userRole = userRoleRepository.findByUser(user);
-        userRoleRepository.delete(userRole);
-        userRepository.delete(user);
-        branchUserRepository.delete(branchUser);
-
+    public User deleteUser(User user) {
+        user.setDeleted(true);
+        return userRepository.save(user);
     }
 
     public List<UserWrapper> searchByNameOrEmailOrRole(String name, String email, String role, int offset, int limit) {

@@ -1,25 +1,4 @@
-package com.sd.his.controller.setting;/*
- * @author    : waqas kamran
- * @Date      : 17-Apr-18
- * @version   : ver. 1.0.0
- * 
- * ________________________________________________________________________________________________
- *
- *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
- * ________________________________________________________________________________________________
- *
- * @Project   : HIS
- * @Package   : com.sd.his.*
- * @FileName  : BranchAPI
- *
- * Copyright © 
- * SolutionDots, 
- * All rights reserved.
- * 
- */
+package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Branch;
@@ -28,7 +7,6 @@ import com.sd.his.response.BranchResponseWrapper;
 import com.sd.his.response.GenericAPIResponse;
 import com.sd.his.service.BranchService;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.UserCreateRequest;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -37,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +24,28 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
+/*
+ * @author    : waqas kamran
+ * @Date      : 17-Apr-18
+ * @version   : ver. 1.0.0
+ *
+ * ________________________________________________________________________________________________
+ *
+ *  Developer				Date		     Version		Operation		Description
+ * ________________________________________________________________________________________________
+ *
+ *
+ * ________________________________________________________________________________________________
+ *
+ * @Project   : HIS
+ * @Package   : com.sd.his.controller.setting
+ * @FileName  : BranchAPI
+ *
+ * Copyright ©
+ * SolutionDots,
+ * All rights reserved.
+ *
+ */
 @RestController
 @RequestMapping("/branch")
 public class BranchAPI {
@@ -57,7 +56,7 @@ public class BranchAPI {
     private final Logger logger = LoggerFactory.getLogger(BranchAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
-    @ApiOperation(httpMethod = "POST", value = "Create Branch ",
+    @ApiOperation(httpMethod = "POST", value = "Create Branch",
             notes = "This method will Create Branch",
             produces = "application/json", nickname = "Create Branch",
             response = GenericAPIResponse.class, protocols = "https")
@@ -67,13 +66,9 @@ public class BranchAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<?> createBranch(HttpServletRequest request,
-                                        @RequestBody BranchRequestWrapper branchRequestWrapper) {
-
-
-        long date = System.currentTimeMillis();
-
+                                          @RequestBody BranchRequestWrapper branchRequestWrapper) {
         logger.info("Create Branch API called...");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -83,29 +78,27 @@ public class BranchAPI {
         response.setResponseData(null);
 
         try {
+            Branch alreadyExist = branchService.findByBranchName(branchRequestWrapper.getBranchName());
+            if (HISCoreUtil.isValidObject(alreadyExist)) {
+                response.setResponseMessage(messageBundle.getString("branch.add.already-found.error"));
+                response.setResponseCode(ResponseEnum.BRANCH_ALREADY_EXIST_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Branch already exist with the same name...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
 
-               Branch alreadyExist = branchService.findByBranchName(branchRequestWrapper.getBranchName());
+            Branch savedBranch = branchService.saveBranch(branchRequestWrapper);
 
-                if (HISCoreUtil.isValidObject(alreadyExist)) {
-                    response.setResponseMessage(messageBundle.getString("branch.add.already-found.error"));
-                    response.setResponseCode(ResponseEnum.BRANCH_ALREADY_EXIST_ERROR.getValue());
-                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                    response.setResponseData(null);
-                    logger.error("Branch already exist with the same name...");
-                    return new ResponseEntity<>(response, HttpStatus.OK);
-                }
+            if (HISCoreUtil.isValidObject(savedBranch)) {
+                response.setResponseData(savedBranch);
+                response.setResponseMessage(messageBundle.getString("branch.add.success"));
+                response.setResponseCode(ResponseEnum.BRANCH_ADD_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Branch created successfully...");
 
-                Branch savedBranch = branchService.saveBranch(branchRequestWrapper);
-
-                if (HISCoreUtil.isValidObject(savedBranch)) {
-                    response.setResponseData(savedBranch);
-                    response.setResponseMessage(messageBundle.getString("branch.add.success"));
-                    response.setResponseCode(ResponseEnum.BRANCH_ADD_SUCCESS.getValue());
-                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                    logger.info("Branch created successfully...");
-
-                    return new ResponseEntity<>(response, HttpStatus.OK);
-                }
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
 
 
         } catch (Exception ex) {
@@ -131,9 +124,8 @@ public class BranchAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "all/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> allBranches(HttpServletRequest request,
-                                     @PathVariable("page") int page,
-                                     @RequestParam(value = "pageSize",
-                                             required = false, defaultValue = "10") int pageSize) {
+                                         @PathVariable("page") int page,
+                                         @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         logger.info("getAllBranch paginated..");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -144,7 +136,6 @@ public class BranchAPI {
 
         try {
             List<BranchResponseWrapper> branchWrappers = branchService.findAllBranches(page, pageSize);
-
             int countBranch = branchService.totalBranches();
 
             if (!HISCoreUtil.isListEmpty(branchWrappers)) {
@@ -153,7 +144,7 @@ public class BranchAPI {
 
                 if (countBranch > pageSize) {
                     int remainder = countBranch % pageSize;
-                    int  totalPages = countBranch / pageSize;
+                    int totalPages = countBranch / pageSize;
                     if (remainder > 0) {
                         totalPages = totalPages + 1;
                     }
@@ -185,7 +176,7 @@ public class BranchAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("get all paginated Branches failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -196,7 +187,7 @@ public class BranchAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "Delete", value = "Branch",
+    @ApiOperation(httpMethod = "Delete", value = "Delete Branch",
             notes = "This method will Delete Branch on base of id",
             produces = "application/json", nickname = "Delete Branch ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -206,10 +197,9 @@ public class BranchAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/delete/{id}",method = RequestMethod.DELETE)
-    public @ResponseBody ResponseEntity<?> deleteByID(HttpServletRequest request,
-                                                      @PathVariable("id") long id
-    ) {
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteBranch(HttpServletRequest request,
+                                          @PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("branch.delete.error"));
@@ -218,11 +208,10 @@ public class BranchAPI {
         response.setResponseData(null);
 
         try {
+            Branch dbBranch = this.branchService.findById(id);
 
-            Branch branchFound = this.branchService.findById(id);
-
-            if (HISCoreUtil.isValidObject(branchFound)) {
-                branchService.deleteBranch(branchFound);
+            if (HISCoreUtil.isValidObject(dbBranch)) {
+                branchService.deleteBranch(dbBranch);
 
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("branch.delete.success"));
@@ -231,16 +220,17 @@ public class BranchAPI {
                 logger.info("Branch Deleted successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
+            } else {
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("branch.not.found"));
                 response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                logger.info("Branch Not Found ...");
+
+                logger.info("Unable to find Branch...");
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception ex) {
-            logger.error("Branch Not Deleted", ex.fillInStackTrace());
+        } catch (Exception ex) {
+            logger.error("Unable to delete Branch.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -248,9 +238,7 @@ public class BranchAPI {
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
-
 
     @ApiOperation(httpMethod = "PUT", value = "Update Branch ",
             notes = "This method will Update Branch",
@@ -262,12 +250,12 @@ public class BranchAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @PutMapping(value = "/edit/{id}")
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> updateBranch(HttpServletRequest request,
-                                        @PathVariable("id") int id,
-                                        @RequestBody BranchRequestWrapper branchRequestWrapper) {
+                                          @PathVariable("id") int id,
+                                          @RequestBody BranchRequestWrapper branchRequestWrapper) {
 
-        logger.info("update Branch API called..."+ branchRequestWrapper.getBranchName());
+        logger.info("update Branch API called..." + branchRequestWrapper.getBranchName());
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("branch.update.error"));
@@ -278,27 +266,27 @@ public class BranchAPI {
         try {
 
             Branch alreadyExistBranch = branchService.findById(id);
-              if (HISCoreUtil.isValidObject(alreadyExistBranch)) {
-                    logger.info("Branch founded...");
-                    Branch branchUpdated = branchService.updateBranch(branchRequestWrapper,alreadyExistBranch);
-                    if(HISCoreUtil.isValidObject(branchUpdated)){
-                        logger.info("Branch Updated...");
-                        response.setResponseData(branchUpdated);
-                        response.setResponseMessage(messageBundle.getString("branch.update.success"));
-                        response.setResponseCode(ResponseEnum.BRANCH_UPDATE_SUCCESS.getValue());
-                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                        logger.info("Branch updated successfully...");
+            if (HISCoreUtil.isValidObject(alreadyExistBranch)) {
+                logger.info("Branch founded...");
+                Branch branchUpdated = branchService.updateBranch(branchRequestWrapper, alreadyExistBranch);
+                if (HISCoreUtil.isValidObject(branchUpdated)) {
+                    logger.info("Branch Updated...");
+                    response.setResponseData(branchUpdated);
+                    response.setResponseMessage(messageBundle.getString("branch.update.success"));
+                    response.setResponseCode(ResponseEnum.BRANCH_UPDATE_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("Branch updated successfully...");
 
-                        return new ResponseEntity<>(response, HttpStatus.OK);
-                    }
-                    logger.info("Branch not found...");
-                    response.setResponseMessage(messageBundle.getString("branch.not.found"));
-                    response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
-                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                    response.setResponseData(null);
-                    logger.error("Branch not updated...");
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
+                logger.info("Branch not found...");
+                response.setResponseMessage(messageBundle.getString("branch.not.found"));
+                response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Branch not updated...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
 
         } catch (Exception ex) {
             logger.error("Update Branch Failed.", ex.fillInStackTrace());
@@ -321,9 +309,8 @@ public class BranchAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> findByID(HttpServletRequest request,
-                                      @PathVariable("id") long id
-    ) {
+    public ResponseEntity<?> getBranchById(HttpServletRequest request,
+                                           @PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("branch.not.found"));
@@ -332,18 +319,17 @@ public class BranchAPI {
         response.setResponseData(null);
 
         try {
+            BranchResponseWrapper dbBranch = this.branchService.findByID(id);
 
-            BranchResponseWrapper branchFound = this.branchService.findByID(id);
-
-            if (HISCoreUtil.isValidObject(branchFound)) {
-                response.setResponseData(branchFound);
-                response.setResponseMessage(messageBundle.getString("branch.found"));
+            if (HISCoreUtil.isValidObject(dbBranch)) {
+                response.setResponseData(dbBranch);
                 response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
+                response.setResponseMessage(messageBundle.getString("branch.found"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.info("Branch Found successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
+            } else {
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("branch.not.found"));
                 response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
@@ -351,7 +337,7 @@ public class BranchAPI {
                 logger.info("Branch Not Found ...");
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("Branch Not Found", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -360,13 +346,11 @@ public class BranchAPI {
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-
-    @ApiOperation(httpMethod = "GET", value = "Branche Name",
+    @ApiOperation(httpMethod = "GET", value = "Branches Name",
             notes = "This method will return  Branches name",
-            produces = "application/json", nickname = "Get  Branches ",
+            produces = "application/json", nickname = "Get all Branches",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
             @ApiResponse(code = 200, message = " Branches name fetched successfully", response = GenericAPIResponse.class),
@@ -375,7 +359,7 @@ public class BranchAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/name", method = RequestMethod.GET)
-    public ResponseEntity<?> AllBranchName(HttpServletRequest request) {
+    public ResponseEntity<?> getAllBranches(HttpServletRequest request) {
         logger.info("getAllBranch Name..");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -386,8 +370,6 @@ public class BranchAPI {
 
         try {
             List<String> branchesName = branchService.findAllBranchName();
-
-
             if (!HISCoreUtil.isListEmpty(branchesName)) {
 
                 response.setResponseMessage(messageBundle.getString("branch.fetched.success"));
@@ -398,7 +380,7 @@ public class BranchAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
-         }catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("get all Branches failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -420,13 +402,12 @@ public class BranchAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/search/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> searchUser(HttpServletRequest request,
-                                        @PathVariable("page") int page,
-                                        @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                        @RequestParam(value = "branch") String name,
-                                        @RequestParam(value = "department") String depaertment,
-                                        @RequestParam(value = "description") String description)
-    {
+    public ResponseEntity<?> searchPaginatedBranches(HttpServletRequest request,
+                                                     @PathVariable("page") int page,
+                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                     @RequestParam(value = "branch") String name,
+                                                     @RequestParam(value = "department") String department,
+                                                     @RequestParam(value = "description") String description) {
         logger.info("search:" + name);
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("branch.not.found"));
@@ -436,9 +417,9 @@ public class BranchAPI {
 
         try {
             //
-            List<BranchResponseWrapper> branchWrappers = branchService.searchByBranchName(name,page,pageSize);
+            List<BranchResponseWrapper> branchWrappers = branchService.searchByBranchName(name, page, pageSize);
 
-            int countBranch= branchService.totalBranches();
+            int countBranch = branchService.totalBranches();
 
             if (!HISCoreUtil.isListEmpty(branchWrappers)) {
                 Integer nextPage, prePage, currPage;
@@ -488,8 +469,5 @@ public class BranchAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
 
 }

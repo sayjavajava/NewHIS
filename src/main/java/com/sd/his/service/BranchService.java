@@ -1,25 +1,4 @@
-package com.sd.his.service;/*
- * @author    : waqas kamran
- * @Date      : 17-Apr-18
- * @version   : ver. 1.0.0
- * 
- * ________________________________________________________________________________________________
- *
- *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
- * ________________________________________________________________________________________________
- *
- * @Project   : HIS
- * @Package   : com.sd.his.*
- * @FileName  : UserAuthAPI
- *
- * Copyright © 
- * SolutionDots, 
- * All rights reserved.
- * 
- */
+package com.sd.his.service;
 
 import com.sd.his.model.Branch;
 import com.sd.his.model.BranchUser;
@@ -32,7 +11,6 @@ import com.sd.his.repositiories.UserRepository;
 import com.sd.his.request.BranchRequestWrapper;
 import com.sd.his.response.BranchResponseWrapper;
 import com.sd.his.response.UserResponseWrapper;
-import com.sd.his.wrapper.BranchWrapper;
 import com.sd.his.wrapper.ExamRooms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,25 +21,47 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+/*
+ * @author    : waqas kamran
+ * @Date      : 17-Apr-18
+ * @version   : ver. 1.0.0
+ *
+ * ________________________________________________________________________________________________
+ *
+ *  Developer				Date		     Version		Operation		Description
+ * ________________________________________________________________________________________________
+ *
+ *
+ * ________________________________________________________________________________________________
+ *
+ * @Project   : HIS
+ * @Package   : com.sd.his.*
+ * @FileName  : UserAuthAPI
+ *
+ * Copyright ©
+ * SolutionDots,
+ * All rights reserved.
+ *
+ */
 @Service
 public class BranchService {
+
+    private final Logger logger = LoggerFactory.getLogger(BranchService.class);
 
     private BranchRepository branchRepository;
     private BranchUserRepository branchUserRepository;
     private UserRepository userRepository;
     private RoomRepository roomRepository;
 
-    public BranchService(BranchRepository branchRepository, BranchUserRepository branchUserRepository, UserRepository userRepository, RoomRepository roomRepository) {
+    public BranchService(BranchRepository branchRepository, BranchUserRepository branchUserRepository,
+                         UserRepository userRepository, RoomRepository roomRepository) {
         this.branchRepository = branchRepository;
         this.branchUserRepository = branchUserRepository;
         this.userRepository = userRepository;
         this.roomRepository = roomRepository;
     }
-
-    private final Logger logger = LoggerFactory.getLogger(BranchService.class);
 
     public Branch saveBranch(BranchRequestWrapper branchRequestWrapper) {
 
@@ -109,7 +109,7 @@ public class BranchService {
             room.setBranch(branch);
             roomRepository.save(room);
         }
-        if(branchUser !=null){
+        if (branchUser != null) {
             branchUser.setPrimaryDr(true);
             branchUser.setPrimaryBranch(true);
             branchUser.setBillingBranch(true);
@@ -125,9 +125,7 @@ public class BranchService {
     }
 
     public List<BranchResponseWrapper> findAllBranches(int offset, int limit) {
-
         Pageable pageable = new PageRequest(offset, limit);
-
         return branchRepository.findAllByNameAndActiveTrueAndDeletedFalse(pageable);
     }
 
@@ -136,23 +134,17 @@ public class BranchService {
     }
 
     public Branch findById(long id) {
-        return branchRepository.findById(id);
+        return branchRepository.findByIdAndDeletedFalse(id);
     }
 
     public void deleteBranch(Branch branch) {
-
         branch.setDeleted(true);
-
-
         branchRepository.save(branch);
-
     }
 
     public BranchResponseWrapper findByID(long id) {
-        Branch branch = branchRepository.findById(id);
+        Branch branch = branchRepository.findByIdAndDeletedFalse(id);
         BranchResponseWrapper branchResponseWrapper = new BranchResponseWrapper(branch);
-       // BranchUser branchUser = branch.getUsers().stream().filter(x -> x.isPrimaryDr() == true).findFirst().get();
-       // branchResponseWrapper.setUsername(branchUser.getUser().getUsername());
 
         List<Room> finalRooms = branch.getRooms().stream()
                 .filter(x -> x.getExamName() != null)
@@ -160,7 +152,6 @@ public class BranchService {
                 .collect(Collectors.toList());
 
         branchResponseWrapper.setExamRooms(finalRooms);
-
 
         List<UserResponseWrapper> userWrapper = new ArrayList<>();
         List<User> userRoles = userRepository.findAllByRoles_role_name("doctor");
@@ -194,8 +185,7 @@ public class BranchService {
         branch.setShowBranchInfoOnline(branchRequestWrapper.isShowBranchOnline());
         branch.setFax(branchRequestWrapper.getFax());
         branch.setFormattedAddress(branchRequestWrapper.getFormattedAddress());
-        int userId = Integer.parseInt(branchRequestWrapper.getPrimaryDoctor());
-        User user = userRepository.findById(userId);
+
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
         for (ExamRooms ex : exRooms) {
             Room room = new Room();
@@ -213,9 +203,9 @@ public class BranchService {
     public List<String> findAllBranchName() {
         List<Branch> allBranches = branchRepository.findAll();
         List<String> branchNames = allBranches.stream()
-                                  .filter(x -> x.getName() != null)
-                                  .map(x -> x.getName())
-                                  .collect(Collectors.toList());
+                .filter(x -> x.getName() != null)
+                .map(x -> x.getName())
+                .collect(Collectors.toList());
 
         return branchNames;
     }
@@ -224,9 +214,9 @@ public class BranchService {
         Pageable pageable = new PageRequest(offset, limit);
         logger.info("branch name" + name);
 
-        List<BranchResponseWrapper> allbranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalse(name, pageable);
+        List<BranchResponseWrapper> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalse(name, pageable);
 
-        return allbranches;
+        return allBranches;
     }
 
 

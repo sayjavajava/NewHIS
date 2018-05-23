@@ -1,27 +1,30 @@
-package com.sd.his.request;/*
- * @author    ;amran
+package com.sd.his.request;
+
+import com.sd.his.wrapper.ExamRooms;
+
+/*
+ * @author    Waqas Kamran
  * @Date      ;18
  * @version   ;0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
  * ________________________________________________________________________________________________
  *
- * @Project   ;@Package   ;his.*
- * @FileName  ;hAPI
  *
- * Copyright © 
- * SolutionDots, 
+ * ________________________________________________________________________________________________
+ *
+ * @Project  HIS
+ * @FileName  BranchRequestWrapper
+ *
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
-import com.sd.his.wrapper.ExamRooms;
-
 public class BranchRequestWrapper {
+
     String branchName;
     String officeHoursStart;
     String officeHoursEnd;
@@ -40,7 +43,7 @@ public class BranchRequestWrapper {
     String billingBranch;
     String billingTaxID;
     boolean showBranchOnline;
-    boolean  allowOnlineSchedulingInBranch;
+    boolean allowOnlineSchedulingInBranch;
 
 
     public String getCountry() {
@@ -90,7 +93,6 @@ public class BranchRequestWrapper {
     public void setAllowOnlineSchedulingInBranch(boolean allowOnlineSchedulingInBranch) {
         this.allowOnlineSchedulingInBranch = allowOnlineSchedulingInBranch;
     }
-
 
     public BranchRequestWrapper() {
     }

@@ -1,12 +1,9 @@
 package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.enums.UserEnum;
-import com.sd.his.model.Profile;
 import com.sd.his.model.User;
-import com.sd.his.response.UserResponseWrapper;
-import com.sd.his.wrapper.AdminWrapper;
 import com.sd.his.response.GenericAPIResponse;
+import com.sd.his.response.UserResponseWrapper;
 import com.sd.his.service.HISUserService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.UserCreateRequest;
@@ -14,7 +11,6 @@ import com.sd.his.wrapper.UserWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.hibernate.sql.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 @RestController
@@ -132,7 +131,6 @@ public class UserAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    //Create User
 
     @ApiOperation(httpMethod = "POST", value = "Create User ",
             notes = "This method will Create User",
@@ -146,12 +144,12 @@ public class UserAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseEntity<?> createUser(HttpServletRequest request,
-                                                  @RequestBody UserCreateRequest createRequest) {
+                                        @RequestBody UserCreateRequest createRequest) {
 
 
         long date = System.currentTimeMillis();
-        logger.info("Create User API called..."+ createRequest.getUserType());
-        logger.info("Create User API called..."+ createRequest.getUserName());
+        logger.info("Create User API called..." + createRequest.getUserType());
+        logger.info("Create User API called..." + createRequest.getUserName());
         createRequest.setCreatedOn(date);
         createRequest.setUpdatedOn(date);
         GenericAPIResponse response = new GenericAPIResponse();
@@ -162,6 +160,15 @@ public class UserAPI {
 
         try {
 
+            if (HISCoreUtil.isNull(createRequest.getUserType())) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                logger.error("Create User insufficient params");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
             if (!HISCoreUtil.isNull(createRequest.getUserType())) {
                 User alreadyExist = userService.findByUserName(createRequest.getUserName());
 
@@ -175,25 +182,16 @@ public class UserAPI {
                 }
 
                 User savedUser = userService.saveUser(createRequest);
+                if (HISCoreUtil.isValidObject(savedUser)) {
+                    response.setResponseData(savedUser);
+                    response.setResponseMessage(messageBundle.getString("user.add.success"));
+                    response.setResponseCode(ResponseEnum.USER_ADD_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("User created successfully...");
 
-                    if (HISCoreUtil.isValidObject(savedUser)) {
-                        response.setResponseData(savedUser);
-                        response.setResponseMessage(messageBundle.getString("user.add.success"));
-                        response.setResponseCode(ResponseEnum.USER_ADD_SUCCESS.getValue());
-                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                        logger.info("User created successfully...");
-
-                        return new ResponseEntity<>(response, HttpStatus.OK);
-                    }
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
-            else {
-                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("Create User insufficient params");
             }
-
         } catch (Exception ex) {
             logger.error("Create User Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -201,7 +199,7 @@ public class UserAPI {
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ApiOperation(httpMethod = "GET", value = "Paginated Users",
@@ -214,11 +212,11 @@ public class UserAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/all/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> allUser(HttpServletRequest request,
-                                      @PathVariable("page") int page,
-                                      @RequestParam(value = "pageSize",
-                                              required = false, defaultValue = "10") int pageSize) {
+    @RequestMapping(value = "/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllPaginatedUsers(HttpServletRequest request,
+                                                  @PathVariable("page") int page,
+                                                  @RequestParam(value = "pageSize",
+                                                          required = false, defaultValue = "10") int pageSize) {
         logger.info("getAllUsers paginated..");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -237,8 +235,8 @@ public class UserAPI {
                 int[] pages;
 
                 if (countUser > pageSize) {
-                     int remainder = countUser % pageSize;
-                     int  totalPages = countUser / pageSize;
+                    int remainder = countUser % pageSize;
+                    int totalPages = countUser / pageSize;
                     if (remainder > 0) {
                         totalPages = totalPages + 1;
                     }
@@ -270,7 +268,7 @@ public class UserAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("get all paginated User failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -298,10 +296,8 @@ public class UserAPI {
 
 
         long date = System.currentTimeMillis();
-        logger.info("update User API called..."+ createRequest.getUserType());
-        logger.info("update User API called..."+ createRequest.getUserName());
-        //createRequest.setCreatedOn(date);
-        createRequest.setUpdatedOn(date);
+        logger.info("update User API called..." + createRequest.getUserType());
+        logger.info("update User API called..." + createRequest.getUserName());
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("user.update.error"));
         response.setResponseCode(ResponseEnum.USER_UPDATE_ERROR.getValue());
@@ -310,16 +306,13 @@ public class UserAPI {
 
         try {
             if (!HISCoreUtil.isNull(createRequest.getUserType())) {
-               User alreadyExistUser = userService.findById(id);
+                User alreadyExistUser = userService.findById(id);
 
                 if (HISCoreUtil.isValidObject(alreadyExistUser)) {
                     logger.info("User founded...");
+                    User userUpdated = userService.updateUser(createRequest, alreadyExistUser);
 
-
-                    User userUpdated = userService.updateUser(createRequest,alreadyExistUser);
-                   //todo
-
-                    if(HISCoreUtil.isValidObject(userUpdated)){
+                    if (HISCoreUtil.isValidObject(userUpdated)) {
                         logger.info("User saved...");
                         response.setResponseData(userUpdated);
                         response.setResponseMessage(messageBundle.getString("user.update.success"));
@@ -329,6 +322,7 @@ public class UserAPI {
 
                         return new ResponseEntity<>(response, HttpStatus.OK);
                     }
+                } else {
                     logger.info("User not found...");
                     response.setResponseMessage(messageBundle.getString("user.not.found"));
                     response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
@@ -337,16 +331,13 @@ public class UserAPI {
                     logger.error("User not updated...");
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
-
-            }
-            else {
+            } else {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
                 logger.error("Update User insufficient params");
             }
-
         } catch (Exception ex) {
             logger.error("Update User Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -356,6 +347,7 @@ public class UserAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
     @ApiOperation(httpMethod = "GET", value = "User",
             notes = "This method will return User on base of id",
             produces = "application/json", nickname = "Get Single User",
@@ -367,9 +359,9 @@ public class UserAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> findByID(HttpServletRequest request,
-                                        @PathVariable("id") long id
-                                      ) {
+    public ResponseEntity<?> getUserById(HttpServletRequest request,
+                                         @PathVariable("id") long id
+    ) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("user.not.found"));
@@ -378,26 +370,25 @@ public class UserAPI {
         response.setResponseData(null);
 
         try {
+            UserResponseWrapper user = this.userService.findByIdAndResponse(id);
 
-            UserResponseWrapper userFound = this.userService.findByIdAndResponse(id);
-
-            if (HISCoreUtil.isValidObject(userFound)) {
-                response.setResponseData(userFound);
+            if (HISCoreUtil.isValidObject(user)) {
+                response.setResponseData(user);
                 response.setResponseMessage(messageBundle.getString("user.found"));
                 response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.info("User Found successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
-              response.setResponseData(null);
-              response.setResponseMessage(messageBundle.getString("user.not.found"));
-              response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
-              response.setResponseStatus(ResponseEnum.ERROR.getValue());
-              logger.info("User Not Found ...");
-                }
+            } else {
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("user.not.found"));
+                response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                logger.info("User Not Found ...");
+            }
             return new ResponseEntity<>(response, HttpStatus.OK);
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("User Not Found", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -406,10 +397,9 @@ public class UserAPI {
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    @ApiOperation(httpMethod = "Delete", value = "User",
+    @ApiOperation(httpMethod = "Delete", value = "Delete User",
             notes = "This method will Delete User on base of id",
             produces = "application/json", nickname = "Delete Single User",
             response = GenericAPIResponse.class, protocols = "https")
@@ -419,10 +409,9 @@ public class UserAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/delete/{id}",method = RequestMethod.DELETE)
-    public @ResponseBody ResponseEntity<?> deleteByID(HttpServletRequest request,
-                                      @PathVariable("id") long id
-    ) {
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteUser(HttpServletRequest request,
+                                        @PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("user.delete.error"));
@@ -431,21 +420,19 @@ public class UserAPI {
         response.setResponseData(null);
 
         try {
+            User user = this.userService.findById(id);
+            if (HISCoreUtil.isValidObject(user)) {
+                user = userService.deleteUser(user);
+                if (user.isDeleted()) {
+                    response.setResponseData(user);
+                    response.setResponseMessage(messageBundle.getString("user.delete.success"));
+                    response.setResponseCode(ResponseEnum.USER_DELETED_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("User Deleted successfully...");
 
-            User userFound = this.userService.findById(id);
-
-            if (HISCoreUtil.isValidObject(userFound)) {
-
-                userService.deleteUser(userFound);
-
-                response.setResponseData(userFound);
-                response.setResponseMessage(messageBundle.getString("user.delete.success"));
-                response.setResponseCode(ResponseEnum.USER_DELETED_SUCCESS.getValue());
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.info("User Deleted successfully...");
-
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            } else {
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("user.not.found"));
                 response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
@@ -453,7 +440,7 @@ public class UserAPI {
                 logger.info("User Not Found ...");
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
-            }catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("User Not Deleted", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -462,8 +449,8 @@ public class UserAPI {
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
+
     @ApiOperation(httpMethod = "GET", value = "Search User",
             notes = "This method will return User on base of search",
             produces = "application/json", nickname = "Search Users",
@@ -476,74 +463,72 @@ public class UserAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/search/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> searchUser(HttpServletRequest request,
-                                          @PathVariable("page") int page,
-                                          @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                          @RequestParam(value = "name") String name,
-                                          @RequestParam(value = "role") String role,
-                                          @RequestParam(value = "email") String email)
-                                           {
-logger.info("search:" + role);
-                                               GenericAPIResponse response = new GenericAPIResponse();
-                                               response.setResponseMessage(messageBundle.getString("user.not.found"));
-                                               response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
-                                               response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                                               response.setResponseData(null);
+                                        @PathVariable("page") int page,
+                                        @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                        @RequestParam(value = "name") String name,
+                                        @RequestParam(value = "role") String role,
+                                        @RequestParam(value = "email") String email) {
+        logger.info("search:" + role);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.not.found"));
+        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
 
-                                               try {
-                                                   //
-       List<UserWrapper> userWrappers = userService.searchByNameOrEmailOrRole(name, email,role,page,pageSize);
+        try {
+            //
+            List<UserWrapper> userWrappers = userService.searchByNameOrEmailOrRole(name, email, role, page, pageSize);
 
-                                                   int countUser = userService.totalUser();
+            int countUser = userService.totalUser();
 
-                                                   if (!HISCoreUtil.isListEmpty(userWrappers)) {
-                                                       Integer nextPage, prePage, currPage;
-                                                       int[] pages;
+            if (!HISCoreUtil.isListEmpty(userWrappers)) {
+                Integer nextPage, prePage, currPage;
+                int[] pages;
 
-                                                       if (countUser > pageSize) {
-                                                           int remainder = countUser % pageSize;
-                                                           int totalPages = countUser / pageSize;
-                                                           if (remainder > 0) {
-                                                               totalPages = totalPages + 1;
-                                                           }
-                                                           pages = new int[totalPages];
-                                                           pages = IntStream.range(0, totalPages).toArray();
-                                                           currPage = page;
-                                                           nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
-                                                           prePage = currPage > 0 ? currPage : null;
-                                                       } else {
-                                                           pages = new int[1];
-                                                           pages[0] = 0;
-                                                           currPage = 0;
-                                                           nextPage = null;
-                                                           prePage = null;
-                                                       }
+                if (countUser > pageSize) {
+                    int remainder = countUser % pageSize;
+                    int totalPages = countUser / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = page;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
 
-                                                       Map<String, Object> returnValues = new LinkedHashMap<>();
-                                                       returnValues.put("nextPage", nextPage);
-                                                       returnValues.put("prePage", prePage);
-                                                       returnValues.put("currPage", currPage);
-                                                       returnValues.put("pages", pages);
-                                                       returnValues.put("data", userWrappers);
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);
+                returnValues.put("data", userWrappers);
 
-                                                       response.setResponseMessage(messageBundle.getString("user.fetched.success"));
-                                                       response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
-                                                       response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                                                       response.setResponseData(returnValues);
-                                                       logger.info("searched User Fetched successfully...");
-                                                       return new ResponseEntity<>(response, HttpStatus.OK);
-                                                   }
-                                                   return new ResponseEntity<>(response, HttpStatus.OK);
-                                               } catch (Exception ex) {
-                                                   logger.error("searched User failed.", ex.fillInStackTrace());
-                                                   response.setResponseData("");
-                                                   response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                                                   response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-                                                   response.setResponseMessage(messageBundle.getString("exception.occurs"));
+                response.setResponseMessage(messageBundle.getString("user.fetched.success"));
+                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+                logger.info("searched User Fetched successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("searched User failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
 
-                                                   return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-                                               }
-                                           }
-
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @ApiOperation(httpMethod = "GET", value = "User By Role",
             notes = "This method will return Users By Role",
@@ -556,7 +541,8 @@ logger.info("search:" + role);
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/role/", method = RequestMethod.GET)
-    public ResponseEntity<?> findUserByRole(HttpServletRequest request, @RequestParam(value = "name") String role){
+    public ResponseEntity<?> findUserByRole(HttpServletRequest request,
+                                            @RequestParam(value = "name") String role) {
 
         logger.info("find User By Role..");
         logger.info("user type..." + role);
@@ -566,11 +552,9 @@ logger.info("search:" + role);
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
-
         try {
-            if(!HISCoreUtil.isNull(role)) {
+            if (!HISCoreUtil.isNull(role)) {
                 List<UserResponseWrapper> userWrappers = userService.findByRole(role);
-
 
                 if (!HISCoreUtil.isListEmpty(userWrappers)) {
                     response.setResponseMessage(messageBundle.getString("user.fetched.success"));
@@ -581,7 +565,7 @@ logger.info("search:" + role);
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
+            } else {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -589,7 +573,7 @@ logger.info("search:" + role);
                 logger.error("Create User insufficient params");
 
             }
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("user by role failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -600,7 +584,5 @@ logger.info("search:" + role);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
 }
 
