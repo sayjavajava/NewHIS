@@ -40,6 +40,16 @@ public class TaxService {
     @Autowired
     TaxRepository taxRepository;
 
+    public List<TaxWrapper> findAllActiveTax() {
+        List<Tax> dbTax = taxRepository.findAllByDeletedFalseAndActiveTrue();
+        List<TaxWrapper> taxWrappers = new ArrayList<>();
+
+        for (Tax tax : dbTax) {
+            TaxWrapper taxWrapper = new TaxWrapper(tax);
+            taxWrappers.add(taxWrapper);
+        }
+        return taxWrappers;
+    }
 
     public List<TaxWrapper> findAllTax(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);

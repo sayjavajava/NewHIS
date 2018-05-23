@@ -1,6 +1,7 @@
 package com.sd.his.utill;
 
 import com.sd.his.model.*;
+import com.sd.his.request.MedicalServiceRequest;
 import com.sd.his.wrapper.*;
 import org.springframework.data.domain.Page;
 import com.sd.his.model.*;
@@ -145,4 +146,13 @@ public class APIUtil {
         return iCDCWrappers;
     }
 
+    public static void buildMedicalService(MedicalService ms, MedicalServiceRequest createRequest) {
+        ms.setDeleted(false);
+        ms.setTitle(createRequest.getTitle());
+        ms.setCost(createRequest.getCost());
+        ms.setFee(createRequest.getFee());
+        ms.setDuration(createRequest.getDuration());
+        ms.setDescription(createRequest.getDescription());
+        ms.setStatus(createRequest.isStatus());
+    }
 }

@@ -2,12 +2,13 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.request.MedicalServiceRequest;
 
 import javax.persistence.*;
 import java.util.List;
 
 /*
- * @author    : irfan
+ * @author    : Irfan Nasim
  * @Date      : 14-May-18
  * @version   : ver. 1.0.0
  * 
@@ -59,6 +60,9 @@ public class MedicalService {
     @Column(name = "STATUS")
     private Boolean status;
 
+    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
+    private Boolean deleted;
+
     @ManyToOne
     @JoinColumn(name = "TAX_ID")
     private Tax tax;
@@ -74,12 +78,24 @@ public class MedicalService {
     public MedicalService() {
     }
 
+    public MedicalService(MedicalServiceRequest createRequest, Tax tax) {
+        this.title = createRequest.getTitle();
+        this.cost = createRequest.getCost();
+        this.fee = createRequest.getFee();
+        this.duration = createRequest.getDuration();
+        this.description = createRequest.getDescription();
+        this.status = createRequest.isStatus();
+        this.deleted = false;
+        this.tax = tax;
+    }
+
     @Override
     public String toString() {
         return "MedicalService{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", status=" + status +
+                ", deleted=" + deleted +
                 '}';
     }
 
@@ -145,6 +161,14 @@ public class MedicalService {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public Tax getTax() {

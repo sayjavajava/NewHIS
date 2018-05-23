@@ -47,6 +47,11 @@ public class BranchMedicalService {
     public BranchMedicalService() {
     }
 
+    public BranchMedicalService(Branch branch, MedicalService medicalService) {
+        this.branch = branch;
+        this.medicalService = medicalService;
+    }
+
     public Long getId() {
         return id;
     }
