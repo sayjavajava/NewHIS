@@ -38,9 +38,9 @@ public interface ClinicalDepartmentRepository extends JpaRepository<ClinicalDepa
 
     ClinicalDepartment findByIdAndActiveTrueAndDeletedFalse(long id);
 
-    List<ClinicalDepartment> findByNameContainingAndActiveTrueAndDeletedFalse(Pageable pageable, String name);
+    List<ClinicalDepartment> findByNameContainingAndDeletedFalse(Pageable pageable, String name);
 
-    List<ClinicalDepartment> findByNameContainingAndActiveTrueAndDeletedFalse(String name);
+    List<ClinicalDepartment> findByNameContainingAndDeletedFalse(String name);
 
     ClinicalDepartment findByNameAndDeletedFalse(String name);
 

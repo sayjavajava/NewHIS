@@ -92,16 +92,15 @@ public class ClinicalDepartmentService {
     }
 
     public int countSearchedClinicalDepartments(String name) {
-        return departmentRepository.findByNameContainingAndActiveTrueAndDeletedFalse(name).size();
+        return departmentRepository.findByNameContainingAndDeletedFalse(name).size();
     }
 
     public List<ClinicalDepartmentWrapper> getPageableSearchedDepartment(int offset, int limit, String name) {
         Pageable pageable = new PageRequest(offset, limit);
-        List<ClinicalDepartment> dpts = departmentRepository.findByNameContainingAndActiveTrueAndDeletedFalse(pageable, name);
+        List<ClinicalDepartment> dpts = departmentRepository.findByNameContainingAndDeletedFalse(pageable, name);
         List<ClinicalDepartmentWrapper> dptsWrappers = new ArrayList<>();
 
         for (ClinicalDepartment cd : dpts) {
-            //#TODO need to set branch id
             ClinicalDepartmentWrapper dpt = new ClinicalDepartmentWrapper(cd);
             dptsWrappers.add(dpt);
         }

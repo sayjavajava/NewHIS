@@ -302,7 +302,7 @@ public class EmailTemplateAPI {
         try {
             if (HISCoreUtil.isNull(createRequest.getTitle()) ||
                     HISCoreUtil.isNull(createRequest.getSubject()) ||
-                    HISCoreUtil.isNull(createRequest.getType())) {
+                    HISCoreUtil.isNull(createRequest.getEmailTemplate())) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -312,7 +312,7 @@ public class EmailTemplateAPI {
             }
 
             if (emailTemplateService.isDupTitle(createRequest.getTitle())) {
-                response.setResponseMessage(messageBundle.getString("email.template.save.already"));
+                response.setResponseMessage(messageBundle.getString("email.template.already"));
                 response.setResponseCode(ResponseEnum.EMAIL_TEMPLATE_SAVE_ALREADY.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
@@ -410,25 +410,28 @@ public class EmailTemplateAPI {
             if (createRequest.getId() <= 0 ||
                     HISCoreUtil.isNull(createRequest.getTitle()) ||
                     HISCoreUtil.isNull(createRequest.getSubject()) ||
-                    HISCoreUtil.isNull(createRequest.getType())) {
+                    HISCoreUtil.isNull(createRequest.getEmailTemplate())) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 logger.error("updateEmailTemplate insufficient params");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
             if (emailTemplateService.isDupTitleAgainstId(createRequest)) {
-                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseMessage(messageBundle.getString("email.template.already"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
                 logger.error("updateEmailTemplate Duplicate Title");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
             if (HISCoreUtil.isValidObject(emailTemplateService.updateEmailTemplate(createRequest))) {
                 response.setResponseMessage(messageBundle.getString("email.template.update.success"));
                 response.setResponseCode(ResponseEnum.EMAIL_TEMPLATE_UPDATE_SUCCESS.getValue());//EMAIL_TEMP_SUC_08
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.info("updateEmailTemplate updated successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
                 response.setResponseMessage(messageBundle.getString("email.template.update.already.deleted"));
                 response.setResponseCode(ResponseEnum.EMAIL_TEMPLATE_UPDATE_ALREADY_DELETED.getValue());//EMAIL_TEMP_SUC_11

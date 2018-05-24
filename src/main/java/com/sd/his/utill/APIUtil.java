@@ -179,7 +179,7 @@ public class APIUtil {
         emailTemplate.setDeleted(false);
         emailTemplate.setCreatedOn(System.currentTimeMillis());
         emailTemplate.setUpdatedOn(System.currentTimeMillis());
-        emailTemplate.setActive(true);
+        emailTemplate.setActive(createRequest.getId()>0 ? createRequest.isActive(): true );
         return emailTemplate;
     }
 
