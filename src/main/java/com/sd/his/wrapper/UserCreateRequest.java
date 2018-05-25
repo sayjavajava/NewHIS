@@ -46,29 +46,21 @@ public class UserCreateRequest {
     String secondShiftToTime;
     String firstShiftFromTime;
     String firstShiftToTime;
-    String[] selectedDepartment;
-    String[] selectedServices;
+    Long[] selectedDepartment;
+    Long[] selectedServices;
+    Long[] dutyWithDoctors;
     String[] selectedWorkingDays;
     String[] selectedDoctors;
-    String allowDiscount;
-    long interval;
+    Boolean allowDiscount;
+    Long interval;
     String homePhone;
     String cellPhone;
     String primaryBranch;
-    String[] selectedRestrictedBranches;
+    String[] selectedRestrictBranch;
     String dateFrom;
     String dateTo;
-    long createdOn;
-    long updatedOn;
-
-
-    public String[] getSelectedWorkingDays() {
-        return selectedWorkingDays;
-    }
-
-    public void setSelectedWorkingDays(String[] selectedWorkingDays) {
-        this.selectedWorkingDays = selectedWorkingDays;
-    }
+    Long createdOn;
+    Long updatedOn;
 
     public String getUserType() {
         return userType;
@@ -158,6 +150,14 @@ public class UserCreateRequest {
         this.otherDoctorDashBoard = otherDoctorDashBoard;
     }
 
+    public Boolean getAllowDiscount() {
+        return allowDiscount;
+    }
+
+    public void setAllowDiscount(Boolean allowDiscount) {
+        this.allowDiscount = allowDiscount;
+    }
+
     public String getAccountExpiry() {
         return accountExpiry;
     }
@@ -238,22 +238,29 @@ public class UserCreateRequest {
         this.firstShiftToTime = firstShiftToTime;
     }
 
-    public String[] getSelectedDepartment() {
+    public Long[] getSelectedDepartment() {
         return selectedDepartment;
     }
 
-    public void setSelectedDepartment(String[] selectedDepartment) {
+    public void setSelectedDepartment(Long[] selectedDepartment) {
         this.selectedDepartment = selectedDepartment;
     }
 
-    public String[] getSelectedServices() {
+    public Long[] getSelectedServices() {
         return selectedServices;
     }
 
-    public void setSelectedServices(String[] selectedServices) {
+    public void setSelectedServices(Long[] selectedServices) {
         this.selectedServices = selectedServices;
     }
 
+    public String[] getSelectedWorkingDays() {
+        return selectedWorkingDays;
+    }
+
+    public void setSelectedWorkingDays(String[] selectedWorkingDays) {
+        this.selectedWorkingDays = selectedWorkingDays;
+    }
 
     public String[] getSelectedDoctors() {
         return selectedDoctors;
@@ -263,19 +270,19 @@ public class UserCreateRequest {
         this.selectedDoctors = selectedDoctors;
     }
 
-    public String getAllowDiscount() {
-        return allowDiscount;
+    public Long[] getDutyWithDoctors() {
+        return dutyWithDoctors;
     }
 
-    public void setAllowDiscount(String allowDiscount) {
-        this.allowDiscount = allowDiscount;
+    public void setDutyWithDoctors(Long[] dutyWithDoctors) {
+        this.dutyWithDoctors = dutyWithDoctors;
     }
 
-    public long getInterval() {
+    public Long getInterval() {
         return interval;
     }
 
-    public void setInterval(long interval) {
+    public void setInterval(Long interval) {
         this.interval = interval;
     }
 
@@ -303,12 +310,12 @@ public class UserCreateRequest {
         this.primaryBranch = primaryBranch;
     }
 
-    public String[] getSelectedRestrictedBranches() {
-        return selectedRestrictedBranches;
+    public String[] getSelectedRestrictBranch() {
+        return selectedRestrictBranch;
     }
 
-    public void setSelectedRestrictedBranches(String[] selectedRestrictedBranches) {
-        this.selectedRestrictedBranches = selectedRestrictedBranches;
+    public void setSelectedRestrictBranch(String[] selectedRestrictBranch) {
+        this.selectedRestrictBranch = selectedRestrictBranch;
     }
 
     public String getDateFrom() {
@@ -327,19 +334,19 @@ public class UserCreateRequest {
         this.dateTo = dateTo;
     }
 
-    public long getCreatedOn() {
+    public Long getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(long createdOn) {
+    public void setCreatedOn(Long createdOn) {
         this.createdOn = createdOn;
     }
 
-    public long getUpdatedOn() {
+    public Long getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(long updatedOn) {
+    public void setUpdatedOn(Long updatedOn) {
         this.updatedOn = updatedOn;
     }
 }

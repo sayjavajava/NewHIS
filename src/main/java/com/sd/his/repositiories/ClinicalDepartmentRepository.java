@@ -46,4 +46,6 @@ public interface ClinicalDepartmentRepository extends JpaRepository<ClinicalDepa
 
     ClinicalDepartment findById(long id);
 
+    List<ClinicalDepartment> findAllByIdIn(List<Long> ids);
+
 }

@@ -68,7 +68,7 @@ public class Profile implements Serializable {
     private List<String> workingDays =new ArrayList<>();
 
     @Column(name = "ALLOW_DISCOUNT")
-    private String allowDiscount;
+    private Boolean allowDiscount;
 
 
     @Column(name = "GENDER")
@@ -110,7 +110,7 @@ public class Profile implements Serializable {
     public Profile() {
     }
 
-    public Profile(String firstName, String lastName, String homePhone, String cellPhone, String accountExpiry, Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard, Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices, Long checkUpInterval, List<String> workingDays, String allowDiscount, String gender, String profileImg, String address, String city, String state, String country, String status, Date dob, String type, Long createdOn, Long updatedOn) {
+    public Profile(String firstName, String lastName, String homePhone, String cellPhone, String accountExpiry, Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard, Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices, Long checkUpInterval, List<String> workingDays, boolean allowDiscount, String gender, String profileImg, String address, String city, String state, String country, String status, Date dob, String type, Long createdOn, Long updatedOn) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePhone = homePhone;
@@ -259,11 +259,11 @@ public class Profile implements Serializable {
         this.workingDays = workingDays;
     }
 
-    public String getAllowDiscount() {
+    public Boolean getAllowDiscount() {
         return allowDiscount;
     }
 
-    public void setAllowDiscount(String allowDiscount) {
+    public void setAllowDiscount(Boolean allowDiscount) {
         this.allowDiscount = allowDiscount;
     }
 

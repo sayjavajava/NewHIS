@@ -9,17 +9,15 @@ import com.sd.his.repositiories.*;
 import com.sd.his.request.WorkingDaysOfDoctor;
 import com.sd.his.response.UserResponseWrapper;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.BranchWrapper;
+import com.sd.his.wrapper.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.sd.his.wrapper.PermissionWrapper;
-import com.sd.his.wrapper.UserCreateRequest;
-import com.sd.his.wrapper.UserWrapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,12 +45,22 @@ public class HISUserService implements UserDetailsService {
     private DutyShiftRepository dutyShiftRepository;
     private UserDutyShiftRepository userDutyShiftRepository;
     private VacationRepository vacationRepository;
-
+    private UserMedicalServiceRepository userMedicalServiceRepository;
+    private MedicalServicesRepository medicalServicesRepository;
+    private ClinicalDepartmentRepository clinicalDepartmentRepository;
+    private DepartmentUserRepository departmentUserRepository;
+    private DutyWithDoctorRepository dutyWithDoctorRepository;
     private final Logger logger = LoggerFactory.getLogger(HISUserService.class);
 
+    @Autowired
     HISUserService(UserRepository userRepository, PermissionRepository permissionRepo, RoleRepository roleRepo, BranchRepository branchRepository, BranchUserRepository branchUserRepository,
                    UserRoleRepository userRoleRepository, VacationRepository vacationRepository,
-                   UserDutyShiftRepository userDutyShiftRepository, DutyShiftRepository dutyShiftRepository) {
+                   UserDutyShiftRepository userDutyShiftRepository, DutyShiftRepository dutyShiftRepository,UserMedicalServiceRepository userMedicalServiceRepository,
+                   MedicalServicesRepository medicalServicesRepository,
+                   ClinicalDepartmentRepository clinicalDepartmentRepository,
+                   DepartmentUserRepository departmentUserRepository,
+                   DutyWithDoctorRepository dutyWithDoctorRepository
+    ) {
         this.userRepository = userRepository;
         this.permissionRepo = permissionRepo;
         this.roleRepo = roleRepo;
@@ -62,6 +70,11 @@ public class HISUserService implements UserDetailsService {
         this.userDutyShiftRepository = userDutyShiftRepository;
         this.vacationRepository = vacationRepository;
         this.dutyShiftRepository = dutyShiftRepository;
+        this.userMedicalServiceRepository =userMedicalServiceRepository;
+        this.clinicalDepartmentRepository=clinicalDepartmentRepository;
+        this.medicalServicesRepository = medicalServicesRepository;
+        this.departmentUserRepository = departmentUserRepository;
+        this.dutyWithDoctorRepository=dutyWithDoctorRepository;
     }
 
     @Override
@@ -175,14 +188,11 @@ public class HISUserService implements UserDetailsService {
             profile.setSendBillingReport(createRequest.isSendBillingReport());
             profile.setUseReceptDashBoard(createRequest.isUseReceptDashboard());
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
-
-
             user.setProfile(profile);
             userRepository.save(user);
 
             branchUser.setUser(user);
             branchUser.setBranch(branch);
-
 
             userRole.setRole(roleFindByName(createRequest.getUserType().toUpperCase()));
             userRole.setUser(user);
@@ -216,7 +226,6 @@ public class HISUserService implements UserDetailsService {
             profile.setSendBillingReport(createRequest.isSendBillingReport());
             profile.setUseReceptDashBoard(createRequest.isUseReceptDashboard());
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
-            //ToDo departments and services
             user.setProfile(profile);
             userRepository.save(user);
 
@@ -265,6 +274,20 @@ public class HISUserService implements UserDetailsService {
             branchUser.setUser(user);
             branchUser.setBranch(branch);
 
+            List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
+            for (ClinicalDepartment clinicalDepartment :clinicalDepartments){
+                DepartmentUser departmentUser =new DepartmentUser();
+                departmentUser.setClinicalDepartment(clinicalDepartment);
+                departmentUser.setUser(user);
+                departmentUser.setCreatedOn(System.currentTimeMillis());
+                departmentUser.setUpdatedOn(System.currentTimeMillis());
+                departmentUser.setDeleted(false);
+                departmentUserRepository.save(departmentUser);
+            }
+
+
+            DutyWithDoctor dutyWithDoctor =new DutyWithDoctor();
+
 
             userRole.setRole(roleFindByName(createRequest.getUserType().toUpperCase()));
             userRole.setUser(user);
@@ -299,12 +322,10 @@ public class HISUserService implements UserDetailsService {
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
             profile.setCheckUpInterval(createRequest.getInterval());
 
-
             List<String> daysList = Arrays.asList(createRequest.getSelectedWorkingDays());
             profile.setWorkingDays(daysList);
 
             LocalTime t = LocalTime.parse(createRequest.getSecondShiftFromTime());
-            logger.info("time2:" + toString());
 
             DutyShift dutyShift = new DutyShift();
             dutyShift.setCreatedOn(System.currentTimeMillis());
@@ -319,18 +340,32 @@ public class HISUserService implements UserDetailsService {
             dutyShift.setEndTimeShift2(createRequest.getSecondShiftToTime());
 
             dutyShiftRepository.save(dutyShift);
-
-
-            /*profile.setVacationFrom(HISCoreUtil.convertDateToMilliSeconds(createRequest.getDateFrom()));
-            profile.setVacationTo(HISCoreUtil.convertDateToMilliSeconds(createRequest.getDateTo()));
-
-            profile.setDutyTimmingShift1(createRequest.isShift1());
-            profile.setDutyTimmingShift2(createRequest.isShift2());*/
             profile.setCheckUpInterval(createRequest.getInterval());
 
 
             user.setProfile(profile);
             userRepository.save(user);
+            medicalServicesRepository.findAll();
+
+           List<MedicalService> medicalServiceslist = medicalServicesRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedServices()));
+             for (MedicalService mdService :medicalServiceslist){
+                 UserMedicalService userMedicalService =new UserMedicalService();
+                 userMedicalService.setMedicalService(mdService);
+                 userMedicalService.setUser(user);
+                 userMedicalServiceRepository.save(userMedicalService);
+            }
+
+
+            List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
+            for (ClinicalDepartment clinicalDepartment :clinicalDepartments){
+                DepartmentUser departmentUser =new DepartmentUser();
+                departmentUser.setClinicalDepartment(clinicalDepartment);
+                departmentUser.setUser(user);
+                departmentUser.setCreatedOn(System.currentTimeMillis());
+                departmentUser.setUpdatedOn(System.currentTimeMillis());
+                departmentUser.setDeleted(false);
+                departmentUserRepository.save(departmentUser);
+            }
 
             Vacation vacation = new Vacation();
             vacation.setCreatedOn(System.currentTimeMillis());
@@ -350,6 +385,7 @@ public class HISUserService implements UserDetailsService {
 
             branchUser.setUser(user);
             branchUser.setBranch(branch);
+            branchUser.setPrimaryBranch(true);
 
             userRole.setRole(roleFindByName(createRequest.getUserType().toUpperCase()));
             userRole.setUser(user);
@@ -391,7 +427,7 @@ public class HISUserService implements UserDetailsService {
     }
 
     public int totalUser() {
-        return ((int) userRepository.count());
+        return  userRepository.countAllByActiveTrueAndDeletedFalse();
     }
 
     public User updateUser(UserCreateRequest userCreateRequest, User alreadyExistsUser) {
@@ -530,8 +566,8 @@ public class HISUserService implements UserDetailsService {
         UserDutyShift userDutyShift = userDutyShiftRepository.findByUser(user);
         Vacation vacation = vacationRepository.findByUser(user);
 
-        userResponseWrapper.setDutyShift(userDutyShift.getDutyShift());
-        userResponseWrapper.setVacation(vacation);
+      //  userResponseWrapper.setDutyShift(userDutyShift.getDutyShift());
+       // userResponseWrapper.setVacation(vacation);
 
         return userResponseWrapper;
     }

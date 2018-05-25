@@ -2,7 +2,6 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sd.his.request.ClinicalDepartmentCreateRequest;
 
 import javax.persistence.*;
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.List;
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
- * @FileName  : ClinicalDepartment
+ * @FileName  : Service
  *
  * Copyright © 
  * SolutionDots, 
@@ -30,9 +29,9 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name = "CLINICAL_DEPARTMENT")
+@Table(name = "SERVICE")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ClinicalDepartment {
+public class Service {
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
@@ -45,7 +44,7 @@ public class ClinicalDepartment {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
+    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private boolean active;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
@@ -58,46 +57,21 @@ public class ClinicalDepartment {
     private long createdOn;
 
     @JsonIgnore
-    @OneToMany(targetEntity = BranchClinicalDepartment.class, mappedBy = "clinicalDpt", fetch = FetchType.LAZY)
-    private List<BranchClinicalDepartment> branches;
+    @OneToMany(targetEntity = BranchServices.class, mappedBy = "service", fetch = FetchType.LAZY)
+    private List<BranchServices> branches;
 
-    @JsonIgnore
-    @OneToMany(targetEntity = ClinicalDepartmentMedicalService.class, mappedBy = "clinicalDpt", fetch = FetchType.LAZY)
-    private List<ClinicalDepartmentMedicalService> medicalServices;
-
-    @JsonIgnore
-    @OneToMany(targetEntity = DepartmentUser.class, mappedBy = "clinicalDepartment", fetch = FetchType.LAZY)
-    private List<DepartmentUser> users;
-
-    public ClinicalDepartment() {
-    }
-
-    public ClinicalDepartment(ClinicalDepartmentCreateRequest createRequest) {
-        this.id = createRequest.getDepartmentId();
-        this.name = createRequest.getName();
-        this.description = createRequest.getDescription();
-        this.active = true;
-        this.deleted = false;
-        this.createdOn = System.currentTimeMillis();
-        this.updatedOn = System.currentTimeMillis();
+    public Service() {
     }
 
     @Override
     public String toString() {
-        return "ClinicalDepartment{" +
+        return "Service{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 ", active=" + active +
                 ", deleted=" + deleted +
                 '}';
-    }
-
-    public List<DepartmentUser> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<DepartmentUser> users) {
-        this.users = users;
     }
 
     public Long getId() {
@@ -156,19 +130,11 @@ public class ClinicalDepartment {
         this.createdOn = createdOn;
     }
 
-    public List<BranchClinicalDepartment> getBranches() {
+    public List<BranchServices> getBranches() {
         return branches;
     }
 
-    public void setBranches(List<BranchClinicalDepartment> branches) {
+    public void setBranches(List<BranchServices> branches) {
         this.branches = branches;
-    }
-
-    public List<ClinicalDepartmentMedicalService> getMedicalServices() {
-        return medicalServices;
-    }
-
-    public void setMedicalServices(List<ClinicalDepartmentMedicalService> medicalServices) {
-        this.medicalServices = medicalServices;
     }
 }

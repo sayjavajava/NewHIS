@@ -84,7 +84,7 @@ public class BranchService {
         branch.setCountry(branchRequestWrapper.getCountry());
         branch.setBillingName(branchRequestWrapper.getBillingName());
         branch.setBillingTaxId(branchRequestWrapper.getBillingTaxID());
-        branch.setBillingBranchName(branchRequestWrapper.getBillingName());
+        branch.setBillingBranchName(branchRequestWrapper.getBillingBranch());
         branch.setAllowOnlineSchedule(branchRequestWrapper.isAllowOnlineSchedulingInBranch());
         branch.setShowBranchInfoOnline(branchRequestWrapper.isShowBranchOnline());
         branch.setFax(branchRequestWrapper.getFax());
@@ -211,13 +211,20 @@ public class BranchService {
         return branchNames;
     }
 
-    public List<BranchResponseWrapper> searchByBranchName(String name, int offset, int limit) {
+    public List<BranchResponseWrapper> searchByBranchNameAndDepartment(String name,String department, int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        logger.info("branch name" + name);
+        logger.info("branch name" + department);
 
-        List<BranchResponseWrapper> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalse(name, pageable);
+        List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalseOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(name,department, pageable);
 
-        return allBranches;
+        List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();
+        //(long id, String name, String country, String city, int rooms)
+        for(Branch branch:allBranches){
+
+            BranchResponseWrapper brw = new BranchResponseWrapper(branch.getId(),branch.getName(),branch.getCountry(),branch.getCity(),branch.getNoOfRooms());
+            branchResponseWrapper.add(brw);
+        }
+        return branchResponseWrapper;
     }
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
