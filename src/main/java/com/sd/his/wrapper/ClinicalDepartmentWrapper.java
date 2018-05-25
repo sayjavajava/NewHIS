@@ -43,6 +43,13 @@ public class ClinicalDepartmentWrapper {
         this.active = dpt.isActive();
         this.deleted = dpt.isDeleted();
     }
+    public ClinicalDepartmentWrapper(long id,String name,String description, boolean active, boolean deleted) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.active = active;
+        this.deleted = deleted;
+    }
 
     public long getId() {
         return id;

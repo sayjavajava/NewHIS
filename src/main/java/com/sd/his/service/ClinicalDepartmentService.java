@@ -47,7 +47,7 @@ public class ClinicalDepartmentService {
     private final Logger logger = LoggerFactory.getLogger(ClinicalDepartmentService.class);
 
     public List<ClinicalDepartmentWrapper> getAllActiveClinicalDepartments() {
-        List<ClinicalDepartment> dpts = departmentRepository.findAllByActiveTrueAndDeletedFalse();
+        List<ClinicalDepartment> dpts = departmentRepository.findAllByDeletedFalse();
         List<ClinicalDepartmentWrapper> dptsWrappers = new ArrayList<>();
 
         for (ClinicalDepartment cd : dpts) {
@@ -59,7 +59,7 @@ public class ClinicalDepartmentService {
 
     public List<ClinicalDepartmentWrapper> getAllActiveClinicalDepartment(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        List<ClinicalDepartment> dpts = departmentRepository.findAllByActiveTrueAndDeletedFalseOrderByNameAsc(pageable);
+        List<ClinicalDepartment> dpts = departmentRepository.findAllByDeletedFalseOrderByNameAsc(pageable);
         List<ClinicalDepartmentWrapper> dptsWrappers = new ArrayList<>();
 
         for (ClinicalDepartment cd : dpts) {
@@ -71,11 +71,15 @@ public class ClinicalDepartmentService {
     }
 
     public int countAllClinicalDepartments() {
-        return departmentRepository.findAllByActiveTrueAndDeletedFalse().size();
+        return departmentRepository.findAllByDeletedFalse().size();
     }
 
     public ClinicalDepartment findClinicalDepartmentById(long dptId) {
-        return departmentRepository.findByIdAndActiveTrueAndDeletedFalse(dptId);
+        return departmentRepository.findByIdAndDeletedFalse(dptId);
+    }
+
+    public boolean isClinicalDepartmentByNameAndNotIdExist(String name, long dptId) {
+        return departmentRepository.findByNameAndIdNotAndDeletedFalse(name, dptId) == null ? true : false;
     }
 
     @Transactional(rollbackOn = Throwable.class)
@@ -92,19 +96,12 @@ public class ClinicalDepartmentService {
     }
 
     public int countSearchedClinicalDepartments(String name) {
-        return departmentRepository.findByNameContainingAndDeletedFalse(name).size();
+        return departmentRepository.findByNameDeletedFalse(name).size();
     }
 
     public List<ClinicalDepartmentWrapper> getPageableSearchedDepartment(int offset, int limit, String name) {
         Pageable pageable = new PageRequest(offset, limit);
-        List<ClinicalDepartment> dpts = departmentRepository.findByNameContainingAndDeletedFalse(pageable, name);
-        List<ClinicalDepartmentWrapper> dptsWrappers = new ArrayList<>();
-
-        for (ClinicalDepartment cd : dpts) {
-            ClinicalDepartmentWrapper dpt = new ClinicalDepartmentWrapper(cd);
-            dptsWrappers.add(dpt);
-        }
-        return dptsWrappers;
+        return departmentRepository.findByNameDeletedFalse(pageable, name);
     }
 
     @Transactional(rollbackOn = Throwable.class)
@@ -115,12 +112,12 @@ public class ClinicalDepartmentService {
     }
 
     @Transactional(rollbackOn = Throwable.class)
-    public ClinicalDepartment updateClinicalDepartment(ClinicalDepartmentUpdateRequest updateRequest, ClinicalDepartment dpt) {
-        dpt.setId(updateRequest.getId());
+    public ClinicalDepartment updateClinicalDepartment(ClinicalDepartmentUpdateRequest updateRequest) {
+        ClinicalDepartment dpt = departmentRepository.findOne(updateRequest.getId());
         dpt.setName(updateRequest.getName());
         dpt.setDescription(updateRequest.getDescription());
         dpt.setDeleted(false);
-        dpt.setActive(true);
+        dpt.setActive(updateRequest.isActive());
         dpt.setUpdatedOn(System.currentTimeMillis());
 
         return departmentRepository.save(dpt);

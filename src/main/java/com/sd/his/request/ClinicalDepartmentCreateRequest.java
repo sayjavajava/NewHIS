@@ -30,6 +30,7 @@ public class ClinicalDepartmentCreateRequest {
     private String name;
     private String description;
     private long departmentId;
+    private boolean active;
 
     public String getName() {
         return name;
@@ -53,5 +54,13 @@ public class ClinicalDepartmentCreateRequest {
 
     public void setDepartmentId(long departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

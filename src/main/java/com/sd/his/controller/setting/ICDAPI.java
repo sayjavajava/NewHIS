@@ -1078,10 +1078,11 @@ public class ICDAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/codeVersion/search/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> searchCodeVersionByVersionName(HttpServletRequest request,
-                                                            @PathVariable("page") int page,
-                                                            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                                            @RequestParam(value = "versionName") String versionName) {
+    public ResponseEntity<?> searchCodeVersionByParam(HttpServletRequest request,
+                                                      @PathVariable("page") int page,
+                                                      @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                      @RequestParam(value = "versionName") String versionName,
+                                                      @RequestParam(value = "searchCodeVersionCode") String searchCode) {
 
         logger.info("get all Searched  Code Version By Version Name");
 
@@ -1092,8 +1093,8 @@ public class ICDAPI {
         response.setResponseData(null);
 
         try {
-            List<ICDCodeVersionWrapper> searchedCodeVersions = iCDService.searchCodeVersionByVersionName(page, pageSize, versionName);
-            int icdCount = iCDService.countSearchCodeVersionByVersionName(versionName);
+            List<ICDCodeVersionWrapper> searchedCodeVersions = iCDService.searchCodeVersionByVersionName(page, pageSize, versionName,searchCode);
+            int icdCount = iCDService.countSearchCodeVersionByVersionName(versionName,searchCode);
 
             if (!HISCoreUtil.isListEmpty(searchedCodeVersions)) {
                 logger.info("search Code Version By VersionName fetched from DB successfully...");

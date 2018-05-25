@@ -72,7 +72,7 @@ public class ClinicalDepartment {
         this.id = createRequest.getDepartmentId();
         this.name = createRequest.getName();
         this.description = createRequest.getDescription();
-        this.active = true;
+        this.active = createRequest.isActive();
         this.deleted = false;
         this.createdOn = System.currentTimeMillis();
         this.updatedOn = System.currentTimeMillis();

@@ -17,7 +17,8 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
 
     List<Long> deleteAllByVersion_id(long id);
 
-    List<ICDCodeVersion> findAllByVersion_NameContainingAndVersion_DeletedFalse(String versionName, Pageable pageable);
-    List<ICDCodeVersion> findAllByVersion_NameContainingAndVersion_DeletedFalse(String versionName);
+
+    List<ICDCodeVersion> findAllByVersion_NameContainingAndVersion_DeletedFalseOrIcd_CodeContainingAndIcd_DeletedFalse(String versionName,String code, Pageable pageable);
+    List<ICDCodeVersion> findAllByVersion_NameContainingAndVersion_DeletedFalseOrIcd_CodeContainingAndIcd_DeletedFalse(String versionName,String code);
 
 }
