@@ -9,17 +9,15 @@ import com.sd.his.repositiories.*;
 import com.sd.his.request.WorkingDaysOfDoctor;
 import com.sd.his.response.UserResponseWrapper;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.BranchWrapper;
+import com.sd.his.wrapper.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.sd.his.wrapper.PermissionWrapper;
-import com.sd.his.wrapper.UserCreateRequest;
-import com.sd.his.wrapper.UserWrapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,12 +45,24 @@ public class HISUserService implements UserDetailsService {
     private DutyShiftRepository dutyShiftRepository;
     private UserDutyShiftRepository userDutyShiftRepository;
     private VacationRepository vacationRepository;
-
+    private UserMedicalServiceRepository userMedicalServiceRepository;
+    private MedicalServicesRepository medicalServicesRepository;
+    private ClinicalDepartmentRepository clinicalDepartmentRepository;
+    private DepartmentUserRepository departmentUserRepository;
+    private DutyWithDoctorRepository dutyWithDoctorRepository;
+    private UserVisitBranchesRepository userVisitBranchesRepository;
     private final Logger logger = LoggerFactory.getLogger(HISUserService.class);
 
+    @Autowired
     HISUserService(UserRepository userRepository, PermissionRepository permissionRepo, RoleRepository roleRepo, BranchRepository branchRepository, BranchUserRepository branchUserRepository,
                    UserRoleRepository userRoleRepository, VacationRepository vacationRepository,
-                   UserDutyShiftRepository userDutyShiftRepository, DutyShiftRepository dutyShiftRepository) {
+                   UserDutyShiftRepository userDutyShiftRepository, DutyShiftRepository dutyShiftRepository, UserMedicalServiceRepository userMedicalServiceRepository,
+                   MedicalServicesRepository medicalServicesRepository,
+                   ClinicalDepartmentRepository clinicalDepartmentRepository,
+                   DepartmentUserRepository departmentUserRepository,
+                   DutyWithDoctorRepository dutyWithDoctorRepository,
+                   UserVisitBranchesRepository userVisitBranchesRepository
+    ) {
         this.userRepository = userRepository;
         this.permissionRepo = permissionRepo;
         this.roleRepo = roleRepo;
@@ -62,6 +72,12 @@ public class HISUserService implements UserDetailsService {
         this.userDutyShiftRepository = userDutyShiftRepository;
         this.vacationRepository = vacationRepository;
         this.dutyShiftRepository = dutyShiftRepository;
+        this.userMedicalServiceRepository = userMedicalServiceRepository;
+        this.clinicalDepartmentRepository = clinicalDepartmentRepository;
+        this.medicalServicesRepository = medicalServicesRepository;
+        this.departmentUserRepository = departmentUserRepository;
+        this.dutyWithDoctorRepository = dutyWithDoctorRepository;
+        this.userVisitBranchesRepository = userVisitBranchesRepository;
     }
 
     @Override
@@ -175,22 +191,25 @@ public class HISUserService implements UserDetailsService {
             profile.setSendBillingReport(createRequest.isSendBillingReport());
             profile.setUseReceptDashBoard(createRequest.isUseReceptDashboard());
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
-
-
+            profile.setOtherDashboard(createRequest.getOtherDashboard());
             user.setProfile(profile);
             userRepository.save(user);
-
             branchUser.setUser(user);
             branchUser.setBranch(branch);
 
-
+            List<Branch> VisitBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
+            List<UserVisitBranches> cashierVisitBranchesData =new ArrayList<>();
+            for (Branch userVisitBr : VisitBranches) {
+                UserVisitBranches userVisitBranches = new UserVisitBranches();
+                userVisitBranches.setBranch(userVisitBr);
+                userVisitBranches.setUser(user);
+                cashierVisitBranchesData.add(userVisitBranches);
+            }
+            userVisitBranchesRepository.save(cashierVisitBranchesData);
             userRole.setRole(roleFindByName(createRequest.getUserType().toUpperCase()));
             userRole.setUser(user);
-
             userRoleRepository.save(userRole);
-
             branchUserRepository.save(branchUser);
-
             return user;
         }
 
@@ -216,17 +235,22 @@ public class HISUserService implements UserDetailsService {
             profile.setSendBillingReport(createRequest.isSendBillingReport());
             profile.setUseReceptDashBoard(createRequest.isUseReceptDashboard());
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
-            //ToDo departments and services
+            profile.setOtherDashboard(createRequest.getOtherDashboard());
             user.setProfile(profile);
             userRepository.save(user);
-
             branchUser.setUser(user);
             branchUser.setBranch(branch);
 
-
+            List<Branch> VisitBranchesReceptionist = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
+            List<UserVisitBranches> recepVisitBranchesData = new ArrayList<>();
+            for (Branch userVisitBr : VisitBranchesReceptionist) {
+                UserVisitBranches recepVisitBranches = new UserVisitBranches();
+                recepVisitBranches.setBranch(userVisitBr);
+                recepVisitBranches.setUser(user);
+            }
+            userVisitBranchesRepository.save(recepVisitBranchesData);
             userRole.setRole(roleFindByName(createRequest.getUserType().toUpperCase()));
             userRole.setUser(user);
-
             userRoleRepository.save(userRole);
 
             branchUserRepository.save(branchUser);
@@ -252,19 +276,51 @@ public class HISUserService implements UserDetailsService {
             profile.setAccountExpiry(createRequest.getAccountExpiry());
             profile.setCellPhone(createRequest.getCellPhone());
             profile.setHomePhone(createRequest.getHomePhone());
-
             profile.setSendBillingReport(createRequest.isSendBillingReport());
             profile.setUseReceptDashBoard(createRequest.isUseReceptDashboard());
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
             profile.setManagePatientInvoices(createRequest.isManagePatientInvoices());
             profile.setManagePatientRecords(createRequest.isManagePatientRecords());
-
+            profile.setOtherDashboard(createRequest.getOtherDashboard());
+            profile.setOtherDashboard(createRequest.getOtherDashboard());
             user.setProfile(profile);
             userRepository.save(user);
 
             branchUser.setUser(user);
             branchUser.setBranch(branch);
 
+            List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
+            List<DepartmentUser> departmentUserListData = new ArrayList<>();
+            for (ClinicalDepartment clinicalDepartment : clinicalDepartments) {
+                DepartmentUser departmentUser = new DepartmentUser();
+                departmentUser.setClinicalDepartment(clinicalDepartment);
+                departmentUser.setUser(user);
+                departmentUser.setCreatedOn(System.currentTimeMillis());
+                departmentUser.setUpdatedOn(System.currentTimeMillis());
+                departmentUser.setDeleted(false);
+                departmentUserListData.add(departmentUser);
+            }
+            departmentUserRepository.save(departmentUserListData);
+
+            List<Branch> userVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
+            List<UserVisitBranches> userVisitBranchesData = new ArrayList<>();
+            for (Branch userVisitBr : userVisitBranches) {
+                UserVisitBranches userVisitBranches1 = new UserVisitBranches();
+                userVisitBranches1.setBranch(userVisitBr);
+                userVisitBranches1.setUser(user);
+                userVisitBranchesData.add(userVisitBranches1);
+            }
+            userVisitBranchesRepository.save(userVisitBranchesData);
+
+            List<User> doctors = userRepository.findAllByIdIn(Arrays.asList(createRequest.getDutyWithDoctors()));
+            List<DutyWithDoctor> dutyWithDoctorsData = new ArrayList<>();
+            for (User docUser : doctors) {
+                DutyWithDoctor dutyWithDoctor1 = new DutyWithDoctor();
+                dutyWithDoctor1.setNurse(user);
+                dutyWithDoctor1.setDoctor(docUser);
+                dutyWithDoctorsData.add(dutyWithDoctor1);
+            }
+            dutyWithDoctorRepository.save(dutyWithDoctorsData);
 
             userRole.setRole(roleFindByName(createRequest.getUserType().toUpperCase()));
             userRole.setUser(user);
@@ -298,14 +354,10 @@ public class HISUserService implements UserDetailsService {
             profile.setUseReceptDashBoard(createRequest.isUseReceptDashboard());
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
             profile.setCheckUpInterval(createRequest.getInterval());
-
-
+            profile.setOtherDashboard(createRequest.getOtherDashboard());
             List<String> daysList = Arrays.asList(createRequest.getSelectedWorkingDays());
             profile.setWorkingDays(daysList);
-
             LocalTime t = LocalTime.parse(createRequest.getSecondShiftFromTime());
-            logger.info("time2:" + toString());
-
             DutyShift dutyShift = new DutyShift();
             dutyShift.setCreatedOn(System.currentTimeMillis());
             dutyShift.setUpdatedOn(System.currentTimeMillis());
@@ -314,32 +366,52 @@ public class HISUserService implements UserDetailsService {
             dutyShift.setDutyTimmingShift2(createRequest.isShift2());
             dutyShift.setStartTimeShift1(createRequest.getFirstShiftFromTime());
             dutyShift.setEndTimeShift1(createRequest.getFirstShiftToTime());
-
             dutyShift.setStartTimeShift2(createRequest.getSecondShiftFromTime());
             dutyShift.setEndTimeShift2(createRequest.getSecondShiftToTime());
-
             dutyShiftRepository.save(dutyShift);
-
-
-            /*profile.setVacationFrom(HISCoreUtil.convertDateToMilliSeconds(createRequest.getDateFrom()));
-            profile.setVacationTo(HISCoreUtil.convertDateToMilliSeconds(createRequest.getDateTo()));
-
-            profile.setDutyTimmingShift1(createRequest.isShift1());
-            profile.setDutyTimmingShift2(createRequest.isShift2());*/
-            profile.setCheckUpInterval(createRequest.getInterval());
-
 
             user.setProfile(profile);
             userRepository.save(user);
+            medicalServicesRepository.findAll();
+
+            List<MedicalService> medicalServiceslist = medicalServicesRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedServices()));
+            List<UserMedicalService> userDetailsServicesData = new ArrayList<>();
+            for (MedicalService mdService : medicalServiceslist) {
+                UserMedicalService userMedicalService = new UserMedicalService();
+                userMedicalService.setMedicalService(mdService);
+                userMedicalService.setUser(user);
+                userDetailsServicesData.add(userMedicalService);
+            }
+            userMedicalServiceRepository.save(userDetailsServicesData);
+
+            List<Branch> docVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
+            List<UserVisitBranches> docVisitBranchesData =new ArrayList<>();
+            for (Branch userVisitBr : docVisitBranches) {
+                UserVisitBranches docVisitBranch = new UserVisitBranches();
+                docVisitBranch.setBranch(userVisitBr);
+                docVisitBranch.setUser(user);
+            }
+            userVisitBranchesRepository.save(docVisitBranchesData);
+
+            List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
+            List<DepartmentUser> docDepartmentUser =new ArrayList<>();
+            for (ClinicalDepartment clinicalDepartment : clinicalDepartments) {
+                DepartmentUser departmentUser = new DepartmentUser();
+                departmentUser.setClinicalDepartment(clinicalDepartment);
+                departmentUser.setUser(user);
+                departmentUser.setCreatedOn(System.currentTimeMillis());
+                departmentUser.setUpdatedOn(System.currentTimeMillis());
+                departmentUser.setDeleted(false);
+                docDepartmentUser.add(departmentUser);
+            }
+             departmentUserRepository.save(docDepartmentUser);
 
             Vacation vacation = new Vacation();
             vacation.setCreatedOn(System.currentTimeMillis());
             vacation.setUpdatedOn(System.currentTimeMillis());
             vacation.setDeleted(false);
-
             vacation.setStartDate(HISCoreUtil.convertDateToMilliSeconds(createRequest.getDateFrom()));
             vacation.setEndDate(HISCoreUtil.convertDateToMilliSeconds(createRequest.getDateTo()));
-
             vacation.setStatus(createRequest.isVacation());
             vacation.setVacation(createRequest.isVacation());
             vacation.setUser(user);
@@ -350,6 +422,7 @@ public class HISUserService implements UserDetailsService {
 
             branchUser.setUser(user);
             branchUser.setBranch(branch);
+            branchUser.setPrimaryBranch(true);
 
             userRole.setRole(roleFindByName(createRequest.getUserType().toUpperCase()));
             userRole.setUser(user);
@@ -391,18 +464,17 @@ public class HISUserService implements UserDetailsService {
     }
 
     public int totalUser() {
-        return ((int) userRepository.count());
+        return userRepository.countAllByActiveTrueAndDeletedFalse();
     }
 
     public User updateUser(UserCreateRequest userCreateRequest, User alreadyExistsUser) {
         String userType = userCreateRequest.getUserType();
+        Branch primaryBranch = branchRepository.findByName(userCreateRequest.getPrimaryBranch());
+        BranchUser branchUser= branchUserRepository.findByUser(alreadyExistsUser);
         if (userType.equalsIgnoreCase(UserEnum.CASHIER.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
-            //   alreadyExistsUser.setPassword(new BCryptPasswordEncoder().encode(userCreateRequest.getPassword()));
             alreadyExistsUser.setEmail(userCreateRequest.getEmail());
-
-
             Profile updateProfile = alreadyExistsUser.getProfile();
             updateProfile.setType(userCreateRequest.getUserType());
             updateProfile.setLastName(userCreateRequest.getLastName());
@@ -415,9 +487,21 @@ public class HISUserService implements UserDetailsService {
             updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
             updateProfile.setActive(userCreateRequest.isActive());
             updateProfile.setAllowDiscount(userCreateRequest.getAllowDiscount());
+            updateProfile.setOtherDashboard(userCreateRequest.getOtherDashboard());
             updateProfile.setUpdatedOn(System.currentTimeMillis());
             alreadyExistsUser.setProfile(updateProfile);
-
+            List<UserVisitBranches> cashierVisitBranchesData =new ArrayList<>();
+            List<Branch> cashVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
+            if(!HISCoreUtil.isListEmpty(cashVisitBranches)){   userVisitBranchesRepository.deleteByUser(alreadyExistsUser);}
+            for (Branch userVisitBr : cashVisitBranches) {
+                UserVisitBranches userVisitBranches = new UserVisitBranches();
+                userVisitBranches.setBranch(userVisitBr);
+                userVisitBranches.setUser(alreadyExistsUser);
+                cashierVisitBranchesData.add(userVisitBranches);
+            }
+            branchUser.setBranch(primaryBranch);
+            branchUserRepository.save(branchUser);
+            userVisitBranchesRepository.save(cashierVisitBranchesData);
             userRepository.save(alreadyExistsUser);
             return alreadyExistsUser;
         }
@@ -436,12 +520,24 @@ public class HISUserService implements UserDetailsService {
             updateProfile.setSendBillingReport(userCreateRequest.isSendBillingReport());
             updateProfile.setUseReceptDashBoard(userCreateRequest.isUseReceptDashboard());
             updateProfile.setOtherDoctorDashBoard(userCreateRequest.isOtherDoctorDashBoard());
+            updateProfile.setOtherDashboard(userCreateRequest.getOtherDashboard());
             updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
             updateProfile.setActive(userCreateRequest.isActive());
             updateProfile.setAllowDiscount(userCreateRequest.getAllowDiscount());
             updateProfile.setUpdatedOn(System.currentTimeMillis());
             alreadyExistsUser.setProfile(updateProfile);
 
+            List<Branch> recepVisitBranchesReceptionist = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
+            List<UserVisitBranches> recepVisitBranchesData = new ArrayList<>();
+            if(!HISCoreUtil.isListEmpty(recepVisitBranchesReceptionist)){  userVisitBranchesRepository.deleteByUser(alreadyExistsUser);}
+            for (Branch userVisitBr : recepVisitBranchesReceptionist) {
+                UserVisitBranches recepVisitBranches = new UserVisitBranches();
+                recepVisitBranches.setBranch(userVisitBr);
+                recepVisitBranches.setUser(alreadyExistsUser);
+            }
+            branchUser.setBranch(primaryBranch);
+            branchUserRepository.save(branchUser);
+            userVisitBranchesRepository.save(recepVisitBranchesData);
             userRepository.saveAndFlush(alreadyExistsUser);
             return alreadyExistsUser;
         }
@@ -465,10 +561,49 @@ public class HISUserService implements UserDetailsService {
             updateProfile.setUpdatedOn(System.currentTimeMillis());
             updateProfile.setManagePatientRecords(userCreateRequest.isManagePatientRecords());
             updateProfile.setManagePatientInvoices(userCreateRequest.isManagePatientInvoices());
+            updateProfile.setOtherDashboard(userCreateRequest.getOtherDashboard());
 
             alreadyExistsUser.setProfile(updateProfile);
-
+            branchUser.setBranch(primaryBranch);
+            branchUserRepository.save(branchUser);
             userRepository.save(alreadyExistsUser);
+            List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedDepartment()));
+            List<DepartmentUser> departmentUserListData = new ArrayList<>();
+            if(!HISCoreUtil.isListEmpty(clinicalDepartments)) {departmentUserRepository.deleteByUser(alreadyExistsUser);}
+            for (ClinicalDepartment clinicalDepartment : clinicalDepartments) {
+                DepartmentUser departmentUser = new DepartmentUser();
+                departmentUser.setClinicalDepartment(clinicalDepartment);
+                departmentUser.setUser(alreadyExistsUser);
+                departmentUser.setCreatedOn(System.currentTimeMillis());
+                departmentUser.setUpdatedOn(System.currentTimeMillis());
+                departmentUser.setDeleted(false);
+                departmentUserListData.add(departmentUser);
+            }
+            departmentUserRepository.save(departmentUserListData);
+
+            List<Branch> userVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
+            List<UserVisitBranches> userVisitBranchesData = new ArrayList<>();
+            if(!HISCoreUtil.isListEmpty(userVisitBranches)){userVisitBranchesRepository.deleteByUser(alreadyExistsUser);}
+            for (Branch userVisitBr : userVisitBranches) {
+                UserVisitBranches userVisitBranches1 = new UserVisitBranches();
+                userVisitBranches1.setBranch(userVisitBr);
+                userVisitBranches1.setUser(alreadyExistsUser);
+                userVisitBranchesData.add(userVisitBranches1);
+            }
+            userVisitBranchesRepository.save(userVisitBranchesData);
+
+            List<User> doctors = userRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getDutyWithDoctors()));
+            List<DutyWithDoctor> listOFData = new ArrayList<>();
+            if(!HISCoreUtil.isListEmpty(doctors)){ dutyWithDoctorRepository.deleteByNurse(alreadyExistsUser);}
+            for (User docUser : doctors) {
+                DutyWithDoctor dutyWithDoctor1 = new DutyWithDoctor();
+                dutyWithDoctor1.setNurse(alreadyExistsUser);
+                dutyWithDoctor1.setDoctor(docUser);
+                listOFData.add(dutyWithDoctor1);
+            }
+            dutyWithDoctorRepository.save(listOFData);
+
+
             return alreadyExistsUser;
         }
 
@@ -476,7 +611,6 @@ public class HISUserService implements UserDetailsService {
             Vacation vacation = vacationRepository.findByUser(alreadyExistsUser);
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
-            // alreadyExistsUser.setPassword(new BCryptPasswordEncoder().encode(userCreateRequest.getPassword()));
             alreadyExistsUser.setEmail(userCreateRequest.getEmail());
 
             Profile updateProfile = alreadyExistsUser.getProfile();
@@ -487,17 +621,19 @@ public class HISUserService implements UserDetailsService {
             updateProfile.setUseReceptDashBoard(userCreateRequest.isUseReceptDashboard());
             updateProfile.setOtherDoctorDashBoard(userCreateRequest.isOtherDoctorDashBoard());
             updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
+            updateProfile.setFirstName(userCreateRequest.getFirstName());
+            updateProfile.setLastName(userCreateRequest.getLastName());
             updateProfile.setActive(userCreateRequest.isActive());
             updateProfile.setUpdatedOn(System.currentTimeMillis());
-
+            updateProfile.setOtherDashboard(userCreateRequest.getOtherDashboard());
             List<String> daysList = new ArrayList<>(Arrays.asList(userCreateRequest.getSelectedWorkingDays()));
             updateProfile.setWorkingDays(daysList);
-
+            branchUser.setBranch(primaryBranch);
+            branchUserRepository.save(branchUser);
             alreadyExistsUser.setProfile(updateProfile);
-
+            userRepository.save(alreadyExistsUser);
             vacation.setVacation(userCreateRequest.isVacation());
             vacation.setStatus(userCreateRequest.isVacation());
-
             vacation.setStartDate(HISCoreUtil.convertDateToMilliSeconds(userCreateRequest.getDateFrom()));
             vacation.setEndDate(HISCoreUtil.convertDateToMilliSeconds(userCreateRequest.getDateTo()));
 
@@ -505,16 +641,49 @@ public class HISUserService implements UserDetailsService {
 
             UserDutyShift userDutyShift = userDutyShiftRepository.findByUser(alreadyExistsUser);
             DutyShift dutyShift = userDutyShift.getDutyShift();
-
             dutyShift.setEndTimeShift2(userCreateRequest.getSecondShiftToTime());
             dutyShift.setStartTimeShift2(userCreateRequest.getSecondShiftFromTime());
-
             dutyShift.setEndTimeShift1(userCreateRequest.getFirstShiftToTime());
             dutyShift.setStartTimeShift1(userCreateRequest.getFirstShiftFromTime());
-
             dutyShiftRepository.save(dutyShift);
 
-            userRepository.save(alreadyExistsUser);
+
+            List<MedicalService> medicalServiceslist = medicalServicesRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedServices()));
+            List<UserMedicalService> userDetailsServicesData = new ArrayList<>();
+            if(!HISCoreUtil.isListEmpty(medicalServiceslist)){ userMedicalServiceRepository.deleteByUser(alreadyExistsUser);}
+            for (MedicalService mdService : medicalServiceslist) {
+                UserMedicalService userMedicalService = new UserMedicalService();
+                userMedicalService.setMedicalService(mdService);
+                userMedicalService.setUser(alreadyExistsUser);
+                userDetailsServicesData.add(userMedicalService);
+            }
+            userMedicalServiceRepository.save(userDetailsServicesData);
+
+            List<Branch> docVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
+            List<UserVisitBranches> docVisitBranchesData =new ArrayList<>();
+            if(!HISCoreUtil.isListEmpty(docVisitBranches)) { userVisitBranchesRepository.deleteByUser(alreadyExistsUser);}
+            for (Branch userVisitBr : docVisitBranches) {
+                UserVisitBranches docVisitBranch = new UserVisitBranches();
+                docVisitBranch.setBranch(userVisitBr);
+                docVisitBranch.setUser(alreadyExistsUser);
+                docVisitBranchesData.add(docVisitBranch);
+            }
+            userVisitBranchesRepository.save(docVisitBranchesData);
+
+            List<ClinicalDepartment> doctorClinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedDepartment()));
+            List<DepartmentUser> docDepartmentUser =new ArrayList<>();
+            if(!HISCoreUtil.isListEmpty(doctorClinicalDepartments)){departmentUserRepository.deleteByUser(alreadyExistsUser);}
+            for (ClinicalDepartment clinicalDepartment : doctorClinicalDepartments) {
+                DepartmentUser departmentUser = new DepartmentUser();
+                departmentUser.setClinicalDepartment(clinicalDepartment);
+                departmentUser.setUser(alreadyExistsUser);
+                departmentUser.setCreatedOn(System.currentTimeMillis());
+                departmentUser.setUpdatedOn(System.currentTimeMillis());
+                departmentUser.setDeleted(false);
+                docDepartmentUser.add(departmentUser);
+            }
+            departmentUserRepository.save(docDepartmentUser);
+
 
             return alreadyExistsUser;
 
@@ -524,14 +693,45 @@ public class HISUserService implements UserDetailsService {
 
     public UserResponseWrapper findByIdAndResponse(long id) {
         User user = userRepository.findAllById(id);
+        String userType = user.getUserType();
         UserResponseWrapper userResponseWrapper = new UserResponseWrapper(user);
 
         userResponseWrapper.setProfile(user.getProfile());
-        UserDutyShift userDutyShift = userDutyShiftRepository.findByUser(user);
-        Vacation vacation = vacationRepository.findByUser(user);
+        BranchUser branchUser = branchUserRepository.findByUser(user);
+      //  if (branchUser.isPrimaryBranch()) {
+            BranchWrapper branchWrapper = new BranchWrapper(branchUser);
+            userResponseWrapper.setBranch(branchWrapper);
+        //}
+        List<Branch> visitBranchesList = new ArrayList<>();
+        for (UserVisitBranches userVisitBranches : user.getUserVisitBranches()) {
+            visitBranchesList.add(userVisitBranches.getBranch());
+            userResponseWrapper.setVisitBranches(visitBranchesList);
+        }
 
-        userResponseWrapper.setDutyShift(userDutyShift.getDutyShift());
-        userResponseWrapper.setVacation(vacation);
+        if (userType.equalsIgnoreCase("doctor")) {
+            UserDutyShift userDutyShift = userDutyShiftRepository.findByUser(user);
+            Vacation vacation = vacationRepository.findByUser(user);
+            userResponseWrapper.setDutyShift(userDutyShift.getDutyShift());
+            userResponseWrapper.setVacation(vacation);
+            List<ClinicalDepartment> clinicalDepartmentList = new ArrayList<>();
+            for (DepartmentUser departmentUser : user.getDepartments()) {
+                clinicalDepartmentList.add(departmentUser.getClinicalDepartment());
+                userResponseWrapper.setClinicalDepartments(clinicalDepartmentList);
+            }
+
+        }
+        if (userType.equalsIgnoreCase("nurse")) {
+            List<ClinicalDepartment> nurseDepartList = new ArrayList<>();
+            List<DutyWithDoctor> nurseDutyWithDoctorsList = new ArrayList<>();
+            for (DepartmentUser nurseDeptUser : user.getDepartments()) {
+                nurseDepartList.add(nurseDeptUser.getClinicalDepartment());
+                userResponseWrapper.setClinicalDepartments(nurseDepartList);
+            }
+            for (DutyWithDoctor nurseDutyWithDoctor : user.getDoctor()) {
+                nurseDutyWithDoctorsList.add(nurseDutyWithDoctor);
+                userResponseWrapper.setDutyWithDoctors(nurseDutyWithDoctorsList);
+            }
+        }
 
         return userResponseWrapper;
     }

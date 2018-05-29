@@ -59,6 +59,11 @@ public class MedicalServicesService {
         return medicalServicesRepository.findAllPaginated(pageable);
     }
 
+    public List<MedicalServiceWrapper> findAllMedicalServices() {
+
+        return medicalServicesRepository.findAllMedicalServiceWrappers();
+    }
+
     public int countAllMedicalServices() {
         return medicalServicesRepository.findAllMedicalServiceWrappers().size();
     }

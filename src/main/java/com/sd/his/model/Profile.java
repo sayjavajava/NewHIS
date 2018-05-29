@@ -68,7 +68,7 @@ public class Profile implements Serializable {
     private List<String> workingDays =new ArrayList<>();
 
     @Column(name = "ALLOW_DISCOUNT")
-    private String allowDiscount;
+    private Boolean allowDiscount;
 
 
     @Column(name = "GENDER")
@@ -98,6 +98,9 @@ public class Profile implements Serializable {
     @Column(name = "TYPE")
     private String type;
 
+    @Column(name = "OTHER_DOCTOR_DASHBOARD")
+    private String otherDashboard;
+
     @Column(name = "CREATED_ON")
     private Long createdOn;
 
@@ -110,7 +113,7 @@ public class Profile implements Serializable {
     public Profile() {
     }
 
-    public Profile(String firstName, String lastName, String homePhone, String cellPhone, String accountExpiry, Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard, Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices, Long checkUpInterval, List<String> workingDays, String allowDiscount, String gender, String profileImg, String address, String city, String state, String country, String status, Date dob, String type, Long createdOn, Long updatedOn) {
+    public Profile(String firstName, String lastName, String homePhone, String cellPhone, String accountExpiry, Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard, Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices, Long checkUpInterval, List<String> workingDays, Boolean allowDiscount, String gender, String profileImg, String address, String city, String state, String country, String status, Date dob, String type, String otherDashboard, Long createdOn, Long updatedOn, String aboutMe) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePhone = homePhone;
@@ -135,8 +138,10 @@ public class Profile implements Serializable {
         this.status = status;
         this.dob = dob;
         this.type = type;
+        this.otherDashboard = otherDashboard;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
+        this.aboutMe = aboutMe;
     }
 
     public Long getId() {
@@ -259,11 +264,11 @@ public class Profile implements Serializable {
         this.workingDays = workingDays;
     }
 
-    public String getAllowDiscount() {
+    public Boolean getAllowDiscount() {
         return allowDiscount;
     }
 
-    public void setAllowDiscount(String allowDiscount) {
+    public void setAllowDiscount(Boolean allowDiscount) {
         this.allowDiscount = allowDiscount;
     }
 
@@ -337,6 +342,14 @@ public class Profile implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getOtherDashboard() {
+        return otherDashboard;
+    }
+
+    public void setOtherDashboard(String otherDashboard) {
+        this.otherDashboard = otherDashboard;
     }
 
     public Long getCreatedOn() {

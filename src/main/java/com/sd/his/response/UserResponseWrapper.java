@@ -21,10 +21,7 @@ package com.sd.his.response;/*
  * 
  */
 
-import com.sd.his.model.Branch;
-import com.sd.his.model.DutyShift;
-import com.sd.his.model.User;
-import com.sd.his.model.Vacation;
+import com.sd.his.model.*;
 import com.sd.his.request.WorkingDaysOfDoctor;
 import com.sd.his.wrapper.BranchWrapper;
 import sun.java2d.cmm.Profile;
@@ -52,7 +49,9 @@ public class UserResponseWrapper {
     com.sd.his.model.Profile profile;
     Vacation vacation;
     String workingDaysOfDoctor;
-
+    List<ClinicalDepartment> clinicalDepartments;
+    List<Branch> VisitBranches;
+    List<DutyWithDoctor> dutyWithDoctors;
 
    public UserResponseWrapper(){}
 
@@ -73,6 +72,30 @@ public class UserResponseWrapper {
         this.profileImg = user.getProfile().getProfileImg();
         this.status = user.getProfile().getStatus();
 
+    }
+
+    public List<DutyWithDoctor> getDutyWithDoctors() {
+        return dutyWithDoctors;
+    }
+
+    public void setDutyWithDoctors(List<DutyWithDoctor> dutyWithDoctors) {
+        this.dutyWithDoctors = dutyWithDoctors;
+    }
+
+    public List<Branch> getVisitBranches() {
+        return VisitBranches;
+    }
+
+    public void setVisitBranches(List<Branch> visitBranches) {
+        VisitBranches = visitBranches;
+    }
+
+    public List<ClinicalDepartment> getClinicalDepartments() {
+        return clinicalDepartments;
+    }
+
+    public void setClinicalDepartments(List<ClinicalDepartment> clinicalDepartments) {
+        this.clinicalDepartments = clinicalDepartments;
     }
 
     public String getWorkingDaysOfDoctor() {

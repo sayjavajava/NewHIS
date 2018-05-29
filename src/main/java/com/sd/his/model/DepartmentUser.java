@@ -21,26 +21,15 @@ package com.sd.his.model;/*
  * 
  */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ROOM")
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Room {
-
+@Table(name = "DEPARTMENT_USER")
+public class DepartmentUser {
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Column(name = "EXAM_NAME")
-    private String examName;
-
-    @ManyToOne
-    @JoinColumn(name = "Branch_ID")
-    private Branch branch;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
     private boolean deleted;
@@ -51,18 +40,31 @@ public class Room {
     @Column(name = "CREATED_ON")
     private long createdOn;
 
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
-    private boolean active;
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
 
-    @Column(name = "ALLOW_ONLINE_SCHEDULING")
-    private boolean allowOnlineScheduling;
+    @ManyToOne
+    @JoinColumn(name = "DEPART_ID")
+    private ClinicalDepartment clinicalDepartment;
 
-    public Room() {
+    public DepartmentUser() {
     }
 
-    public Room(String examName, boolean allowOnlineScheduling) {
-        this.examName = examName;
-        this.allowOnlineScheduling = allowOnlineScheduling;
+    public DepartmentUser(boolean deleted, long updatedOn, long createdOn, User user, ClinicalDepartment clinicalDepartment) {
+        this.deleted = deleted;
+        this.updatedOn = updatedOn;
+        this.createdOn = createdOn;
+        this.user = user;
+        this.clinicalDepartment = clinicalDepartment;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public boolean isDeleted() {
@@ -89,43 +91,19 @@ public class Room {
         this.createdOn = createdOn;
     }
 
-    public boolean isActive() {
-        return active;
+    public User getUser() {
+        return user;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Long getId() {
-        return id;
+    public ClinicalDepartment getClinicalDepartment() {
+        return clinicalDepartment;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getExamName() {
-        return examName;
-    }
-
-    public void setExamName(String examName) {
-        this.examName = examName;
-    }
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
-    }
-
-    public boolean isAllowOnlineScheduling() {
-        return allowOnlineScheduling;
-    }
-
-    public void setAllowOnlineScheduling(boolean allowOnlineScheduling) {
-        this.allowOnlineScheduling = allowOnlineScheduling;
+    public void setClinicalDepartment(ClinicalDepartment clinicalDepartment) {
+        this.clinicalDepartment = clinicalDepartment;
     }
 }

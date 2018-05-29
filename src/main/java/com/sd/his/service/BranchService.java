@@ -84,7 +84,7 @@ public class BranchService {
         branch.setCountry(branchRequestWrapper.getCountry());
         branch.setBillingName(branchRequestWrapper.getBillingName());
         branch.setBillingTaxId(branchRequestWrapper.getBillingTaxID());
-        branch.setBillingBranchName(branchRequestWrapper.getBillingName());
+        branch.setBillingBranchName(branchRequestWrapper.getBillingBranch());
         branch.setAllowOnlineSchedule(branchRequestWrapper.isAllowOnlineSchedulingInBranch());
         branch.setShowBranchInfoOnline(branchRequestWrapper.isShowBranchOnline());
         branch.setFax(branchRequestWrapper.getFax());
@@ -146,21 +146,16 @@ public class BranchService {
     public BranchResponseWrapper findByID(long id) {
         Branch branch = branchRepository.findByIdAndDeletedFalse(id);
         BranchResponseWrapper branchResponseWrapper = new BranchResponseWrapper(branch);
-
-        List<Room> finalRooms = branch.getRooms().stream()
-                .filter(x -> x.getExamName() != null)
-                .map(x -> new Room(x.getExamName(), x.isAllowOnlineScheduling()))
-                .collect(Collectors.toList());
-
-        branchResponseWrapper.setExamRooms(finalRooms);
-
-        List<UserResponseWrapper> userWrapper = new ArrayList<>();
-        List<User> userRoles = userRepository.findAllByRoles_role_name("doctor");
-        for (User user : userRoles) {
-            UserResponseWrapper userResponseWrapper = new UserResponseWrapper(user);
-            userWrapper.add(userResponseWrapper);
+        List<Room> roomListData =new ArrayList<>();
+        for(Room room :branch.getRooms()){
+            Room room1 =new Room(room.getExamName(),room.isAllowOnlineScheduling());
+            roomListData.add(room1);
         }
-        branchResponseWrapper.setUser(userWrapper);
+        branchResponseWrapper.setExamRooms(roomListData);
+        BranchUser branchUser = branchUserRepository.findByBranch(branch);
+        branchResponseWrapper.setUser(branchUser.getUser());
+        branchResponseWrapper.setUsername(branchUser.getUser().getUsername());
+
         return branchResponseWrapper;
     }
 
@@ -202,7 +197,7 @@ public class BranchService {
     }
 
     public List<String> findAllBranchName() {
-        List<Branch> allBranches = branchRepository.findAll();
+        List<BranchResponseWrapper> allBranches = branchRepository.findAllByActiveTrueAndDeletedFalse();
         List<String> branchNames = allBranches.stream()
                 .filter(x -> x.getName() != null)
                 .map(x -> x.getName())
@@ -211,13 +206,20 @@ public class BranchService {
         return branchNames;
     }
 
-    public List<BranchResponseWrapper> searchByBranchName(String name, int offset, int limit) {
+    public List<BranchResponseWrapper> searchByBranchNameAndDepartment(String name,String department, int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        logger.info("branch name" + name);
+        logger.info("branch name" + department);
 
-        List<BranchResponseWrapper> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalse(name, pageable);
+        List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalseOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(name,department, pageable);
 
-        return allBranches;
+        List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();
+        //(long id, String name, String country, String city, int rooms)
+        for(Branch branch:allBranches){
+
+            BranchResponseWrapper brw = new BranchResponseWrapper(branch.getId(),branch.getName(),branch.getCountry(),branch.getCity(),branch.getNoOfRooms());
+            branchResponseWrapper.add(brw);
+        }
+        return branchResponseWrapper;
     }
 
     public List<BranchResponseWrapper> getAllActiveBranches() {

@@ -133,6 +133,50 @@ public class MedicalServiceAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiOperation(httpMethod = "GET", value = "Paginated Medical Services",
+            notes = "This method will return Paginated Medical Services",
+            produces = "application/json", nickname = "Paginated CMedical Services",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated Medical Services fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllMedicalServices(HttpServletRequest request) {
+
+        logger.error("getAllMedicalServices API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("med.service.fetch.error"));
+        response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("getAllMedicalServices - Medical Services fetching from DB");
+            List<MedicalServiceWrapper> mss = medicalServicesService.findAllMedicalServices();
+
+            logger.info("getAllMedicalServices - Medical Services fetched successfully"+ mss.size());
+            response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
+            response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(mss);
+
+            logger.error("getAllMedicalServices API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getAllMedicalServices exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
     @ApiOperation(httpMethod = "POST", value = "saveCode ",
             notes = "This method will Save the Medical Service",
             produces = "application/json", nickname = "Save Medical Service",
