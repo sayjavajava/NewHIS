@@ -57,8 +57,9 @@ public class Speciality {
     private long createdOn;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "specialities", cascade = CascadeType.ALL)
-    private List<Organization> organizations;
+    @OneToMany(targetEntity = OrganizationSpecialty.class, mappedBy = "speciality", fetch = FetchType.LAZY)
+    private List<OrganizationSpecialty> organization_specialties;
+
 
     public Speciality() {
     }
@@ -130,11 +131,11 @@ public class Speciality {
         this.createdOn = createdOn;
     }
 
-    public List<Organization> getOrganizations() {
-        return organizations;
+    public List<OrganizationSpecialty> getOrganization_specialties() {
+        return organization_specialties;
     }
 
-    public void setOrganizations(List<Organization> organizations) {
-        this.organizations = organizations;
+    public void setOrganization_specialties(List<OrganizationSpecialty> organization_specialties) {
+        this.organization_specialties = organization_specialties;
     }
 }
