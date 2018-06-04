@@ -2,6 +2,7 @@ package com.sd.his.response;
 
 import com.sd.his.model.Branch;
 import com.sd.his.model.Room;
+import com.sd.his.model.User;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class BranchResponseWrapper {
     String username;
     List<Room> examRooms;
     String address;
-    List<UserResponseWrapper> user;
+    User user;
 
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
@@ -88,11 +89,11 @@ public class BranchResponseWrapper {
 
     }
 
-    public List<UserResponseWrapper> getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(List<UserResponseWrapper> user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

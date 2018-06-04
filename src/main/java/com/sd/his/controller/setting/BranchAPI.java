@@ -299,7 +299,7 @@ public class BranchAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateBranch(HttpServletRequest request,
                                           @PathVariable("id") int id,
                                           @RequestBody BranchRequestWrapper branchRequestWrapper) {
@@ -455,8 +455,7 @@ public class BranchAPI {
                                                      @PathVariable("page") int page,
                                                      @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
                                                      @RequestParam(value = "branch") String name,
-                                                     @RequestParam(value = "department") String department,
-                                                     @RequestParam(value = "description") String description) {
+                                                     @RequestParam(value = "department") String department) {
         logger.info("search:" + name);
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("branch.not.found"));
@@ -466,7 +465,7 @@ public class BranchAPI {
 
         try {
             //
-            List<BranchResponseWrapper> branchWrappers = branchService.searchByBranchName(name, page, pageSize);
+            List<BranchResponseWrapper> branchWrappers = branchService.searchByBranchNameAndDepartment(name, department,page, pageSize);
 
             int countBranch = branchService.totalBranches();
 

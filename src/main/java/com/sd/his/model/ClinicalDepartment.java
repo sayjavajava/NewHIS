@@ -65,6 +65,10 @@ public class ClinicalDepartment {
     @OneToMany(targetEntity = ClinicalDepartmentMedicalService.class, mappedBy = "clinicalDpt", fetch = FetchType.LAZY)
     private List<ClinicalDepartmentMedicalService> medicalServices;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = DepartmentUser.class, mappedBy = "clinicalDepartment", fetch = FetchType.LAZY)
+    private List<DepartmentUser> users;
+
     public ClinicalDepartment() {
     }
 
@@ -86,6 +90,14 @@ public class ClinicalDepartment {
                 ", active=" + active +
                 ", deleted=" + deleted +
                 '}';
+    }
+
+    public List<DepartmentUser> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<DepartmentUser> users) {
+        this.users = users;
     }
 
     public Long getId() {

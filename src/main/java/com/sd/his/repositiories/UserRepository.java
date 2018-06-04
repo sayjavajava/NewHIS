@@ -36,4 +36,8 @@ public interface UserRepository extends JpaRepository<User, Long> ,PagingAndSort
 
     List<User> findAllByRoles_role_name(String role);
 
+    int countAllByActiveTrueAndDeletedFalse();
+
+    List<User> findAllByIdIn(List<Long> ids);
+
 }

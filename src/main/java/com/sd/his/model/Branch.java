@@ -109,6 +109,10 @@ public class Branch {
     private List<BranchUser> users;
 
     @JsonIgnore
+    @OneToMany(targetEntity = UserVisitBranches.class, mappedBy = "branch", fetch = FetchType.LAZY)
+    private List<UserVisitBranches> visitBranches;
+
+    @JsonIgnore
     @OneToMany(targetEntity = Room.class, mappedBy = "branch", fetch = FetchType.LAZY)
     private List<Room> rooms;
 
@@ -135,6 +139,14 @@ public class Branch {
                 ", active=" + active +
                 ", deleted=" + deleted +
                 '}';
+    }
+
+    public List<UserVisitBranches> getVisitBranches() {
+        return visitBranches;
+    }
+
+    public void setVisitBranches(List<UserVisitBranches> visitBranches) {
+        this.visitBranches = visitBranches;
     }
 
     public Integer getZipCode() {

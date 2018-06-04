@@ -32,7 +32,6 @@ public class BranchWrapper {
     String billingBranchName;
     String billingTaxId;
     int noOfRooms;
-
     boolean primaryBranch;
     boolean primaryDr;
     boolean billingBranch;

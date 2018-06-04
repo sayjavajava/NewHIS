@@ -39,6 +39,8 @@ public interface MedicalServicesRepository extends JpaRepository<MedicalService,
             "FROM MedicalService ms JOIN ms.departments cdms JOIN cdms.clinicalDpt cd JOIN ms.branches bms JOIN bms.branch b JOIN ms.tax t ")
     List<MedicalServiceWrapper> findAllPaginated(Pageable pageable);
 
+
+
     @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id, ms.title, ms.fee, ms.cost, ms.status, b.id, b.name, cd.id, cd.name, t.id, t.rate, ms.description, ms.duration) " +
             "FROM MedicalService ms JOIN ms.departments cdms JOIN cdms.clinicalDpt cd JOIN ms.branches bms JOIN bms.branch b JOIN ms.tax t " +
             "WHERE ms.title = :title AND b.id = :branchId AND cd.id = :dptId AND ms.status = TRUE")
@@ -76,6 +78,9 @@ public interface MedicalServicesRepository extends JpaRepository<MedicalService,
                                                 @Param("branchId") Long branchId,
                                                 @Param("departmentId") Long departmentId,
                                                 @Param("serviceFee") Double serviceFee);
+
+    List<MedicalService> findAllByIdIn(List<Long> ids);
+
 
 
 }

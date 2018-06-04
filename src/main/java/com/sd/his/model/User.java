@@ -2,10 +2,13 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.CollectionId;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -84,6 +87,22 @@ public class User {
     private List<Vacation> vacations;
 
     @JsonIgnore
+    @OneToMany(targetEntity = DepartmentUser.class, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<DepartmentUser> departments;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = DutyWithDoctor.class, mappedBy = "nurse", fetch = FetchType.LAZY)
+    private List<DutyWithDoctor> doctor;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = DutyWithDoctor.class, mappedBy = "doctor", fetch = FetchType.LAZY)
+    private List<DutyWithDoctor> nurse;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = UserVisitBranches.class, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserVisitBranches> userVisitBranches;
+
+    @JsonIgnore
     @OneToMany(targetEntity = UserMedicalService.class, mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserMedicalService> medicalServices;
 
@@ -103,6 +122,39 @@ public class User {
                 ", active=" + active +
                 ", deleted=" + deleted +
                 '}';
+    }
+
+
+    public List<UserVisitBranches> getUserVisitBranches() {
+        return userVisitBranches;
+    }
+
+    public void setUserVisitBranches(List<UserVisitBranches> userVisitBranches) {
+        this.userVisitBranches = userVisitBranches;
+    }
+
+    public List<DutyWithDoctor> getNurse() {
+        return nurse;
+    }
+
+    public void setNurse(List<DutyWithDoctor> nurse) {
+        this.nurse = nurse;
+    }
+
+    public List<DutyWithDoctor> getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(List<DutyWithDoctor> doctor) {
+        this.doctor = doctor;
+    }
+
+    public List<DepartmentUser> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(List<DepartmentUser> departments) {
+        this.departments = departments;
     }
 
     public String getUserType() {
