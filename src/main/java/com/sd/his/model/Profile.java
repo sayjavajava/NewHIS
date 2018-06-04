@@ -34,7 +34,6 @@ public class Profile implements Serializable {
     private String accountExpiry;
 
 
-
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
     private Boolean active;
 
@@ -65,7 +64,7 @@ public class Profile implements Serializable {
 
     @ElementCollection
     @Column(name = "WORKING_DAYS")
-    private List<String> workingDays =new ArrayList<>();
+    private List<String> workingDays = new ArrayList<>();
 
     @Column(name = "ALLOW_DISCOUNT")
     private Boolean allowDiscount;
@@ -113,7 +112,12 @@ public class Profile implements Serializable {
     public Profile() {
     }
 
-    public Profile(String firstName, String lastName, String homePhone, String cellPhone, String accountExpiry, Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard, Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices, Long checkUpInterval, List<String> workingDays, Boolean allowDiscount, String gender, String profileImg, String address, String city, String state, String country, String status, Date dob, String type, String otherDashboard, Long createdOn, Long updatedOn, String aboutMe) {
+    public Profile(String firstName, String lastName, String homePhone, String cellPhone, String accountExpiry,
+                   Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard,
+                   Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices,
+                   Long checkUpInterval, List<String> workingDays, Boolean allowDiscount, String gender,
+                   String profileImg, String address, String city, String state, String country, String status, Date dob,
+                   String type, String otherDashboard, Long createdOn, Long updatedOn, String aboutMe) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.homePhone = homePhone;

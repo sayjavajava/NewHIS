@@ -70,6 +70,10 @@ public class User {
     @JoinColumn(name = "PROFILE_ID")
     private Profile profile;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "INSURANCE_ID")
+    private Insurance insurance;
+
     @JsonIgnore
     @OneToMany(targetEntity = UserPermission.class, mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserPermission> permissions;
@@ -219,6 +223,14 @@ public class User {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public Insurance getInsurance() {
+        return insurance;
+    }
+
+    public void setInsurance(Insurance insurance) {
+        this.insurance = insurance;
     }
 
     public List<UserPermission> getPermissions() {
