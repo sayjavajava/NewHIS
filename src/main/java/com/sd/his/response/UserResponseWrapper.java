@@ -1,33 +1,32 @@
-package com.sd.his.response;/*
+package com.sd.his.response;
+
+import com.sd.his.model.*;
+import com.sd.his.wrapper.BranchWrapper;
+
+import java.util.List;
+
+/*
  * @author    : waqas kamran
  * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.*
  * @FileName  : UserAuthAPI
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
-
-import com.sd.his.model.*;
-import com.sd.his.request.WorkingDaysOfDoctor;
-import com.sd.his.wrapper.BranchWrapper;
-import sun.java2d.cmm.Profile;
-
-import java.util.List;
-
 public class UserResponseWrapper {
 
     long id;
@@ -53,12 +52,13 @@ public class UserResponseWrapper {
     List<Branch> VisitBranches;
     List<DutyWithDoctor> dutyWithDoctors;
 
-   public UserResponseWrapper(){}
+    public UserResponseWrapper() {
+    }
 
     public UserResponseWrapper(User user) {
         this.id = user.getId();
         this.email = user.getEmail();
-        this.userType=user.getUserType();
+        this.userType = user.getUserType();
         this.userName = user.getUsername();
         this.firstName = user.getProfile().getFirstName();
         this.lastName = user.getProfile().getLastName();
@@ -66,7 +66,7 @@ public class UserResponseWrapper {
         this.address = user.getProfile().getAddress();
         this.state = user.getProfile().getState();
         this.city = user.getProfile().getCity();
-        this.userType=user.getUserType();
+        this.userType = user.getUserType();
         this.country = user.getProfile().getCountry();
         this.gender = user.getProfile().getGender();
         this.profileImg = user.getProfile().getProfileImg();
