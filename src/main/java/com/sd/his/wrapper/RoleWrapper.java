@@ -44,7 +44,6 @@ public class RoleWrapper {
         this.description = role.getDescription();
         this.deleted = role.isDeleted();
         this.active = role.isActive();
-
     }
 
     public long getId() {

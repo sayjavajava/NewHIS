@@ -52,37 +52,40 @@ public class UserAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/loggedInUser", method = RequestMethod.GET)
     public ResponseEntity<?> getLoggedInUser(HttpServletRequest request, Principal principal) {
-        logger.error("getLoggedInUser API initiated.");
+        logger.info("LoggedIn User API - getLoggedInUser API initiated.");
         String name = principal.getName();
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("admin.login.error"));
-        response.setResponseCode(ResponseEnum.ADMIN_LOGGEDIN_FAILED.getValue());
+        response.setResponseMessage(messageBundle.getString("admin.loggedIn.fetched.error"));
+        response.setResponseCode(ResponseEnum.ADMIN_LOGGEDIN_FETCHED_FAILED.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
             if (HISCoreUtil.isValidObject(name)) {
+                logger.info("LoggedIn User API - fetching user from DB.");
                 User user = userService.findByUserName(name);
-                logger.info("Checking loggedInUser ..." + user);
-                UserWrapper userWrapper = userService.buildUserWrapper(user);
+                if (HISCoreUtil.isValidObject(user)) {
+                    logger.info("LoggedIn User API - user successfully fetched...");
+                    UserWrapper userWrapper = userService.buildLoggedInUserWrapper(user);
 
-                response.setResponseMessage(messageBundle.getString("admin.login.success"));
-                response.setResponseCode(ResponseEnum.ADMIN_LOGGEDIN_SUCCESS.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(userWrapper);
+                    response.setResponseMessage(messageBundle.getString("admin.loggedIn.fetched.success"));
+                    response.setResponseCode(ResponseEnum.ADMIN_LOGGEDIN_FETCHED_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    response.setResponseData(userWrapper);
 
-                return new ResponseEntity<>(response, HttpStatus.OK);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
             }
         } catch (Exception ex) {
-            logger.error("getLoggedInUser failed.", ex.fillInStackTrace());
+            logger.error("LoggedIn User API - getLoggedInUser failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ApiOperation(httpMethod = "GET", value = "Admin Logged out ",
