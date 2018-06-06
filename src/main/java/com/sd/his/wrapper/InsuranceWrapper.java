@@ -1,77 +1,46 @@
-package com.sd.his.model;
+package com.sd.his.wrapper;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.model.Insurance;
 
-import javax.persistence.*;
-import java.sql.Blob;
 import java.util.Date;
 
-/*
- * @author    : Irfan Nasim
- * @Date      : 04-Jun-18
- * @version   : ver. 1.0.0
- *
- * ________________________________________________________________________________________________
- *
- *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________
- *
- *
- * ________________________________________________________________________________________________
- *
- * @Project   : HIS
- * @Package   : com.sd.his.model
- * @FileName  : Insurance
- *
- * Copyright ©
- * SolutionDots,
- * All rights reserved.
- *
- */
-@Entity
-@Table(name = "INSURANCE")
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Insurance {
+public class InsuranceWrapper {
 
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Column(name = "COMPANY")
+    private long id;
     private String company;
-    @Column(name = "INSURANCE_ID")
     private String insuranceID;
-    @Column(name = "GROUP_NUMBER")
     private Long groupNumber;
-    @Column(name = "PLAN_NAME")
     private String planName;
-    @Column(name = "PLAN_TYPE")
     private String planType;
-    @Column(name = "CART_ISSUED_DATE")
     private Date cardIssuedDate;
-    @Column(name = "CART_EXPIRY_DATE")
     private Date cardExpiryDate;
-    @Column(name = "PRIMARY_INSURANCE_NOTES")
     private String primaryInsuranceNotes;
-    @Column(name = "PHOTO_FRONT")
     private String photoFront;
-    @Column(name = "PHOTO_BACK")
     private String photoBack;
-    @Column(name = "CREATED_ON")
-    private long created;
-    @Column(name = "UPDATED_ON")
-    private long updated;
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
-    private boolean deleted;
 
-    public Insurance() {
+
+    public InsuranceWrapper() {
     }
 
-    public Long getId() {
+    public InsuranceWrapper(Insurance insurance) {
+        this.id = insurance.getId();
+        this.company = insurance.getCompany();
+        this.insuranceID = insurance.getInsuranceID();
+        this.groupNumber = insurance.getGroupNumber();
+        this.planName = insurance.getPlanName();
+        this.planType = insurance.getPlanType();
+        this.cardIssuedDate = insurance.getCardIssuedDate();
+        this.cardExpiryDate = insurance.getCardExpiryDate();
+        this.primaryInsuranceNotes = insurance.getPrimaryInsuranceNotes();
+        this.photoFront = insurance.getPhotoFront();
+        this.photoBack = insurance.getPhotoBack();
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -153,29 +122,5 @@ public class Insurance {
 
     public void setPhotoBack(String photoBack) {
         this.photoBack = photoBack;
-    }
-
-    public long getCreated() {
-        return created;
-    }
-
-    public void setCreated(long created) {
-        this.created = created;
-    }
-
-    public long getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(long updated) {
-        this.updated = updated;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 }

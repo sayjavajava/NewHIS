@@ -1,158 +1,91 @@
-package com.sd.his.model;
+package com.sd.his.wrapper;
 
+import com.sd.his.model.Profile;
+import com.sd.his.utill.DateUtil;
+import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-@Entity
-@Table(name = "PROFILE")
-public class Profile implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class ProfileWrapper {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", unique = true, nullable = false)
-    private Long id;
-
-    @Column(name = "FIRST_NAME")
+    private long id;
     private String firstName;
-
-    @Column(name = "LAST_NAME")
     private String lastName;
-
-    @Column(name = "HOME_PHONE")
     private String homePhone;
-
-    @Column(name = "CELL_PHONE")
     private String cellPhone;
-
-    @Column(name = "ACCOUNT_EXPIRY")
     private String accountExpiry;
-
-
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
-    private Boolean active;
-
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private Boolean deleted;
-
-    @Column(name = "IS_SEND_BILLING_REPORT", columnDefinition = "boolean default false")
-    private Boolean sendBillingReport;
-
-    @Column(name = "IS_USE_RECEPT_DASHBOARD", columnDefinition = "boolean default false")
-    private Boolean useReceptDashBoard;
-
-    @Column(name = "IS_OTHER_DOCTOR_DASHBOARD", columnDefinition = "boolean default false")
-    private Boolean otherDoctorDashBoard;
-
-    @Column(name = "IS_MANAGE_PATIENT_RECORDS", columnDefinition = "boolean default false")
-    private Boolean managePatientRecords;
-
-    @Column(name = "IS_MANAGE_PATIENT_INVOICES", columnDefinition = "boolean default false")
-    private Boolean managePatientInvoices;
-
-    @Column(name = "CHECK_UP_INTERVAL")
+    private boolean active;
+    private boolean deleted;
+    private boolean sendBillingReport;
+    private boolean useReceptDashBoard;
+    private boolean otherDoctorDashBoard;
+    private boolean managePatientRecords;
+    private boolean managePatientInvoices;
     private long checkUpInterval;
-
-/*   @ElementCollection
-    @Column(name = "WORKING_DAYS")
-    private Set<String> workingDays ;*/
-
-    @ElementCollection
-    @Column(name = "WORKING_DAYS")
+    /*   @ElementCollection
+        @Column(name = "WORKING_DAYS")
+        private Set<String> workingDays ;*/
     private List<String> workingDays = new ArrayList<>();
-
-    @Column(name = "ALLOW_DISCOUNT")
-    private Boolean allowDiscount;
-
-
-    @Column(name = "GENDER")
+    private boolean allowDiscount;
     private String gender;
-
-    @Column(name = "PROFILE_IMG")
     private String profileImg;
-
-    @Column(name = "ADDRESS")
     private String address;
-
-    @Column(name = "CITY")
     private String city;
-
-    @Column(name = "STATE")
     private String state;
-
-    @Column(name = "COUNTRY")
     private String country;
-
-    @Column(name = "STATUS")
     private String status;
-
-    @Column(name = "DOB")
-    private Date dob;
-
-    @Column(name = "TYPE")
+    private long dob;
     private String type;
-
-    @Column(name = "OTHER_DOCTOR_DASHBOARD")
     private String otherDashboard;
-
-    @Column(name = "CREATED_ON")
     private long createdOn;
-
-    @Column(name = "UPDATED_ON")
     private long updatedOn;
-
-    @Column(name = "ABOUT_ME")
     private String aboutMe;
 
-    public Profile() {
+
+    public ProfileWrapper() {
     }
 
-    public Profile(String firstName, String lastName, String homePhone, String cellPhone, String accountExpiry,
-                   Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard,
-                   Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices,
-                   long checkUpInterval, List<String> workingDays, Boolean allowDiscount, String gender,
-                   String profileImg, String address, String city, String state, String country, String status, Date dob,
-                   String type, String otherDashboard, long createdOn, long updatedOn, String aboutMe) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.homePhone = homePhone;
-        this.cellPhone = cellPhone;
-        this.accountExpiry = accountExpiry;
-        this.active = active;
-        this.deleted = deleted;
-        this.sendBillingReport = sendBillingReport;
-        this.useReceptDashBoard = useReceptDashBoard;
-        this.otherDoctorDashBoard = otherDoctorDashBoard;
-        this.managePatientRecords = managePatientRecords;
-        this.managePatientInvoices = managePatientInvoices;
-        this.checkUpInterval = checkUpInterval;
-        this.workingDays = workingDays;
-        this.allowDiscount = allowDiscount;
-        this.gender = gender;
-        this.profileImg = profileImg;
-        this.address = address;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.status = status;
-        this.dob = dob;
-        this.type = type;
-        this.otherDashboard = otherDashboard;
-        this.createdOn = createdOn;
-        this.updatedOn = updatedOn;
-        this.aboutMe = aboutMe;
+    public ProfileWrapper(Profile profile) {
+        this.id = profile.getId();
+        this.firstName = profile.getFirstName() == null ? "" : profile.getFirstName();
+        this.lastName = profile.getLastName() == null ? "" : profile.getLastName();
+        this.homePhone = profile.getHomePhone() == null ? "" : profile.getHomePhone();
+        this.cellPhone = profile.getCellPhone() == null ? "" : profile.getCellPhone();
+        this.accountExpiry = profile.getAccountExpiry() == null ? "" : profile.getAccountExpiry();
+        this.active = profile.getActive() == null ? false : profile.getActive();
+        this.deleted = profile.getDeleted() == null ? false : profile.getDeleted();
+        this.sendBillingReport = profile.getSendBillingReport() == null ? false : profile.getSendBillingReport();
+        this.useReceptDashBoard = profile.getUseReceptDashBoard() == null ? false : profile.getUseReceptDashBoard();
+        this.otherDoctorDashBoard = profile.getOtherDoctorDashBoard() == null ? false : profile.getOtherDoctorDashBoard();
+        this.managePatientRecords = profile.getManagePatientRecords() == null ? false : profile.getManagePatientRecords();
+        this.managePatientInvoices = profile.getManagePatientInvoices() == null ? false : profile.getManagePatientInvoices();
+        this.checkUpInterval = profile.getCheckUpInterval();
+        this.workingDays = profile.getWorkingDays() == null ? new ArrayList<>() : profile.getWorkingDays();
+        this.allowDiscount = profile.getAllowDiscount() == null ? false : profile.getAllowDiscount();
+        this.gender = profile.getGender() == null ? null : profile.getGender();
+        this.profileImg = profile.getProfileImg() == null ? "" : profile.getProfileImg();
+        this.address = profile.getAddress() == null ? "" : profile.getAddress();
+        this.city = profile.getCity() == null ? "" : profile.getCity();
+        this.state = profile.getState() == null ? "" : profile.getState();
+        this.country = profile.getCountry() == null ? "" : profile.getCountry();
+        this.status = profile.getStatus() == null ? "Active" : profile.getStatus();
+        this.dob = profile.getDob() == null ? 0 : DateUtil.getMillisFromStringDate(profile.getDob() + "", HISConstants.DATE_FORMATE_THREE);
+        this.type = profile.getType() == null ? "" : profile.getType();
+        this.otherDashboard = profile.getOtherDashboard() == null ? "" : profile.getOtherDashboard();
+        this.createdOn = profile.getCreatedOn();
+        this.updatedOn = profile.getUpdatedOn();
+        this.aboutMe = profile.getAboutMe() == null ? "" : profile.getAboutMe();
+        this.deleted = profile.getDeleted();
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -268,11 +201,11 @@ public class Profile implements Serializable {
         this.workingDays = workingDays;
     }
 
-    public Boolean getAllowDiscount() {
+    public boolean getAllowDiscount() {
         return allowDiscount;
     }
 
-    public void setAllowDiscount(Boolean allowDiscount) {
+    public void setAllowDiscount(boolean allowDiscount) {
         this.allowDiscount = allowDiscount;
     }
 
@@ -332,11 +265,11 @@ public class Profile implements Serializable {
         this.status = status;
     }
 
-    public Date getDob() {
+    public long getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(long dob) {
         this.dob = dob;
     }
 
@@ -356,7 +289,7 @@ public class Profile implements Serializable {
         this.otherDashboard = otherDashboard;
     }
 
-    public long getCreatedOn() {
+    public Long getCreatedOn() {
         return createdOn;
     }
 
