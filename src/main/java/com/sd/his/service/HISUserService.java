@@ -3,6 +3,7 @@ package com.sd.his.service;
 import com.sd.his.enums.UserEnum;
 import com.sd.his.model.*;
 import com.sd.his.repositiories.*;
+import com.sd.his.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.response.UserResponseWrapper;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
@@ -44,6 +45,10 @@ public class HISUserService implements UserDetailsService {
     private DepartmentUserRepository departmentUserRepository;
     private DutyWithDoctorRepository dutyWithDoctorRepository;
     private UserVisitBranchesRepository userVisitBranchesRepository;
+
+    @Autowired
+    private ICDCodeRepository icdCodeRepository;
+
     private final Logger logger = LoggerFactory.getLogger(HISUserService.class);
 
     @Autowired
@@ -804,5 +809,21 @@ public class HISUserService implements UserDetailsService {
             userWrapper.add(userResponseWrapper);
         }
         return userWrapper;
+    }
+
+    public AdminDashboardDataResponseWrapper buildAdminDashboardData() {
+        AdminDashboardDataResponseWrapper adminData = new AdminDashboardDataResponseWrapper();
+
+        //#TODO pass type from UserTypeEnum
+        List<User> patients = userRepository.findAllByRoles_role_name("PATIENT");
+        List<MedicalService> medicalServices = medicalServicesRepository.findAllByDeletedFalse();
+        List<ICDCode> icdCodes = icdCodeRepository.findAllByDeletedFalse();
+
+        adminData.setPatientCount(patients.size());
+        adminData.setAppointmentsCount(0);
+        adminData.setMedicalServicesCount(medicalServices.size());
+        adminData.setIcdsCount(icdCodes.size());
+
+        return adminData;
     }
 }

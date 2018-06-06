@@ -81,6 +81,7 @@ public interface MedicalServicesRepository extends JpaRepository<MedicalService,
 
     List<MedicalService> findAllByIdIn(List<Long> ids);
 
+    List<MedicalService> findAllByDeletedFalse();
 
 
 }
