@@ -1,6 +1,6 @@
 package com.sd.his.service;
 
-import com.sd.his.enums.UserEnum;
+import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repositiories.*;
 import com.sd.his.response.AdminDashboardDataResponseWrapper;
@@ -192,7 +192,7 @@ public class HISUserService implements UserDetailsService {
         BranchUser branchUser = new BranchUser();
         UserDutyShift userDutyShift = new UserDutyShift();
         UserRole userRole = new UserRole();
-        if (usertype.equalsIgnoreCase(UserEnum.CASHIER.toString())) {
+        if (usertype.equalsIgnoreCase(UserTypeEnum.CASHIER.toString())) {
             User user = new User();
 
             Profile profile = new Profile();
@@ -237,7 +237,7 @@ public class HISUserService implements UserDetailsService {
             return user;
         }
 
-        if (usertype.equalsIgnoreCase(UserEnum.RECEPTIONIST.toString())) {
+        if (usertype.equalsIgnoreCase(UserTypeEnum.RECEPTIONIST.toString())) {
             User user = new User();
             Profile profile = new Profile();
             user.setUserType(createRequest.getUserType());
@@ -282,7 +282,7 @@ public class HISUserService implements UserDetailsService {
             return user;
         }
 
-        if (usertype.equalsIgnoreCase(UserEnum.NURSE.toString())) {
+        if (usertype.equalsIgnoreCase(UserTypeEnum.NURSE.toString())) {
             User user = new User();
             Profile profile = new Profile();
             user.setUserType(createRequest.getUserType());
@@ -355,7 +355,7 @@ public class HISUserService implements UserDetailsService {
 
             return user;
         }
-        if (usertype.equalsIgnoreCase(UserEnum.DOCTOR.toString())) {
+        if (usertype.equalsIgnoreCase(UserTypeEnum.DOCTOR.toString())) {
 
             User user = new User();
             Profile profile = new Profile();
@@ -494,8 +494,8 @@ public class HISUserService implements UserDetailsService {
     public User updateUser(UserCreateRequest userCreateRequest, User alreadyExistsUser) {
         String userType = userCreateRequest.getUserType();
         Branch primaryBranch = branchRepository.findByName(userCreateRequest.getPrimaryBranch());
-        BranchUser branchUser = branchUserRepository.findByUser(alreadyExistsUser);
-        if (userType.equalsIgnoreCase(UserEnum.CASHIER.toString())) {
+        BranchUser branchUser= branchUserRepository.findByUser(alreadyExistsUser);
+        if (userType.equalsIgnoreCase(UserTypeEnum.CASHIER.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
             alreadyExistsUser.setEmail(userCreateRequest.getEmail());
@@ -532,7 +532,7 @@ public class HISUserService implements UserDetailsService {
             return alreadyExistsUser;
         }
 
-        if (userType.equalsIgnoreCase(UserEnum.RECEPTIONIST.toString())) {
+        if (userType.equalsIgnoreCase(UserTypeEnum.RECEPTIONIST.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
             alreadyExistsUser.setEmail(userCreateRequest.getEmail());
@@ -570,7 +570,7 @@ public class HISUserService implements UserDetailsService {
             return alreadyExistsUser;
         }
 
-        if (userType.equalsIgnoreCase(UserEnum.NURSE.toString())) {
+        if (userType.equalsIgnoreCase(UserTypeEnum.NURSE.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
             alreadyExistsUser.setEmail(userCreateRequest.getEmail());
@@ -641,7 +641,7 @@ public class HISUserService implements UserDetailsService {
             return alreadyExistsUser;
         }
 
-        if (userType.equalsIgnoreCase(UserEnum.DOCTOR.toString())) {
+        if (userType.equalsIgnoreCase(UserTypeEnum.DOCTOR.toString())) {
             Vacation vacation = vacationRepository.findByUser(alreadyExistsUser);
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
