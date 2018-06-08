@@ -379,4 +379,8 @@ public class Profile implements Serializable {
     public void setAboutMe(String aboutMe) {
         this.aboutMe = aboutMe;
     }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

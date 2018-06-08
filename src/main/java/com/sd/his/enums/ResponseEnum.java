@@ -164,7 +164,9 @@ public enum ResponseEnum {
     PATIENT_SAVE_ALREADY("PATIENT_ERR_09"),
     PATIENT_UPDATE_ALREADY("PATIENT_ERR_10"),
     PATIENT_FETCHED_SUCCESS("PATIENT_SUC_11"),
-    PATIENT_FETCHED_ERROR("PATIENT_ERR_12");
+    PATIENT_FETCHED_ERROR("PATIENT_ERR_12"),
+    APPT_FETCHED_SUCCESS("APPT_SUC_01"),
+    APPT_FETCHED_ERROR("APPT_ERR_01");
 
     private String value;
 
@@ -179,4 +181,4 @@ public enum ResponseEnum {
     public void setValue(String value) {
         this.value = value;
     }
-}
+    }

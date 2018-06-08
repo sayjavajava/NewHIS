@@ -32,6 +32,14 @@ public class PatientWrapper {
         this.setInsuranceWrapper(new InsuranceWrapper(insurance));
     }
 
+    public PatientWrapper(User patient) {
+        this.id = patient.getId();
+        this.userName = patient.getUsername();
+        this.email = patient.getEmail();
+        this.profileWrapper.setFirstName(patient.getProfile().getFirstName());
+        this.profileWrapper.setLastName(patient.getProfile().getLastName());
+    }
+
     public long getId() {
         return id;
     }

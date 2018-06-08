@@ -3,34 +3,36 @@ package com.sd.his.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /*
  * @author    : waqas kamran
  * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
  * @FileName  : Vacation
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 @Entity
 @Table(name = "VACATION")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Vacation {
+public class Vacation implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)

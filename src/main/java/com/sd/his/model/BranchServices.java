@@ -2,6 +2,7 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
+import java.io.Serializable;
 
 /*
  * @author    : Irfan Nasim
@@ -28,7 +29,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "BRANCH_SERVICE")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BranchServices {
+public class BranchServices implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)

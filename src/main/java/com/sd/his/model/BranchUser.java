@@ -1,6 +1,7 @@
 package com.sd.his.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /*
  * @author    : Irfan Nasim
@@ -26,7 +27,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "BRANCH_USER")
-public class BranchUser {
+public class BranchUser implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)

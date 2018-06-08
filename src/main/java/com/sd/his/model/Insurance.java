@@ -3,6 +3,7 @@ package com.sd.his.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Blob;
 import java.util.Date;
 
@@ -31,36 +32,50 @@ import java.util.Date;
 @Entity
 @Table(name = "INSURANCE")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Insurance {
+public class Insurance implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(name = "COMPANY")
     private String company;
+
     @Column(name = "INSURANCE_ID")
     private String insuranceID;
+
     @Column(name = "GROUP_NUMBER")
     private Long groupNumber;
+
     @Column(name = "PLAN_NAME")
     private String planName;
+
     @Column(name = "PLAN_TYPE")
     private String planType;
+
     @Column(name = "CART_ISSUED_DATE")
     private Date cardIssuedDate;
+
     @Column(name = "CART_EXPIRY_DATE")
     private Date cardExpiryDate;
+
     @Column(name = "PRIMARY_INSURANCE_NOTES")
     private String primaryInsuranceNotes;
+
     @Column(name = "PHOTO_FRONT")
     private String photoFront;
+
     @Column(name = "PHOTO_BACK")
     private String photoBack;
+
     @Column(name = "CREATED_ON")
     private long created;
+
     @Column(name = "UPDATED_ON")
     private long updated;
+    
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
     private boolean deleted;
 
