@@ -21,6 +21,27 @@ package com.sd.his.enums;/*
  * 
  */
 
-public enum UserEnum {
-    NURSE,DOCTOR,RECEPTIONIST,CASHIER,
+public enum PropertyEnum {
+    STATUS("ACTIVE"),
+    USER_TYPE_RECEPTIONIST("RECEPTIONIST"),
+    USER_TYPE_NURSE("NURSE"),
+    USER_TYPE_CASHIER("CASHIER"),
+    PRIMARY_BRANCH("primaryBranch"),
+    PRIMARY_DOCTOR("primaryDOCTOR"),
+    USER_TYPE_DOCTOR("DOCTOR");
+
+
+    private String value;
+
+    PropertyEnum(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

@@ -70,6 +70,9 @@ public class User {
     @JoinColumn(name = "PROFILE_ID")
     private Profile profile;
 
+    @Column(name = "SYSTEM_DOCTOR", columnDefinition = "boolean default false")
+    private boolean systemDoctor;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "INSURANCE_ID")
     private Insurance insurance;
@@ -195,6 +198,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public boolean isSystemDoctor() {
+        return systemDoctor;
+    }
+
+    public void setSystemDoctor(boolean systemDoctor) {
+        this.systemDoctor = systemDoctor;
     }
 
     public void setPassword(String password) {

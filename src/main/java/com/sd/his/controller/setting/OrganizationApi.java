@@ -62,8 +62,6 @@ public class OrganizationApi {
     @Autowired
     private OrganizationService organizationService;
 
-
-
     private final Logger logger = LoggerFactory.getLogger(BranchAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 

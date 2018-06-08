@@ -21,6 +21,7 @@ package com.sd.his.service;/*
  * 
  */
 
+import com.sd.his.enums.PropertyEnum;
 import com.sd.his.model.*;
 import com.sd.his.repositiories.*;
 import com.sd.his.request.OrganizationRequestWrapper;
@@ -43,17 +44,20 @@ public class OrganizationService {
     private OrganizationRepository organizationRepository;
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private SpecialtyRepository specialtyRepository;
-
     @Autowired
     private OrganizationSpecialtyRepository organizationSpecialtyRepository;
-
     @Autowired
     private TimezoneRepository timezoneRepository;
+    @Autowired
+    private BranchRepository branchRepository;
+    @Autowired
+    private BranchUserRepository branchUserRepository;
 
     public Organization saveOrganization(OrganizationRequestWrapper organizationRequestWrapper) {
+        Branch branch;
+        String pBranch = organizationRequestWrapper.getDefaultBranch();
         User user = new User();
         user.setUserType("admin");
         user.setEmail(organizationRequestWrapper.getEmail());
@@ -73,6 +77,33 @@ public class OrganizationService {
         profile.setCellPhone(organizationRequestWrapper.getCellPhone());
         user.setProfile(profile);
         userRepository.save(user);
+
+        int primarBranchId = Integer.parseInt(pBranch);
+        branch = branchRepository.findByIdAndDeletedFalse(primarBranchId);
+        String brName = branch.getName();
+        if(brName.equalsIgnoreCase(PropertyEnum.PRIMARY_BRANCH.getValue())){
+            branch = new Branch();
+            branch.setDeleted(false);
+            branch.setActive(true);
+            branch.setCreatedOn(System.currentTimeMillis());
+            branch.setUpdatedOn(System.currentTimeMillis());
+            branch.setOfficePhone(organizationRequestWrapper.getHomePhone());
+            branch.setName("PrimaryBranch" + organizationRequestWrapper.getFirstName());
+            branch.setNoOfRooms(1);
+            branch.setBillingBranchName("PB"+organizationRequestWrapper.getFirstName());
+            branch.setBillingName("PB"+organizationRequestWrapper.getFirstName());
+            branch.setFax("PB"+organizationRequestWrapper.getFirstName());
+            branch.setBillingTaxId(organizationRequestWrapper.getFirstName());
+            branch.setSystemBranch(false);
+            branchRepository.save(branch);
+            BranchUser branchUser =new BranchUser();
+            branchUser.setPrimaryDr(true);
+            branchUser.setBillingBranch(true);
+            branchUser.setPrimaryBranch(true);
+            branchUser.setUser(user);
+            branchUser.setBranch(branch);
+            branchUserRepository.save(branchUser);
+        }
 
         Organization organization = new Organization();
         organization.setActive(true);
@@ -168,14 +199,11 @@ public class OrganizationService {
         Speciality speciality = organizationSpecialty.getSpeciality();
         OrganizationResponseWrapper organizationResponseWrapper = new OrganizationResponseWrapper(organization);
         organizationResponseWrapper.setSpeciality(speciality);
-
-
         return organizationResponseWrapper;
     }
 
     public Organization getByID(long id) {
         return organizationRepository.getOne(id);
-
     }
 
     public OrganizationRequestWrapper updateOrganization(OrganizationRequestWrapper organizationRequestWrapper,Organization organization) {
