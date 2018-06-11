@@ -124,4 +124,8 @@ public class EmailTemplateService {
     public int countSearchEmailTemplateByTitle(String title) {
         return emailTemplateRepository.findAllByTitleContainingAndDeletedFalse(title).size();
     }
+
+    public EmailTemplate findEmailTemplateByType(String type){
+        return emailTemplateRepository.findByTypeAndActiveTrueAndDeletedFalse(type);
+    }
 }
