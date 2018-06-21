@@ -1,9 +1,11 @@
 package com.sd.his.utill;
 
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /*
  * @author    : irfan nasim
@@ -96,5 +98,12 @@ public class DateUtil {
             e.printStackTrace();
         }
         return sameYrDateFormat.format(calendar.getTime());
+    }
+
+    public static Date getDateFromString(String dateString, String dateFormat) throws ParseException{
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
+        Date date = null;
+        date = format.parse(dateString);
+        return date;
     }
 }

@@ -3,7 +3,9 @@ package com.sd.his.service;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repositiories.*;
+import com.sd.his.request.PatientRequest;
 import com.sd.his.response.UserResponseWrapper;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
 
@@ -21,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -191,7 +194,7 @@ public class HISUserService implements UserDetailsService {
             branchUser.setBranch(branch);
 
             List<Branch> VisitBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
-            List<UserVisitBranches> cashierVisitBranchesData =new ArrayList<>();
+            List<UserVisitBranches> cashierVisitBranchesData = new ArrayList<>();
             for (Branch userVisitBr : VisitBranches) {
                 UserVisitBranches userVisitBranches = new UserVisitBranches();
                 userVisitBranches.setBranch(userVisitBr);
@@ -378,7 +381,7 @@ public class HISUserService implements UserDetailsService {
             userMedicalServiceRepository.save(userDetailsServicesData);
 
             List<Branch> docVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
-            List<UserVisitBranches> docVisitBranchesData =new ArrayList<>();
+            List<UserVisitBranches> docVisitBranchesData = new ArrayList<>();
             for (Branch userVisitBr : docVisitBranches) {
                 UserVisitBranches docVisitBranch = new UserVisitBranches();
                 docVisitBranch.setBranch(userVisitBr);
@@ -387,7 +390,7 @@ public class HISUserService implements UserDetailsService {
             userVisitBranchesRepository.save(docVisitBranchesData);
 
             List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
-            List<DepartmentUser> docDepartmentUser =new ArrayList<>();
+            List<DepartmentUser> docDepartmentUser = new ArrayList<>();
             for (ClinicalDepartment clinicalDepartment : clinicalDepartments) {
                 DepartmentUser departmentUser = new DepartmentUser();
                 departmentUser.setClinicalDepartment(clinicalDepartment);
@@ -397,7 +400,7 @@ public class HISUserService implements UserDetailsService {
                 departmentUser.setDeleted(false);
                 docDepartmentUser.add(departmentUser);
             }
-             departmentUserRepository.save(docDepartmentUser);
+            departmentUserRepository.save(docDepartmentUser);
 
             Vacation vacation = new Vacation();
             vacation.setCreatedOn(System.currentTimeMillis());
@@ -463,7 +466,7 @@ public class HISUserService implements UserDetailsService {
     public User updateUser(UserCreateRequest userCreateRequest, User alreadyExistsUser) {
         String userType = userCreateRequest.getUserType();
         Branch primaryBranch = branchRepository.findByName(userCreateRequest.getPrimaryBranch());
-        BranchUser branchUser= branchUserRepository.findByUser(alreadyExistsUser);
+        BranchUser branchUser = branchUserRepository.findByUser(alreadyExistsUser);
         if (userType.equalsIgnoreCase(UserTypeEnum.CASHIER.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
@@ -483,9 +486,11 @@ public class HISUserService implements UserDetailsService {
             updateProfile.setOtherDashboard(userCreateRequest.getOtherDashboard());
             updateProfile.setUpdatedOn(System.currentTimeMillis());
             alreadyExistsUser.setProfile(updateProfile);
-            List<UserVisitBranches> cashierVisitBranchesData =new ArrayList<>();
+            List<UserVisitBranches> cashierVisitBranchesData = new ArrayList<>();
             List<Branch> cashVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
-            if(!HISCoreUtil.isListEmpty(cashVisitBranches)){   userVisitBranchesRepository.deleteByUser(alreadyExistsUser);}
+            if (!HISCoreUtil.isListEmpty(cashVisitBranches)) {
+                userVisitBranchesRepository.deleteByUser(alreadyExistsUser);
+            }
             for (Branch userVisitBr : cashVisitBranches) {
                 UserVisitBranches userVisitBranches = new UserVisitBranches();
                 userVisitBranches.setBranch(userVisitBr);
@@ -522,7 +527,9 @@ public class HISUserService implements UserDetailsService {
 
             List<Branch> recepVisitBranchesReceptionist = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
             List<UserVisitBranches> recepVisitBranchesData = new ArrayList<>();
-            if(!HISCoreUtil.isListEmpty(recepVisitBranchesReceptionist)){  userVisitBranchesRepository.deleteByUser(alreadyExistsUser);}
+            if (!HISCoreUtil.isListEmpty(recepVisitBranchesReceptionist)) {
+                userVisitBranchesRepository.deleteByUser(alreadyExistsUser);
+            }
             for (Branch userVisitBr : recepVisitBranchesReceptionist) {
                 UserVisitBranches recepVisitBranches = new UserVisitBranches();
                 recepVisitBranches.setBranch(userVisitBr);
@@ -562,7 +569,9 @@ public class HISUserService implements UserDetailsService {
             userRepository.save(alreadyExistsUser);
             List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedDepartment()));
             List<DepartmentUser> departmentUserListData = new ArrayList<>();
-            if(!HISCoreUtil.isListEmpty(clinicalDepartments)) {departmentUserRepository.deleteByUser(alreadyExistsUser);}
+            if (!HISCoreUtil.isListEmpty(clinicalDepartments)) {
+                departmentUserRepository.deleteByUser(alreadyExistsUser);
+            }
             for (ClinicalDepartment clinicalDepartment : clinicalDepartments) {
                 DepartmentUser departmentUser = new DepartmentUser();
                 departmentUser.setClinicalDepartment(clinicalDepartment);
@@ -576,7 +585,9 @@ public class HISUserService implements UserDetailsService {
 
             List<Branch> userVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
             List<UserVisitBranches> userVisitBranchesData = new ArrayList<>();
-            if(!HISCoreUtil.isListEmpty(userVisitBranches)){userVisitBranchesRepository.deleteByUser(alreadyExistsUser);}
+            if (!HISCoreUtil.isListEmpty(userVisitBranches)) {
+                userVisitBranchesRepository.deleteByUser(alreadyExistsUser);
+            }
             for (Branch userVisitBr : userVisitBranches) {
                 UserVisitBranches userVisitBranches1 = new UserVisitBranches();
                 userVisitBranches1.setBranch(userVisitBr);
@@ -587,7 +598,9 @@ public class HISUserService implements UserDetailsService {
 
             List<User> doctors = userRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getDutyWithDoctors()));
             List<DutyWithDoctor> listOFData = new ArrayList<>();
-            if(!HISCoreUtil.isListEmpty(doctors)){ dutyWithDoctorRepository.deleteByNurse(alreadyExistsUser);}
+            if (!HISCoreUtil.isListEmpty(doctors)) {
+                dutyWithDoctorRepository.deleteByNurse(alreadyExistsUser);
+            }
             for (User docUser : doctors) {
                 DutyWithDoctor dutyWithDoctor1 = new DutyWithDoctor();
                 dutyWithDoctor1.setNurse(alreadyExistsUser);
@@ -643,7 +656,9 @@ public class HISUserService implements UserDetailsService {
 
             List<MedicalService> medicalServiceslist = medicalServicesRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedServices()));
             List<UserMedicalService> userDetailsServicesData = new ArrayList<>();
-            if(!HISCoreUtil.isListEmpty(medicalServiceslist)){ userMedicalServiceRepository.deleteByUser(alreadyExistsUser);}
+            if (!HISCoreUtil.isListEmpty(medicalServiceslist)) {
+                userMedicalServiceRepository.deleteByUser(alreadyExistsUser);
+            }
             for (MedicalService mdService : medicalServiceslist) {
                 UserMedicalService userMedicalService = new UserMedicalService();
                 userMedicalService.setMedicalService(mdService);
@@ -653,8 +668,10 @@ public class HISUserService implements UserDetailsService {
             userMedicalServiceRepository.save(userDetailsServicesData);
 
             List<Branch> docVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
-            List<UserVisitBranches> docVisitBranchesData =new ArrayList<>();
-            if(!HISCoreUtil.isListEmpty(docVisitBranches)) { userVisitBranchesRepository.deleteByUser(alreadyExistsUser);}
+            List<UserVisitBranches> docVisitBranchesData = new ArrayList<>();
+            if (!HISCoreUtil.isListEmpty(docVisitBranches)) {
+                userVisitBranchesRepository.deleteByUser(alreadyExistsUser);
+            }
             for (Branch userVisitBr : docVisitBranches) {
                 UserVisitBranches docVisitBranch = new UserVisitBranches();
                 docVisitBranch.setBranch(userVisitBr);
@@ -664,8 +681,10 @@ public class HISUserService implements UserDetailsService {
             userVisitBranchesRepository.save(docVisitBranchesData);
 
             List<ClinicalDepartment> doctorClinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedDepartment()));
-            List<DepartmentUser> docDepartmentUser =new ArrayList<>();
-            if(!HISCoreUtil.isListEmpty(doctorClinicalDepartments)){departmentUserRepository.deleteByUser(alreadyExistsUser);}
+            List<DepartmentUser> docDepartmentUser = new ArrayList<>();
+            if (!HISCoreUtil.isListEmpty(doctorClinicalDepartments)) {
+                departmentUserRepository.deleteByUser(alreadyExistsUser);
+            }
             for (ClinicalDepartment clinicalDepartment : doctorClinicalDepartments) {
                 DepartmentUser departmentUser = new DepartmentUser();
                 departmentUser.setClinicalDepartment(clinicalDepartment);
@@ -691,9 +710,9 @@ public class HISUserService implements UserDetailsService {
 
         userResponseWrapper.setProfile(user.getProfile());
         BranchUser branchUser = branchUserRepository.findByUser(user);
-      //  if (branchUser.isPrimaryBranch()) {
-            BranchWrapper branchWrapper = new BranchWrapper(branchUser);
-            userResponseWrapper.setBranch(branchWrapper);
+        //  if (branchUser.isPrimaryBranch()) {
+        BranchWrapper branchWrapper = new BranchWrapper(branchUser);
+        userResponseWrapper.setBranch(branchWrapper);
         //}
         List<Branch> visitBranchesList = new ArrayList<>();
         for (UserVisitBranches userVisitBranches : user.getUserVisitBranches()) {
@@ -763,4 +782,87 @@ public class HISUserService implements UserDetailsService {
         }
         return userWrapper;
     }
+
+    /////////////////////////////// patient ///////////////////////////////////////////
+    @Autowired
+    ProfileRepository profileRepository;
+    @Autowired
+    InsuranceRepository insuranceRepository;
+
+    public List<PatientWrapper> findAllPaginatedUserByUserType(int offset, int limit, String userType) {
+        Pageable pageable = new PageRequest(offset, limit);
+        return userRepository.findAllByDeletedFalse(pageable, userType);
+    }
+
+    public int countAllPaginatedPatients(String userType) {
+        return userRepository.findAllByDeletedFalse(userType).size();
+    }
+
+    public void deletePatientById(long patientId) {
+        User user = this.userRepository.findOne(patientId);
+        if (user != null) {
+            user.setDeleted(true);
+            user.getProfile().setDeleted(true);
+            user.getProfile().setUpdatedOn(System.currentTimeMillis());
+
+            user.getInsurance().setUpdated(System.currentTimeMillis());
+            user.getInsurance().setDeleted(true);
+            this.userRepository.save(user);
+        }
+    }
+
+    public void savePatient(PatientRequest patientRequest) throws ParseException {
+        Profile profile = new Profile(patientRequest);
+        User selectedDoctor  = this.userRepository.findOne(patientRequest.getSelectedDoctor());
+//        profile.setPrimaryDoctor(selectedDoctor);
+        Insurance insurance = new Insurance(patientRequest);
+        User patient = new User(patientRequest,UserTypeEnum.PATIENT.toString());
+        patient.setPrimaryDoctor(selectedDoctor);
+        this.profileRepository.save(profile);
+        this.insuranceRepository.save(insurance);
+        patient.setProfile(profile);
+        patient.setInsurance(insurance);
+        this.userRepository.save(patient);
+    }
+
+    public boolean isUserAlreadyExists(String userName, String email) {
+        List<User> users = this.userRepository.findAllByUsernameAndEmailAndDeletedFalse(userName, email);
+        if (!HISCoreUtil.isListEmpty(users))
+            return true;
+        return false;
+    }
+
+    public boolean isUserAlreadyExistsAgainstUserId(long id, String userName, String email) {
+        List<User> users = this.userRepository.findAllByIdNotAndUsernameAndEmailAndDeletedFalse(id,userName, email);
+        if (!HISCoreUtil.isListEmpty(users))
+            return true;
+        return false;
+    }
+
+    public PatientRequest getUserByUserTypeAndId(long id){
+        return this.userRepository.findUserById(id);
+    }
+    public void updatePatient(PatientRequest patientRequest) throws ParseException {
+        Profile profile = this.profileRepository.findOne(patientRequest.getProfileId());
+        new Profile(profile,patientRequest);
+
+        Insurance insurance = this.insuranceRepository.findOne(patientRequest.getInsuranceId());
+        new Insurance(insurance,patientRequest);
+
+        User user = this.userRepository.findOne(patientRequest.getUserId());
+        new User(user,patientRequest);
+
+        User selectedDoctor = this.userRepository.findOne(patientRequest.getSelectedDoctor());
+        user.setPrimaryDoctor(selectedDoctor);
+
+        this.profileRepository.save(profile);
+        this.insuranceRepository.save(insurance);
+
+        user.setProfile(profile);
+        user.setInsurance(insurance);
+
+        this.userRepository.save(user);
+    }
+
+
 }

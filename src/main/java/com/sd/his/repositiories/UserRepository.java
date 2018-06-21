@@ -1,13 +1,14 @@
 package com.sd.his.repositiories;
 
 
-import com.sd.his.model.Role;
 import com.sd.his.model.User;
-import org.springframework.data.domain.PageRequest;
+import com.sd.his.request.PatientRequest;
+import com.sd.his.wrapper.PatientWrapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +40,16 @@ public interface UserRepository extends JpaRepository<User, Long> ,PagingAndSort
     int countAllByActiveTrueAndDeletedFalse();
 
     List<User> findAllByIdIn(List<Long> ids);
+
+    @Query("SELECT NEW  com.sd.his.wrapper.PatientWrapper(u,u.profile,u.insurance) from User u where u.userType=:uType AND u.deleted=FALSE")
+    List<PatientWrapper> findAllByDeletedFalse(Pageable pageable, @Param("uType") String uType);
+    @Query("SELECT NEW  com.sd.his.wrapper.PatientWrapper(u,u.profile,u.insurance) from User u where u.userType=:uType AND u.deleted=FALSE")
+    List<PatientWrapper> findAllByDeletedFalse(@Param("uType") String uType);
+
+    List<User> findAllByUsernameAndEmailAndDeletedFalse(String userName,String email);
+    List<User> findAllByIdNotAndUsernameAndEmailAndDeletedFalse(long id, String userName, String email);
+
+    @Query("SELECT NEW  com.sd.his.request.PatientRequest(u,u.profile,u.insurance) from User u where u.id=:id")
+    PatientRequest findUserById(@Param("id") long id);
 
 }

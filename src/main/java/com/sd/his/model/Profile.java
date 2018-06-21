@@ -1,12 +1,17 @@
 package com.sd.his.model;
 
 
+import com.sd.his.enums.UserTypeEnum;
+import com.sd.his.request.PatientRequest;
+import com.sd.his.utill.DateUtil;
+import com.sd.his.utill.HISConstants;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "PROFILE")
@@ -24,36 +29,57 @@ public class Profile implements Serializable {
     @Column(name = "LAST_NAME")
     private String lastName;
 
+    @Column(name = "MIDDLE_NAME")
+    private String middleName;
+
+    @Column(name = "FOREIGN_NAME")
+    private String foreignName;
+
     @Column(name = "HOME_PHONE")
     private String homePhone;
 
     @Column(name = "CELL_PHONE")
     private String cellPhone;
 
+    @Column(name = "SMS_TEXT",columnDefinition = "default boolean true")
+    private boolean sMSText;
+
+    @Column(name = "OFFICE_PHONE")
+    private String officePhone;
+
+    @Column(name = "OFFICE_EXTENSION")
+    private String officeExtension;
+
     @Column(name = "ACCOUNT_EXPIRY")
     private String accountExpiry;
 
+    @Column(name = "PREFERRED_COMMUNICATION")
+    private String preferredCommunication;
 
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
-    private Boolean active;
+    @Column(name = "REMINDER_LANGUAGE")
+    private String reminderLanguage;
+
+
+    @Column(name = "IS_ACTIVE", nullable = false)
+    private Boolean active = true;
 
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private Boolean deleted;
+    private Boolean deleted = false;
 
-    @Column(name = "IS_SEND_BILLING_REPORT", columnDefinition = "boolean default false")
-    private Boolean sendBillingReport;
+    @Column(name = "IS_SEND_BILLING_REPORT")
+    private Boolean sendBillingReport = false;
 
-    @Column(name = "IS_USE_RECEPT_DASHBOARD", columnDefinition = "boolean default false")
-    private Boolean useReceptDashBoard;
+    @Column(name = "IS_USE_RECEPT_DASHBOARD")
+    private Boolean useReceptDashBoard = false;
 
-    @Column(name = "IS_OTHER_DOCTOR_DASHBOARD", columnDefinition = "boolean default false")
-    private Boolean otherDoctorDashBoard;
+    @Column(name = "IS_OTHER_DOCTOR_DASHBOARD")
+    private Boolean otherDoctorDashBoard = false;
 
-    @Column(name = "IS_MANAGE_PATIENT_RECORDS", columnDefinition = "boolean default false")
+    @Column(name = "IS_MANAGE_PATIENT_RECORDS")
     private Boolean managePatientRecords;
 
-    @Column(name = "IS_MANAGE_PATIENT_INVOICES", columnDefinition = "boolean default false")
-    private Boolean managePatientInvoices;
+    @Column(name = "IS_MANAGE_PATIENT_INVOICES")
+    private Boolean managePatientInvoices = false;
 
     @Column(name = "CHECK_UP_INTERVAL")
     private long checkUpInterval;
@@ -67,7 +93,7 @@ public class Profile implements Serializable {
     private List<String> workingDays = new ArrayList<>();
 
     @Column(name = "ALLOW_DISCOUNT")
-    private Boolean allowDiscount;
+    private Boolean allowDiscount = false;
 
 
     @Column(name = "GENDER")
@@ -79,11 +105,35 @@ public class Profile implements Serializable {
     @Column(name = "ADDRESS")
     private String address;
 
+    @Column(name = "STREET_ADDRESS")
+    private String streetAddress;
+
+    @Column(name = "ZIP_CODE")
+    private String zipCode;
+
     @Column(name = "CITY")
     private String city;
 
     @Column(name = "STATE")
     private String state;
+
+    @Column(name = "FORMATTED_ADDRESS")
+    private String formattedAddress;
+
+    @Column(name = "MARTIAL_STATUS")
+    private String martialStatus;
+
+    @Column(name = "EMERGENCY_CONTACT_NAME")
+    private String emergencyContactName;
+
+    @Column(name = "EMERGENCY_CONTACT_PHONE")
+    private String emergencyContactPhone;
+
+    @Column(name = "EMERGENCY_CONTACT_RELATION")
+    private String emergencyContactRelation;
+
+    @Column(name = "SIGNATURE_ON_FILE")
+    private  boolean signatureOnFile;
 
     @Column(name = "COUNTRY")
     private String country;
@@ -91,8 +141,11 @@ public class Profile implements Serializable {
     @Column(name = "STATUS")
     private String status;
 
+    @Column(name = "PATIENT_SSN")
+    private String patientSSN;
+
     @Column(name = "DOB")
-    private Date dob;
+    private long dob;
 
     @Column(name = "TYPE")
     private String type;
@@ -109,16 +162,64 @@ public class Profile implements Serializable {
     @Column(name = "ABOUT_ME")
     private String aboutMe;
 
+    @Column(name = "TITLE_PREFIX")
+    private String titlePrefix;
+
+
+
+
     public Profile() {
     }
 
-    public Profile(String firstName, String lastName, String homePhone, String cellPhone, String accountExpiry,
+    public Profile(PatientRequest patientRequest) throws ParseException {
+        this.id = patientRequest.getProfileId() > 0 ? patientRequest.getProfileId() : null;
+        this.patientSSN = patientRequest.getPatientSSN();
+        if (patientRequest.getDob() != "" || patientRequest.getDob() != null) {
+            this.dob = DateUtil.getMillisFromStringDate(patientRequest.getDob(), HISConstants.DATE_FORMATE_THREE);
+        }
+        this.titlePrefix = patientRequest.getTitlePrefix();
+        this.firstName = patientRequest.getFirstName();
+        this.middleName = patientRequest.getMiddleName();
+        this.lastName = patientRequest.getLastName();
+        this.foreignName = patientRequest.getForeignName();
+        this.homePhone = patientRequest.getHomePhone();
+        this.cellPhone = patientRequest.getCellPhone();
+        this.sMSText = patientRequest.isDisableSMSTxt();
+        this.officePhone = patientRequest.getOfficePhone();
+        this.officeExtension = patientRequest.getOfficeExtension();
+        this.preferredCommunication = patientRequest.getPreferredCommunication();
+        this.reminderLanguage = patientRequest.getReminderLanguage();
+
+        this.accountExpiry = "";
+        this.workingDays = new ArrayList<>();
+        this.gender = patientRequest.getGender();
+        this.country = patientRequest.getCountry();
+
+        this.streetAddress = patientRequest.getStreetAddress();
+        this.zipCode = patientRequest.getZipCode();
+        this.city = patientRequest.getCity();
+        this.state = patientRequest.getState();
+        this.formattedAddress = patientRequest.getFormattedAddress();
+        this.martialStatus = patientRequest.getMartial();
+        this.emergencyContactName = patientRequest.getEmergencyContactName();
+        this.emergencyContactPhone = patientRequest.getEmergencyContactPhone();
+        this.emergencyContactRelation = patientRequest.getEmergencyContactRelation();
+        this.status = patientRequest.isProfileStatus() ? "ACTIVE" : "IN_ACTIVE";
+        this.signatureOnFile = patientRequest.isSignatureOnFile();
+
+        this.type = UserTypeEnum.PATIENT.toString();
+
+    }
+
+/*    public Profile(String patientSSN,String firstName,String middleName, String lastName, String homePhone, String cellPhone, String accountExpiry,
                    Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard,
                    Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices,
                    long checkUpInterval, List<String> workingDays, Boolean allowDiscount, String gender,
                    String profileImg, String address, String city, String state, String country, String status, Date dob,
                    String type, String otherDashboard, long createdOn, long updatedOn, String aboutMe) {
+        this.patientSSN = patientSSN;
         this.firstName = firstName;
+        this.middleName = middleName;
         this.lastName = lastName;
         this.homePhone = homePhone;
         this.cellPhone = cellPhone;
@@ -146,6 +247,44 @@ public class Profile implements Serializable {
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
         this.aboutMe = aboutMe;
+    }*/
+
+    public Profile(Profile profile, PatientRequest patientRequest) throws ParseException {
+        profile.patientSSN = patientRequest.getPatientSSN();
+        profile.titlePrefix = patientRequest.getTitlePrefix();
+        profile.firstName = patientRequest.getFirstName();
+        profile.middleName = patientRequest.getMiddleName();
+        profile.lastName = patientRequest.getLastName();
+        profile.foreignName = patientRequest.getForeignName();
+        profile.homePhone = patientRequest.getHomePhone();
+        profile.cellPhone = patientRequest.getCellPhone();
+        profile.sMSText = patientRequest.isDisableSMSTxt();
+        profile.officePhone = patientRequest.getOfficePhone();
+        profile.officeExtension = patientRequest.getOfficeExtension();
+
+        profile.preferredCommunication = patientRequest.getPreferredCommunication();
+        profile.reminderLanguage = patientRequest.getReminderLanguage();
+
+        profile.accountExpiry = "";
+        profile.workingDays = new ArrayList<>();
+        profile.dob = DateUtil.getMillisFromStringDate(patientRequest.getDob(), HISConstants.DATE_FORMATE_THREE);
+        profile.gender = patientRequest.getGender();
+        profile.country = patientRequest.getCountry();
+
+        profile.streetAddress = patientRequest.getStreetAddress();
+        profile.zipCode = patientRequest.getZipCode();
+        profile.city = patientRequest.getCity();
+        profile.state = patientRequest.getState();
+        profile.formattedAddress = patientRequest.getFormattedAddress();
+        profile.martialStatus = patientRequest.getMartial();
+        profile.emergencyContactName = patientRequest.getEmergencyContactName();
+        profile.emergencyContactPhone = patientRequest.getEmergencyContactPhone();
+        profile.emergencyContactRelation = patientRequest.getEmergencyContactRelation();
+        profile.signatureOnFile = patientRequest.isSignatureOnFile();
+
+        profile.type = UserTypeEnum.PATIENT.toString();
+        profile.status = patientRequest.isProfileStatus()  ? "ACTIVE" : "IN_ACTIVE";
+
     }
 
     public Long getId() {
@@ -172,6 +311,14 @@ public class Profile implements Serializable {
         this.lastName = lastName;
     }
 
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
     public String getHomePhone() {
         return homePhone;
     }
@@ -186,6 +333,22 @@ public class Profile implements Serializable {
 
     public void setCellPhone(String cellPhone) {
         this.cellPhone = cellPhone;
+    }
+
+    public String getOfficePhone() {
+        return officePhone;
+    }
+
+    public void setOfficePhone(String officePhone) {
+        this.officePhone = officePhone;
+    }
+
+    public String getOfficeExtension() {
+        return officeExtension;
+    }
+
+    public void setOfficeExtension(String officeExtension) {
+        this.officeExtension = officeExtension;
     }
 
     public String getAccountExpiry() {
@@ -332,11 +495,11 @@ public class Profile implements Serializable {
         this.status = status;
     }
 
-    public Date getDob() {
+    public long getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(long dob) {
         this.dob = dob;
     }
 
@@ -378,5 +541,121 @@ public class Profile implements Serializable {
 
     public void setAboutMe(String aboutMe) {
         this.aboutMe = aboutMe;
+    }
+
+    public String getTitlePrefix() {
+        return titlePrefix;
+    }
+
+    public void setTitlePrefix(String titlePrefix) {
+        this.titlePrefix = titlePrefix;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getForeignName() {
+        return foreignName;
+    }
+
+    public void setForeignName(String foreignName) {
+        this.foreignName = foreignName;
+    }
+
+    public boolean issMSText() {
+        return sMSText;
+    }
+
+    public void setsMSText(boolean sMSText) {
+        this.sMSText = sMSText;
+    }
+
+    public String getPreferredCommunication() {
+        return preferredCommunication;
+    }
+
+    public void setPreferredCommunication(String preferredCommunication) {
+        this.preferredCommunication = preferredCommunication;
+    }
+
+    public String getReminderLanguage() {
+        return reminderLanguage;
+    }
+
+    public void setReminderLanguage(String reminderLanguage) {
+        this.reminderLanguage = reminderLanguage;
+    }
+
+    public String getPatientSSN() {
+        return patientSSN;
+    }
+
+    public void setPatientSSN(String patientSSN) {
+        this.patientSSN = patientSSN;
+    }
+
+    public String getStreetAddress() {
+        return streetAddress;
+    }
+
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
+    }
+
+    public String getFormattedAddress() {
+        return formattedAddress;
+    }
+
+    public void setFormattedAddress(String formattedAddress) {
+        this.formattedAddress = formattedAddress;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getMartialStatus() {
+        return martialStatus;
+    }
+
+    public void setMartialStatus(String martialStatus) {
+        this.martialStatus = martialStatus;
+    }
+
+    public String getEmergencyContactName() {
+        return emergencyContactName;
+    }
+
+    public void setEmergencyContactName(String emergencyContactName) {
+        this.emergencyContactName = emergencyContactName;
+    }
+
+    public String getEmergencyContactPhone() {
+        return emergencyContactPhone;
+    }
+
+    public void setEmergencyContactPhone(String emergencyContactPhone) {
+        this.emergencyContactPhone = emergencyContactPhone;
+    }
+
+    public String getEmergencyContactRelation() {
+        return emergencyContactRelation;
+    }
+
+    public void setEmergencyContactRelation(String emergencyContactRelation) {
+        this.emergencyContactRelation = emergencyContactRelation;
+    }
+
+    public boolean isSignatureOnFile() {
+        return signatureOnFile;
+    }
+
+    public void setSignatureOnFile(boolean signatureOnFile) {
+        this.signatureOnFile = signatureOnFile;
     }
 }

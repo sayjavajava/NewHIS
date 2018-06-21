@@ -1,6 +1,10 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.request.PatientRequest;
+import com.sd.his.utill.DateUtil;
+import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
 
 import javax.persistence.*;
 import java.sql.Blob;
@@ -42,15 +46,15 @@ public class Insurance {
     @Column(name = "INSURANCE_ID")
     private String insuranceID;
     @Column(name = "GROUP_NUMBER")
-    private Long groupNumber;
+    private String groupNumber;
     @Column(name = "PLAN_NAME")
     private String planName;
     @Column(name = "PLAN_TYPE")
     private String planType;
     @Column(name = "CART_ISSUED_DATE")
-    private Date cardIssuedDate;
+    private long cardIssuedDate;
     @Column(name = "CART_EXPIRY_DATE")
-    private Date cardExpiryDate;
+    private long cardExpiryDate;
     @Column(name = "PRIMARY_INSURANCE_NOTES")
     private String primaryInsuranceNotes;
     @Column(name = "PHOTO_FRONT")
@@ -59,12 +63,52 @@ public class Insurance {
     private String photoBack;
     @Column(name = "CREATED_ON")
     private long created;
-    @Column(name = "UPDATED_ON")
+    @Column(name = "UPDATED_ON", columnDefinition = "long default System.currentTimeMillis()")
     private long updated;
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
     private boolean deleted;
 
     public Insurance() {
+    }
+
+    public Insurance(PatientRequest patientRequest) {
+        this.id = patientRequest.getInsuranceId() > 0 ? patientRequest.getInsuranceId() : null;
+        this.company = patientRequest.getCompany();
+        this.insuranceID = patientRequest.getInsuranceIdNumber();
+        this.groupNumber = patientRequest.getGroupNumber();
+        this.planName = patientRequest.getPlanName();
+        this.planType = patientRequest.getPlanType();
+        if (!HISCoreUtil.isNull(patientRequest.getCardIssuedDate())) {
+            this.cardIssuedDate = DateUtil.getMillisFromStringDate(patientRequest.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
+        }
+        if (!HISCoreUtil.isNull(patientRequest.getCardExpiryDate())) {
+            this.cardExpiryDate = DateUtil.getMillisFromStringDate(patientRequest.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
+        }
+        this.primaryInsuranceNotes = patientRequest.getPrimaryInsuranceNotes();
+        //this.photoFront = patientRequest.getPhotoFront();
+        //this.photoBack = patientRequest.getPhotoBack();
+        if (patientRequest.getInsuranceId() <= 0) {
+            this.created = System.currentTimeMillis();
+        }
+        this.updated = System.currentTimeMillis();
+        this.deleted = false;
+
+    }
+
+    public Insurance(Insurance insurance, PatientRequest patientRequest) {
+        insurance.company = patientRequest.getCompany();
+        insurance.insuranceID = patientRequest.getInsuranceIdNumber();
+        insurance.groupNumber = patientRequest.getGroupNumber();
+        insurance.planName = patientRequest.getPlanName();
+        insurance.planType = patientRequest.getPlanType();
+        insurance.cardIssuedDate = DateUtil.getMillisFromStringDate(patientRequest.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
+        insurance.cardExpiryDate = DateUtil.getMillisFromStringDate(patientRequest.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
+        insurance.primaryInsuranceNotes = patientRequest.getPrimaryInsuranceNotes();
+        //this.photoFront = patientRequest.getPhotoFront();
+        //this.photoBack = patientRequest.getPhotoBack();
+        insurance.created = System.currentTimeMillis();
+        insurance.updated = System.currentTimeMillis();
+        insurance.deleted = false;
     }
 
     public Long getId() {
@@ -91,11 +135,11 @@ public class Insurance {
         this.insuranceID = insuranceID;
     }
 
-    public Long getGroupNumber() {
+    public String getGroupNumber() {
         return groupNumber;
     }
 
-    public void setGroupNumber(Long groupNumber) {
+    public void setGroupNumber(String groupNumber) {
         this.groupNumber = groupNumber;
     }
 
@@ -115,19 +159,19 @@ public class Insurance {
         this.planType = planType;
     }
 
-    public Date getCardIssuedDate() {
+    public long getCardIssuedDate() {
         return cardIssuedDate;
     }
 
-    public void setCardIssuedDate(Date cardIssuedDate) {
+    public void setCardIssuedDate(long cardIssuedDate) {
         this.cardIssuedDate = cardIssuedDate;
     }
 
-    public Date getCardExpiryDate() {
+    public long getCardExpiryDate() {
         return cardExpiryDate;
     }
 
-    public void setCardExpiryDate(Date cardExpiryDate) {
+    public void setCardExpiryDate(long cardExpiryDate) {
         this.cardExpiryDate = cardExpiryDate;
     }
 

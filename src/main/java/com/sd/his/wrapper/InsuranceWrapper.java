@@ -1,19 +1,21 @@
 package com.sd.his.wrapper;
 
 import com.sd.his.model.Insurance;
+import com.sd.his.utill.DateUtil;
+import com.sd.his.utill.HISConstants;
 
 import java.util.Date;
 
 public class InsuranceWrapper {
 
-    private long id;
+    private long insuranceId;
     private String company;
     private String insuranceID;
-    private Long groupNumber;
+    private long groupNumber;
     private String planName;
     private String planType;
-    private Date cardIssuedDate;
-    private Date cardExpiryDate;
+    private String cardIssuedDate;
+    private String cardExpiryDate;
     private String primaryInsuranceNotes;
     private String photoFront;
     private String photoBack;
@@ -23,25 +25,25 @@ public class InsuranceWrapper {
     }
 
     public InsuranceWrapper(Insurance insurance) {
-        this.id = insurance.getId();
+        this.insuranceId = insurance.getId();
         this.company = insurance.getCompany();
         this.insuranceID = insurance.getInsuranceID();
-        this.groupNumber = insurance.getGroupNumber();
+        this.groupNumber = Long.valueOf(insurance.getGroupNumber());
         this.planName = insurance.getPlanName();
         this.planType = insurance.getPlanType();
-        this.cardIssuedDate = insurance.getCardIssuedDate();
-        this.cardExpiryDate = insurance.getCardExpiryDate();
+        this.cardIssuedDate = DateUtil.getDateFromMillis(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
+        this.cardExpiryDate = DateUtil.getDateFromMillis(insurance.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
         this.primaryInsuranceNotes = insurance.getPrimaryInsuranceNotes();
         this.photoFront = insurance.getPhotoFront();
         this.photoBack = insurance.getPhotoBack();
     }
 
-    public long getId() {
-        return id;
+    public long getInsuranceId() {
+        return insuranceId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setInsuranceId(long insuranceId) {
+        this.insuranceId = insuranceId;
     }
 
     public String getCompany() {
@@ -60,11 +62,11 @@ public class InsuranceWrapper {
         this.insuranceID = insuranceID;
     }
 
-    public Long getGroupNumber() {
+    public long getGroupNumber() {
         return groupNumber;
     }
 
-    public void setGroupNumber(Long groupNumber) {
+    public void setGroupNumber(long groupNumber) {
         this.groupNumber = groupNumber;
     }
 
@@ -84,19 +86,19 @@ public class InsuranceWrapper {
         this.planType = planType;
     }
 
-    public Date getCardIssuedDate() {
+    public String getCardIssuedDate() {
         return cardIssuedDate;
     }
 
-    public void setCardIssuedDate(Date cardIssuedDate) {
+    public void setCardIssuedDate(String cardIssuedDate) {
         this.cardIssuedDate = cardIssuedDate;
     }
 
-    public Date getCardExpiryDate() {
+    public String getCardExpiryDate() {
         return cardExpiryDate;
     }
 
-    public void setCardExpiryDate(Date cardExpiryDate) {
+    public void setCardExpiryDate(String cardExpiryDate) {
         this.cardExpiryDate = cardExpiryDate;
     }
 

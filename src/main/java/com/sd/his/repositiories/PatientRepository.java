@@ -38,11 +38,11 @@ import java.util.List;
 @Repository
 public interface PatientRepository extends JpaRepository<User, Long> {
 
+    /*@Query("SELECT NEW  com.sd.his.wrapper.PatientWrapper(u,u.profile,u.insurance) from User u where u.userType=:uType AND u.deleted=FALSE")
+    List<PatientWrapper> findAllByDeletedFalse(Pageable pageable, @Param("uType") String uType);
     @Query("SELECT NEW  com.sd.his.wrapper.PatientWrapper(u,u.profile,u.insurance) from User u where u.userType=:uType AND u.deleted=FALSE")
-    List<PatientWrapper> findAllByDeletedFalseAndActiveTrue(Pageable pageable, @Param("uType") String uType);
-    @Query("SELECT NEW  com.sd.his.wrapper.PatientWrapper(u,u.profile,u.insurance) from User u where u.userType=:uType AND u.deleted=FALSE")
-    List<PatientWrapper> findAllByDeletedFalseAndActiveTrue(@Param("uType") String uType);
-
+    List<PatientWrapper> findAllByDeletedFalse(@Param("uType") String uType);
+*/
 
     //    List<Tax> findAllByNameAndIdNotAndDeletedFalse(String name, long id);
 //    Tax findByNameAndDeletedFalse(String name);

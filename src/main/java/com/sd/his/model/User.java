@@ -2,13 +2,13 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.CollectionId;
-import org.hibernate.annotations.Type;
+import com.sd.his.enums.UserTypeEnum;
+import com.sd.his.request.PatientRequest;
+import org.hibernate.hql.spi.id.TableBasedDeleteHandlerImpl;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -114,7 +114,27 @@ public class User {
     @OneToMany(targetEntity = UserDutyShift.class, mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserDutyShift> dutyShifts;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "PRIMARY_DOCTOR")
+    private User primaryDoctor;
+
     public User() {
+    }
+
+    public User(PatientRequest patientRequest, String userType) {
+        this.id = patientRequest.getUserId() > 0 ? patientRequest.getUserId() : null;
+        this.username = patientRequest.getUserName();
+        this.email = patientRequest.getEmail();
+        this.active = patientRequest.isStatusUser();
+        this.userType = userType;
+
+    }
+
+    public User(User user, PatientRequest patientRequest) {
+        user.username = patientRequest.getUserName();
+        user.email = patientRequest.getEmail();
+        user.active = patientRequest.isStatusUser();
+        user.userType = UserTypeEnum.PATIENT.toString();
     }
 
     @Override
@@ -279,5 +299,13 @@ public class User {
 
     public void setDutyShifts(List<UserDutyShift> dutyShifts) {
         this.dutyShifts = dutyShifts;
+    }
+
+    public User getPrimaryDoctor() {
+        return primaryDoctor;
+    }
+
+    public void setPrimaryDoctor(User primaryDoctor) {
+        this.primaryDoctor = primaryDoctor;
     }
 }
