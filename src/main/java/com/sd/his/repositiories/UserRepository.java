@@ -52,4 +52,9 @@ public interface UserRepository extends JpaRepository<User, Long> ,PagingAndSort
     @Query("SELECT NEW  com.sd.his.request.PatientRequest(u,u.profile,u.insurance) from User u where u.id=:id")
     PatientRequest findUserById(@Param("id") long id);
 
+    @Query("SELECT NEW  com.sd.his.wrapper.PatientWrapper(u,u.profile,u.insurance) from User u where u.userType=:uType AND u.deleted=FALSE AND u.username like CONCAT('%',:userName,'%') ")
+    List<PatientWrapper> findAllByDeletedFalse(Pageable pageable, @Param("uType") String uType, @Param("userName") String userName);
+    @Query("SELECT NEW  com.sd.his.wrapper.PatientWrapper(u,u.profile,u.insurance) from User u where u.userType=:uType AND u.deleted=FALSE AND u.username like CONCAT('%',:userName,'%') ")
+    List<PatientWrapper> findAllByDeletedFalse(@Param("uType") String uType, @Param("userName") String userName);
+
 }

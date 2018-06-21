@@ -5,7 +5,6 @@ import com.sd.his.model.*;
 import com.sd.his.repositiories.*;
 import com.sd.his.request.PatientRequest;
 import com.sd.his.response.UserResponseWrapper;
-import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
 
@@ -792,6 +791,15 @@ public class HISUserService implements UserDetailsService {
     public List<PatientWrapper> findAllPaginatedUserByUserType(int offset, int limit, String userType) {
         Pageable pageable = new PageRequest(offset, limit);
         return userRepository.findAllByDeletedFalse(pageable, userType);
+    }
+
+    public List<PatientWrapper> searchAllPaginatedUserByUserTypeAndName(int offset, int limit, String userType,String userName) {
+        Pageable pageable = new PageRequest(offset, limit);
+        return userRepository.findAllByDeletedFalse(pageable, userType,userName);
+    }
+
+    public int countSearchAllPaginatedUserByUserTypeAndName(String userType,String userName) {
+        return userRepository.findAllByDeletedFalse(userType,userName).size();
     }
 
     public int countAllPaginatedPatients(String userType) {
