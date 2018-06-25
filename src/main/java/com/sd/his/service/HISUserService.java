@@ -819,18 +819,20 @@ public class HISUserService implements UserDetailsService {
         }
     }
 
-    public void savePatient(PatientRequest patientRequest) throws ParseException {
+    public void savePatient(PatientRequest patientRequest) throws ParseException ,Exception {
         Profile profile = new Profile(patientRequest);
         User selectedDoctor  = this.userRepository.findOne(patientRequest.getSelectedDoctor());
 //        profile.setPrimaryDoctor(selectedDoctor);
         Insurance insurance = new Insurance(patientRequest);
         User patient = new User(patientRequest,UserTypeEnum.PATIENT.toString());
         patient.setPrimaryDoctor(selectedDoctor);
+
         this.profileRepository.save(profile);
         this.insuranceRepository.save(insurance);
         patient.setProfile(profile);
         patient.setInsurance(insurance);
         this.userRepository.save(patient);
+
     }
 
     public boolean isUserAlreadyExists(String userName, String email) {
@@ -848,9 +850,11 @@ public class HISUserService implements UserDetailsService {
     }
 
     public PatientRequest getUserByUserTypeAndId(long id){
-        return this.userRepository.findUserById(id);
+        PatientRequest patientRequest = this.userRepository.findUserById(id);
+        return patientRequest;
     }
-    public void updatePatient(PatientRequest patientRequest) throws ParseException {
+
+    public void updatePatient(PatientRequest patientRequest) throws ParseException,Exception {
         Profile profile = this.profileRepository.findOne(patientRequest.getProfileId());
         new Profile(profile,patientRequest);
 
@@ -870,7 +874,30 @@ public class HISUserService implements UserDetailsService {
         user.setInsurance(insurance);
 
         this.userRepository.save(user);
+
     }
 
+    /*private void saveUserRaces(User user,PatientRequest patientRequest) throws Exception{
+        Race race = null;
+        UserRace userRace = null;
+        List<UserRace> userRaces = new ArrayList<>();
+
+        this.userRaceRepository.deleteByUser_Id(user.getId());
+        this.userRaceRepository.flush();
+
+        for (RaceWrapper raceWrapper: patientRequest.getRaces()) {
+            if (raceWrapper.isSelected()){
+                userRace = new UserRace();
+                race = raceRepository.findOne(raceWrapper.getId());
+
+                userRace.setUser(user);
+                userRace.setRace(race);
+                userRaces.add(userRace);
+            }
+        }
+        if (userRaces.size()>0){
+            this.userRaceRepository.save(userRaces);
+        }
+    }*/
 
 }

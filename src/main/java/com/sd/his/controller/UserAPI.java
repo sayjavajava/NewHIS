@@ -39,6 +39,8 @@ public class UserAPI {
     private TokenStore tokenStore;
     @Autowired
     private HISUserService userService;
+    @Autowired
+    PatientService patientService;
 
     private final Logger logger = LoggerFactory.getLogger(UserAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
@@ -590,9 +592,6 @@ public class UserAPI {
 
     //////////////////////// Patient //////////////////////////////
 
-    @Autowired
-    PatientService patientService;
-
     @ApiOperation(httpMethod = "GET", value = "Paginated Patients",
             notes = "This method will return Paginated Patients",
             produces = "application/json", nickname = "Paginated Patients",
@@ -778,6 +777,39 @@ public class UserAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+//    @ApiOperation(httpMethod = "GET", value = "getRaces",
+//            notes = "This method will return Races",
+//            produces = "application/json", nickname = "Get Races",
+//            response = GenericAPIResponse.class, protocols = "https")
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "Races found successfully", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+//    @RequestMapping(value = "/patient/races", method = RequestMethod.GET)
+//    public ResponseEntity<?> getRaces() {
+//        logger.info("getRaces() Called.....");
+//        GenericAPIResponse response = new GenericAPIResponse();
+//        try {
+//            response.setResponseData(this.raceRepository.findAllRaces());
+//            response.setResponseCode(ResponseEnum.RACE_FETCHED_SUCESS.getValue());
+//            response.setResponseMessage(messageBundle.getString("race.fetched.success"));
+//            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+//
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (Exception ex) {
+//            logger.info("getRaces() Exception occurred.");
+//            ex.printStackTrace();
+//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+
     @ApiOperation(httpMethod = "GET", value = "User",
             notes = "This method will return User on base of id",
             produces = "application/json", nickname = "Get Single User",
@@ -790,7 +822,7 @@ public class UserAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/patient/get/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getUserByIdAndByUserType(HttpServletRequest request,
-                                         @PathVariable("id") long id) {
+                                                      @PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("user.not.found"));
@@ -855,7 +887,7 @@ public class UserAPI {
             if (HISCoreUtil.isNull(patientRequest.getEmail()) ||
                     HISCoreUtil.isNull(patientRequest.getUserName()) ||
                     patientRequest.getUserName() == "" ||
-                    patientRequest.getSelectedDoctor() <=0 ||
+                    patientRequest.getSelectedDoctor() <= 0 ||
                     HISCoreUtil.isNull(patientRequest.getCellPhone())) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
@@ -905,10 +937,10 @@ public class UserAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/patient/search{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getSearchAllPaginatedUserByUserType(HttpServletRequest request,
-                                                           @PathVariable("page") int page,
-                                                           @RequestParam(value = "pageSize",
-                                                                   required = false,
-                                                                   defaultValue = "10") int pageSize,
+                                                                 @PathVariable("page") int page,
+                                                                 @RequestParam(value = "pageSize",
+                                                                         required = false,
+                                                                         defaultValue = "10") int pageSize,
                                                                  @RequestParam(value = "userType") String userType,
                                                                  @RequestParam(value = "userName") String userName) {
 
@@ -918,8 +950,8 @@ public class UserAPI {
 
         try {
             logger.error("getSearchAllPaginatedUserByUserType -  fetching from DB");
-            List<PatientWrapper> patients = userService.searchAllPaginatedUserByUserTypeAndName(page, pageSize, userType,userName);
-            int userCount = userService.countSearchAllPaginatedUserByUserTypeAndName(userType,userName);
+            List<PatientWrapper> patients = userService.searchAllPaginatedUserByUserTypeAndName(page, pageSize, userType, userName);
+            int userCount = userService.countSearchAllPaginatedUserByUserTypeAndName(userType, userName);
 
             logger.error("getSearchAllPaginatedUserByUserType - fetched successfully");
 
@@ -960,7 +992,7 @@ public class UserAPI {
 
                 logger.error("getSearchAllPaginatedUserByUserType API successfully executed.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
+            } else {
                 response.setResponseMessage(messageBundle.getString("patient.fetch.error"));
                 response.setResponseCode(ResponseEnum.PATIENT_FETCHED_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -976,7 +1008,6 @@ public class UserAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 }

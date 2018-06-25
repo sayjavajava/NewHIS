@@ -37,6 +37,7 @@ public class ProfileWrapper {
     private String city;
     private String state;
     private String country;
+    private String races;
     private String status;
     private long dob;
     private String type;
@@ -73,6 +74,7 @@ public class ProfileWrapper {
         this.city = profile.getCity() == null ? "" : profile.getCity();
         this.state = profile.getState() == null ? "" : profile.getState();
         this.country = profile.getCountry() == null ? "" : profile.getCountry();
+        this.races = profile.getRaces();
         this.status = profile.getStatus() == null ? "Active" : profile.getStatus();
         this.dob = profile.getDob();
         this.type = profile.getType() == null ? "" : profile.getType();
@@ -321,6 +323,14 @@ public class ProfileWrapper {
 
     public String getCountry() {
         return country;
+    }
+
+    public String getRaces() {
+        return races;
+    }
+
+    public void setRaces(String races) {
+        this.races = races;
     }
 
     public void setCountry(String country) {

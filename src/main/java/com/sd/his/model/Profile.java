@@ -5,6 +5,9 @@ import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.request.PatientRequest;
 import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.utill.JSONUtil;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -41,7 +44,7 @@ public class Profile implements Serializable {
     @Column(name = "CELL_PHONE")
     private String cellPhone;
 
-    @Column(name = "SMS_TEXT",columnDefinition = "default boolean true")
+    @Column(name = "SMS_TEXT", columnDefinition = "default boolean true")
     private boolean sMSText;
 
     @Column(name = "OFFICE_PHONE")
@@ -133,7 +136,7 @@ public class Profile implements Serializable {
     private String emergencyContactRelation;
 
     @Column(name = "SIGNATURE_ON_FILE")
-    private  boolean signatureOnFile;
+    private boolean signatureOnFile;
 
     @Column(name = "COUNTRY")
     private String country;
@@ -165,8 +168,8 @@ public class Profile implements Serializable {
     @Column(name = "TITLE_PREFIX")
     private String titlePrefix;
 
-
-
+    @Column(name = "RACES")
+    private String races;
 
     public Profile() {
     }
@@ -174,7 +177,7 @@ public class Profile implements Serializable {
     public Profile(PatientRequest patientRequest) throws ParseException {
         this.id = patientRequest.getProfileId() > 0 ? patientRequest.getProfileId() : null;
         this.patientSSN = patientRequest.getPatientSSN();
-        if (patientRequest.getDob() != "" || patientRequest.getDob() != null) {
+        if (!HISCoreUtil.isNull(patientRequest.getDob())) {
             this.dob = DateUtil.getMillisFromStringDate(patientRequest.getDob(), HISConstants.DATE_FORMATE_THREE);
         }
         this.titlePrefix = patientRequest.getTitlePrefix();
@@ -194,7 +197,7 @@ public class Profile implements Serializable {
         this.workingDays = new ArrayList<>();
         this.gender = patientRequest.getGender();
         this.country = patientRequest.getCountry();
-
+        this.races = JSONUtil.listToJSON(patientRequest.getRaces());
         this.streetAddress = patientRequest.getStreetAddress();
         this.zipCode = patientRequest.getZipCode();
         this.city = patientRequest.getCity();
@@ -206,48 +209,8 @@ public class Profile implements Serializable {
         this.emergencyContactRelation = patientRequest.getEmergencyContactRelation();
         this.status = patientRequest.isProfileStatus() ? "ACTIVE" : "IN_ACTIVE";
         this.signatureOnFile = patientRequest.isSignatureOnFile();
-
         this.type = UserTypeEnum.PATIENT.toString();
-
     }
-
-/*    public Profile(String patientSSN,String firstName,String middleName, String lastName, String homePhone, String cellPhone, String accountExpiry,
-                   Boolean active, Boolean deleted, Boolean sendBillingReport, Boolean useReceptDashBoard,
-                   Boolean otherDoctorDashBoard, Boolean managePatientRecords, Boolean managePatientInvoices,
-                   long checkUpInterval, List<String> workingDays, Boolean allowDiscount, String gender,
-                   String profileImg, String address, String city, String state, String country, String status, Date dob,
-                   String type, String otherDashboard, long createdOn, long updatedOn, String aboutMe) {
-        this.patientSSN = patientSSN;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-        this.homePhone = homePhone;
-        this.cellPhone = cellPhone;
-        this.accountExpiry = accountExpiry;
-        this.active = active;
-        this.deleted = deleted;
-        this.sendBillingReport = sendBillingReport;
-        this.useReceptDashBoard = useReceptDashBoard;
-        this.otherDoctorDashBoard = otherDoctorDashBoard;
-        this.managePatientRecords = managePatientRecords;
-        this.managePatientInvoices = managePatientInvoices;
-        this.checkUpInterval = checkUpInterval;
-        this.workingDays = workingDays;
-        this.allowDiscount = allowDiscount;
-        this.gender = gender;
-        this.profileImg = profileImg;
-        this.address = address;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.status = status;
-        this.dob = dob;
-        this.type = type;
-        this.otherDashboard = otherDashboard;
-        this.createdOn = createdOn;
-        this.updatedOn = updatedOn;
-        this.aboutMe = aboutMe;
-    }*/
 
     public Profile(Profile profile, PatientRequest patientRequest) throws ParseException {
         profile.patientSSN = patientRequest.getPatientSSN();
@@ -270,7 +233,7 @@ public class Profile implements Serializable {
         profile.dob = DateUtil.getMillisFromStringDate(patientRequest.getDob(), HISConstants.DATE_FORMATE_THREE);
         profile.gender = patientRequest.getGender();
         profile.country = patientRequest.getCountry();
-
+        profile.races = JSONUtil.listToJSON(patientRequest.getRaces());
         profile.streetAddress = patientRequest.getStreetAddress();
         profile.zipCode = patientRequest.getZipCode();
         profile.city = patientRequest.getCity();
@@ -283,7 +246,8 @@ public class Profile implements Serializable {
         profile.signatureOnFile = patientRequest.isSignatureOnFile();
 
         profile.type = UserTypeEnum.PATIENT.toString();
-        profile.status = patientRequest.isProfileStatus()  ? "ACTIVE" : "IN_ACTIVE";
+        profile.status = patientRequest.isProfileStatus() ? "ACTIVE" : "IN_ACTIVE";
+
 
     }
 
@@ -657,5 +621,13 @@ public class Profile implements Serializable {
 
     public void setSignatureOnFile(boolean signatureOnFile) {
         this.signatureOnFile = signatureOnFile;
+    }
+
+    public String getRaces() {
+        return races;
+    }
+
+    public void setRaces(String races) {
+        this.races = races;
     }
 }

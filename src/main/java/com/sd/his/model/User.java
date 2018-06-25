@@ -42,7 +42,6 @@ public class User {
     @Column(name = "ID", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @NotNull
     @Column(name = "USERNAME", unique = true)
     private String username;

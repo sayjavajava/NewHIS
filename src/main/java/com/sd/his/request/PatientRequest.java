@@ -8,7 +8,6 @@ import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.RaceWrapper;
 
 import java.io.File;
-import java.time.*;
 import java.util.List;
 
 /**
@@ -41,6 +40,7 @@ public class PatientRequest {
     private String dob = "";
     private String gender = "MALE";
     List<RaceWrapper> races;
+    private String racesString;
     private String country = "SAUDI ARAB";
     private String streetAddress = "";
     private String zipCode = "";
@@ -66,7 +66,6 @@ public class PatientRequest {
     private String primaryInsuranceNotes = "";
     private File photoFront;
     private File photoBack;
-
 
     public PatientRequest() {
     }
@@ -101,35 +100,18 @@ public class PatientRequest {
         this.zipCode = profile.getZipCode();
         this.signatureOnFile = profile.isSignatureOnFile();
 
-       /* this.accountExpiry = profile.getAccountExpiry() == null ? "" : profile.getAccountExpiry();
-        this.active = profile.getActive() == null ? false : profile.getActive();
-        this.deleted = profile.getDeleted() == null ? false : profile.getDeleted();
-        this.sendBillingReport = profile.getSendBillingReport() == null ? false : profile.getSendBillingReport();
-        this.useReceptDashBoard = profile.getUseReceptDashBoard() == null ? false : profile.getUseReceptDashBoard();
-        this.otherDoctorDashBoard = profile.getOtherDoctorDashBoard() == null ? false : profile.getOtherDoctorDashBoard();
-        this.managePatientRecords = profile.getManagePatientRecords() == null ? false : profile.getManagePatientRecords();
-        this.managePatientInvoices = profile.getManagePatientInvoices() == null ? false : profile.getManagePatientInvoices();
-        this.checkUpInterval = profile.getCheckUpInterval();
-        this.workingDays = profile.getWorkingDays() == null ? new ArrayList<>() : profile.getWorkingDays();
-        this.allowDiscount = profile.getAllowDiscount() == null ? false : profile.getAllowDiscount();
-*/
         this.gender = profile.getGender() == null ? null : profile.getGender();
 //        this.profileImg = profile.getProfileImg() == null ? "" : profile.getProfileImg();
-//        this.address = profile.getAddress() == null ? "" : profile.getAddress();
         this.city = profile.getCity() == null ? "" : profile.getCity();
         this.state = profile.getState() == null ? "" : profile.getState();
         this.country = profile.getCountry() == null ? "" : profile.getCountry();
+        this.racesString = profile.getRaces();
         this.dob = DateUtil.getDateFromMillis(profile.getDob(),HISConstants.DATE_FORMATE_THREE);
-       /* this.type = profile.getType() == null ? "" : profile.getType();
-        this.otherDashboard = profile.getOtherDashboard() == null ? "" : profile.getOtherDashboard();
-        this.createdOn = profile.getCreatedOn();
-        this.updatedOn = profile.getUpdatedOn();
-        this.aboutMe = profile.getAboutMe() == null ? "" : profile.getAboutMe();
-        this.deleted = profile.getDeleted();*/
-       this.titlePrefix = profile.getTitlePrefix();
-       if (user.getPrimaryDoctor() != null){
-           this.selectedDoctor = user.getPrimaryDoctor().getId();
-       }
+
+        this.titlePrefix = profile.getTitlePrefix();
+        if (user.getPrimaryDoctor() != null){
+            this.selectedDoctor = user.getPrimaryDoctor().getId();
+        }
 
         this.insuranceId = insurance.getId();
         this.company = insurance.getCompany();
@@ -510,5 +492,13 @@ public class PatientRequest {
 
     public void setProfileStatus(boolean profileStatus) {
         this.profileStatus = profileStatus;
+    }
+
+    public String getRacesString() {
+        return racesString;
+    }
+
+    public void setRacesString(String racesString) {
+        this.racesString = racesString;
     }
 }
