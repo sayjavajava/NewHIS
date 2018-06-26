@@ -44,8 +44,8 @@ public class Profile implements Serializable {
     @Column(name = "CELL_PHONE")
     private String cellPhone;
 
-    @Column(name = "SMS_TEXT", columnDefinition = "default boolean true")
-    private boolean sMSText;
+    @Column(name = "DISABLE_SMS_TEXT", columnDefinition = "boolean default true")
+    private Boolean disableSMSText;
 
     @Column(name = "OFFICE_PHONE")
     private String officePhone;
@@ -85,7 +85,7 @@ public class Profile implements Serializable {
     private Boolean managePatientInvoices = false;
 
     @Column(name = "CHECK_UP_INTERVAL")
-    private long checkUpInterval;
+    private Long checkUpInterval;
 
 /*   @ElementCollection
     @Column(name = "WORKING_DAYS")
@@ -136,7 +136,7 @@ public class Profile implements Serializable {
     private String emergencyContactRelation;
 
     @Column(name = "SIGNATURE_ON_FILE")
-    private boolean signatureOnFile;
+    private Boolean signatureOnFile;
 
     @Column(name = "COUNTRY")
     private String country;
@@ -148,7 +148,7 @@ public class Profile implements Serializable {
     private String patientSSN;
 
     @Column(name = "DOB")
-    private long dob;
+    private Long dob;
 
     @Column(name = "TYPE")
     private String type;
@@ -157,10 +157,10 @@ public class Profile implements Serializable {
     private String otherDashboard;
 
     @Column(name = "CREATED_ON")
-    private long createdOn;
+    private Long createdOn;
 
     @Column(name = "UPDATED_ON")
-    private long updatedOn;
+    private Long updatedOn;
 
     @Column(name = "ABOUT_ME")
     private String aboutMe;
@@ -187,7 +187,7 @@ public class Profile implements Serializable {
         this.foreignName = patientRequest.getForeignName();
         this.homePhone = patientRequest.getHomePhone();
         this.cellPhone = patientRequest.getCellPhone();
-        this.sMSText = patientRequest.isDisableSMSTxt();
+        this.disableSMSText = patientRequest.isDisableSMSTxt();
         this.officePhone = patientRequest.getOfficePhone();
         this.officeExtension = patientRequest.getOfficeExtension();
         this.preferredCommunication = patientRequest.getPreferredCommunication();
@@ -221,7 +221,7 @@ public class Profile implements Serializable {
         profile.foreignName = patientRequest.getForeignName();
         profile.homePhone = patientRequest.getHomePhone();
         profile.cellPhone = patientRequest.getCellPhone();
-        profile.sMSText = patientRequest.isDisableSMSTxt();
+        profile.disableSMSText = patientRequest.isDisableSMSTxt();
         profile.officePhone = patientRequest.getOfficePhone();
         profile.officeExtension = patientRequest.getOfficeExtension();
 
@@ -283,6 +283,14 @@ public class Profile implements Serializable {
         this.middleName = middleName;
     }
 
+    public String getForeignName() {
+        return foreignName;
+    }
+
+    public void setForeignName(String foreignName) {
+        this.foreignName = foreignName;
+    }
+
     public String getHomePhone() {
         return homePhone;
     }
@@ -297,6 +305,14 @@ public class Profile implements Serializable {
 
     public void setCellPhone(String cellPhone) {
         this.cellPhone = cellPhone;
+    }
+
+    public Boolean getDisableSMSText() {
+        return disableSMSText;
+    }
+
+    public void setDisableSMSText(Boolean disableSMSText) {
+        this.disableSMSText = disableSMSText;
     }
 
     public String getOfficePhone() {
@@ -321,6 +337,22 @@ public class Profile implements Serializable {
 
     public void setAccountExpiry(String accountExpiry) {
         this.accountExpiry = accountExpiry;
+    }
+
+    public String getPreferredCommunication() {
+        return preferredCommunication;
+    }
+
+    public void setPreferredCommunication(String preferredCommunication) {
+        this.preferredCommunication = preferredCommunication;
+    }
+
+    public String getReminderLanguage() {
+        return reminderLanguage;
+    }
+
+    public void setReminderLanguage(String reminderLanguage) {
+        this.reminderLanguage = reminderLanguage;
     }
 
     public Boolean getActive() {
@@ -379,11 +411,11 @@ public class Profile implements Serializable {
         this.managePatientInvoices = managePatientInvoices;
     }
 
-    public long getCheckUpInterval() {
+    public Long getCheckUpInterval() {
         return checkUpInterval;
     }
 
-    public void setCheckUpInterval(long checkUpInterval) {
+    public void setCheckUpInterval(Long checkUpInterval) {
         this.checkUpInterval = checkUpInterval;
     }
 
@@ -427,6 +459,22 @@ public class Profile implements Serializable {
         this.address = address;
     }
 
+    public String getStreetAddress() {
+        return streetAddress;
+    }
+
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
     public String getCity() {
         return city;
     }
@@ -443,144 +491,12 @@ public class Profile implements Serializable {
         this.state = state;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public long getDob() {
-        return dob;
-    }
-
-    public void setDob(long dob) {
-        this.dob = dob;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getOtherDashboard() {
-        return otherDashboard;
-    }
-
-    public void setOtherDashboard(String otherDashboard) {
-        this.otherDashboard = otherDashboard;
-    }
-
-    public long getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(long createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public long getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(long updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public String getAboutMe() {
-        return aboutMe;
-    }
-
-    public void setAboutMe(String aboutMe) {
-        this.aboutMe = aboutMe;
-    }
-
-    public String getTitlePrefix() {
-        return titlePrefix;
-    }
-
-    public void setTitlePrefix(String titlePrefix) {
-        this.titlePrefix = titlePrefix;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public String getForeignName() {
-        return foreignName;
-    }
-
-    public void setForeignName(String foreignName) {
-        this.foreignName = foreignName;
-    }
-
-    public boolean issMSText() {
-        return sMSText;
-    }
-
-    public void setsMSText(boolean sMSText) {
-        this.sMSText = sMSText;
-    }
-
-    public String getPreferredCommunication() {
-        return preferredCommunication;
-    }
-
-    public void setPreferredCommunication(String preferredCommunication) {
-        this.preferredCommunication = preferredCommunication;
-    }
-
-    public String getReminderLanguage() {
-        return reminderLanguage;
-    }
-
-    public void setReminderLanguage(String reminderLanguage) {
-        this.reminderLanguage = reminderLanguage;
-    }
-
-    public String getPatientSSN() {
-        return patientSSN;
-    }
-
-    public void setPatientSSN(String patientSSN) {
-        this.patientSSN = patientSSN;
-    }
-
-    public String getStreetAddress() {
-        return streetAddress;
-    }
-
-    public void setStreetAddress(String streetAddress) {
-        this.streetAddress = streetAddress;
-    }
-
     public String getFormattedAddress() {
         return formattedAddress;
     }
 
     public void setFormattedAddress(String formattedAddress) {
         this.formattedAddress = formattedAddress;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
     }
 
     public String getMartialStatus() {
@@ -615,12 +531,92 @@ public class Profile implements Serializable {
         this.emergencyContactRelation = emergencyContactRelation;
     }
 
-    public boolean isSignatureOnFile() {
+    public Boolean getSignatureOnFile() {
         return signatureOnFile;
     }
 
-    public void setSignatureOnFile(boolean signatureOnFile) {
+    public void setSignatureOnFile(Boolean signatureOnFile) {
         this.signatureOnFile = signatureOnFile;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPatientSSN() {
+        return patientSSN;
+    }
+
+    public void setPatientSSN(String patientSSN) {
+        this.patientSSN = patientSSN;
+    }
+
+    public Long getDob() {
+        return dob;
+    }
+
+    public void setDob(Long dob) {
+        this.dob = dob;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getOtherDashboard() {
+        return otherDashboard;
+    }
+
+    public void setOtherDashboard(String otherDashboard) {
+        this.otherDashboard = otherDashboard;
+    }
+
+    public Long getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Long createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Long getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Long updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
+    }
+
+    public String getTitlePrefix() {
+        return titlePrefix;
+    }
+
+    public void setTitlePrefix(String titlePrefix) {
+        this.titlePrefix = titlePrefix;
     }
 
     public String getRaces() {

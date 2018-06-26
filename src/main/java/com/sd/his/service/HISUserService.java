@@ -8,7 +8,6 @@ import com.sd.his.request.PatientRequest;
 import com.sd.his.response.UserResponseWrapper;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +27,16 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Autowired
-ProfileRepository profileRepository;
-@Autowired
-InsuranceRepository insuranceRepository;
-
 @Service(value = "userService")
 @Transactional
 public class HISUserService implements UserDetailsService {
+
+    @Autowired
+    ProfileRepository profileRepository;
+    @Autowired
+    InsuranceRepository insuranceRepository;
+    @Autowired
+    private ICDCodeRepository icdCodeRepository;
 
     private UserRepository userRepository;
     private PermissionRepository permissionRepo;
@@ -52,9 +53,6 @@ public class HISUserService implements UserDetailsService {
     private DepartmentUserRepository departmentUserRepository;
     private DutyWithDoctorRepository dutyWithDoctorRepository;
     private UserVisitBranchesRepository userVisitBranchesRepository;
-
-    @Autowired
-    private ICDCodeRepository icdCodeRepository;
 
     private final Logger logger = LoggerFactory.getLogger(HISUserService.class);
 

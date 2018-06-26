@@ -93,12 +93,12 @@ public class PatientRequest {
         this.emergencyContactName = profile.getEmergencyContactName();
         this.emergencyContactPhone = profile.getEmergencyContactPhone();
         this.emergencyContactRelation = profile.getEmergencyContactRelation();
-        this.disableSMSTxt = profile.issMSText();
+        this.disableSMSTxt = profile.getDisableSMSText();
         this.formattedAddress = profile.getFormattedAddress();
         this.streetAddress = profile.getStreetAddress();
         this.martial = profile.getMartialStatus();
         this.zipCode = profile.getZipCode();
-        this.signatureOnFile = profile.isSignatureOnFile();
+        this.signatureOnFile = profile.getSignatureOnFile();
 
         this.gender = profile.getGender() == null ? null : profile.getGender();
 //        this.profileImg = profile.getProfileImg() == null ? "" : profile.getProfileImg();
