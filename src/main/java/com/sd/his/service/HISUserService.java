@@ -139,6 +139,10 @@ public class HISUserService implements UserDetailsService {
         return userRepository.findByUsernameOrEmailAndActiveTrueAndDeletedFalse(userName, email);
     }
 
+    public User findByUsernameOrEmail(String userName, String email) {
+        return userRepository.findByUsernameOrEmail(userName, email);
+    }
+
     public User findByUserName(String name) {
         return userRepository.findByUsername(name);
     }
@@ -531,9 +535,9 @@ public class HISUserService implements UserDetailsService {
 
     public User updateUser(UserCreateRequest userCreateRequest, User alreadyExistsUser) {
         String userType = userCreateRequest.getUserType();
+        Branch primaryBranch = branchRepository.findByName(userCreateRequest.getPrimaryBranch());
+        BranchUser branchUser = branchUserRepository.findByUser(alreadyExistsUser);
         int primmaryBranchId= Integer.parseInt(userCreateRequest.getPrimaryBranch());
-        Branch primaryBranch = branchRepository.findByIdAndDeletedFalse(primmaryBranchId);
-        BranchUser branchUser= branchUserRepository.findByUser(alreadyExistsUser);
         if (userType.equalsIgnoreCase(UserTypeEnum.CASHIER.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
@@ -818,6 +822,9 @@ public class HISUserService implements UserDetailsService {
         return userRepository.findAllById(id);
     }
 
+    public User findUserById(long id) {
+        return userRepository.findByIdAndDeletedFalse(id);
+    }
 
     public User deleteUser(User user) {
         user.setDeleted(true);
@@ -952,5 +959,9 @@ public class HISUserService implements UserDetailsService {
 
         this.userRepository.save(user);
 
+    }
+
+    public User updateUser(User user) {
+        return userRepository.save(user);
     }
 }
