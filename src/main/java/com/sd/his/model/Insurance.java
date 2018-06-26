@@ -51,10 +51,10 @@ public class Insurance {
     private String planName;
     @Column(name = "PLAN_TYPE")
     private String planType;
-    @Column(name = "CART_ISSUED_DATE")
-    private long cardIssuedDate;
-    @Column(name = "CART_EXPIRY_DATE")
-    private long cardExpiryDate;
+    @Column(name = "CARD_ISSUED_DATE")
+    private Long cardIssuedDate;
+    @Column(name = "CARD_EXPIRY_DATE")
+    private Long cardExpiryDate;
     @Column(name = "PRIMARY_INSURANCE_NOTES")
     private String primaryInsuranceNotes;
     @Column(name = "PHOTO_FRONT")
@@ -62,11 +62,11 @@ public class Insurance {
     @Column(name = "PHOTO_BACK")
     private String photoBack;
     @Column(name = "CREATED_ON")
-    private long created;
-    @Column(name = "UPDATED_ON", columnDefinition = "long default System.currentTimeMillis()")
-    private long updated;
+    private Long created;
+    @Column(name = "UPDATED_ON", columnDefinition = "Long default System.currentTimeMillis()")
+    private Long updated;
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
-    private boolean deleted;
+    private Boolean deleted;
 
     public Insurance() {
     }
@@ -159,19 +159,19 @@ public class Insurance {
         this.planType = planType;
     }
 
-    public long getCardIssuedDate() {
+    public Long getCardIssuedDate() {
         return cardIssuedDate;
     }
 
-    public void setCardIssuedDate(long cardIssuedDate) {
+    public void setCardIssuedDate(Long cardIssuedDate) {
         this.cardIssuedDate = cardIssuedDate;
     }
 
-    public long getCardExpiryDate() {
+    public Long getCardExpiryDate() {
         return cardExpiryDate;
     }
 
-    public void setCardExpiryDate(long cardExpiryDate) {
+    public void setCardExpiryDate(Long cardExpiryDate) {
         this.cardExpiryDate = cardExpiryDate;
     }
 
@@ -199,27 +199,27 @@ public class Insurance {
         this.photoBack = photoBack;
     }
 
-    public long getCreated() {
+    public Long getCreated() {
         return created;
     }
 
-    public void setCreated(long created) {
+    public void setCreated(Long created) {
         this.created = created;
     }
 
-    public long getUpdated() {
+    public Long getUpdated() {
         return updated;
     }
 
-    public void setUpdated(long updated) {
+    public void setUpdated(Long updated) {
         this.updated = updated;
     }
 
-    public boolean isDeleted() {
+    public Boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
 }

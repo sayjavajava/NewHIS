@@ -3,10 +3,8 @@ package com.sd.his.wrapper;
 import com.sd.his.model.Profile;
 import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
-import com.sd.his.utill.HISCoreUtil;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ProfileWrapper {
@@ -26,9 +24,6 @@ public class ProfileWrapper {
     private boolean managePatientRecords;
     private boolean managePatientInvoices;
     private long checkUpInterval;
-    /*   @ElementCollection
-        @Column(name = "WORKING_DAYS")
-        private Set<String> workingDays ;*/
     private List<String> workingDays = new ArrayList<>();
     private boolean allowDiscount;
     private String gender;
@@ -39,7 +34,7 @@ public class ProfileWrapper {
     private String country;
     private String races;
     private String status;
-    private long dob;
+    private String dob;
     private String type;
     private String otherDashboard;
     private long createdOn;
@@ -53,7 +48,7 @@ public class ProfileWrapper {
     public ProfileWrapper(Profile profile) {
         this.profileId = profile.getId();
         this.patientSSN = profile.getPatientSSN();
-        this.firstName = profile.getFirstName() ;
+        this.firstName = profile.getFirstName();
         this.lastName = profile.getLastName();
         this.homePhone = profile.getHomePhone();
         this.cellPhone = profile.getCellPhone();
@@ -76,7 +71,7 @@ public class ProfileWrapper {
         this.country = profile.getCountry() == null ? "" : profile.getCountry();
         this.races = profile.getRaces();
         this.status = profile.getStatus() == null ? "Active" : profile.getStatus();
-        this.dob = profile.getDob();
+        this.dob = DateUtil.getFormattedDateFromDate(profile.getDob(), HISConstants.DATE_FORMATE_THREE);
         this.type = profile.getType() == null ? "" : profile.getType();
         this.otherDashboard = profile.getOtherDashboard();
         this.createdOn = profile.getCreatedOn();
@@ -345,11 +340,11 @@ public class ProfileWrapper {
         this.status = status;
     }
 
-    public long getDob() {
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(long dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 

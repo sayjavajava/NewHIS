@@ -7,7 +7,6 @@ import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.utill.JSONUtil;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -148,7 +147,7 @@ public class Profile implements Serializable {
     private String patientSSN;
 
     @Column(name = "DOB")
-    private Long dob;
+    private Date dob;
 
     @Column(name = "TYPE")
     private String type;
@@ -178,7 +177,7 @@ public class Profile implements Serializable {
         this.id = patientRequest.getProfileId() > 0 ? patientRequest.getProfileId() : null;
         this.patientSSN = patientRequest.getPatientSSN();
         if (!HISCoreUtil.isNull(patientRequest.getDob())) {
-            this.dob = DateUtil.getMillisFromStringDate(patientRequest.getDob(), HISConstants.DATE_FORMATE_THREE);
+            this.dob = DateUtil.getDateFromString(patientRequest.getDob(), HISConstants.DATE_FORMATE_THREE);
         }
         this.titlePrefix = patientRequest.getTitlePrefix();
         this.firstName = patientRequest.getFirstName();
@@ -197,7 +196,7 @@ public class Profile implements Serializable {
         this.workingDays = new ArrayList<>();
         this.gender = patientRequest.getGender();
         this.country = patientRequest.getCountry();
-        this.races = JSONUtil.listToJSON(patientRequest.getRaces());
+        this.races = JSONUtil.gsonListToJSON(patientRequest.getRaces());
         this.streetAddress = patientRequest.getStreetAddress();
         this.zipCode = patientRequest.getZipCode();
         this.city = patientRequest.getCity();
@@ -230,7 +229,7 @@ public class Profile implements Serializable {
 
         profile.accountExpiry = "";
         profile.workingDays = new ArrayList<>();
-        profile.dob = DateUtil.getMillisFromStringDate(patientRequest.getDob(), HISConstants.DATE_FORMATE_THREE);
+        profile.dob = DateUtil.getDateFromString(patientRequest.getDob(), HISConstants.DATE_FORMATE_THREE);
         profile.gender = patientRequest.getGender();
         profile.country = patientRequest.getCountry();
         profile.races = JSONUtil.listToJSON(patientRequest.getRaces());
@@ -563,11 +562,11 @@ public class Profile implements Serializable {
         this.patientSSN = patientSSN;
     }
 
-    public Long getDob() {
+    public Date getDob() {
         return dob;
     }
 
-    public void setDob(Long dob) {
+    public void setDob(Date dob) {
         this.dob = dob;
     }
 

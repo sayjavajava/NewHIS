@@ -1,5 +1,6 @@
 package com.sd.his.utill;
 
+import com.google.gson.Gson;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -53,5 +54,9 @@ public class JSONUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String gsonListToJSON(List<?> objects){
+        return new Gson().toJson(objects);
     }
 }

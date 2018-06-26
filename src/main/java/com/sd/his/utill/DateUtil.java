@@ -87,23 +87,28 @@ public class DateUtil {
         return parsedDate.getTime();
     }
 
-    public static String getDateFromMillis(long dateMillis, String format){
+    public static String getDateFromMillis(long dateMillis, String format) {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sameYrDateFormat = null;
         try {
             calendar.setTimeInMillis(dateMillis);
             sameYrDateFormat = new SimpleDateFormat(format);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return sameYrDateFormat.format(calendar.getTime());
     }
 
-    public static Date getDateFromString(String dateString, String dateFormat) throws ParseException{
+    public static Date getDateFromString(String dateString, String dateFormat) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         Date date = null;
         date = format.parse(dateString);
         return date;
+    }
+
+    public static String getFormattedDateFromDate(Date date, String dateFormat) {
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
+        return format.format(date);
     }
 }

@@ -106,10 +106,10 @@ public class PatientRequest {
         this.state = profile.getState() == null ? "" : profile.getState();
         this.country = profile.getCountry() == null ? "" : profile.getCountry();
         this.racesString = profile.getRaces();
-        this.dob = DateUtil.getDateFromMillis(profile.getDob(),HISConstants.DATE_FORMATE_THREE);
+        this.dob = DateUtil.getFormattedDateFromDate(profile.getDob(), HISConstants.DATE_FORMATE_THREE);
 
         this.titlePrefix = profile.getTitlePrefix();
-        if (user.getPrimaryDoctor() != null){
+        if (user.getPrimaryDoctor() != null) {
             this.selectedDoctor = user.getPrimaryDoctor().getId();
         }
 
