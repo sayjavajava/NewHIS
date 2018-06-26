@@ -4,7 +4,9 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.User;
 import com.sd.his.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.response.GenericAPIResponse;
+import com.sd.his.response.ProfileImageUploadResponse;
 import com.sd.his.response.UserResponseWrapper;
+import com.sd.his.service.AWSService;
 import com.sd.his.service.HISUserService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.UserCreateRequest;
@@ -20,8 +22,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,6 +42,8 @@ public class UserAPI {
     private TokenStore tokenStore;
     @Autowired
     private HISUserService userService;
+    @Autowired
+    private AWSService awsService;
 
     private final Logger logger = LoggerFactory.getLogger(UserAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
@@ -640,6 +647,74 @@ public class UserAPI {
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
 
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "Upload Profile Image",
+            notes = "This method will upload the profile image of any user.",
+            produces = "application/json", nickname = "Upload Profile Image",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Profile image of user uploaded successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/uploadProfileImg/{id}", method = RequestMethod.POST,
+            headers = ("content-type=multipart/*"))
+    public ResponseEntity<?> uploadProfileImage(HttpServletRequest request,
+                                                @PathVariable("id") long id,
+                                                @RequestParam("file") MultipartFile file) {
+        logger.info("uploadProfileImage API called for user: " + id);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.error"));
+        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            User user = userService.findUserById(id);
+
+            if (HISCoreUtil.isValidObject(user)) {
+                if (HISCoreUtil.isValidObject(file)) {
+                    byte[] byteArr = file.getBytes();
+                    InputStream is = new ByteArrayInputStream(byteArr);
+                    Boolean isSaved = awsService.uploadImage(is, id);
+                    if (isSaved) {
+                        String imgURL = awsService.getProfileThumbnailImageUrl(id);
+                        user.getProfile().setProfileImg(imgURL);
+                        userService.updateUser(user);
+
+                        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.success"));
+                        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_SUCCESS.getValue());
+                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                        response.setResponseData(new ProfileImageUploadResponse(user));
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    } else {
+                        response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
+                        response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
+                        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                        response.setResponseData(null);
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    }
+                } else {
+                    response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
+                    response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+
+                }
+                userService.updateUser(user);
+            }
+        } catch (Exception ex) {
+            logger.error("Admin pr update failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);

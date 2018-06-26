@@ -8,23 +8,23 @@ import javax.persistence.*;
  * @author    : Irfan Nasim
  * @Date      : 24-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
  * @FileName  : S3Bucket
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 @Entity
 @Table(name = "S3_BUCKET")
@@ -47,6 +47,12 @@ public class S3Bucket {
 
     @Column(name = "SECRET_KEY", unique = true)
     private String secretKey;
+
+    @Column(name = "ACCESS_PROTOCOL")
+    private String accessProtocol;
+
+    @Column(name = "PUBLIC_BASE_URL")
+    private String publicBaseURL;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private boolean active;
@@ -95,6 +101,22 @@ public class S3Bucket {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
+    }
+
+    public String getAccessProtocol() {
+        return accessProtocol;
+    }
+
+    public void setAccessProtocol(String accessProtocol) {
+        this.accessProtocol = accessProtocol;
+    }
+
+    public String getPublicBaseURL() {
+        return publicBaseURL;
+    }
+
+    public void setPublicBaseURL(String publicBaseURL) {
+        this.publicBaseURL = publicBaseURL;
     }
 
     public boolean isActive() {

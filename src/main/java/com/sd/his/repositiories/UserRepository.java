@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> ,PagingAndSortingRepository<User,Long>{
+public interface UserRepository extends JpaRepository<User, Long>, PagingAndSortingRepository<User, Long> {
 
     User findByUsernameOrEmail(String username, String email);
 
@@ -23,13 +23,15 @@ public interface UserRepository extends JpaRepository<User, Long> ,PagingAndSort
 
     User findByUsernameOrEmailAndActiveTrueAndDeletedFalse(String username, String email);
 
+    User findByIdAndDeletedFalse(Long id);
+
     User findByUsername(String name);
 
     List<User> findAllByActiveTrueAndDeletedFalseOrderByUsernameAsc(Pageable pageable);
 
 
     List<User> findAllByUsernameIgnoreCaseContainingOrEmailIgnoreCaseContainingOrRoles_role_nameIgnoreCaseContaining(String name,
-                                                                          String email,String role, Pageable pageable);
+                                                                                                                     String email, String role, Pageable pageable);
 
     @Query("SELECT u FROM User u JOIN u.branches ub JOIN ub.branch WHERE u.active = TRUE AND u.deleted = FALSE ORDER BY u.username ")
     List<User> findAllUsers(Pageable pageable);
