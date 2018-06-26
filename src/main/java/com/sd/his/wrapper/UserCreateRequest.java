@@ -319,7 +319,6 @@ public class UserCreateRequest {
         this.primaryBranch = primaryBranch;
     }
 
-
     public Long[] getSelectedVisitBranches() {
         return selectedVisitBranches;
     }

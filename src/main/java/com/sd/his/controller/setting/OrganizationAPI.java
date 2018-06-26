@@ -1,25 +1,26 @@
-package com.sd.his.controller.setting;/*
- * @author    : waqas kamran
- * @Date      : 17-Apr-18
- * @version   : ver. 1.0.0
- * 
- * ________________________________________________________________________________________________
- *
- *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
- * ________________________________________________________________________________________________
- *
- * @Project   : HIS
- * @Package   : com.sd.his.*
- * @FileName  : UserAuthAPI
- *
- * Copyright © 
- * SolutionDots, 
- * All rights reserved.
- * 
- */
+package com.sd.his.controller.setting;
+        /*
+         * @author    : waqas kamran
+         * @Date      : 17-Apr-18
+         * @version   : ver. 1.0.0
+         *
+         * ________________________________________________________________________________________________
+         *
+         *  Developer				Date		     Version		Operation		Description
+         * ________________________________________________________________________________________________
+         *
+         *
+         * ________________________________________________________________________________________________
+         *
+         * @Project   : HIS
+         * @Package   : com.sd.his.*
+         * @FileName  : UserAuthAPI
+         *
+         * Copyright ©
+         * SolutionDots,
+         * All rights reserved.
+         *
+         */
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Branch;
@@ -54,15 +55,13 @@ import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/setting/organization")
-public class OrganizationApi {
+public class OrganizationAPI {
 
     @Autowired
     private HISUserService hisUserService;
 
     @Autowired
     private OrganizationService organizationService;
-
-
 
     private final Logger logger = LoggerFactory.getLogger(BranchAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
@@ -79,7 +78,7 @@ public class OrganizationApi {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<?> createOrganization(HttpServletRequest request,
-                                          @RequestBody OrganizationRequestWrapper organizationRequestWrapper) {
+                                                @RequestBody OrganizationRequestWrapper organizationRequestWrapper) {
         logger.info("Create Organization API called...");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -89,14 +88,29 @@ public class OrganizationApi {
         response.setResponseData(null);
 
         try {
-            User alreadyExist = hisUserService.findByUserName(organizationRequestWrapper.getUserName());
-            if (HISCoreUtil.isValidObject(alreadyExist)) {
-                Organization savedOrganization = organizationService.saveOrganizationWithExistingUser(alreadyExist,organizationRequestWrapper);
-                response.setResponseData(savedOrganization);
-                response.setResponseMessage(messageBundle.getString("org.save.success"));
-                response.setResponseCode(ResponseEnum.ORGANIZATION_SAVE_SUCCESS.getValue());
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.info("Organization created successfully...");
+            if (HISCoreUtil.isNull(organizationRequestWrapper.getCompanyName()) ||
+                    HISCoreUtil.isNull(organizationRequestWrapper.getUserName()) ||
+                    HISCoreUtil.isNull(organizationRequestWrapper.getEmail())) {
+
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                logger.error("createOrganization API - insufficient params");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            User userAlreadyExist = hisUserService.findByUserName(organizationRequestWrapper.getUserName());
+            Organization orgAlreadyExist = organizationService.findOrgnazatinoByCompanyName(organizationRequestWrapper.getCompanyName());
+
+            if (HISCoreUtil.isValidObject(userAlreadyExist) ||
+                    HISCoreUtil.isValidObject(orgAlreadyExist)) {
+
+                response.setResponseMessage(messageBundle.getString("org.already.exist.error"));
+                response.setResponseCode(ResponseEnum.ORGANIZATION_ALREADY_EXIST_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
@@ -111,8 +125,6 @@ public class OrganizationApi {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-
-
         } catch (Exception ex) {
             logger.error("Organization Creation Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -220,6 +232,7 @@ public class OrganizationApi {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @ApiOperation(httpMethod = "GET", value = "Paginated Organization",
             notes = "This method will return Paginated Organization",
             produces = "application/json", nickname = "Get Paginated Organization ",
@@ -232,8 +245,8 @@ public class OrganizationApi {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllPaginatedOrganization(HttpServletRequest request,
-                                                     @PathVariable("page") int page,
-                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+                                                         @PathVariable("page") int page,
+                                                         @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
         logger.info("getAllOrganization paginated..");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -308,7 +321,7 @@ public class OrganizationApi {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getOrganizationById(HttpServletRequest request,
-                                           @PathVariable("id") long id) {
+                                                 @PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("organization.not-found"));
@@ -352,8 +365,8 @@ public class OrganizationApi {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateOrganization(HttpServletRequest request,
-                                          @PathVariable("id") int id,
-                                          @RequestBody OrganizationRequestWrapper organizationRequestWrapper) {
+                                                @PathVariable("id") int id,
+                                                @RequestBody OrganizationRequestWrapper organizationRequestWrapper) {
 
         logger.info("update Organization API called..." + organizationRequestWrapper.getUserName());
 
@@ -394,10 +407,8 @@ public class OrganizationApi {
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-            return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
 
 
 }

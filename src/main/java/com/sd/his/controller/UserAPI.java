@@ -155,7 +155,6 @@ public class UserAPI {
     public ResponseEntity<?> createUser(HttpServletRequest request,
                                         @RequestBody UserCreateRequest createRequest) {
 
-
         long date = System.currentTimeMillis();
         logger.info("Create User API called..." + createRequest.getUserType());
         logger.info("Create User API called..." + createRequest.getUserName());
@@ -236,9 +235,7 @@ public class UserAPI {
 
         try {
             List<UserResponseWrapper> userWrappers = userService.findAllUsers(page, pageSize);
-
             int countUser = userService.totalUser();
-
             if (!HISCoreUtil.isListEmpty(userWrappers)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
@@ -485,7 +482,7 @@ public class UserAPI {
         response.setResponseData(null);
 
         try {
-            //
+
             List<UserWrapper> userWrappers = userService.searchByNameOrEmailOrRole(name, email, role, page, pageSize);
 
             int countUser = userService.totalUser();

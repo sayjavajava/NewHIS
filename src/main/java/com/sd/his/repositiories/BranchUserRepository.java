@@ -40,5 +40,4 @@ public interface BranchUserRepository extends JpaRepository<BranchUser,Long> {
    BranchUser findByUser(User user);
    BranchUser findByBranch(Branch branch);
 
-
 }

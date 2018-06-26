@@ -31,10 +31,10 @@ public class BranchRequestWrapper {
     int noOfExamRooms;
     String state;
     String city;
-    String primaryDoctor;
+    long primaryDoctor;
     int zipCode;
     String address;
-    long officePhone;
+    String officePhone;
     String fax;
     String formattedAddress;
     ExamRooms[] examRooms;
@@ -153,11 +153,11 @@ public class BranchRequestWrapper {
         this.city = city;
     }
 
-    public String getPrimaryDoctor() {
+    public long getPrimaryDoctor() {
         return primaryDoctor;
     }
 
-    public void setPrimaryDoctor(String primaryDoctor) {
+    public void setPrimaryDoctor(long primaryDoctor) {
         this.primaryDoctor = primaryDoctor;
     }
 
@@ -177,11 +177,11 @@ public class BranchRequestWrapper {
         this.address = address;
     }
 
-    public long getOfficePhone() {
+    public String getOfficePhone() {
         return officePhone;
     }
 
-    public void setOfficePhone(long officePhone) {
+    public void setOfficePhone(String officePhone) {
         this.officePhone = officePhone;
     }
 

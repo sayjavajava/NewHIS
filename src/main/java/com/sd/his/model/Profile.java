@@ -72,8 +72,8 @@ public class Profile implements Serializable {
     @Column(name = "IS_SEND_BILLING_REPORT")
     private Boolean sendBillingReport = false;
 
-    @Column(name = "IS_USE_RECEPT_DASHBOARD")
-    private Boolean useReceptDashBoard = false;
+    @Column(name = "IS_USE_RECEIPT_DASHBOARD", columnDefinition = "boolean default false")
+    private Boolean useReceptDashBoard;
 
     @Column(name = "IS_OTHER_DOCTOR_DASHBOARD")
     private Boolean otherDoctorDashBoard = false;

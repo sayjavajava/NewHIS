@@ -10,23 +10,23 @@ import java.util.List;
  * @author    : Irfan Nasim
  * @Date      : 24-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
  * @FileName  : Organization
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 @Entity
 @Table(name = "ORGANIZATION")
@@ -44,9 +44,6 @@ public class Organization {
 
     @Column(name = "COMPANY_NAME")
     private String companyName;
-
-    @Column(name = "NAME")
-    private String userName;
 
     @Column(name = "DEFAULT_BRANCH")
     private String defaultBranch;
@@ -67,7 +64,7 @@ public class Organization {
     private String homePhone;
 
     @Column(name = "CELL_PHONE")
-    private String  cellPhone;
+    private String cellPhone;
 
     @Column(name = "WEBSITE")
     private String website;
@@ -170,14 +167,6 @@ public class Organization {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getWebsite() {

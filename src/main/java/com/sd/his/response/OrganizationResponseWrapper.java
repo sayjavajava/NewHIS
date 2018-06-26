@@ -1,37 +1,37 @@
-package com.sd.his.response;/*
- * @author    : waqas kamran
- * @Date      : 17-Apr-18
- * @version   : ver. 1.0.0
- * 
- * ________________________________________________________________________________________________
- *
- *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
- * ________________________________________________________________________________________________
- *
- * @Project   : HIS
- * @Package   : com.sd.his.*
- * @FileName  : UserAuthAPI
- *
- * Copyright © 
- * SolutionDots, 
- * All rights reserved.
- * 
- */
+package com.sd.his.response;
 
 import com.sd.his.model.Organization;
 import com.sd.his.model.Profile;
 import com.sd.his.model.Speciality;
 import com.sd.his.model.User;
 
+/*
+ * @author    : waqas kamran
+ * @Date      : 17-Apr-18
+ * @version   : ver. 1.0.0
+ *
+ * ________________________________________________________________________________________________
+ *
+ *  Developer				Date		     Version		Operation		Description
+ * ________________________________________________________________________________________________
+ *
+ *
+ * ________________________________________________________________________________________________
+ *
+ * @Project   : HIS
+ * @Package   : com.sd.his.*
+ * @FileName  : UserAuthAPI
+ *
+ * Copyright ©
+ * SolutionDots,
+ * All rights reserved.
+ *
+ */
 public class OrganizationResponseWrapper {
 
     Long id;
     String firstName;
     String lastName;
-    String userName;
     String companyName;
     String password;
     String confirmPassword;
@@ -39,47 +39,46 @@ public class OrganizationResponseWrapper {
     String cellPhone;
     String officePhone;
     String timezone;
-    String appointmentSerial ;
+    String appointmentSerial;
     String website;
     String defaultBranch;
     Long durationOfExam;
-    String followUpExam ;
+    String followUpExam;
     String email;
     Speciality speciality;
     User user;
 
-    public OrganizationResponseWrapper(){}
+    public OrganizationResponseWrapper() {
+    }
 
-    public OrganizationResponseWrapper(Long id,String userName, String companyName, String cellPhone, String appointmentSerial, String website,String email) {
-        this.id =id;
-        this.userName = userName;
+    public OrganizationResponseWrapper(Long id, String companyName, String cellPhone, String appointmentSerial, String website, String email) {
+        this.id = id;
         this.companyName = companyName;
         this.cellPhone = cellPhone;
         this.appointmentSerial = appointmentSerial;
         this.website = website;
-        this.email =email;
+        this.email = email;
     }
 
     public OrganizationResponseWrapper(Organization organization) {
-        this.userName=organization.getUserName();
-        this.cellPhone=organization.getCellPhone();
-        this.homePhone=organization.getHomePhone();
-        this.officePhone=organization.getOfficePhone();
-        this.companyName=organization.getCompanyName();
-        this.appointmentSerial=organization.getAptSerialStart();
-        this.defaultBranch=organization.getDefaultBranch();
-        this.durationOfExam=organization.getDurationOFExam();
-        this.followUpExam=organization.getDurationFollowUp();
-        this.timezone=organization.getTimezone();
-        this.website=organization.getWebsite();
-        this.user=organization.getUser();
+        this.cellPhone = organization.getCellPhone();
+        this.homePhone = organization.getHomePhone();
+        this.officePhone = organization.getOfficePhone();
+        this.companyName = organization.getCompanyName();
+        this.appointmentSerial = organization.getAptSerialStart();
+        this.defaultBranch = organization.getDefaultBranch();
+        this.durationOfExam = organization.getDurationOFExam();
+        this.followUpExam = organization.getDurationFollowUp();
+        this.timezone = organization.getTimezone();
+        this.website = organization.getWebsite();
+        this.user = organization.getUser();
 
     }
-    public OrganizationResponseWrapper( User user){
-        this.firstName=user.getProfile().getFirstName();
-        this.lastName=user.getProfile().getLastName();
-        this.userName=user.getUsername();
-        this.email=user.getEmail();
+
+    public OrganizationResponseWrapper(User user) {
+        this.firstName = user.getProfile().getFirstName();
+        this.lastName = user.getProfile().getLastName();
+        this.email = user.getEmail();
     }
 
 
@@ -121,14 +120,6 @@ public class OrganizationResponseWrapper {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getCompanyName() {

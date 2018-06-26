@@ -66,7 +66,7 @@ public class Branch {
 
 
     @Column(name = "OFFICE_PHONE")
-    private Long officePhone;
+    private String officePhone;
 
     @Column(name = "FORMATTED_ADDRESS")
     private String formattedAddress;
@@ -85,6 +85,9 @@ public class Branch {
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private boolean active;
+
+    @Column(name = "SYSTEM_BRANCH", columnDefinition = "boolean default false", nullable = false)
+    private boolean systemBranch;
 
     @Column(name = "ZIP_CODE")
     private Integer zipCode;
@@ -141,6 +144,14 @@ public class Branch {
                 '}';
     }
 
+    public boolean isSystemBranch() {
+        return systemBranch;
+    }
+
+    public void setSystemBranch(boolean systemBranch) {
+        this.systemBranch = systemBranch;
+    }
+
     public List<UserVisitBranches> getVisitBranches() {
         return visitBranches;
     }
@@ -177,6 +188,14 @@ public class Branch {
         this.city = city;
     }
 
+    public String getOfficePhone() {
+        return officePhone;
+    }
+
+    public void setOfficePhone(String officePhone) {
+        this.officePhone = officePhone;
+    }
+
     public String getCountry() {
         return country;
     }
@@ -193,13 +212,7 @@ public class Branch {
         this.address = address;
     }
 
-    public Long getOfficePhone() {
-        return officePhone;
-    }
 
-    public void setOfficePhone(Long officePhone) {
-        this.officePhone = officePhone;
-    }
 
     public String getFormattedAddress() {
         return formattedAddress;

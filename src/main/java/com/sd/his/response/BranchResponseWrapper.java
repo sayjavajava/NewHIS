@@ -41,7 +41,7 @@ public class BranchResponseWrapper {
     String primaryDoctor;
     int zipCode;
     String country;
-    long officePhone;
+    String officePhone;
     String fax;
     String formattedAddress;
     String billingName;
@@ -49,7 +49,7 @@ public class BranchResponseWrapper {
     String billingTaxID;
     boolean showBranchOnline;
     boolean allowOnlineSchedulingInBranch;
-    int rooms;
+    Integer rooms;
     String username;
     List<Room> examRooms;
     String address;
@@ -80,13 +80,30 @@ public class BranchResponseWrapper {
 
     }
 
-    public BranchResponseWrapper(long id, String name, String country, String city, int rooms) {
+    public BranchResponseWrapper(long id, String name, String country, String city, Integer rooms) {
         this.id = id;
         this.city = city;
         this.name = name;
         this.country = country;
         this.rooms = rooms;
 
+    }
+
+    public BranchResponseWrapper(long id, String name, String country, String city, Integer rooms,String username) {
+        this.id = id;
+        this.city = city;
+        this.name = name;
+        this.country = country;
+        this.rooms = rooms;
+        this.primaryDoctor=username;
+
+    }
+    public Integer getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Integer rooms) {
+        this.rooms = rooms;
     }
 
     public User getUser() {
@@ -129,13 +146,6 @@ public class BranchResponseWrapper {
         this.username = username;
     }
 
-    public int getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(int rooms) {
-        this.rooms = rooms;
-    }
 
     public String getBranchName() {
         return branchName;
@@ -217,11 +227,11 @@ public class BranchResponseWrapper {
         this.country = country;
     }
 
-    public long getOfficePhone() {
+    public String getOfficePhone() {
         return officePhone;
     }
 
-    public void setOfficePhone(long officePhone) {
+    public void setOfficePhone(String officePhone) {
         this.officePhone = officePhone;
     }
 

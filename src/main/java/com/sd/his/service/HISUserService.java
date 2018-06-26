@@ -1,5 +1,9 @@
 package com.sd.his.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sd.his.enums.PropertyEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repositiories.*;
@@ -194,9 +198,30 @@ public class HISUserService implements UserDetailsService {
 
     public User saveUser(UserCreateRequest createRequest) {
         String usertype = createRequest.getUserType();
+        String pBranch =createRequest.getPrimaryBranch();
+        Branch branch=null;
         BranchUser branchUser = new BranchUser();
         UserDutyShift userDutyShift = new UserDutyShift();
         UserRole userRole = new UserRole();
+        int primarBranchId = Integer.parseInt(pBranch);
+        branch = branchRepository.findByIdAndDeletedFalse(primarBranchId);
+        String brName = branch.getName();
+        if(brName.equalsIgnoreCase(PropertyEnum.PRIMARY_BRANCH.getValue())){
+            branch = new Branch();
+            branch.setDeleted(false);
+            branch.setActive(true);
+            branch.setCreatedOn(System.currentTimeMillis());
+            branch.setUpdatedOn(System.currentTimeMillis());
+            branch.setOfficePhone(createRequest.getHomePhone());
+            branch.setName("PrimaryBranch" + createRequest.getFirstName());
+            branch.setNoOfRooms(1);
+            branch.setBillingBranchName("PB"+createRequest.getFirstName());
+            branch.setBillingName("PB"+createRequest.getFirstName());
+            branch.setFax("PB"+createRequest.getFirstName());
+            branch.setBillingTaxId(createRequest.getFirstName());
+            branch.setSystemBranch(false);
+            branchRepository.save(branch);
+        }
         if (usertype.equalsIgnoreCase(UserTypeEnum.CASHIER.toString())) {
             User user = new User();
 
@@ -206,7 +231,6 @@ public class HISUserService implements UserDetailsService {
             user.setActive(createRequest.isActive());
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
             user.setEmail(createRequest.getEmail());
-            Branch branch = branchRepository.findByName(createRequest.getPrimaryBranch());
             profile.setCreatedOn(createRequest.getCreatedOn());
             profile.setUpdatedOn(createRequest.getUpdatedOn());
             profile.setActive(createRequest.isActive());
@@ -221,20 +245,24 @@ public class HISUserService implements UserDetailsService {
             profile.setUseReceptDashBoard(createRequest.isUseReceptDashboard());
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
             profile.setOtherDashboard(createRequest.getOtherDashboard());
+            profile.setType(PropertyEnum.USER_TYPE_CASHIER.getValue());
             user.setProfile(profile);
             userRepository.save(user);
+            branchUser.setPrimaryBranch(true);
+            branchUser.setBillingBranch(true);
             branchUser.setUser(user);
             branchUser.setBranch(branch);
-
+            List<Long> listbr = Arrays.asList(createRequest.getSelectedVisitBranches());
             List<Branch> VisitBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
-            List<UserVisitBranches> cashierVisitBranchesData = new ArrayList<>();
+            List<UserVisitBranches> cashierVisitBranchesData =new ArrayList<>();
+            if(!HISCoreUtil.isListEmpty(VisitBranches)){
             for (Branch userVisitBr : VisitBranches) {
                 UserVisitBranches userVisitBranches = new UserVisitBranches();
                 userVisitBranches.setBranch(userVisitBr);
                 userVisitBranches.setUser(user);
                 cashierVisitBranchesData.add(userVisitBranches);
             }
-            userVisitBranchesRepository.save(cashierVisitBranchesData);
+            userVisitBranchesRepository.save(cashierVisitBranchesData);}
             userRole.setRole(roleFindByName(createRequest.getUserType().toUpperCase()));
             userRole.setUser(user);
             userRoleRepository.save(userRole);
@@ -250,7 +278,6 @@ public class HISUserService implements UserDetailsService {
             user.setActive(createRequest.isActive());
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
             user.setEmail(createRequest.getEmail());
-            Branch branch = branchRepository.findByName(createRequest.getPrimaryBranch());
             profile.setCreatedOn(createRequest.getCreatedOn());
             profile.setUpdatedOn(createRequest.getUpdatedOn());
             profile.setActive(createRequest.isActive());
@@ -265,8 +292,11 @@ public class HISUserService implements UserDetailsService {
             profile.setUseReceptDashBoard(createRequest.isUseReceptDashboard());
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
             profile.setOtherDashboard(createRequest.getOtherDashboard());
+            profile.setType(PropertyEnum.USER_TYPE_RECEPTIONIST.getValue());
             user.setProfile(profile);
             userRepository.save(user);
+            branchUser.setPrimaryBranch(true);
+            branchUser.setBillingBranch(true);
             branchUser.setUser(user);
             branchUser.setBranch(branch);
 
@@ -295,7 +325,6 @@ public class HISUserService implements UserDetailsService {
             user.setActive(createRequest.isActive());
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
             user.setEmail(createRequest.getEmail());
-            Branch branch = branchRepository.findByName(createRequest.getPrimaryBranch());
             profile.setCreatedOn(createRequest.getCreatedOn());
             profile.setUpdatedOn(createRequest.getUpdatedOn());
             profile.setActive(createRequest.isActive());
@@ -312,9 +341,11 @@ public class HISUserService implements UserDetailsService {
             profile.setManagePatientRecords(createRequest.isManagePatientRecords());
             profile.setOtherDashboard(createRequest.getOtherDashboard());
             profile.setOtherDashboard(createRequest.getOtherDashboard());
+            profile.setType(PropertyEnum.USER_TYPE_NURSE.getValue());
             user.setProfile(profile);
             userRepository.save(user);
-
+            branchUser.setPrimaryBranch(true);
+            branchUser.setBillingBranch(true);
             branchUser.setUser(user);
             branchUser.setBranch(branch);
 
@@ -369,7 +400,6 @@ public class HISUserService implements UserDetailsService {
             user.setActive(createRequest.isActive());
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
             user.setEmail(createRequest.getEmail());
-            Branch branch = branchRepository.findByName(createRequest.getPrimaryBranch());
             profile.setCreatedOn(createRequest.getCreatedOn());
             profile.setUpdatedOn(createRequest.getUpdatedOn());
             profile.setActive(createRequest.isActive());
@@ -383,6 +413,7 @@ public class HISUserService implements UserDetailsService {
             profile.setUseReceptDashBoard(createRequest.isUseReceptDashboard());
             profile.setOtherDoctorDashBoard(createRequest.isOtherDoctorDashBoard());
             profile.setCheckUpInterval(createRequest.getInterval());
+            profile.setType(PropertyEnum.USER_TYPE_DOCTOR.getValue());
             profile.setOtherDashboard(createRequest.getOtherDashboard());
             List<String> daysList = Arrays.asList(createRequest.getSelectedWorkingDays());
             profile.setWorkingDays(daysList);
@@ -449,6 +480,9 @@ public class HISUserService implements UserDetailsService {
             userDutyShift.setUser(user);
             userDutyShift.setDutyShift(dutyShift);
 
+            branchUser.setPrimaryBranch(true);
+            branchUser.setBillingBranch(true);
+            branchUser.setPrimaryDr(true);
             branchUser.setUser(user);
             branchUser.setBranch(branch);
             branchUser.setPrimaryBranch(true);
@@ -471,7 +505,6 @@ public class HISUserService implements UserDetailsService {
         return roleRepo.findByName(name);
     }
 
-
     public List<UserResponseWrapper> findAllUsers(int offset, int limit) {
 
         Pageable pageable = new PageRequest(offset, limit);
@@ -486,7 +519,7 @@ public class HISUserService implements UserDetailsService {
                     branches = branchWrapper;
                 }
             }
-            userWrapper.setBranch(branches);
+           userWrapper.setBranch(branches);
             users.add(userWrapper);
         }
         return users;
@@ -498,8 +531,9 @@ public class HISUserService implements UserDetailsService {
 
     public User updateUser(UserCreateRequest userCreateRequest, User alreadyExistsUser) {
         String userType = userCreateRequest.getUserType();
-        Branch primaryBranch = branchRepository.findByName(userCreateRequest.getPrimaryBranch());
-        BranchUser branchUser = branchUserRepository.findByUser(alreadyExistsUser);
+        int primmaryBranchId= Integer.parseInt(userCreateRequest.getPrimaryBranch());
+        Branch primaryBranch = branchRepository.findByIdAndDeletedFalse(primmaryBranchId);
+        BranchUser branchUser= branchUserRepository.findByUser(alreadyExistsUser);
         if (userType.equalsIgnoreCase(UserTypeEnum.CASHIER.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
@@ -728,8 +762,6 @@ public class HISUserService implements UserDetailsService {
                 docDepartmentUser.add(departmentUser);
             }
             departmentUserRepository.save(docDepartmentUser);
-
-
             return alreadyExistsUser;
 
         }
@@ -743,9 +775,9 @@ public class HISUserService implements UserDetailsService {
 
         userResponseWrapper.setProfile(user.getProfile());
         BranchUser branchUser = branchUserRepository.findByUser(user);
-        //  if (branchUser.isPrimaryBranch()) {
-        BranchWrapper branchWrapper = new BranchWrapper(branchUser);
-        userResponseWrapper.setBranch(branchWrapper);
+      //  if (branchUser.isPrimaryBranch()) {
+           BranchWrapper branchWrapper = new BranchWrapper(branchUser);
+           userResponseWrapper.setBranch(branchWrapper);
         //}
         List<Branch> visitBranchesList = new ArrayList<>();
         for (UserVisitBranches userVisitBranches : user.getUserVisitBranches()) {
