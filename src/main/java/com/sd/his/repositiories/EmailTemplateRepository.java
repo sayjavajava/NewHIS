@@ -11,23 +11,23 @@ import java.util.List;
  * @author    : Muhammad Jamal
  * @Date      : 21-May-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.repositiories
  * @FileName  : EmailTemplateRepository
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 @Repository
 public interface EmailTemplateRepository extends JpaRepository<EmailTemplate, Long> {
@@ -38,9 +38,14 @@ public interface EmailTemplateRepository extends JpaRepository<EmailTemplate, Lo
 
 
     List<EmailTemplate> findAllByTitleAndDeletedFalse(String title);
-    EmailTemplate findByTitleAndIdNot(String title,long id);
+
+    EmailTemplate findByTitleAndIdNot(String title, long id);
+
     EmailTemplate findByIdAndDeletedFalse(long id);
 
     List<EmailTemplate> findAllByTitleContainingAndDeletedFalse(String title, Pageable pageable);
+
     List<EmailTemplate> findAllByTitleContainingAndDeletedFalse(String title);
+
+    EmailTemplate findByTypeAndActiveTrueAndDeletedFalse(String type);
 }
