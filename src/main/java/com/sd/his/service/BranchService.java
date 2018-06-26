@@ -197,13 +197,14 @@ public class BranchService {
     }
 
     public List<String> findAllBranchName() {
-        List<BranchResponseWrapper> allBranches = branchRepository.findAllByActiveTrueAndDeletedFalse();
+       List<Branch> allBranches = branchRepository.findAllByActiveTrueAndDeletedFalse();
         List<String> branchNames = allBranches.stream()
                 .filter(x -> x.getName() != null)
                 .map(x -> x.getName())
                 .collect(Collectors.toList());
 
         return branchNames;
+
     }
 
     public List<BranchResponseWrapper> searchByBranchNameAndDepartment(String name,String department, int offset, int limit) {
@@ -223,6 +224,15 @@ public class BranchService {
     }
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
-       return branchRepository.findAllByActiveTrueAndDeletedFalse();
+        List<Branch> branch = branchRepository.findAllByActiveTrueAndDeletedFalse();
+      //  return branchRepository.findAllByActiveTrueAndDeletedFalse();
+        List<BranchResponseWrapper> list = new ArrayList<>();
+
+     for ( Branch branch1 :  branch) {
+          BranchResponseWrapper branchResponseWrapper = new BranchResponseWrapper(branch1);
+          list.add(branchResponseWrapper);
+         }
+
+    return list;
     }
 }

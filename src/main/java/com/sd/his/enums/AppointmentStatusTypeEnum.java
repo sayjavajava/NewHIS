@@ -24,7 +24,7 @@ package com.sd.his.enums;
  */
 public enum AppointmentStatusTypeEnum {
 
-    ARRIVED("REGULAR"),
+    REGULAR("REGULAR"),
     CHECK_IN("WALK_IN"),
     IN_ROOM("TRANSACTION_OF_CARE"),
     IN_SESSION("TRANSACTION_OF_CARE"),

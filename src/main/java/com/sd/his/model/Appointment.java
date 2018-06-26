@@ -55,6 +55,8 @@ public class Appointment implements Serializable {
 
     @Column(name = "DURATION") //minutes
     private Long duration;
+    @Column(name = "AGE")
+    private Long age;
 
     @Column(name = "FOLLOW_UP_REMINDER")
     private Boolean followUpReminder;
@@ -92,14 +94,20 @@ public class Appointment implements Serializable {
     @Column(name = "RECURRING_DAYS")
     private String recurringDays; //should be save json of days
 
-    @Column(name = "RECURRING_PERIOD")
-    private Long recurringPeriod;
-
     @Column(name = "FIRST_APPOINTMENT_ON")
     private Long firstAppointmentOn;
 
+    @Column(name = "FOLLOW_UP_DATE")
+    private Long followUpDate;
+
     @Column(name = "LAST_APPOINTMENT_ON")
     private Long lastAppointmentOn;
+
+    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
+    private boolean active;
+
+    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
+    private boolean deleted;
 
     public Appointment() {
     }
@@ -113,6 +121,38 @@ public class Appointment implements Serializable {
                 ", branch=" + branch.getName() +
                 ", room=" + room.getExamName() +
                 '}';
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Long getFollowUpDate() {
+        return followUpDate;
+    }
+
+    public void setFollowUpDate(Long followUpDate) {
+        this.followUpDate = followUpDate;
+    }
+
+    public Long getAge() {
+        return age;
+    }
+
+    public void setAge(Long age) {
+        this.age = age;
     }
 
     public Long getId() {
@@ -267,13 +307,7 @@ public class Appointment implements Serializable {
         this.recurringDays = recurringDays;
     }
 
-    public Long getRecurringPeriod() {
-        return recurringPeriod;
-    }
 
-    public void setRecurringPeriod(Long recurringPeriod) {
-        this.recurringPeriod = recurringPeriod;
-    }
 
     public Long getFirstAppointmentOn() {
         return firstAppointmentOn;

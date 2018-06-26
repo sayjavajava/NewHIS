@@ -3,6 +3,7 @@ package com.sd.his.response;
 import com.sd.his.model.Branch;
 import com.sd.his.model.Room;
 import com.sd.his.model.User;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 
@@ -35,25 +36,26 @@ public class BranchResponseWrapper {
     String name;
     String officeHoursStart;
     String officeHoursEnd;
-    int noOfExamRooms;
+    Integer noOfExamRooms;
     String state;
     String city;
     String primaryDoctor;
-    int zipCode;
+    Integer zipCode;
     String country;
-    long officePhone;
+    Long officePhone;
     String fax;
     String formattedAddress;
     String billingName;
     String billingBranch;
     String billingTaxID;
-    boolean showBranchOnline;
-    boolean allowOnlineSchedulingInBranch;
-    int rooms;
+    Boolean showBranchOnline;
+    Boolean allowOnlineSchedulingInBranch;
+    Integer rooms;
     String username;
     List<Room> examRooms;
     String address;
     User user;
+    Room roomList;
 
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
@@ -76,10 +78,20 @@ public class BranchResponseWrapper {
         this.name = branch.getName();
         this.id = branch.getId();
         this.address = branch.getAddress();
+        this.examRooms =branch.getRooms();
 
 
     }
 
+    public BranchResponseWrapper(long id, String name, String country, String city, int rooms,Room roomList) {
+        this.id = id;
+        this.city = city;
+        this.name = name;
+        this.country = country;
+        this.rooms = rooms;
+        this.roomList = roomList;
+
+    }
     public BranchResponseWrapper(long id, String name, String country, String city, int rooms) {
         this.id = id;
         this.city = city;
@@ -89,52 +101,12 @@ public class BranchResponseWrapper {
 
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public List<Room> getExamRooms() {
-        return examRooms;
-    }
-
-    public void setExamRooms(List<Room> examRooms) {
-        this.examRooms = examRooms;
-    }
-
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(int rooms) {
-        this.rooms = rooms;
     }
 
     public String getBranchName() {
@@ -169,11 +141,11 @@ public class BranchResponseWrapper {
         this.officeHoursEnd = officeHoursEnd;
     }
 
-    public int getNoOfExamRooms() {
+    public Integer getNoOfExamRooms() {
         return noOfExamRooms;
     }
 
-    public void setNoOfExamRooms(int noOfExamRooms) {
+    public void setNoOfExamRooms(Integer noOfExamRooms) {
         this.noOfExamRooms = noOfExamRooms;
     }
 
@@ -201,11 +173,11 @@ public class BranchResponseWrapper {
         this.primaryDoctor = primaryDoctor;
     }
 
-    public int getZipCode() {
+    public Integer getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(Integer zipCode) {
         this.zipCode = zipCode;
     }
 
@@ -217,11 +189,11 @@ public class BranchResponseWrapper {
         this.country = country;
     }
 
-    public long getOfficePhone() {
+    public Long getOfficePhone() {
         return officePhone;
     }
 
-    public void setOfficePhone(long officePhone) {
+    public void setOfficePhone(Long officePhone) {
         this.officePhone = officePhone;
     }
 
@@ -240,7 +212,6 @@ public class BranchResponseWrapper {
     public void setFormattedAddress(String formattedAddress) {
         this.formattedAddress = formattedAddress;
     }
-
 
     public String getBillingName() {
         return billingName;
@@ -266,19 +237,67 @@ public class BranchResponseWrapper {
         this.billingTaxID = billingTaxID;
     }
 
-    public boolean isShowBranchOnline() {
+    public Boolean getShowBranchOnline() {
         return showBranchOnline;
     }
 
-    public void setShowBranchOnline(boolean showBranchOnline) {
+    public void setShowBranchOnline(Boolean showBranchOnline) {
         this.showBranchOnline = showBranchOnline;
     }
 
-    public boolean isAllowOnlineSchedulingInBranch() {
+    public Boolean getAllowOnlineSchedulingInBranch() {
         return allowOnlineSchedulingInBranch;
     }
 
-    public void setAllowOnlineSchedulingInBranch(boolean allowOnlineSchedulingInBranch) {
+    public void setAllowOnlineSchedulingInBranch(Boolean allowOnlineSchedulingInBranch) {
         this.allowOnlineSchedulingInBranch = allowOnlineSchedulingInBranch;
+    }
+
+    public Integer getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Integer rooms) {
+        this.rooms = rooms;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<Room> getExamRooms() {
+        return examRooms;
+    }
+
+    public void setExamRooms(List<Room> examRooms) {
+        this.examRooms = examRooms;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Room getRoomList() {
+        return roomList;
+    }
+
+    public void setRoomList(Room roomList) {
+        this.roomList = roomList;
     }
 }

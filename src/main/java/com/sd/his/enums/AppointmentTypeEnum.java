@@ -26,6 +26,7 @@ public enum AppointmentTypeEnum {
 
     REGULAR("REGULAR"),
     WALK_IN("WALK_IN"),
+    NEW_PATIENT("NewPatient"),
     TRANSACTION_OF_CARE("TRANSACTION_OF_CARE");
 
     private String value;
