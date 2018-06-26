@@ -1,15 +1,21 @@
 package com.sd.his.service;
 
+import com.sd.his.model.Insurance;
+import com.sd.his.model.Profile;
 import com.sd.his.model.User;
+import com.sd.his.repositiories.InsuranceRepository;
 import com.sd.his.repositiories.PatientRepository;
-import com.sd.his.utill.DateUtil;
+import com.sd.his.repositiories.ProfileRepository;
+import com.sd.his.repositiories.UserRepository;
+import com.sd.his.request.PatientRequest;
 import com.sd.his.wrapper.PatientWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.net.UnknownServiceException;
+import javax.transaction.Transactional;
+import java.text.ParseException;
 import java.util.List;
 
 /*
@@ -37,16 +43,20 @@ import java.util.List;
 @Service
 public class PatientService {
 
+/*    @Autowired
+    UserRepository patientRepository;
     @Autowired
-    PatientRepository patientRepository;
+    ProfileRepository profileRepository;
+    @Autowired
+    InsuranceRepository insuranceRepository;
 
-    public List<PatientWrapper> findAllPaginatedPatients(int offset, int limit,String userType) {
+    public List<PatientWrapper> findAllPaginatedUserByUserType(int offset, int limit,String userType) {
         Pageable pageable = new PageRequest(offset, limit);
-        return patientRepository.findAllByDeletedFalseAndActiveTrue(pageable,userType);
+        return patientRepository.findAllByDeletedFalse(pageable,userType);
     }
 
     public int countAllPaginatedPatients(String userType) {
-        return patientRepository.findAllByDeletedFalseAndActiveTrue(userType).size();
+        return patientRepository.findAllByDeletedFalse(userType).size();
     }
 
     public void deletePatientById(long patientId) {
@@ -61,6 +71,23 @@ public class PatientService {
             this.patientRepository.save(user);
         }
     }
+    @Transactional(rollbackOn = Throwable.class)
+    public void savePatient(PatientRequest patientRequest) throws ParseException {
+        Profile profile = new Profile(patientRequest);
+        Insurance insurance = new Insurance(patientRequest);
+        User user = new User(patientRequest);
+        this.profileRepository.save(profile);
+        this.insuranceRepository.save(insurance);
+        user.setProfile(profile);
+        user.setInsurance(insurance);
+        this.patientRepository.save(user);
+    }
+
+    public boolean isUserAlreadyExists(String userName, String email) {
+//        User user = this.patientRepository.
+
+        return false;
+    }*/
 
    /* @Transactional(rollbackOn = Throwable.class)
     public void deleteTax(Tax tax) {

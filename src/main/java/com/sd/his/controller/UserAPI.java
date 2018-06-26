@@ -2,11 +2,14 @@ package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.User;
+import com.sd.his.request.PatientRequest;
 import com.sd.his.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.response.GenericAPIResponse;
 import com.sd.his.response.UserResponseWrapper;
 import com.sd.his.service.HISUserService;
+import com.sd.his.service.PatientService;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.PatientWrapper;
 import com.sd.his.wrapper.UserCreateRequest;
 import com.sd.his.wrapper.UserWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -37,6 +40,8 @@ public class UserAPI {
     private TokenStore tokenStore;
     @Autowired
     private HISUserService userService;
+    @Autowired
+    PatientService patientService;
 
     private final Logger logger = LoggerFactory.getLogger(UserAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
@@ -644,5 +649,426 @@ public class UserAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    //////////////////////// Patient //////////////////////////////
+
+    @ApiOperation(httpMethod = "GET", value = "Paginated Patients",
+            notes = "This method will return Paginated Patients",
+            produces = "application/json", nickname = "Paginated Patients",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated Patients fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/patient/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllPaginatedUserByUserType(HttpServletRequest request,
+                                                           @PathVariable("page") int page,
+                                                           @RequestParam(value = "pageSize",
+                                                                   required = false,
+                                                                   defaultValue = "10") int pageSize,
+                                                           @RequestParam(value = "userType") String userType) {
+
+        logger.error("getAllPaginatedUserByUserType API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("patient.fetch.error"));
+        response.setResponseCode(ResponseEnum.PATIENT_FETCHED_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("getAllPaginatedUserByUserType -  fetching from DB");
+            List<PatientWrapper> patients = userService.findAllPaginatedUserByUserType(page, pageSize, userType);
+            int userCount = userService.countAllPaginatedPatients(userType);
+
+            logger.error("getAllPaginatedUserByUserType - fetched successfully");
+
+            if (!HISCoreUtil.isListEmpty(patients)) {
+                Integer nextPage, prePage, currPage;
+                int[] pages;
+
+                if (userCount > pageSize) {
+                    int remainder = userCount % pageSize;
+                    int totalPages = userCount / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = page;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
+
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);
+                returnValues.put("data", patients);
+
+                response.setResponseMessage(messageBundle.getString("patient.fetched.success"));
+                response.setResponseCode(ResponseEnum.PATIENT_FETCHED_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+
+                logger.error("getAllPaginatedUserByUserType API successfully executed.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            logger.error("getAllPaginatedUserByUserType exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "DELETE", value = "Delete Patient",
+            notes = "This method will Delete the Patient",
+            produces = "application/json", nickname = "Delete Patient ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Deleted Patient successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/patient/delete/{patientId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deletePatient(HttpServletRequest request,
+                                           @PathVariable("patientId") long patientId) {
+        logger.info("deletePatient API - Called..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("patient.delete.error"));
+        response.setResponseCode(ResponseEnum.PATIENT_DELETE_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (patientId <= 0) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("deletePatient API - insufficient params.");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            userService.deletePatientById(patientId);
+            response.setResponseMessage(messageBundle.getString("patient.delete.success"));
+            response.setResponseCode(ResponseEnum.PATIENT_DELETE_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(null);
+            logger.info("deleteServiceTax API - Deleted Successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("deletePatient API - deleted failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Save Patient",
+            notes = "This method will save the patient.",
+            produces = "application/json", nickname = "Save Patient",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Save Patient successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/patient/save", method = RequestMethod.POST)
+    public ResponseEntity<?> savePatient(HttpServletRequest request,
+                                         @RequestBody PatientRequest patientRequest) {
+        logger.info("savePatient API - initiated..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+
+            if (HISCoreUtil.isNull(patientRequest.getEmail()) ||
+                    HISCoreUtil.isNull(patientRequest.getUserName()) ||
+                    patientRequest.getUserName() == "" ||
+                    HISCoreUtil.isNull(patientRequest.getCellPhone())) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("savePatient API - insufficient params.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (userService.isUserAlreadyExists(patientRequest.getUserName(), patientRequest.getEmail())) {
+                response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
+                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("savePatient API - user already found.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            userService.savePatient(patientRequest);
+            response.setResponseMessage(messageBundle.getString("patient.save.success"));
+            response.setResponseCode(ResponseEnum.PATIENT_SAVE_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(null);
+            logger.error("savePatient API - successfully saved.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("savePatient exception.", e.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+//    @ApiOperation(httpMethod = "GET", value = "getRaces",
+//            notes = "This method will return Races",
+//            produces = "application/json", nickname = "Get Races",
+//            response = GenericAPIResponse.class, protocols = "https")
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "Races found successfully", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+//    @RequestMapping(value = "/patient/races", method = RequestMethod.GET)
+//    public ResponseEntity<?> getRaces() {
+//        logger.info("getRaces() Called.....");
+//        GenericAPIResponse response = new GenericAPIResponse();
+//        try {
+//            response.setResponseData(this.raceRepository.findAllRaces());
+//            response.setResponseCode(ResponseEnum.RACE_FETCHED_SUCESS.getValue());
+//            response.setResponseMessage(messageBundle.getString("race.fetched.success"));
+//            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+//
+//            return new ResponseEntity<>(response, HttpStatus.OK);
+//        } catch (Exception ex) {
+//            logger.info("getRaces() Exception occurred.");
+//            ex.printStackTrace();
+//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+
+    @ApiOperation(httpMethod = "GET", value = "User",
+            notes = "This method will return User on base of id",
+            produces = "application/json", nickname = "Get Single User",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/patient/get/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserByIdAndByUserType(HttpServletRequest request,
+                                                      @PathVariable("id") long id) {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.not.found"));
+        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            PatientRequest user = this.userService.getUserByUserTypeAndId(id);
+            if (HISCoreUtil.isValidObject(user)) {
+                response.setResponseData(user);
+                response.setResponseMessage(messageBundle.getString("user.found"));
+                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("User Found successfully...");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("user.not.found"));
+                response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                logger.info("User Not Found ...");
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("User Not Found", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Update Patient",
+            notes = "This method will Update the patient.",
+            produces = "application/json", nickname = "Update Patient",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Update Patient successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/patient/update", method = RequestMethod.PUT)
+    public ResponseEntity<?> updatePatient(HttpServletRequest request,
+                                           @RequestBody PatientRequest patientRequest) {
+        logger.info("updatePatient API - initiated.");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            if (patientRequest.getUserId() <= 0) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatient API - Please select proper user, userId not available with request patientRequest.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (HISCoreUtil.isNull(patientRequest.getEmail()) ||
+                    HISCoreUtil.isNull(patientRequest.getUserName()) ||
+                    patientRequest.getUserName() == "" ||
+                    patientRequest.getSelectedDoctor() <= 0 ||
+                    HISCoreUtil.isNull(patientRequest.getCellPhone())) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatient API - insufficient params.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (userService.isUserAlreadyExistsAgainstUserId(patientRequest.getUserId(), patientRequest.getUserName(), patientRequest.getEmail())) {
+                response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
+                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatient API - user already found.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            userService.updatePatient(patientRequest);
+            response.setResponseMessage(messageBundle.getString("patient.update.success"));
+            response.setResponseCode(ResponseEnum.PATIENT_UPDATE_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(null);
+            logger.error("updatePatient API - successfully updated.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("updatePatient exception.", e.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @ApiOperation(httpMethod = "GET", value = "Paginated Patients Search",
+            notes = "This method will return Paginated Patients Search",
+            produces = "application/json", nickname = "Paginated Patients Search",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated Patients Search fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/patient/search{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> getSearchAllPaginatedUserByUserType(HttpServletRequest request,
+                                                                 @PathVariable("page") int page,
+                                                                 @RequestParam(value = "pageSize",
+                                                                         required = false,
+                                                                         defaultValue = "10") int pageSize,
+                                                                 @RequestParam(value = "userType") String userType,
+                                                                 @RequestParam(value = "userName") String userName) {
+
+        logger.error("getSearchAllPaginatedUserByUserType API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+
+
+        try {
+            logger.error("getSearchAllPaginatedUserByUserType -  fetching from DB");
+            List<PatientWrapper> patients = userService.searchAllPaginatedUserByUserTypeAndName(page, pageSize, userType, userName);
+            int userCount = userService.countSearchAllPaginatedUserByUserTypeAndName(userType, userName);
+
+            logger.error("getSearchAllPaginatedUserByUserType - fetched successfully");
+
+            if (!HISCoreUtil.isListEmpty(patients)) {
+                Integer nextPage, prePage, currPage;
+                int[] pages;
+
+                if (userCount > pageSize) {
+                    int remainder = userCount % pageSize;
+                    int totalPages = userCount / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = page;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
+
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);
+                returnValues.put("data", patients);
+
+                response.setResponseMessage(messageBundle.getString("patient.fetched.success"));
+                response.setResponseCode(ResponseEnum.PATIENT_FETCHED_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+
+                logger.error("getSearchAllPaginatedUserByUserType API successfully executed.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.setResponseMessage(messageBundle.getString("patient.fetch.error"));
+                response.setResponseCode(ResponseEnum.PATIENT_FETCHED_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+        } catch (Exception ex) {
+            logger.error("getSearchAllPaginatedUserByUserType exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
 

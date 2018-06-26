@@ -11,7 +11,8 @@ import java.util.List;
 
 public class ProfileWrapper {
 
-    private long id;
+    private long profileId;
+    private String patientSSN;
     private String firstName;
     private String lastName;
     private String homePhone;
@@ -36,6 +37,7 @@ public class ProfileWrapper {
     private String city;
     private String state;
     private String country;
+    private String races;
     private String status;
     private long dob;
     private String type;
@@ -49,11 +51,12 @@ public class ProfileWrapper {
     }
 
     public ProfileWrapper(Profile profile) {
-        this.id = profile.getId();
-        this.firstName = profile.getFirstName() == null ? "" : profile.getFirstName();
-        this.lastName = profile.getLastName() == null ? "" : profile.getLastName();
-        this.homePhone = profile.getHomePhone() == null ? "" : profile.getHomePhone();
-        this.cellPhone = profile.getCellPhone() == null ? "" : profile.getCellPhone();
+        this.profileId = profile.getId();
+        this.patientSSN = profile.getPatientSSN();
+        this.firstName = profile.getFirstName() ;
+        this.lastName = profile.getLastName();
+        this.homePhone = profile.getHomePhone();
+        this.cellPhone = profile.getCellPhone();
         this.accountExpiry = profile.getAccountExpiry() == null ? "" : profile.getAccountExpiry();
         this.active = profile.getActive() == null ? false : profile.getActive();
         this.deleted = profile.getDeleted() == null ? false : profile.getDeleted();
@@ -71,22 +74,91 @@ public class ProfileWrapper {
         this.city = profile.getCity() == null ? "" : profile.getCity();
         this.state = profile.getState() == null ? "" : profile.getState();
         this.country = profile.getCountry() == null ? "" : profile.getCountry();
+        this.races = profile.getRaces();
         this.status = profile.getStatus() == null ? "Active" : profile.getStatus();
-        this.dob = profile.getDob() == null ? 0 : DateUtil.getMillisFromStringDate(profile.getDob() + "", HISConstants.DATE_FORMATE_THREE);
+        this.dob = profile.getDob();
         this.type = profile.getType() == null ? "" : profile.getType();
-        this.otherDashboard = profile.getOtherDashboard() == null ? "" : profile.getOtherDashboard();
+        this.otherDashboard = profile.getOtherDashboard();
         this.createdOn = profile.getCreatedOn();
         this.updatedOn = profile.getUpdatedOn();
-        this.aboutMe = profile.getAboutMe() == null ? "" : profile.getAboutMe();
+        this.aboutMe = profile.getAboutMe();
         this.deleted = profile.getDeleted();
     }
 
-    public long getId() {
-        return id;
+    public long getProfileId() {
+        return profileId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getPatientSSN() {
+        return patientSSN;
+    }
+
+    public void setPatientSSN(String patientSSN) {
+        this.patientSSN = patientSSN;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isSendBillingReport() {
+        return sendBillingReport;
+    }
+
+    public void setSendBillingReport(boolean sendBillingReport) {
+        this.sendBillingReport = sendBillingReport;
+    }
+
+    public boolean isUseReceptDashBoard() {
+        return useReceptDashBoard;
+    }
+
+    public void setUseReceptDashBoard(boolean useReceptDashBoard) {
+        this.useReceptDashBoard = useReceptDashBoard;
+    }
+
+    public boolean isOtherDoctorDashBoard() {
+        return otherDoctorDashBoard;
+    }
+
+    public void setOtherDoctorDashBoard(boolean otherDoctorDashBoard) {
+        this.otherDoctorDashBoard = otherDoctorDashBoard;
+    }
+
+    public boolean isManagePatientRecords() {
+        return managePatientRecords;
+    }
+
+    public void setManagePatientRecords(boolean managePatientRecords) {
+        this.managePatientRecords = managePatientRecords;
+    }
+
+    public boolean isManagePatientInvoices() {
+        return managePatientInvoices;
+    }
+
+    public void setManagePatientInvoices(boolean managePatientInvoices) {
+        this.managePatientInvoices = managePatientInvoices;
+    }
+
+    public boolean isAllowDiscount() {
+        return allowDiscount;
+    }
+
+    public void setProfileId(long profileId) {
+        this.profileId = profileId;
     }
 
     public String getFirstName() {
@@ -251,6 +323,14 @@ public class ProfileWrapper {
 
     public String getCountry() {
         return country;
+    }
+
+    public String getRaces() {
+        return races;
+    }
+
+    public void setRaces(String races) {
+        this.races = races;
     }
 
     public void setCountry(String country) {

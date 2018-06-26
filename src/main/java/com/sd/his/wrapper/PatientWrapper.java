@@ -3,15 +3,17 @@ package com.sd.his.wrapper;
 import com.sd.his.model.Insurance;
 import com.sd.his.model.Profile;
 import com.sd.his.model.User;
+import com.sd.his.request.PatientRequest;
 
 import java.util.List;
 
 public class PatientWrapper {
 
-    long id;
+    long userId;
     String userType;
     String email;
     String userName;
+    private long primaryDoctorId;
     private boolean active;
     private boolean deleted;
     private ProfileWrapper profileWrapper;
@@ -21,23 +23,18 @@ public class PatientWrapper {
     }
 
     public PatientWrapper(User user, Profile profile, Insurance insurance) {
-        this.id = user.getId();
+        this.userId = user.getId();
         this.userName = user.getUsername();
         this.active = user.isActive();
         this.deleted = user.isDeleted();
         this.email = user.getEmail();
         this.userType = user.getUserType();
+        if (user.getPrimaryDoctor() != null) {
+            this.primaryDoctorId = user.getPrimaryDoctor().getId();
+        }
 
         this.setProfileWrapper(new ProfileWrapper(profile));
         this.setInsuranceWrapper(new InsuranceWrapper(insurance));
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getUserType() {
@@ -94,5 +91,21 @@ public class PatientWrapper {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getPrimaryDoctorId() {
+        return primaryDoctorId;
+    }
+
+    public void setPrimaryDoctorId(long primaryDoctorId) {
+        this.primaryDoctorId = primaryDoctorId;
     }
 }

@@ -4,6 +4,7 @@ import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repositiories.*;
 import com.sd.his.response.AdminDashboardDataResponseWrapper;
+import com.sd.his.request.PatientRequest;
 import com.sd.his.response.UserResponseWrapper;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
@@ -22,9 +23,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+@Autowired
+ProfileRepository profileRepository;
+@Autowired
+InsuranceRepository insuranceRepository;
 
 @Service(value = "userService")
 @Transactional
@@ -494,7 +501,7 @@ public class HISUserService implements UserDetailsService {
     public User updateUser(UserCreateRequest userCreateRequest, User alreadyExistsUser) {
         String userType = userCreateRequest.getUserType();
         Branch primaryBranch = branchRepository.findByName(userCreateRequest.getPrimaryBranch());
-        BranchUser branchUser= branchUserRepository.findByUser(alreadyExistsUser);
+        BranchUser branchUser = branchUserRepository.findByUser(alreadyExistsUser);
         if (userType.equalsIgnoreCase(UserTypeEnum.CASHIER.toString())) {
             alreadyExistsUser.setUsername(userCreateRequest.getUserName());
             alreadyExistsUser.setActive(userCreateRequest.isActive());
@@ -825,5 +832,95 @@ public class HISUserService implements UserDetailsService {
         adminData.setIcdsCount(icdCodes.size());
 
         return adminData;
+    }
+
+
+    public List<PatientWrapper> findAllPaginatedUserByUserType(int offset, int limit, String userType) {
+        Pageable pageable = new PageRequest(offset, limit);
+        return userRepository.findAllByDeletedFalse(pageable, userType);
+    }
+
+    public List<PatientWrapper> searchAllPaginatedUserByUserTypeAndName(int offset, int limit, String userType, String userName) {
+        Pageable pageable = new PageRequest(offset, limit);
+        return userRepository.findAllByDeletedFalse(pageable, userType, userName);
+    }
+
+    public int countSearchAllPaginatedUserByUserTypeAndName(String userType, String userName) {
+        return userRepository.findAllByDeletedFalse(userType, userName).size();
+    }
+
+    public int countAllPaginatedPatients(String userType) {
+        return userRepository.findAllByDeletedFalse(userType).size();
+    }
+
+    public void deletePatientById(long patientId) {
+        User user = this.userRepository.findOne(patientId);
+        if (user != null) {
+            user.setDeleted(true);
+            user.getProfile().setDeleted(true);
+            user.getProfile().setUpdatedOn(System.currentTimeMillis());
+
+            user.getInsurance().setUpdated(System.currentTimeMillis());
+            user.getInsurance().setDeleted(true);
+            this.userRepository.save(user);
+        }
+    }
+
+    public void savePatient(PatientRequest patientRequest) throws ParseException, Exception {
+        Profile profile = new Profile(patientRequest);
+        User selectedDoctor = this.userRepository.findOne(patientRequest.getSelectedDoctor());
+//        profile.setPrimaryDoctor(selectedDoctor);
+        Insurance insurance = new Insurance(patientRequest);
+        User patient = new User(patientRequest, UserTypeEnum.PATIENT.toString());
+        patient.setPrimaryDoctor(selectedDoctor);
+
+        this.profileRepository.save(profile);
+        this.insuranceRepository.save(insurance);
+        patient.setProfile(profile);
+        patient.setInsurance(insurance);
+        this.userRepository.save(patient);
+
+    }
+
+    public boolean isUserAlreadyExists(String userName, String email) {
+        List<User> users = this.userRepository.findAllByUsernameAndEmailAndDeletedFalse(userName, email);
+        if (!HISCoreUtil.isListEmpty(users))
+            return true;
+        return false;
+    }
+
+    public boolean isUserAlreadyExistsAgainstUserId(long id, String userName, String email) {
+        List<User> users = this.userRepository.findAllByIdNotAndUsernameAndEmailAndDeletedFalse(id, userName, email);
+        if (!HISCoreUtil.isListEmpty(users))
+            return true;
+        return false;
+    }
+
+    public PatientRequest getUserByUserTypeAndId(long id) {
+        PatientRequest patientRequest = this.userRepository.findUserById(id);
+        return patientRequest;
+    }
+
+    public void updatePatient(PatientRequest patientRequest) throws ParseException, Exception {
+        Profile profile = this.profileRepository.findOne(patientRequest.getProfileId());
+        new Profile(profile, patientRequest);
+
+        Insurance insurance = this.insuranceRepository.findOne(patientRequest.getInsuranceId());
+        new Insurance(insurance, patientRequest);
+
+        User user = this.userRepository.findOne(patientRequest.getUserId());
+        new User(user, patientRequest);
+
+        User selectedDoctor = this.userRepository.findOne(patientRequest.getSelectedDoctor());
+        user.setPrimaryDoctor(selectedDoctor);
+
+        this.profileRepository.save(profile);
+        this.insuranceRepository.save(insurance);
+
+        user.setProfile(profile);
+        user.setInsurance(insurance);
+
+        this.userRepository.save(user);
+
     }
 }
