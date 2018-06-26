@@ -11,7 +11,7 @@ public class InsuranceWrapper {
     private long insuranceId;
     private String company;
     private String insuranceID;
-    private long groupNumber;
+    private String groupNumber;
     private String planName;
     private String planType;
     private String cardIssuedDate;
@@ -28,7 +28,7 @@ public class InsuranceWrapper {
         this.insuranceId = insurance.getId();
         this.company = insurance.getCompany();
         this.insuranceID = insurance.getInsuranceID();
-        this.groupNumber = Long.valueOf(insurance.getGroupNumber());
+        this.groupNumber = insurance.getGroupNumber();
         this.planName = insurance.getPlanName();
         this.planType = insurance.getPlanType();
         this.cardIssuedDate = DateUtil.getDateFromMillis(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
@@ -62,11 +62,11 @@ public class InsuranceWrapper {
         this.insuranceID = insuranceID;
     }
 
-    public long getGroupNumber() {
+    public String getGroupNumber() {
         return groupNumber;
     }
 
-    public void setGroupNumber(long groupNumber) {
+    public void setGroupNumber(String groupNumber) {
         this.groupNumber = groupNumber;
     }
 
