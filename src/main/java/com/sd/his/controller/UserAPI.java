@@ -737,9 +737,7 @@ public class UserAPI {
     @RequestMapping(value = "/patient/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllPaginatedUserByUserType(HttpServletRequest request,
                                                            @PathVariable("page") int page,
-                                                           @RequestParam(value = "pageSize",
-                                                                   required = false,
-                                                                   defaultValue = "10") int pageSize,
+                                                           @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
                                                            @RequestParam(value = "userType") String userType) {
 
         logger.error("getAllPaginatedUserByUserType API initiated");

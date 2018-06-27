@@ -242,8 +242,7 @@ public class BranchService {
     }
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
-        List<BranchResponseWrapper> lst = branchRepository.findAllByActiveTrueAndDeletedFalse();
-        return branchRepository.findAllByActiveTrueAndDeletedFalse();
+        return branchRepository.findBranchWrapperAllByActiveTrueAndDeletedFalse();
     }
 
     private String generateEmail(String domain, int length) {

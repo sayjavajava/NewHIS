@@ -78,7 +78,7 @@ public class BranchResponseWrapper {
         this.name = branch.getName();
         this.id = branch.getId();
         this.address = branch.getAddress();
-        this.examRooms =branch.getRooms();
+        this.examRooms = branch.getRooms();
 
 
     }
@@ -92,45 +92,14 @@ public class BranchResponseWrapper {
 
     }
 
-    public BranchResponseWrapper(long id, String name, String country, String city, Integer rooms,String username) {
+    public BranchResponseWrapper(long id, String name, String country, String city, Integer rooms, String username) {
         this.id = id;
         this.city = city;
         this.name = name;
         this.country = country;
         this.rooms = rooms;
-        this.primaryDoctor=username;
+        this.primaryDoctor = username;
 
-    }
-    public Integer getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(Integer rooms) {
-        this.rooms = rooms;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public List<Room> getExamRooms() {
-        return examRooms;
-    }
-
-    public void setExamRooms(List<Room> examRooms) {
-        this.examRooms = examRooms;
     }
 
     public long getId() {
@@ -140,15 +109,6 @@ public class BranchResponseWrapper {
     public void setId(long id) {
         this.id = id;
     }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
 
     public String getBranchName() {
         return branchName;

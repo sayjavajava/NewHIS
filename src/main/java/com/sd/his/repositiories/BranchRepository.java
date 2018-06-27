@@ -48,11 +48,9 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     List<Branch> findAllByActiveTrueAndDeletedFalse();
 
     @Query("SELECT new com.sd.his.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms) FROM Branch b  WHERE b.active = TRUE AND b.deleted = FALSE")
-    List<BranchResponseWrapper> findAllByActiveTrueAndDeletedFalse();
-
+    List<BranchResponseWrapper> findBranchWrapperAllByActiveTrueAndDeletedFalse();
 
     List<Branch> findAllByIdIn(List<Long> ids);
-
 
 }
 

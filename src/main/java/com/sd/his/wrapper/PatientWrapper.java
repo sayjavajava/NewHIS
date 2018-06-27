@@ -38,19 +38,19 @@ public class PatientWrapper {
     }
 
     public PatientWrapper(User patient) {
-        this.id = patient.getId();
+        this.userId = patient.getId();
         this.userName = patient.getUsername();
         this.email = patient.getEmail();
         this.profileWrapper.setFirstName(patient.getProfile().getFirstName());
         this.profileWrapper.setLastName(patient.getProfile().getLastName());
     }
 
-    public long getId() {
-        return id;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getUserType() {
@@ -77,20 +77,12 @@ public class PatientWrapper {
         this.userName = userName;
     }
 
-    public ProfileWrapper getProfileWrapper() {
-        return profileWrapper;
+    public long getPrimaryDoctorId() {
+        return primaryDoctorId;
     }
 
-    public void setProfileWrapper(ProfileWrapper profileWrapper) {
-        this.profileWrapper = profileWrapper;
-    }
-
-    public InsuranceWrapper getInsuranceWrapper() {
-        return insuranceWrapper;
-    }
-
-    public void setInsuranceWrapper(InsuranceWrapper insuranceWrapper) {
-        this.insuranceWrapper = insuranceWrapper;
+    public void setPrimaryDoctorId(long primaryDoctorId) {
+        this.primaryDoctorId = primaryDoctorId;
     }
 
     public boolean isActive() {
@@ -109,19 +101,19 @@ public class PatientWrapper {
         this.deleted = deleted;
     }
 
-    public long getUserId() {
-        return userId;
+    public ProfileWrapper getProfileWrapper() {
+        return profileWrapper;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setProfileWrapper(ProfileWrapper profileWrapper) {
+        this.profileWrapper = profileWrapper;
     }
 
-    public long getPrimaryDoctorId() {
-        return primaryDoctorId;
+    public InsuranceWrapper getInsuranceWrapper() {
+        return insuranceWrapper;
     }
 
-    public void setPrimaryDoctorId(long primaryDoctorId) {
-        this.primaryDoctorId = primaryDoctorId;
+    public void setInsuranceWrapper(InsuranceWrapper insuranceWrapper) {
+        this.insuranceWrapper = insuranceWrapper;
     }
 }
