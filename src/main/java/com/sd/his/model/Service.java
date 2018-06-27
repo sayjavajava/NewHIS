@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /*
@@ -31,7 +32,8 @@ import java.util.List;
 @Entity
 @Table(name = "SERVICE")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Service {
+public class Service implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)

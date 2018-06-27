@@ -7,6 +7,7 @@ import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Blob;
 import java.text.ParseException;
 import java.util.Date;

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -32,8 +33,8 @@ import java.util.List;
 @Entity
 @Table(name = "TIMEZONE")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Timezone {
-
+public class Timezone implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)

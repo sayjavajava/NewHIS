@@ -9,6 +9,8 @@ import org.hibernate.hql.spi.id.TableBasedDeleteHandlerImpl;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -36,7 +38,8 @@ import java.util.List;
 @Entity
 @Table(name = "USER")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
@@ -115,6 +118,10 @@ public class User {
     @JsonIgnore
     @OneToMany(targetEntity = UserDutyShift.class, mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserDutyShift> dutyShifts;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = Appointment.class, mappedBy = "patient", fetch = FetchType.LAZY)
+    private List<Appointment> appointments;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "PRIMARY_DOCTOR")
@@ -309,6 +316,14 @@ public class User {
 
     public void setDutyShifts(List<UserDutyShift> dutyShifts) {
         this.dutyShifts = dutyShifts;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 
     public User getPrimaryDoctor() {

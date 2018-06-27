@@ -90,12 +90,12 @@ public class BranchService {
         branch.setFormattedAddress(branchRequestWrapper.getFormattedAddress());
         user = userRepository.findById(branchRequestWrapper.getPrimaryDoctor());
         String userName = user.getUsername();
-        if(userName.equalsIgnoreCase(PropertyEnum.PRIMARY_DOCTOR.getValue())){
-            user =new User();
-            Profile profile =new Profile();
-            user.setUsername(branchRequestWrapper.getBranchName()+ "BRANCH");
+        if (userName.equalsIgnoreCase(PropertyEnum.PRIMARY_DOCTOR.getValue())) {
+            user = new User();
+            Profile profile = new Profile();
+            user.setUsername(branchRequestWrapper.getBranchName() + "BRANCH");
             user.setUserType(PropertyEnum.USER_TYPE_DOCTOR.getValue());
-            user.setEmail(generateEmail("gmail.com",6));
+            user.setEmail(generateEmail("gmail.com", 6));
             user.setSystemDoctor(false);
             user.setPassword(new BCryptPasswordEncoder().encode(branchRequestWrapper.getBranchName()));
             profile.setCellPhone(branchRequestWrapper.getOfficePhone());
@@ -165,9 +165,9 @@ public class BranchService {
     public BranchResponseWrapper findByID(long id) {
         Branch branch = branchRepository.findByIdAndDeletedFalse(id);
         BranchResponseWrapper branchResponseWrapper = new BranchResponseWrapper(branch);
-        List<Room> roomListData =new ArrayList<>();
-        for(Room room :branch.getRooms()){
-            Room room1 =new Room(room.getExamName(),room.isAllowOnlineScheduling());
+        List<Room> roomListData = new ArrayList<>();
+        for (Room room : branch.getRooms()) {
+            Room room1 = new Room(room.getExamName(), room.isAllowOnlineScheduling());
             roomListData.add(room1);
         }
         branchResponseWrapper.setExamRooms(roomListData);
@@ -216,25 +216,26 @@ public class BranchService {
     }
 
     public List<String> findAllBranchName() {
-        List<BranchResponseWrapper> allBranches = branchRepository.findAllByActiveTrueAndDeletedFalse();
+        List<Branch> allBranches = branchRepository.findAllByActiveTrueAndDeletedFalse();
         List<String> branchNames = allBranches.stream()
                 .filter(x -> x.getName() != null)
                 .map(x -> x.getName())
                 .collect(Collectors.toList());
 
         return branchNames;
+
     }
 
-    public List<BranchResponseWrapper> searchByBranchNameAndDepartment(String name,String department, int offset, int limit) {
+    public List<BranchResponseWrapper> searchByBranchNameAndDepartment(String name, String department, int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
         logger.info("branch name" + department);
 
-        List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalseOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(name,department, pageable);
+        List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalseOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(name, department, pageable);
 
         List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();
-        for(Branch branch:allBranches){
+        for (Branch branch : allBranches) {
 
-            BranchResponseWrapper brw = new BranchResponseWrapper(branch.getId(),branch.getName(),branch.getCountry(),branch.getCity(),branch.getNoOfRooms());
+            BranchResponseWrapper brw = new BranchResponseWrapper(branch.getId(), branch.getName(), branch.getCountry(), branch.getCity(), branch.getNoOfRooms());
             branchResponseWrapper.add(brw);
         }
         return branchResponseWrapper;
@@ -242,8 +243,9 @@ public class BranchService {
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
         List<BranchResponseWrapper> lst = branchRepository.findAllByActiveTrueAndDeletedFalse();
-       return branchRepository.findAllByActiveTrueAndDeletedFalse();
+        return branchRepository.findAllByActiveTrueAndDeletedFalse();
     }
+
     private String generateEmail(String domain, int length) {
         return RandomStringUtils.random(length, "abcdefghijklmnopqrstuvwxyz") + "@" + domain;
     }

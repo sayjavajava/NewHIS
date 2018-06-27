@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.request.ClinicalDepartmentCreateRequest;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /*
@@ -32,7 +33,8 @@ import java.util.List;
 @Entity
 @Table(name = "CLINICAL_DEPARTMENT")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ClinicalDepartment {
+public class ClinicalDepartment implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)

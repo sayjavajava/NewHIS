@@ -8,6 +8,7 @@ import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /*
@@ -35,7 +36,8 @@ import java.util.List;
 @Entity
 @Table(name = "TAX")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Tax {
+public class Tax implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)

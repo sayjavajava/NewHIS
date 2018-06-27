@@ -626,4 +626,8 @@ public class Profile implements Serializable {
     public void setRaces(String races) {
         this.races = races;
     }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

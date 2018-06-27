@@ -3,11 +3,13 @@ package com.sd.his.model;
 import com.sd.his.request.RoleAndPermissionCreateRequest;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "PERMISSION")
-public class Permission {
+public class Permission implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
