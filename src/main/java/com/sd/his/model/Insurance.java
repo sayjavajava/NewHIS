@@ -35,37 +35,49 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "INSURANCE")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Insurance {
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(name = "COMPANY")
     private String company;
+
     @Column(name = "INSURANCE_ID")
     private String insuranceID;
+
     @Column(name = "GROUP_NUMBER")
     private String groupNumber;
+
     @Column(name = "PLAN_NAME")
     private String planName;
+
     @Column(name = "PLAN_TYPE")
     private String planType;
+
     @Column(name = "CARD_ISSUED_DATE")
     private Date cardIssuedDate;
+
     @Column(name = "CARD_EXPIRY_DATE")
     private Date cardExpiryDate;
+
     @Column(name = "PRIMARY_INSURANCE_NOTES")
     private String primaryInsuranceNotes;
+
     @Column(name = "PHOTO_FRONT")
     private String photoFront;
+
     @Column(name = "PHOTO_BACK")
     private String photoBack;
+
     @Column(name = "CREATED_ON")
     private Long created;
-    @Column(name = "UPDATED_ON", columnDefinition = "Long default System.currentTimeMillis()")
+
+    @Column(name = "UPDATED_ON")
     private Long updated;
+
     @Column(name = "IS_DELETED", columnDefinition = "boolean default false")
     private Boolean deleted;
 
