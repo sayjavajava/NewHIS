@@ -901,8 +901,9 @@ public class HISUserService implements UserDetailsService {
         }
     }
 
-    public void savePatient(PatientRequest patientRequest) throws ParseException, Exception  {
+    public void savePatient(PatientRequest patientRequest) throws ParseException, Exception {
         Profile profile = new Profile(patientRequest);
+        UserRole userRole;
         User selectedDoctor = this.userRepository.findOne(patientRequest.getSelectedDoctor());
         Insurance insurance = new Insurance(patientRequest);
         User patient = new User(patientRequest, UserTypeEnum.PATIENT.toString());
@@ -913,7 +914,8 @@ public class HISUserService implements UserDetailsService {
         patient.setProfile(profile);
         patient.setInsurance(insurance);
         this.userRepository.save(patient);
-
+        userRole = new UserRole(patient, roleRepo.findByName(UserTypeEnum.PATIENT.getValue()));
+        userRoleRepository.save(userRole);
     }
 
     public boolean isUserNameAlreadyExists(String userName) {
@@ -922,20 +924,23 @@ public class HISUserService implements UserDetailsService {
             return true;
         return false;
     }
-    public boolean isUserNameAlreadyExistsAgainstUserId(long id,String userName) {
-        List<User> users = this.userRepository.findAllByIdNotAndUsername(id,userName);
+
+    public boolean isUserNameAlreadyExistsAgainstUserId(long id, String userName) {
+        List<User> users = this.userRepository.findAllByIdNotAndUsername(id, userName);
         if (!HISCoreUtil.isListEmpty(users))
             return true;
         return false;
     }
+
     public boolean isEmailAlreadyExists(String email) {
         List<User> users = this.userRepository.findAllByEmail(email);
         if (!HISCoreUtil.isListEmpty(users))
             return true;
         return false;
     }
-    public boolean isEmailAlreadyExistsAgainstUserId(long id,String email) {
-        List<User> users = this.userRepository.findAllByIdNotAndEmail(id,email);
+
+    public boolean isEmailAlreadyExistsAgainstUserId(long id, String email) {
+        List<User> users = this.userRepository.findAllByIdNotAndEmail(id, email);
         if (!HISCoreUtil.isListEmpty(users))
             return true;
         return false;
@@ -962,25 +967,27 @@ public class HISUserService implements UserDetailsService {
 
     public void updatePatient(PatientRequest patientRequest) throws ParseException, Exception {
         Profile profile = this.profileRepository.findOne(patientRequest.getProfileId());
+        UserRole userRole;
         new Profile(profile, patientRequest);
 
         Insurance insurance = this.insuranceRepository.findOne(patientRequest.getInsuranceId());
         new Insurance(insurance, patientRequest);
 
-        User user = this.userRepository.findOne(patientRequest.getUserId());
-        new User(user, patientRequest);
+        User patient = this.userRepository.findOne(patientRequest.getUserId());
+        new User(patient, patientRequest);
 
         User selectedDoctor = this.userRepository.findOne(patientRequest.getSelectedDoctor());
-        user.setPrimaryDoctor(selectedDoctor);
+        patient.setPrimaryDoctor(selectedDoctor);
 
         this.profileRepository.save(profile);
         this.insuranceRepository.save(insurance);
 
-        user.setProfile(profile);
-        user.setInsurance(insurance);
+        patient.setProfile(profile);
+        patient.setInsurance(insurance);
 
-        this.userRepository.save(user);
-
+        this.userRepository.save(patient);
+        userRole = new UserRole(patient, roleRepo.findByName(UserTypeEnum.PATIENT.getValue()));
+        userRoleRepository.save(userRole);
     }
 
     public User updateUser(User user) {
