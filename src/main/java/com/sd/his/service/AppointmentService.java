@@ -71,10 +71,14 @@ public class AppointmentService {
         Branch branch = branchRepository.getOne(appointmentWrapper.getBranchId());
 
         appointment.setRecurringDays(new Gson().toJson(appointmentWrapper.getSelectedRecurringDays()));
-        appointment.setCreatedOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getStart()));
+        long startTime= HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getStart());
+        appointment.setStartedOn(startTime);
+        appointment.setEndedOn(startTime + appointmentWrapper.getDuration()*60*1000);
         appointment.setUpdatedOn(System.currentTimeMillis());
         appointment.setDeleted(false);
+        appointment.setCreatedOn(System.currentTimeMillis());
         appointment.setActive(true);
+        appointment.setColor(appointmentWrapper.getColor());
         appointment.setRecurring(appointmentWrapper.isRecurringAppointment());
         appointment.setDuration(appointmentWrapper.getDuration());
         appointment.setFirstAppointmentOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFirstAppointment()));
@@ -114,7 +118,7 @@ public class AppointmentService {
             profile.setUpdatedOn(System.currentTimeMillis());
             profile.setCreatedOn(System.currentTimeMillis());
             profile.setGender(appointmentWrapper.getGender());
-            appointment.setAge(Long.valueOf(appointmentWrapper.getAge()).longValue());
+          //  appointment.setAge(Long.valueOf(appointmentWrapper.getAge()).longValue());
             user.setProfile(profile);
             userRepository.save(user);
             appointment.setPatient(user);
@@ -158,6 +162,7 @@ public class AppointmentService {
     //    appointment.setStartedOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getStart()));
       //  appointment.setEndedOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getEnd()));
         appointment.setNotes(appointmentWrapper.getNotes());
+        appointment.setColor(appointmentWrapper.getColor());
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setType(new Gson().toJson(appointmentWrapper.getAppointmentType()));
         appointment.setStatus(appointmentWrapper.getStatus());
