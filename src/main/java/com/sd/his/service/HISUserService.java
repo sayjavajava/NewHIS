@@ -1,8 +1,5 @@
 package com.sd.his.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sd.his.enums.PropertyEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
@@ -904,10 +901,9 @@ public class HISUserService implements UserDetailsService {
         }
     }
 
-    public void savePatient(PatientRequest patientRequest) throws ParseException, Exception {
+    public void savePatient(PatientRequest patientRequest) throws ParseException, Exception  {
         Profile profile = new Profile(patientRequest);
         User selectedDoctor = this.userRepository.findOne(patientRequest.getSelectedDoctor());
-//        profile.setPrimaryDoctor(selectedDoctor);
         Insurance insurance = new Insurance(patientRequest);
         User patient = new User(patientRequest, UserTypeEnum.PATIENT.toString());
         patient.setPrimaryDoctor(selectedDoctor);
@@ -920,15 +916,40 @@ public class HISUserService implements UserDetailsService {
 
     }
 
+    public boolean isUserNameAlreadyExists(String userName) {
+        List<User> users = this.userRepository.findAllByUsername(userName);
+        if (!HISCoreUtil.isListEmpty(users))
+            return true;
+        return false;
+    }
+    public boolean isUserNameAlreadyExistsAgainstUserId(long id,String userName) {
+        List<User> users = this.userRepository.findAllByIdNotAndUsername(id,userName);
+        if (!HISCoreUtil.isListEmpty(users))
+            return true;
+        return false;
+    }
+    public boolean isEmailAlreadyExists(String email) {
+        List<User> users = this.userRepository.findAllByEmail(email);
+        if (!HISCoreUtil.isListEmpty(users))
+            return true;
+        return false;
+    }
+    public boolean isEmailAlreadyExistsAgainstUserId(long id,String email) {
+        List<User> users = this.userRepository.findAllByIdNotAndEmail(id,email);
+        if (!HISCoreUtil.isListEmpty(users))
+            return true;
+        return false;
+    }
+
     public boolean isUserAlreadyExists(String userName, String email) {
-        List<User> users = this.userRepository.findAllByUsernameAndEmailAndDeletedFalse(userName, email);
+        List<User> users = this.userRepository.findAllByUsernameOrEmail(userName, email);
         if (!HISCoreUtil.isListEmpty(users))
             return true;
         return false;
     }
 
     public boolean isUserAlreadyExistsAgainstUserId(long id, String userName, String email) {
-        List<User> users = this.userRepository.findAllByIdNotAndUsernameAndEmailAndDeletedFalse(id, userName, email);
+        List<User> users = this.userRepository.findAllByIdNotAndUsernameOrEmail(id, userName, email);
         if (!HISCoreUtil.isListEmpty(users))
             return true;
         return false;

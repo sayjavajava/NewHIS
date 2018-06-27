@@ -49,9 +49,8 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
     @Query("SELECT NEW  com.sd.his.wrapper.PatientWrapper(u,u.profile,u.insurance) from User u where u.userType=:uType AND u.deleted=FALSE")
     List<PatientWrapper> findAllByDeletedFalse(@Param("uType") String uType);
 
-    List<User> findAllByUsernameAndEmailAndDeletedFalse(String userName, String email);
-
-    List<User> findAllByIdNotAndUsernameAndEmailAndDeletedFalse(long id, String userName, String email);
+    List<User> findAllByUsernameOrEmail(String userName, String email);
+    List<User> findAllByIdNotAndUsernameOrEmail(long id, String userName, String email);
 
     @Query("SELECT NEW  com.sd.his.request.PatientRequest(u,u.profile,u.insurance) from User u where u.id=:id")
     PatientRequest findUserById(@Param("id") long id);
@@ -62,4 +61,8 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
     @Query("SELECT NEW  com.sd.his.wrapper.PatientWrapper(u,u.profile,u.insurance) from User u where u.userType=:uType AND u.deleted=FALSE AND u.username like CONCAT('%',:userName,'%') ")
     List<PatientWrapper> findAllByDeletedFalse(@Param("uType") String uType, @Param("userName") String userName);
 
+    List<User> findAllByUsername(String userName);
+    List<User> findAllByIdNotAndUsername(long id, String userName);
+    List<User> findAllByEmail(String email);
+    List<User> findAllByIdNotAndEmail(long id,String email);
 }

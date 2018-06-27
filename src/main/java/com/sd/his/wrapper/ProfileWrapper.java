@@ -60,7 +60,6 @@ public class ProfileWrapper {
         this.otherDoctorDashBoard = profile.getOtherDoctorDashBoard() == null ? false : profile.getOtherDoctorDashBoard();
         this.managePatientRecords = profile.getManagePatientRecords() == null ? false : profile.getManagePatientRecords();
         this.managePatientInvoices = profile.getManagePatientInvoices() == null ? false : profile.getManagePatientInvoices();
-        this.checkUpInterval = profile.getCheckUpInterval();
         this.workingDays = profile.getWorkingDays() == null ? new ArrayList<>() : profile.getWorkingDays();
         this.allowDiscount = profile.getAllowDiscount() == null ? false : profile.getAllowDiscount();
         this.gender = profile.getGender() == null ? null : profile.getGender();
@@ -71,11 +70,11 @@ public class ProfileWrapper {
         this.country = profile.getCountry() == null ? "" : profile.getCountry();
         this.races = profile.getRaces();
         this.status = profile.getStatus() == null ? "Active" : profile.getStatus();
-        this.dob = DateUtil.getFormattedDateFromDate(profile.getDob(), HISConstants.DATE_FORMATE_THREE);
+        this.dob = profile.getDob() == null ? "" : DateUtil.getFormattedDateFromDate(profile.getDob(), HISConstants.DATE_FORMATE_THREE);
         this.type = profile.getType() == null ? "" : profile.getType();
         this.otherDashboard = profile.getOtherDashboard();
-        this.createdOn = profile.getCreatedOn();
-        this.updatedOn = profile.getUpdatedOn();
+        this.createdOn = profile.getCreatedOn() == null ? 0 : profile.getCreatedOn();
+        this.updatedOn = profile.getUpdatedOn() == null ? 0 : profile.getUpdatedOn();
         this.aboutMe = profile.getAboutMe();
         this.deleted = profile.getDeleted();
     }
@@ -364,7 +363,7 @@ public class ProfileWrapper {
         this.otherDashboard = otherDashboard;
     }
 
-    public Long getCreatedOn() {
+    public long getCreatedOn() {
         return createdOn;
     }
 

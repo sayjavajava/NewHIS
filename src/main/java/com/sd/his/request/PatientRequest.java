@@ -106,7 +106,7 @@ public class PatientRequest {
         this.state = profile.getState() == null ? "" : profile.getState();
         this.country = profile.getCountry() == null ? "" : profile.getCountry();
         this.racesString = profile.getRaces();
-        this.dob = DateUtil.getFormattedDateFromDate(profile.getDob(), HISConstants.DATE_FORMATE_THREE);
+        this.dob = profile.getDob() == null ? "" : DateUtil.getFormattedDateFromDate(profile.getDob(), HISConstants.DATE_FORMATE_THREE);
 
         this.titlePrefix = profile.getTitlePrefix();
         if (user.getPrimaryDoctor() != null) {
@@ -119,8 +119,8 @@ public class PatientRequest {
         this.groupNumber = insurance.getGroupNumber();
         this.planName = insurance.getPlanName();
         this.planType = insurance.getPlanType();
-        this.cardIssuedDate = DateUtil.getDateFromMillis(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
-        this.cardExpiryDate = DateUtil.getDateFromMillis(insurance.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
+        this.cardIssuedDate = insurance.getCardIssuedDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
+        this.cardExpiryDate = insurance.getCardExpiryDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
         this.primaryInsuranceNotes = insurance.getPrimaryInsuranceNotes();
         /*this.photoFront = insurance.getPhotoFront();
         this.photoBack = insurance.getPhotoBack();*/

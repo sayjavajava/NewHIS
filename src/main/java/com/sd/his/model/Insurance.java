@@ -8,6 +8,7 @@ import com.sd.his.utill.HISCoreUtil;
 
 import javax.persistence.*;
 import java.sql.Blob;
+import java.text.ParseException;
 import java.util.Date;
 
 /*
@@ -52,9 +53,9 @@ public class Insurance {
     @Column(name = "PLAN_TYPE")
     private String planType;
     @Column(name = "CARD_ISSUED_DATE")
-    private Long cardIssuedDate;
+    private Date cardIssuedDate;
     @Column(name = "CARD_EXPIRY_DATE")
-    private Long cardExpiryDate;
+    private Date cardExpiryDate;
     @Column(name = "PRIMARY_INSURANCE_NOTES")
     private String primaryInsuranceNotes;
     @Column(name = "PHOTO_FRONT")
@@ -71,7 +72,7 @@ public class Insurance {
     public Insurance() {
     }
 
-    public Insurance(PatientRequest patientRequest) {
+    public Insurance(PatientRequest patientRequest) throws ParseException {
         this.id = patientRequest.getInsuranceId() > 0 ? patientRequest.getInsuranceId() : null;
         this.company = patientRequest.getCompany();
         this.insuranceID = patientRequest.getInsuranceIdNumber();
@@ -79,10 +80,10 @@ public class Insurance {
         this.planName = patientRequest.getPlanName();
         this.planType = patientRequest.getPlanType();
         if (!HISCoreUtil.isNull(patientRequest.getCardIssuedDate())) {
-            this.cardIssuedDate = DateUtil.getMillisFromStringDate(patientRequest.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
+            this.cardIssuedDate = DateUtil.getDateFromString(patientRequest.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
         }
         if (!HISCoreUtil.isNull(patientRequest.getCardExpiryDate())) {
-            this.cardExpiryDate = DateUtil.getMillisFromStringDate(patientRequest.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
+            this.cardExpiryDate = DateUtil.getDateFromString(patientRequest.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
         }
         this.primaryInsuranceNotes = patientRequest.getPrimaryInsuranceNotes();
         //this.photoFront = patientRequest.getPhotoFront();
@@ -95,14 +96,16 @@ public class Insurance {
 
     }
 
-    public Insurance(Insurance insurance, PatientRequest patientRequest) {
+    public Insurance(Insurance insurance, PatientRequest patientRequest) throws ParseException {
         insurance.company = patientRequest.getCompany();
         insurance.insuranceID = patientRequest.getInsuranceIdNumber();
         insurance.groupNumber = patientRequest.getGroupNumber();
         insurance.planName = patientRequest.getPlanName();
         insurance.planType = patientRequest.getPlanType();
-        insurance.cardIssuedDate = DateUtil.getMillisFromStringDate(patientRequest.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
-        insurance.cardExpiryDate = DateUtil.getMillisFromStringDate(patientRequest.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
+        if (!HISCoreUtil.isNull(patientRequest.getCardIssuedDate()))
+            insurance.cardIssuedDate = DateUtil.getDateFromString(patientRequest.getCardIssuedDate() + "", HISConstants.DATE_FORMATE_THREE);
+        if (!HISCoreUtil.isNull(patientRequest.getCardExpiryDate()))
+            insurance.cardExpiryDate = DateUtil.getDateFromString(patientRequest.getCardExpiryDate() + "", HISConstants.DATE_FORMATE_THREE);
         insurance.primaryInsuranceNotes = patientRequest.getPrimaryInsuranceNotes();
         //this.photoFront = patientRequest.getPhotoFront();
         //this.photoBack = patientRequest.getPhotoBack();
@@ -159,19 +162,19 @@ public class Insurance {
         this.planType = planType;
     }
 
-    public Long getCardIssuedDate() {
+    public Date getCardIssuedDate() {
         return cardIssuedDate;
     }
 
-    public void setCardIssuedDate(Long cardIssuedDate) {
+    public void setCardIssuedDate(Date cardIssuedDate) {
         this.cardIssuedDate = cardIssuedDate;
     }
 
-    public Long getCardExpiryDate() {
+    public Date getCardExpiryDate() {
         return cardExpiryDate;
     }
 
-    public void setCardExpiryDate(Long cardExpiryDate) {
+    public void setCardExpiryDate(Date cardExpiryDate) {
         this.cardExpiryDate = cardExpiryDate;
     }
 

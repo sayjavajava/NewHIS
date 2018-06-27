@@ -229,10 +229,11 @@ public class Profile implements Serializable {
 
         profile.accountExpiry = "";
         profile.workingDays = new ArrayList<>();
+        if (!HISCoreUtil.isNull(patientRequest.getDob()))
         profile.dob = DateUtil.getDateFromString(patientRequest.getDob(), HISConstants.DATE_FORMATE_THREE);
         profile.gender = patientRequest.getGender();
         profile.country = patientRequest.getCountry();
-        profile.races = JSONUtil.listToJSON(patientRequest.getRaces());
+        profile.races = JSONUtil.gsonListToJSON(patientRequest.getRaces());
         profile.streetAddress = patientRequest.getStreetAddress();
         profile.zipCode = patientRequest.getZipCode();
         profile.city = patientRequest.getCity();

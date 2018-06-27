@@ -881,8 +881,15 @@ public class UserAPI {
                 logger.error("savePatient API - insufficient params.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-
-            if (userService.isUserAlreadyExists(patientRequest.getUserName(), patientRequest.getEmail())) {
+            if (userService.isEmailAlreadyExists(patientRequest.getEmail())) {
+                response.setResponseMessage(messageBundle.getString("user.add.email.already-found.error"));
+                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("savePatient API - email already found.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (userService.isUserNameAlreadyExists(patientRequest.getUserName())) {
                 response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
                 response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -1029,7 +1036,15 @@ public class UserAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            if (userService.isUserAlreadyExistsAgainstUserId(patientRequest.getUserId(), patientRequest.getUserName(), patientRequest.getEmail())) {
+            if (userService.isEmailAlreadyExistsAgainstUserId(patientRequest.getUserId(), patientRequest.getEmail())) {
+                response.setResponseMessage(messageBundle.getString("user.add.email.already-found.error"));
+                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatient API - user already found.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (userService.isUserNameAlreadyExistsAgainstUserId(patientRequest.getUserId(), patientRequest.getUserName())) {
                 response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
                 response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
