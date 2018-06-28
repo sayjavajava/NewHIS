@@ -7,14 +7,30 @@ import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.RaceWrapper;
 
-import java.io.File;
 import java.util.List;
 
-/**
- * Created by jamal on 6/7/2018.
+/* @author    : Qari Jamal
+ * @Date      : 17-Apr-18
+ * @version   : ver. 1.0.0
+ *
+ * ________________________________________________________________________________________________
+ *
+ *  Developer				Date		     Version		Operation		Description
+ * ________________________________________________________________________________________________
+ *
+ *
+ * ________________________________________________________________________________________________
+ *
+ * @Project   : HIS
+ * @Package   : com.sd.his.wrapper*
+ * @FileName  : PatientRequest
+ *
+ * Copyright ©
+ * SolutionDots,
+ * All rights reserved.
+ *
  */
 public class PatientRequest {
-    //////IMPORTANT INFORMATION
 
     private long userId;
     private long selectedDoctor = -1;
@@ -23,7 +39,7 @@ public class PatientRequest {
     private String middleName = "";
     private String lastName = "";
     private String foreignName = "";
-    private File patientPhoto;
+    private String profileImg;
     private String homePhone = "";
     private String cellPhone = "";
     private boolean disableSMSTxt = true;
@@ -64,8 +80,8 @@ public class PatientRequest {
     private String cardIssuedDate = "";
     private String cardExpiryDate = "";
     private String primaryInsuranceNotes = "";
-    private File photoFront;
-    private File photoBack;
+    private String photoFront;
+    private String photoBack;
 
     public PatientRequest() {
     }
@@ -101,7 +117,7 @@ public class PatientRequest {
         this.signatureOnFile = profile.getSignatureOnFile();
 
         this.gender = profile.getGender() == null ? null : profile.getGender();
-//        this.profileImg = profile.getProfileImg() == null ? "" : profile.getProfileImg();
+        this.profileImg = profile.getProfileImg();
         this.city = profile.getCity() == null ? "" : profile.getCity();
         this.state = profile.getState() == null ? "" : profile.getState();
         this.country = profile.getCountry() == null ? "" : profile.getCountry();
@@ -122,8 +138,8 @@ public class PatientRequest {
         this.cardIssuedDate = insurance.getCardIssuedDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
         this.cardExpiryDate = insurance.getCardExpiryDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
         this.primaryInsuranceNotes = insurance.getPrimaryInsuranceNotes();
-        /*this.photoFront = insurance.getPhotoFront();
-        this.photoBack = insurance.getPhotoBack();*/
+        this.photoFront = insurance.getPhotoFront();
+        this.photoBack = insurance.getPhotoBack();
     }
 
     public long getUserId() {
@@ -190,12 +206,12 @@ public class PatientRequest {
         this.foreignName = foreignName;
     }
 
-    public File getPatientPhoto() {
-        return patientPhoto;
+    public String getProfileImg() {
+        return profileImg;
     }
 
-    public void setPatientPhoto(File patientPhoto) {
-        this.patientPhoto = patientPhoto;
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
     }
 
     public String getHomePhone() {
@@ -470,19 +486,19 @@ public class PatientRequest {
         this.primaryInsuranceNotes = primaryInsuranceNotes;
     }
 
-    public File getPhotoFront() {
+    public String getPhotoFront() {
         return photoFront;
     }
 
-    public void setPhotoFront(File photoFront) {
+    public void setPhotoFront(String photoFront) {
         this.photoFront = photoFront;
     }
 
-    public File getPhotoBack() {
+    public String getPhotoBack() {
         return photoBack;
     }
 
-    public void setPhotoBack(File photoBack) {
+    public void setPhotoBack(String photoBack) {
         this.photoBack = photoBack;
     }
 

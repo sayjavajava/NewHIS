@@ -1,29 +1,30 @@
-package com.sd.his.model;/*
+package com.sd.his.model;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
+/*
  * @author    : waqas kamran
  * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.*
  * @FileName  : UserAuthAPI
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
-
-import javax.persistence.*;
-import java.io.Serializable;
-
 @Entity
 @Table(name = "DEPARTMENT_USER")
 public class DepartmentUser implements Serializable {

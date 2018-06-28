@@ -125,7 +125,7 @@ public class S3KeyGen {
                 url = s3Bucket.getAccessProtocol()
                         + s3Bucket.getPublicBaseURL()
                         + "/"
-                        + s3Bucket
+                        + s3Bucket.getName()
                         + "/"
                         + HISConstants.S3_USER_DIRECTORY
                         + "/"
@@ -139,7 +139,7 @@ public class S3KeyGen {
                 url = s3Bucket.getAccessProtocol()
                         + s3Bucket.getPublicBaseURL()
                         + "/"
-                        + s3Bucket
+                        + s3Bucket.getName()
                         + "/"
                         + HISConstants.S3_CORE_DIRECTORY
                         + "/"
@@ -168,7 +168,7 @@ public class S3KeyGen {
                 url = s3Bucket.getAccessProtocol()
                         + s3Bucket.getPublicBaseURL()
                         + "/"
-                        + s3Bucket
+                        + s3Bucket.getName()
                         + "/"
                         + HISConstants.S3_USER_DIRECTORY
                         + "/"
