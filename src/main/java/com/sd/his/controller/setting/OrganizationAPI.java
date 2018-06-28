@@ -26,7 +26,7 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Branch;
 import com.sd.his.model.Organization;
 import com.sd.his.model.User;
-import com.sd.his.repositiories.OrganizationRepository;
+import com.sd.his.repositories.OrganizationRepository;
 import com.sd.his.request.BranchRequestWrapper;
 import com.sd.his.request.OrganizationRequestWrapper;
 import com.sd.his.response.BranchResponseWrapper;

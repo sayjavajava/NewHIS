@@ -2,10 +2,10 @@ package com.sd.his.service;
 
 import com.sd.his.enums.PropertyEnum;
 import com.sd.his.model.*;
-import com.sd.his.repositiories.BranchRepository;
-import com.sd.his.repositiories.BranchUserRepository;
-import com.sd.his.repositiories.RoomRepository;
-import com.sd.his.repositiories.UserRepository;
+import com.sd.his.repositories.BranchRepository;
+import com.sd.his.repositories.BranchUserRepository;
+import com.sd.his.repositories.RoomRepository;
+import com.sd.his.repositories.UserRepository;
 import com.sd.his.request.BranchRequestWrapper;
 import com.sd.his.response.BranchResponseWrapper;
 import com.sd.his.wrapper.ExamRooms;
@@ -242,7 +242,15 @@ public class BranchService {
     }
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
-        return branchRepository.findBranchWrapperAllByActiveTrueAndDeletedFalse();
+        List<Branch> branch = branchRepository.findAllByActiveTrueAndDeletedFalse();
+        //  return branchRepository.findAllByActiveTrueAndDeletedFalse();
+        List<BranchResponseWrapper> list = new ArrayList<>();
+
+        for (Branch branch1 : branch) {
+            BranchResponseWrapper branchResponseWrapper = new BranchResponseWrapper(branch1);
+            list.add(branchResponseWrapper);
+        }
+        return list;
     }
 
     private String generateEmail(String domain, int length) {

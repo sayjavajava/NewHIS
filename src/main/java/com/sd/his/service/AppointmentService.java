@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.sd.his.enums.AppointmentTypeEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
-import com.sd.his.repositiories.*;
+import com.sd.his.repositories.*;
 import com.sd.his.request.BranchRequestWrapper;
 import com.sd.his.request.SaveTaxRequest;
 import com.sd.his.utill.APIUtil;

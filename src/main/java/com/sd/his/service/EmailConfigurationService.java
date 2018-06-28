@@ -1,7 +1,7 @@
 package com.sd.his.service;
 
 import com.sd.his.model.EmailConfiguration;
-import com.sd.his.repositiories.EmailConfigurationRepository;
+import com.sd.his.repositories.EmailConfigurationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

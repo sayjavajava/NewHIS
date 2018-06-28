@@ -3,7 +3,7 @@ package com.sd.his.service;
 import com.sd.his.enums.PropertyEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
-import com.sd.his.repositiories.*;
+import com.sd.his.repositories.*;
 import com.sd.his.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.request.PatientRequest;
 import com.sd.his.response.UserResponseWrapper;
@@ -886,6 +886,10 @@ public class HISUserService implements UserDetailsService {
 
     public int countAllPaginatedPatients(String userType) {
         return userRepository.findAllByDeletedFalse(userType).size();
+    }
+
+    public List<PatientWrapper> findAllPatients() {
+        return userRepository.findAllByDeletedFalse(UserTypeEnum.PATIENT.getValue());
     }
 
     public void deletePatientById(long patientId) {

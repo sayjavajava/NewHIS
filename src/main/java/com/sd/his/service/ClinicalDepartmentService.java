@@ -1,7 +1,7 @@
 package com.sd.his.service;
 
 import com.sd.his.model.ClinicalDepartment;
-import com.sd.his.repositiories.ClinicalDepartmentRepository;
+import com.sd.his.repositories.ClinicalDepartmentRepository;
 import com.sd.his.request.ClinicalDepartmentCreateRequest;
 import com.sd.his.request.ClinicalDepartmentUpdateRequest;
 import com.sd.his.wrapper.ClinicalDepartmentWrapper;

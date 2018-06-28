@@ -1,7 +1,7 @@
 package com.sd.his.service;
 
 import com.sd.his.model.EmailTemplate;
-import com.sd.his.repositiories.EmailTemplateRepository;
+import com.sd.his.repositories.EmailTemplateRepository;
 import com.sd.his.request.EmailTemplateRequest;
 import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;

@@ -23,7 +23,7 @@ package com.sd.his.service;/*
 
 import com.sd.his.enums.PropertyEnum;
 import com.sd.his.model.*;
-import com.sd.his.repositiories.*;
+import com.sd.his.repositories.*;
 import com.sd.his.request.OrganizationRequestWrapper;
 import com.sd.his.response.OrganizationResponseWrapper;
 import com.sd.his.wrapper.TimezoneWrapper;

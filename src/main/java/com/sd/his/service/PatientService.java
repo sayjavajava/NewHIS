@@ -1,22 +1,6 @@
 package com.sd.his.service;
 
-import com.sd.his.model.Insurance;
-import com.sd.his.model.Profile;
-import com.sd.his.model.User;
-import com.sd.his.repositiories.InsuranceRepository;
-import com.sd.his.repositiories.PatientRepository;
-import com.sd.his.repositiories.ProfileRepository;
-import com.sd.his.repositiories.UserRepository;
-import com.sd.his.request.PatientRequest;
-import com.sd.his.wrapper.PatientWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.text.ParseException;
-import java.util.List;
 
 /*
  * @author    : Muhammad Jamal
