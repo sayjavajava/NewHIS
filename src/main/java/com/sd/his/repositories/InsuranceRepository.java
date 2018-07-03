@@ -1,8 +1,10 @@
 package com.sd.his.repositories;
 
 import com.sd.his.model.Insurance;
-import com.sd.his.model.User;
+import com.sd.his.wrapper.InsuranceWrapper;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /*
@@ -30,4 +32,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InsuranceRepository extends JpaRepository<Insurance, Long> {
 
+    @Query("SELECT NEW com.sd.his.wrapper.InsuranceWrapper(ins) FROM Insurance ins where ins.id = :id")
+    InsuranceWrapper getInsuranceWrapperById(@Param("id") long id);
 }

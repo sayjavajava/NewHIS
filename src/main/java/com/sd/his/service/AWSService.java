@@ -4,6 +4,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.sd.his.configuration.AWSS3;
 import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.enums.S3ContentTypes;
+import com.sd.his.request.ImageWrapper;
+import com.sd.his.utill.HISConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -111,6 +113,43 @@ public class AWSService {
         return returnValue;
     }
 
+    public boolean uploadImageByUserId(InputStream inputStream,
+                                       String directoryPath,
+                                       String thumbnailGraphicName,
+                                       String graphicName) throws Exception {
+        /**
+         * Convert the event input stream into a buffered image
+         * */
+        BufferedImage bufferedImage = ImageIO.read(inputStream);
+        int type = bufferedImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : bufferedImage.getType();
+        IMG_WIDTH = bufferedImage.getWidth() / 5;
+        IMG_HEIGHT = bufferedImage.getHeight() / 5;
+
+        BufferedImage resizeImageJpg = resizeImage(bufferedImage, type);
+
+        String[] s3ThumbnailKey = s3KeyGen.thumbnailGraphic(
+                directoryPath + thumbnailGraphicName);
+
+        String[] s3Key = s3KeyGen.graphic(
+                directoryPath + graphicName);
+
+        // Save the full image to S3
+        awss3.imageToS3(
+                bufferedImage,
+                s3Key[1],
+                S3ContentTypes.PNG,
+                CannedAccessControlList.PublicRead);
+
+        // Save the thumbnails image to S3
+        awss3.imageToS3(
+                resizeImageJpg,
+                s3ThumbnailKey[1],
+                S3ContentTypes.PNG,
+                CannedAccessControlList.PublicRead);
+
+        return true;
+    }
+
     private static BufferedImage resizeImage(BufferedImage originalImage, int type) {
         BufferedImage resizedImage = new BufferedImage(IMG_WIDTH, IMG_HEIGHT, type);
         Graphics2D g = resizedImage.createGraphics();
@@ -126,5 +165,9 @@ public class AWSService {
 
     public String getProfileThumbnailImageUrl(Long id) {
         return s3KeyGen.getUserProfileThumbnailGraphicPublicUserId(id, false);
+    }
+
+    public String getThumbnailImageUrl(long id,String fullPathAndThumbnailGraphicName) {
+        return s3KeyGen.getThumbnailGraphicPublicUserId(id,fullPathAndThumbnailGraphicName, false);
     }
 }

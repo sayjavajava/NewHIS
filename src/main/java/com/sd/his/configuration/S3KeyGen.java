@@ -3,10 +3,12 @@ package com.sd.his.configuration;
 import com.sd.his.model.S3Bucket;
 import com.sd.his.model.User;
 import com.sd.his.service.HISUserService;
+import com.sd.his.service.InsuranceManager;
 import com.sd.his.service.S3BucketService;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.utill.ResourceCheckUtil;
+import com.sd.his.wrapper.InsuranceWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +72,6 @@ public class S3KeyGen {
         return completeKey;
     }
 
-
     /**
      * Generates the S3 Key name for a profile graphic.
      *
@@ -96,6 +97,16 @@ public class S3KeyGen {
         return completeKey;
     }
 
+    public String[] graphic(String directoryPathAndGraphicName) throws NamingException {
+
+        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+
+        String key = directoryPathAndGraphicName;
+
+        String[] completeKey = {s3Bucket.getName(), key};
+        return completeKey;
+    }
+
     public String[] profileThumbnailGraphic(Long id) throws NamingException {
 
         User user = userService.findById(id);
@@ -112,6 +123,17 @@ public class S3KeyGen {
         return completeKey;
     }
 
+    public String[] thumbnailGraphic(String directoryPathAndThumbnailGraphicName) throws Exception {
+
+        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+        /**
+         * full path with full name
+         * **/
+        String key = directoryPathAndThumbnailGraphicName;
+
+        String[] completeKey = {s3Bucket.getName(), key};
+        return completeKey;
+    }
 
     public String getUserProfileGraphicPublicUserId(Long userId, boolean isDefaultImageRequired) {
 
@@ -156,6 +178,40 @@ public class S3KeyGen {
         return url;
     }
 
+    public String getGraphicPublicUserId(long userId,
+                                         String FullPathGraphicName,
+                                         boolean isDefaultImageRequired) throws Exception {
+
+        String url = null;
+
+        User user = userService.findById(userId);
+        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+
+        if (HISCoreUtil.isValidObject(user)) {
+            url = s3Bucket.getAccessProtocol()
+                    + s3Bucket.getPublicBaseURL()
+                    + "/"
+                    + s3Bucket.getName()
+                    + FullPathGraphicName;
+        }
+
+        if (!ResourceCheckUtil.urlExists(url) && isDefaultImageRequired) {
+            url = s3Bucket.getAccessProtocol()
+                    + s3Bucket.getPublicBaseURL()
+                    + "/"
+                    + s3Bucket.getName()
+                    + "/"
+                    + HISConstants.S3_CORE_DIRECTORY
+                    + "/"
+                    + HISConstants.S3_CORE_GRAPHICS_DIRECTORY
+                    + "/"
+                    + HISConstants.S3_CORE_PROFILE_GRAPHIC_HOLDER_NAME;
+        } else if (!ResourceCheckUtil.urlExists(url) && !isDefaultImageRequired) {
+            url = null;
+        }
+        return url;
+    }
+
     public String getUserProfileThumbnailGraphicPublicUserId(Long userId, boolean isDefaultImageRequired) {
 
         String url = null;
@@ -176,6 +232,42 @@ public class S3KeyGen {
                         + "/"
                         + user.getId() + "_" + user.getProfile().getId() + "_"
                         + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME;
+            }
+
+            if (!ResourceCheckUtil.urlExists(url) && isDefaultImageRequired) {
+                url = s3Bucket.getAccessProtocol()
+                        + s3Bucket.getPublicBaseURL()
+                        + "/"
+                        + s3Bucket
+                        + "/"
+                        + HISConstants.S3_CORE_DIRECTORY
+                        + "/"
+                        + HISConstants.S3_CORE_GRAPHICS_DIRECTORY
+                        + "/"
+                        + HISConstants.S3_CORE_PROFILE_GRAPHIC_HOLDER_NAME;
+            } else if (!ResourceCheckUtil.urlExists(url) && !isDefaultImageRequired) {
+                url = null;
+            }
+
+        } catch (Exception ex) {
+            logger.error("Unknown Error whilst getting object from S3", ex);
+        }
+        return url;
+    }
+
+    public String getThumbnailGraphicPublicUserId(long userId, String FULL_PATH_THUMBNAIL_GRAPHIC_NAME, boolean isDefaultImageRequired) {
+
+        String url = null;
+
+        try {
+            S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+
+            if (userId > 0) {
+                url = s3Bucket.getAccessProtocol()
+                        + s3Bucket.getPublicBaseURL()
+                        + "/"
+                        + s3Bucket.getName()
+                        + FULL_PATH_THUMBNAIL_GRAPHIC_NAME;
             }
 
             if (!ResourceCheckUtil.urlExists(url) && isDefaultImageRequired) {

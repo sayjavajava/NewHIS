@@ -2,6 +2,7 @@ package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.User;
+import com.sd.his.request.ImageWrapper;
 import com.sd.his.request.PatientRequest;
 import com.sd.his.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.response.GenericAPIResponse;
@@ -9,8 +10,11 @@ import com.sd.his.response.ProfileImageUploadResponse;
 import com.sd.his.response.UserResponseWrapper;
 import com.sd.his.service.AWSService;
 import com.sd.his.service.HISUserService;
+import com.sd.his.service.InsuranceManager;
 import com.sd.his.service.PatientService;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.InsuranceWrapper;
 import com.sd.his.wrapper.PatientWrapper;
 import com.sd.his.wrapper.UserCreateRequest;
 import com.sd.his.wrapper.UserWrapper;
@@ -49,6 +53,8 @@ public class UserAPI {
     private AWSService awsService;
     @Autowired
     PatientService patientService;
+    @Autowired
+    InsuranceManager insuranceManager;
 
     private final Logger logger = LoggerFactory.getLogger(UserAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
@@ -722,6 +728,233 @@ public class UserAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiOperation(httpMethod = "POST", value = "Upload Image",
+            notes = "This method will upload the image of any user.",
+            produces = "application/json", nickname = "Upload Image",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = " image  uploaded successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/uploadImageFront/insurance/{id}", method = RequestMethod.POST,
+            headers = ("content-type=multipart/*"))
+    public ResponseEntity<?> uploadImageFrontByUserId(HttpServletRequest request,
+                                                      @PathVariable("id") long userId,
+                                                      @RequestParam("file") MultipartFile file) {
+        /**
+         * Multiple images will be uploaded by one user is
+         *
+         * **/
+
+        logger.info("uploadImageFrontByUserId API called for user: " + userId);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.error"));
+        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+
+            if (userId <= 0) {
+
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            User user = this.userService.findById(userId);
+            ImageWrapper imageWrapper = new ImageWrapper();
+
+            imageWrapper.setUserId(user.getId());
+
+            if (user.getInsurance() != null) {
+                imageWrapper.setInsuranceId(user.getInsurance().getId());
+            }
+            if (user.getProfile() != null) {
+                imageWrapper.setProfileId(user.getProfile().getId());
+            } else {
+                throw new Exception("Profile not found of current user");
+            }
+
+            if (HISCoreUtil.isValidObject(user)) {
+                if (HISCoreUtil.isValidObject(file)) {
+                    byte[] byteArr = file.getBytes();
+                    InputStream is = new ByteArrayInputStream(byteArr);
+                    boolean isSaved = false;
+
+                    isSaved = awsService.uploadImageByUserId(is,
+                            HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
+                            imageWrapper.getUserId()
+                                    + "_"
+                                    + imageWrapper.getInsuranceId()
+                                    + "_"
+                                    + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME,
+                            imageWrapper.getUserId()
+                                    + "_"
+                                    + imageWrapper.getInsuranceId()
+                                    + "_"
+                                    + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_GRAPHIC_NAME);
+
+                    if (isSaved) {
+                        String imgURL = awsService.getThumbnailImageUrl(imageWrapper.getUserId(),
+                                "/"
+                                        + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
+                                        + imageWrapper.getUserId()
+                                        + "_"
+                                        + imageWrapper.getInsuranceId()
+                                        + "_"
+                                        + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME);
+                        user.getInsurance().setPhotoFront(imgURL);
+                        userService.updateUser(user);
+
+                        response.setResponseMessage(messageBundle.getString("user.image.uploaded.success"));
+                        response.setResponseCode(ResponseEnum.USER_IMG_UPLOAD_SUCCESS.getValue());
+                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                        response.setResponseData(new ProfileImageUploadResponse(user));
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    } else {
+                        response.setResponseMessage(messageBundle.getString("user.invalid.media"));
+                        response.setResponseCode(ResponseEnum.USER_INVALID_FILE_ERROR.getValue());
+                        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                        response.setResponseData(null);
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    }
+                } else {
+                    response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
+                    response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+
+                }
+                userService.updateUser(user);
+            }
+        } catch (Exception ex) {
+            logger.error("uploadImageFrontByUserId Exception.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Upload Image",
+            notes = "This method will upload the image of any user.",
+            produces = "application/json", nickname = "Upload Image",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = " image  uploaded successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/uploadImageBack/insurance/{id}", method = RequestMethod.POST,
+            headers = ("content-type=multipart/*"))
+    public ResponseEntity<?> uploadImageBackByUserId(HttpServletRequest request,
+                                                     @PathVariable("id") long userId,
+                                                     @RequestParam("file") MultipartFile file) {
+
+        logger.info("uploadImageBackByUserId API called for user: " + userId);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.error"));
+        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+
+            if (userId <= 0) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            User user = this.userService.findById(userId);
+            ImageWrapper imageWrapper = new ImageWrapper();
+
+
+            imageWrapper.setUserId(user.getId());
+            if (user.getInsurance() != null) {
+                imageWrapper.setInsuranceId(user.getInsurance().getId());
+            }
+            if (user.getProfile() != null) {
+                imageWrapper.setProfileId(user.getProfile().getId());
+            } else {
+                throw new Exception("Profile not found of current user");
+            }
+
+            if (HISCoreUtil.isValidObject(user)) {
+                if (HISCoreUtil.isValidObject(file)) {
+                    byte[] byteArr = file.getBytes();
+                    InputStream is = new ByteArrayInputStream(byteArr);
+                    boolean isSaved = false;
+                    isSaved = awsService.uploadImageByUserId(is,
+                            HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
+                            imageWrapper.getUserId()
+                                    + "_"
+                                    + imageWrapper.getInsuranceId()
+                                    + "_"
+                                    + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME,
+                            imageWrapper.getUserId()
+                                    + "_"
+                                    + imageWrapper.getInsuranceId()
+                                    + "_"
+                                    + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_GRAPHIC_NAME);
+                    if (isSaved) {
+                        String imgURL = awsService.getThumbnailImageUrl(imageWrapper.getUserId(),
+                                "/"
+                                        + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
+                                        + imageWrapper.getUserId()
+                                        + "_"
+                                        + imageWrapper.getInsuranceId()
+                                        + "_"
+                                        + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME);
+                        user.getInsurance().setPhotoBack(imgURL);
+                        userService.updateUser(user);
+
+                        response.setResponseMessage(messageBundle.getString("user.image.uploaded.success"));
+                        response.setResponseCode(ResponseEnum.USER_IMG_UPLOAD_SUCCESS.getValue());
+                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                        response.setResponseData(new ProfileImageUploadResponse(user));
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    } else {
+                        response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
+                        response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
+                        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                        response.setResponseData(null);
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    }
+                } else {
+                    response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
+                    response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+
+                }
+                userService.updateUser(user);
+            }
+        } catch (Exception ex) {
+            logger.error("uploadImageBackByUserId Exception.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @ApiOperation(httpMethod = "GET", value = "Paginated Patients",
             notes = "This method will return Paginated Patients",
             produces = "application/json", nickname = "Paginated Patients",
@@ -1166,7 +1399,6 @@ public class UserAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 }
 
