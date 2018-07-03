@@ -173,7 +173,6 @@ public class BranchService {
         branchResponseWrapper.setExamRooms(roomListData);
         BranchUser branchUser = branchUserRepository.findByBranch(branch);
         branchResponseWrapper.setUser(branchUser.getUser());
-        //branchResponseWrapper.setUsername(branchUser.getUser().getUsername());
 
         return branchResponseWrapper;
     }
