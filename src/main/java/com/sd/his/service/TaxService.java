@@ -1,7 +1,7 @@
 package com.sd.his.service;
 
 import com.sd.his.model.Tax;
-import com.sd.his.repositiories.TaxRepository;
+import com.sd.his.repositories.TaxRepository;
 import com.sd.his.request.SaveTaxRequest;
 import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;

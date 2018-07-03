@@ -56,11 +56,12 @@ public class UserCreateRequest {
     String homePhone;
     String cellPhone;
     String primaryBranch;
-    String[] selectedRestrictBranch;
+    Long[] selectedVisitBranches;
     String dateFrom;
     String dateTo;
     Long createdOn;
     Long updatedOn;
+    String otherDashboard;
 
     public String getUserType() {
         return userType;
@@ -148,6 +149,14 @@ public class UserCreateRequest {
 
     public void setOtherDoctorDashBoard(boolean otherDoctorDashBoard) {
         this.otherDoctorDashBoard = otherDoctorDashBoard;
+    }
+
+    public String getOtherDashboard() {
+        return otherDashboard;
+    }
+
+    public void setOtherDashboard(String otherDashboard) {
+        this.otherDashboard = otherDashboard;
     }
 
     public Boolean getAllowDiscount() {
@@ -310,12 +319,12 @@ public class UserCreateRequest {
         this.primaryBranch = primaryBranch;
     }
 
-    public String[] getSelectedRestrictBranch() {
-        return selectedRestrictBranch;
+    public Long[] getSelectedVisitBranches() {
+        return selectedVisitBranches;
     }
 
-    public void setSelectedRestrictBranch(String[] selectedRestrictBranch) {
-        this.selectedRestrictBranch = selectedRestrictBranch;
+    public void setSelectedVisitBranches(Long[] selectedVisitBranches) {
+        this.selectedVisitBranches = selectedVisitBranches;
     }
 
     public String getDateFrom() {

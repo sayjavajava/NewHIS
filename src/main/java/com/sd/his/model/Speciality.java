@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /*
@@ -31,7 +32,8 @@ import java.util.List;
 @Entity
 @Table(name = "SPECIALITY")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Speciality {
+public class Speciality implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
@@ -57,8 +59,9 @@ public class Speciality {
     private long createdOn;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "specialities", cascade = CascadeType.ALL)
-    private List<Organization> organizations;
+    @OneToMany(targetEntity = OrganizationSpecialty.class, mappedBy = "speciality", fetch = FetchType.LAZY)
+    private List<OrganizationSpecialty> organization_specialties;
+
 
     public Speciality() {
     }
@@ -130,11 +133,11 @@ public class Speciality {
         this.createdOn = createdOn;
     }
 
-    public List<Organization> getOrganizations() {
-        return organizations;
+    public List<OrganizationSpecialty> getOrganization_specialties() {
+        return organization_specialties;
     }
 
-    public void setOrganizations(List<Organization> organizations) {
-        this.organizations = organizations;
+    public void setOrganization_specialties(List<OrganizationSpecialty> organization_specialties) {
+        this.organization_specialties = organization_specialties;
     }
 }

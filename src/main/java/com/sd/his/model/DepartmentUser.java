@@ -22,10 +22,12 @@ package com.sd.his.model;/*
  */
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "DEPARTMENT_USER")
-public class DepartmentUser {
+public class DepartmentUser implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)

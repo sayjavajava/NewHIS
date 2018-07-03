@@ -21,8 +21,10 @@ public class UserWrapper {
     String profileImg;
     String status;
     String aboutMe;
+    List<RoleWrapper> roles;
     List<PermissionWrapper> permissions;
     List<BranchWrapper> branches;
+    String commaSeparatedRoles;
 
 
     public UserWrapper() {
@@ -38,14 +40,13 @@ public class UserWrapper {
         this.address = user.getProfile().getAddress();
         this.state = user.getProfile().getState();
         this.city = user.getProfile().getCity();
-        this.userType=user.getUserType();
+        this.userType = user.getUserType();
         this.country = user.getProfile().getCountry();
         this.gender = user.getProfile().getGender();
         this.profileImg = user.getProfile().getProfileImg();
         this.status = user.getProfile().getStatus();
         this.aboutMe = user.getProfile().getAboutMe();
     }
-
 
     public String getUserType() {
         return userType;
@@ -189,5 +190,21 @@ public class UserWrapper {
 
     public void setAboutMe(String aboutMe) {
         this.aboutMe = aboutMe;
+    }
+
+    public List<RoleWrapper> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleWrapper> roles) {
+        this.roles = roles;
+    }
+
+    public String getCommaSeparatedRoles() {
+        return commaSeparatedRoles;
+    }
+
+    public void setCommaSeparatedRoles(String commaSeparatedRoles) {
+        this.commaSeparatedRoles = commaSeparatedRoles;
     }
 }

@@ -2,33 +2,37 @@ package com.sd.his.model;/*
  * @author    : waqas kamran
  * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.*
  * @FileName  : UserAuthAPI
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "ROOM")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Room {
+public class Room implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
@@ -57,24 +61,16 @@ public class Room {
     @Column(name = "ALLOW_ONLINE_SCHEDULING")
     private boolean allowOnlineScheduling;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = Appointment.class, mappedBy = "room", fetch = FetchType.LAZY)
+    private List<Appointment> appointments;
+
     public Room() {
     }
 
     public Room(String examName, boolean allowOnlineScheduling) {
         this.examName = examName;
-        this.branch = branch;
         this.allowOnlineScheduling = allowOnlineScheduling;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Room{" +
-                "id=" + id +
-                ", examName='" + examName + '\'' +
-                ", branch=" + branch +
-                ", allowOnlineScheduling=" + allowOnlineScheduling +
-                '}';
     }
 
     public boolean isDeleted() {
@@ -139,5 +135,13 @@ public class Room {
 
     public void setAllowOnlineScheduling(boolean allowOnlineScheduling) {
         this.allowOnlineScheduling = allowOnlineScheduling;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 }

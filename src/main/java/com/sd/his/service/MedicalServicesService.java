@@ -2,7 +2,7 @@ package com.sd.his.service;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.*;
-import com.sd.his.repositiories.*;
+import com.sd.his.repositories.*;
 import com.sd.his.request.MedicalServiceRequest;
 import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;

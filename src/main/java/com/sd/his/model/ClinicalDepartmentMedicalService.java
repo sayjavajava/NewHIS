@@ -3,6 +3,7 @@ package com.sd.his.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /*
  * @author    : Irfan Nasim
@@ -29,7 +30,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "CLINICAL_DEPARTMENT_MEDICAL_SERVICE")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ClinicalDepartmentMedicalService {
+public class ClinicalDepartmentMedicalService implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)

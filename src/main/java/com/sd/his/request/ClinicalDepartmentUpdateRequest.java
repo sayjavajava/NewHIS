@@ -30,6 +30,7 @@ public class ClinicalDepartmentUpdateRequest {
     private long id;
     private String name;
     private String description;
+    private boolean active;
 
     public long getId() {
         return id;
@@ -53,5 +54,13 @@ public class ClinicalDepartmentUpdateRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

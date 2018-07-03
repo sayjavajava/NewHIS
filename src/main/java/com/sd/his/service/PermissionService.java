@@ -2,7 +2,7 @@ package com.sd.his.service;
 
 import com.sd.his.model.Permission;
 import com.sd.his.model.Role;
-import com.sd.his.repositiories.PermissionRepository;
+import com.sd.his.repositories.PermissionRepository;
 import com.sd.his.request.RoleAndPermissionCreateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

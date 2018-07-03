@@ -30,4 +30,13 @@ public class HISConstants {
     public static final String TIME_PATTERN = "h:mm a";
     public final static String DATE_FORMATE_THREE = "yyyy-MM-dd";
 
+    public final static String S3_USER_DIRECTORY = "users";
+    public final static String S3_USER_PROFILE_DIRECTORY = "profile";
+    public final static String S3_USER_PROFILE_GRAPHIC_NAME = "profile-image.jpg";
+    public final static String S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME = "profile-thumbnail-image.jpg";
+    public final static String S3_CORE_DIRECTORY = "core";
+    public final static String S3_CORE_GRAPHICS_DIRECTORY = "graphics";
+    public final static String S3_CORE_IMAGES_DIRECTORY = "images";
+    public final static String S3_CORE_PROFILE_GRAPHIC_HOLDER_NAME = "user-yellow.png";
+
 }

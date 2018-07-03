@@ -2,12 +2,14 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.CollectionId;
-import org.hibernate.annotations.Type;
+import com.sd.his.enums.UserTypeEnum;
+import com.sd.his.request.PatientRequest;
+import org.hibernate.hql.spi.id.TableBasedDeleteHandlerImpl;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,13 +38,13 @@ import java.util.List;
 @Entity
 @Table(name = "USER")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "ID", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @NotNull
     @Column(name = "USERNAME", unique = true)
     private String username;
@@ -69,6 +71,13 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "PROFILE_ID")
     private Profile profile;
+
+    @Column(name = "SYSTEM_DOCTOR", columnDefinition = "boolean default false")
+    private boolean systemDoctor;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "INSURANCE_ID")
+    private Insurance insurance;
 
     @JsonIgnore
     @OneToMany(targetEntity = UserPermission.class, mappedBy = "user", fetch = FetchType.LAZY)
@@ -98,6 +107,9 @@ public class User {
     @OneToMany(targetEntity = DutyWithDoctor.class, mappedBy = "doctor", fetch = FetchType.LAZY)
     private List<DutyWithDoctor> nurse;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = UserVisitBranches.class, mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserVisitBranches> userVisitBranches;
 
     @JsonIgnore
     @OneToMany(targetEntity = UserMedicalService.class, mappedBy = "user", fetch = FetchType.LAZY)
@@ -107,7 +119,31 @@ public class User {
     @OneToMany(targetEntity = UserDutyShift.class, mappedBy = "user", fetch = FetchType.LAZY)
     private List<UserDutyShift> dutyShifts;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = Appointment.class, mappedBy = "patient", fetch = FetchType.LAZY)
+    private List<Appointment> appointments;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "PRIMARY_DOCTOR")
+    private User primaryDoctor;
+
     public User() {
+    }
+
+    public User(PatientRequest patientRequest, String userType) {
+        this.id = patientRequest.getUserId() > 0 ? patientRequest.getUserId() : null;
+        this.username = patientRequest.getUserName();
+        this.email = patientRequest.getEmail();
+        this.active = patientRequest.isStatusUser();
+        this.userType = userType;
+
+    }
+
+    public User(User user, PatientRequest patientRequest) {
+        user.username = patientRequest.getUserName();
+        user.email = patientRequest.getEmail();
+        user.active = patientRequest.isStatusUser();
+        user.userType = UserTypeEnum.PATIENT.toString();
     }
 
     @Override
@@ -121,6 +157,14 @@ public class User {
                 '}';
     }
 
+
+    public List<UserVisitBranches> getUserVisitBranches() {
+        return userVisitBranches;
+    }
+
+    public void setUserVisitBranches(List<UserVisitBranches> userVisitBranches) {
+        this.userVisitBranches = userVisitBranches;
+    }
 
     public List<DutyWithDoctor> getNurse() {
         return nurse;
@@ -182,6 +226,14 @@ public class User {
         return password;
     }
 
+    public boolean isSystemDoctor() {
+        return systemDoctor;
+    }
+
+    public void setSystemDoctor(boolean systemDoctor) {
+        this.systemDoctor = systemDoctor;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -208,6 +260,14 @@ public class User {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public Insurance getInsurance() {
+        return insurance;
+    }
+
+    public void setInsurance(Insurance insurance) {
+        this.insurance = insurance;
     }
 
     public List<UserPermission> getPermissions() {
@@ -256,5 +316,21 @@ public class User {
 
     public void setDutyShifts(List<UserDutyShift> dutyShifts) {
         this.dutyShifts = dutyShifts;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public User getPrimaryDoctor() {
+        return primaryDoctor;
+    }
+
+    public void setPrimaryDoctor(User primaryDoctor) {
+        this.primaryDoctor = primaryDoctor;
     }
 }

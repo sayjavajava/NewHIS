@@ -1,28 +1,27 @@
-package com.sd.his.wrapper;/*
+package com.sd.his.wrapper;
+
+/*
  * @author    : waqas kamran
  * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.*
  * @FileName  : UserAuthAPI
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
-
-
-
 public class ExamRooms {
     boolean allowOnlineScheduling;
     String examName;

@@ -4,9 +4,9 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.ICDCode;
 import com.sd.his.model.ICDCodeVersion;
 import com.sd.his.model.ICDVersion;
-import com.sd.his.repositiories.ICDCodeRepository;
-import com.sd.his.repositiories.ICDCodeVersionRepository;
-import com.sd.his.repositiories.ICDVersionRepository;
+import com.sd.his.repositories.ICDCodeRepository;
+import com.sd.his.repositories.ICDCodeVersionRepository;
+import com.sd.his.repositories.ICDVersionRepository;
 import com.sd.his.request.ICDCodeCreateRequest;
 import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
@@ -113,19 +113,19 @@ public class ICDService  {
         return codeRepository.findAllByCodeContainingAndDeletedFalse(code).size();
     }
 
-    public List<ICDCodeVersionWrapper> searchCodeVersionByVersionName(int offset, int limit, String versionName) {
+    public List<ICDCodeVersionWrapper> searchCodeVersionByVersionName(int offset, int limit, String versionName,String code) {
         List<ICDCodeVersionWrapper> codeVersionsWrapper = new ArrayList<>();
         Pageable pageable = new PageRequest(offset, limit);
 
-        List<ICDCodeVersion> searchedCVsByName = this.codeVersionRepository.findAllByVersion_NameContainingAndVersion_DeletedFalse(versionName, pageable);
+        List<ICDCodeVersion> searchedCVsByName = this.codeVersionRepository.findAllByVersion_NameContainingAndVersion_DeletedFalseOrIcd_CodeContainingAndIcd_DeletedFalse(versionName,code, pageable);
         if (!HISCoreUtil.isListEmpty(searchedCVsByName)) {
             codeVersionsWrapper = APIUtil.buildICDCodeVersionWrapper(searchedCVsByName);
         }
         return codeVersionsWrapper;
     }
 
-    public int countSearchCodeVersionByVersionName(String versionName) {
-        return codeVersionRepository.findAllByVersion_NameContainingAndVersion_DeletedFalse(versionName).size();
+    public int countSearchCodeVersionByVersionName(String versionName,String code) {
+        return codeVersionRepository.findAllByVersion_NameContainingAndVersion_DeletedFalseOrIcd_CodeContainingAndIcd_DeletedFalse(versionName,code).size();
     }
 
     public List<ICDVersionWrapper> searchByVersion(String name, int offset, int limit) {

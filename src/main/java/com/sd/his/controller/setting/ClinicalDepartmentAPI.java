@@ -433,17 +433,16 @@ public class ClinicalDepartmentAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            ClinicalDepartment dbDpt = departmentService.findClinicalDepartmentById(updateRequest.getId());
-            if (!HISCoreUtil.isValidObject(dbDpt)) {
-                response.setResponseMessage(messageBundle.getString("cli.dpts.not.found.error"));
-                response.setResponseCode(ResponseEnum.CLI_DPT_NOT_FOUND.getValue());
+            if (!departmentService.isClinicalDepartmentByNameAndNotIdExist(updateRequest.getName(),updateRequest.getId())) {
+                response.setResponseMessage(messageBundle.getString("cli.dpts.already.exist"));
+                response.setResponseCode(ResponseEnum.CLI_DPT_ALREADY_EXIST.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
                 logger.info("updateClinicalDepartment API - Department not found...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            departmentService.updateClinicalDepartment(updateRequest, dbDpt);
+            departmentService.updateClinicalDepartment(updateRequest);
             response.setResponseMessage(messageBundle.getString("cli.dpts.update.success"));
             response.setResponseCode(ResponseEnum.CLI_DPT_UPDATE_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());

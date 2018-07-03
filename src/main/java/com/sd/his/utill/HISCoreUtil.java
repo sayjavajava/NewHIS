@@ -70,9 +70,13 @@ public class HISCoreUtil {
 
     public static long convertDateToMilliSeconds(String myDate) {
         //= "2014/10/29 18:10:45";
-        Instant instant = Instant.parse(myDate);
+        if (myDate != null) {
+            Instant instant = Instant.parse(myDate);
 
-        return instant.toEpochMilli();
+            return instant.toEpochMilli();
+        } else {
+            return 0;
+        }
     }
 
 
