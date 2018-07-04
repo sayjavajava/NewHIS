@@ -48,7 +48,7 @@ public class APIUtil {
         admin.setCreatedByFullName("");
         admin.setCreatedOn(dbAdmin.getProfile().getCreatedOn());
         admin.setGender(dbAdmin.getProfile().getGender());
-        admin.setProfileImg(dbAdmin.getProfile().getProfileImg());
+        admin.setProfileImg(dbAdmin.getProfile().getProfileImgURL());
         admin.setAddress(dbAdmin.getProfile().getAddress());
         admin.setState(dbAdmin.getProfile().getState());
         admin.setCity(dbAdmin.getProfile().getCity());

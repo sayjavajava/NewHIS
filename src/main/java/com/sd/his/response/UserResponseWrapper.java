@@ -69,7 +69,7 @@ public class UserResponseWrapper {
         this.userType = user.getUserType();
         this.country = user.getProfile().getCountry();
         this.gender = user.getProfile().getGender();
-        this.profileImg = user.getProfile().getProfileImg();
+        this.profileImg = user.getProfile().getProfileImgURL();
         this.status = user.getProfile().getStatus();
 
     }

@@ -14,7 +14,6 @@ import com.sd.his.service.InsuranceManager;
 import com.sd.his.service.PatientService;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.InsuranceWrapper;
 import com.sd.his.wrapper.PatientWrapper;
 import com.sd.his.wrapper.UserCreateRequest;
 import com.sd.his.wrapper.UserWrapper;
@@ -692,7 +691,7 @@ public class UserAPI {
                     Boolean isSaved = awsService.uploadImage(is, id);
                     if (isSaved) {
                         String imgURL = awsService.getProfileThumbnailImageUrl(id);
-                        user.getProfile().setProfileImg(imgURL);
+                        user.getProfile().setProfileImgURL(imgURL);
                         userService.updateUser(user);
 
                         response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.success"));
@@ -809,7 +808,7 @@ public class UserAPI {
                                         + imageWrapper.getInsuranceId()
                                         + "_"
                                         + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME);
-                        user.getInsurance().setPhotoFront(imgURL);
+                        user.getInsurance().setPhotoFrontURL(imgURL);
                         userService.updateUser(user);
 
                         response.setResponseMessage(messageBundle.getString("user.image.uploaded.success"));
@@ -919,7 +918,7 @@ public class UserAPI {
                                         + imageWrapper.getInsuranceId()
                                         + "_"
                                         + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME);
-                        user.getInsurance().setPhotoBack(imgURL);
+                        user.getInsurance().setPhotoBackURL(imgURL);
                         userService.updateUser(user);
 
                         response.setResponseMessage(messageBundle.getString("user.image.uploaded.success"));

@@ -38,7 +38,7 @@ public class ProfileImageUploadResponse {
         this.userId = user.getId();
         this.firstName = user.getProfile().getFirstName();
         this.lastName = user.getProfile().getLastName();
-        this.profileImgUrl = user.getProfile().getProfileImg();
+        this.profileImgUrl = user.getProfile().getProfileImgURL();
     }
 
     public ProfileImageUploadResponse(long userId, String firstName, String lastName, String profileImgUrl) {

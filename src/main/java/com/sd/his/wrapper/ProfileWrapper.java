@@ -63,7 +63,7 @@ public class ProfileWrapper {
         this.workingDays = profile.getWorkingDays() == null ? new ArrayList<>() : profile.getWorkingDays();
         this.allowDiscount = profile.getAllowDiscount() == null ? false : profile.getAllowDiscount();
         this.gender = profile.getGender() == null ? null : profile.getGender();
-        this.profileImg = profile.getProfileImg() == null ? "" : profile.getProfileImg();
+        this.profileImg = profile.getProfileImgURL() == null ? "" : profile.getProfileImgURL();
         this.address = profile.getAddress() == null ? "" : profile.getAddress();
         this.city = profile.getCity() == null ? "" : profile.getCity();
         this.state = profile.getState() == null ? "" : profile.getState();

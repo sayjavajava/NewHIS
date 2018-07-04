@@ -1,14 +1,11 @@
 package com.sd.his.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.request.PatientRequest;
 import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.sql.Blob;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -67,11 +64,11 @@ public class Insurance {
     @Column(name = "PRIMARY_INSURANCE_NOTES")
     private String primaryInsuranceNotes;
 
-    @Column(name = "PHOTO_FRONT")
-    private String photoFront;
+    @Column(name = "PHOTO_FRONT_URL")
+    private String photoFrontURL;
 
-    @Column(name = "PHOTO_BACK")
-    private String photoBack;
+    @Column(name = "PHOTO_BACK_URL")
+    private String photoBackURL;
 
     @Column(name = "CREATED_ON")
     private Long created;
@@ -99,8 +96,8 @@ public class Insurance {
             this.cardExpiryDate = DateUtil.getDateFromString(patientRequest.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
         }
         this.primaryInsuranceNotes = patientRequest.getPrimaryInsuranceNotes();
-        //this.photoFront = patientRequest.getPhotoFront();
-        //this.photoBack = patientRequest.getPhotoBack();
+        //this.photoFrontURL = patientRequest.getPhotoFrontURL();
+        //this.photoBackURL = patientRequest.getPhotoBackURL();
         if (patientRequest.getInsuranceId() <= 0) {
             this.created = System.currentTimeMillis();
         }
@@ -120,8 +117,8 @@ public class Insurance {
         if (!HISCoreUtil.isNull(patientRequest.getCardExpiryDate()))
             insurance.cardExpiryDate = DateUtil.getDateFromString(patientRequest.getCardExpiryDate() + "", HISConstants.DATE_FORMATE_THREE);
         insurance.primaryInsuranceNotes = patientRequest.getPrimaryInsuranceNotes();
-        //this.photoFront = patientRequest.getPhotoFront();
-        //this.photoBack = patientRequest.getPhotoBack();
+        //this.photoFrontURL = patientRequest.getPhotoFrontURL();
+        //this.photoBackURL = patientRequest.getPhotoBackURL();
         insurance.created = System.currentTimeMillis();
         insurance.updated = System.currentTimeMillis();
         insurance.deleted = false;
@@ -199,20 +196,20 @@ public class Insurance {
         this.primaryInsuranceNotes = primaryInsuranceNotes;
     }
 
-    public String getPhotoFront() {
-        return photoFront;
+    public String getPhotoFrontURL() {
+        return photoFrontURL;
     }
 
-    public void setPhotoFront(String photoFront) {
-        this.photoFront = photoFront;
+    public void setPhotoFrontURL(String photoFrontURL) {
+        this.photoFrontURL = photoFrontURL;
     }
 
-    public String getPhotoBack() {
-        return photoBack;
+    public String getPhotoBackURL() {
+        return photoBackURL;
     }
 
-    public void setPhotoBack(String photoBack) {
-        this.photoBack = photoBack;
+    public void setPhotoBackURL(String photoBackURL) {
+        this.photoBackURL = photoBackURL;
     }
 
     public Long getCreated() {

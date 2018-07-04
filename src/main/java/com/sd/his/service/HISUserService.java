@@ -920,6 +920,12 @@ public class HISUserService implements UserDetailsService {
         this.userRepository.save(patient);
         userRole = new UserRole(patient, roleRepo.findByName(UserTypeEnum.PATIENT.getValue()));
         userRoleRepository.save(userRole);
+
+        /// now saving images against user id
+
+      /*  if(patientRequest.getProfileImgURL()){
+
+        }*/
     }
 
     public boolean isUserNameAlreadyExists(String userName) {
@@ -965,8 +971,7 @@ public class HISUserService implements UserDetailsService {
     }
 
     public PatientRequest getUserByUserTypeAndId(long id) {
-        PatientRequest patientRequest = this.userRepository.findUserById(id);
-        return patientRequest;
+        return this.userRepository.findUserById(id);
     }
 
     public void updatePatient(PatientRequest patientRequest) throws ParseException, Exception {

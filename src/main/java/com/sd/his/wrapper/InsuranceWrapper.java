@@ -4,8 +4,6 @@ import com.sd.his.model.Insurance;
 import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
 
-import java.util.Date;
-
 public class InsuranceWrapper {
 
     private long insuranceId;
@@ -34,8 +32,8 @@ public class InsuranceWrapper {
         this.cardIssuedDate = insurance.getCardIssuedDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
         this.cardExpiryDate = insurance.getCardExpiryDate() == null ? "" :DateUtil.getFormattedDateFromDate(insurance.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
         this.primaryInsuranceNotes = insurance.getPrimaryInsuranceNotes();
-        this.photoFront = insurance.getPhotoFront();
-        this.photoBack = insurance.getPhotoBack();
+        this.photoFront = insurance.getPhotoFrontURL();
+        this.photoBack = insurance.getPhotoBackURL();
     }
 
     public long getInsuranceId() {

@@ -7,6 +7,7 @@ import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.RaceWrapper;
 
+import java.io.File;
 import java.util.List;
 
 /* @author    : Qari Jamal
@@ -39,7 +40,8 @@ public class PatientRequest {
     private String middleName = "";
     private String lastName = "";
     private String foreignName = "";
-    private String profileImg;
+    private String profileImgURL;
+    private File profileImg;
     private String homePhone = "";
     private String cellPhone = "";
     private boolean disableSMSTxt = true;
@@ -80,8 +82,10 @@ public class PatientRequest {
     private String cardIssuedDate = "";
     private String cardExpiryDate = "";
     private String primaryInsuranceNotes = "";
-    private String photoFront;
-    private String photoBack;
+    private String photoFrontURL;
+    private File photoFront;
+    private String photoBackURL;
+    private File photoBack;
 
     public PatientRequest() {
     }
@@ -117,7 +121,7 @@ public class PatientRequest {
         this.signatureOnFile = profile.getSignatureOnFile();
 
         this.gender = profile.getGender() == null ? null : profile.getGender();
-        this.profileImg = profile.getProfileImg();
+        this.profileImgURL = profile.getProfileImgURL();
         this.city = profile.getCity() == null ? "" : profile.getCity();
         this.state = profile.getState() == null ? "" : profile.getState();
         this.country = profile.getCountry() == null ? "" : profile.getCountry();
@@ -138,8 +142,8 @@ public class PatientRequest {
         this.cardIssuedDate = insurance.getCardIssuedDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
         this.cardExpiryDate = insurance.getCardExpiryDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
         this.primaryInsuranceNotes = insurance.getPrimaryInsuranceNotes();
-        this.photoFront = insurance.getPhotoFront();
-        this.photoBack = insurance.getPhotoBack();
+        this.photoFrontURL = insurance.getPhotoFrontURL();
+        this.photoBackURL = insurance.getPhotoBackURL();
     }
 
     public long getUserId() {
@@ -206,12 +210,12 @@ public class PatientRequest {
         this.foreignName = foreignName;
     }
 
-    public String getProfileImg() {
-        return profileImg;
+    public String getProfileImgURL() {
+        return profileImgURL;
     }
 
-    public void setProfileImg(String profileImg) {
-        this.profileImg = profileImg;
+    public void setProfileImgURL(String profileImgURL) {
+        this.profileImgURL = profileImgURL;
     }
 
     public String getHomePhone() {
@@ -486,20 +490,20 @@ public class PatientRequest {
         this.primaryInsuranceNotes = primaryInsuranceNotes;
     }
 
-    public String getPhotoFront() {
-        return photoFront;
+    public String getPhotoFrontURL() {
+        return photoFrontURL;
     }
 
-    public void setPhotoFront(String photoFront) {
-        this.photoFront = photoFront;
+    public void setPhotoFrontURL(String photoFrontURL) {
+        this.photoFrontURL = photoFrontURL;
     }
 
-    public String getPhotoBack() {
-        return photoBack;
+    public String getPhotoBackURL() {
+        return photoBackURL;
     }
 
-    public void setPhotoBack(String photoBack) {
-        this.photoBack = photoBack;
+    public void setPhotoBackURL(String photoBackURL) {
+        this.photoBackURL = photoBackURL;
     }
 
     public boolean isProfileStatus() {

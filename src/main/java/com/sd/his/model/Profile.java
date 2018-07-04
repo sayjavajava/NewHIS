@@ -101,8 +101,8 @@ public class Profile implements Serializable {
     @Column(name = "GENDER")
     private String gender;
 
-    @Column(name = "PROFILE_IMG")
-    private String profileImg;
+    @Column(name = "PROFILE_IMG_URL")
+    private String profileImgURL;
 
     @Column(name = "ADDRESS")
     private String address;
@@ -443,12 +443,12 @@ public class Profile implements Serializable {
         this.gender = gender;
     }
 
-    public String getProfileImg() {
-        return profileImg;
+    public String getProfileImgURL() {
+        return profileImgURL;
     }
 
-    public void setProfileImg(String profileImg) {
-        this.profileImg = profileImg;
+    public void setProfileImgURL(String profileImgURL) {
+        this.profileImgURL = profileImgURL;
     }
 
     public String getAddress() {
