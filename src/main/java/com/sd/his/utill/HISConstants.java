@@ -32,6 +32,7 @@ public class HISConstants {
 
     public final static String S3_USER_DIRECTORY = "users";
     public final static String S3_USER_PROFILE_DIRECTORY = "profile";
+    public final static String S3_USER_PROFILE_DIRECTORY_PATH = "users/profile/";
     public final static String S3_USER_INSURANCE_DIRECTORY_PATH = "users/insurance/";
     public final static String S3_USER_PROFILE_GRAPHIC_NAME = "profile-image.jpg";
     public final static String S3_USER_INSURANCE_GRAPHIC_NAME = "insurance-image.jpg";

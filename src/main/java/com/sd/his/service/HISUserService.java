@@ -1,5 +1,7 @@
 package com.sd.his.service;
 
+import com.sd.his.configuration.AWSS3;
+import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.enums.PropertyEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
@@ -7,6 +9,7 @@ import com.sd.his.repositories.*;
 import com.sd.his.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.request.PatientRequest;
 import com.sd.his.response.UserResponseWrapper;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
 import org.slf4j.Logger;
@@ -23,6 +26,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.*;
@@ -38,6 +45,10 @@ public class HISUserService implements UserDetailsService {
     InsuranceRepository insuranceRepository;
     @Autowired
     private ICDCodeRepository icdCodeRepository;
+    @Autowired
+    AWSService awsService;
+    @Autowired
+    S3KeyGen s3KeyGen;
 
     private UserRepository userRepository;
     private PermissionRepository permissionRepo;
@@ -905,7 +916,7 @@ public class HISUserService implements UserDetailsService {
         }
     }
 
-    public void savePatient(PatientRequest patientRequest) throws ParseException, Exception {
+    public String savePatient(PatientRequest patientRequest) throws ParseException, Exception {
         Profile profile = new Profile(patientRequest);
         UserRole userRole;
         User selectedDoctor = this.userRepository.findOne(patientRequest.getSelectedDoctor());
@@ -923,9 +934,115 @@ public class HISUserService implements UserDetailsService {
 
         /// now saving images against user id
 
-      /*  if(patientRequest.getProfileImgURL()){
+        ///profile photo save
+        /*String url = null;
 
+        url = this.saveImage(patientRequest.getProfileImgByteArray(),
+                HISConstants.S3_USER_PROFILE_DIRECTORY_PATH,
+                patient.getId()
+                        + "_"
+                        + patient.getInsurance().getId()
+                        + "_"
+                        + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME,
+                patient.getId()
+                        + "_"
+                        + patient.getInsurance().getId()
+                        + "_"
+                        + HISConstants.S3_USER_PROFILE_GRAPHIC_NAME,
+                "/"
+                        + HISConstants.S3_USER_PROFILE_DIRECTORY_PATH
+                        + patient.getId()
+                        + "_"
+                        + patient.getInsurance().getId()
+                        + "_"
+                        + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME);
+
+        if (HISCoreUtil.isValidObject(url)) {
+            patient.getProfile().setProfileImgURL(url);
+            this.userRepository.save(patient);
+            url = null;
+        }
+        ///profile photo save
+
+        ///front photo save
+
+        url = this.saveImage(patientRequest.getPhotoFrontByteArray(),
+                HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
+                patient.getId()
+                        + "_"
+                        + patient.getInsurance().getId()
+                        + "_"
+                        + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME,
+                patient.getId()
+                        + "_"
+                        + patient.getInsurance().getId()
+                        + "_"
+                        + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_GRAPHIC_NAME,
+                "/"
+                        + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
+                        + patient.getId()
+                        + "_"
+                        + patient.getInsurance().getId()
+                        + "_"
+                        + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME);
+
+        if (HISCoreUtil.isValidObject(url)) {
+            patient.getInsurance().setPhotoFrontURL(url);
+            this.userRepository.save(patient);
+            url = null;
+        }
+       ///back photo save
+
+        url = this.saveImage(patientRequest.getPhotoFrontByteArray(),
+                HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
+                patient.getId()
+                        + "_"
+                        + patient.getInsurance().getId()
+                        + "_"
+                        + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME,
+                patient.getId()
+                        + "_"
+                        + patient.getInsurance().getId()
+                        + "_"
+                        + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_GRAPHIC_NAME,
+                "/"
+                        + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
+                        + patient.getId()
+                        + "_"
+                        + patient.getInsurance().getId()
+                        + "_"
+                        + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME);
+
+        if (HISCoreUtil.isValidObject(url)) {
+            patient.getInsurance().setPhotoBackURL(url);
+            this.userRepository.save(patient);
+            url = null;
         }*/
+
+        return patient.getId()+"";
+
+    }
+
+    public String saveImage(byte[] byteArary,
+                            String directoryPath,
+                            String fullThumbName,
+                            String fullImgName,
+                            String fullPathAndThumbNailGraphicName) throws Exception {
+
+        String imgURL = null;
+
+//        byte[] byteArr = Files.readAllBytes(path);
+        InputStream is = new ByteArrayInputStream(byteArary);
+        boolean isSaved = false;
+        isSaved = awsService.uploadImageByUserId(is,
+                directoryPath,
+                fullThumbName,
+                fullImgName);
+        if (isSaved) {
+            imgURL = this.s3KeyGen.getImagePublicURL(fullPathAndThumbNailGraphicName, false);
+        }
+
+        return imgURL;
     }
 
     public boolean isUserNameAlreadyExists(String userName) {

@@ -1174,11 +1174,11 @@ public class UserAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            userService.savePatient(patientRequest);
+            String userId = userService.savePatient(patientRequest);
             response.setResponseMessage(messageBundle.getString("patient.save.success"));
             response.setResponseCode(ResponseEnum.PATIENT_SAVE_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(null);
+            response.setResponseData(userId);
             logger.error("savePatient API - successfully saved.");
 
         } catch (Exception e) {

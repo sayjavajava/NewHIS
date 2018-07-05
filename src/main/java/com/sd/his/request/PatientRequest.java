@@ -42,6 +42,7 @@ public class PatientRequest {
     private String foreignName = "";
     private String profileImgURL;
     private File profileImg;
+    private byte[] profileImgByteArray;
     private String homePhone = "";
     private String cellPhone = "";
     private boolean disableSMSTxt = true;
@@ -84,8 +85,10 @@ public class PatientRequest {
     private String primaryInsuranceNotes = "";
     private String photoFrontURL;
     private File photoFront;
+    private byte[] photoFrontByteArray;
     private String photoBackURL;
     private File photoBack;
+    private byte[] photoBackByteArray;
 
     public PatientRequest() {
     }
@@ -520,5 +523,53 @@ public class PatientRequest {
 
     public void setRacesString(String racesString) {
         this.racesString = racesString;
+    }
+
+    public File getProfileImg() {
+        return profileImg;
+    }
+
+    public void setProfileImg(File profileImg) {
+        this.profileImg = profileImg;
+    }
+
+    public File getPhotoFront() {
+        return photoFront;
+    }
+
+    public void setPhotoFront(File photoFront) {
+        this.photoFront = photoFront;
+    }
+
+    public File getPhotoBack() {
+        return photoBack;
+    }
+
+    public void setPhotoBack(File photoBack) {
+        this.photoBack = photoBack;
+    }
+
+    public byte[] getProfileImgByteArray() {
+        return profileImgByteArray;
+    }
+
+    public void setProfileImgByteArray(byte[] profileImgByteArray) {
+        this.profileImgByteArray = profileImgByteArray;
+    }
+
+    public byte[] getPhotoFrontByteArray() {
+        return photoFrontByteArray;
+    }
+
+    public void setPhotoFrontByteArray(byte[] photoFrontByteArray) {
+        this.photoFrontByteArray = photoFrontByteArray;
+    }
+
+    public byte[] getPhotoBackByteArray() {
+        return photoBackByteArray;
+    }
+
+    public void setPhotoBackByteArray(byte[] photoBackByteArray) {
+        this.photoBackByteArray = photoBackByteArray;
     }
 }
