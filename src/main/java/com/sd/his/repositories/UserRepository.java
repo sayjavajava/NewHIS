@@ -4,6 +4,7 @@ package com.sd.his.repositories;
 import com.sd.his.model.User;
 import com.sd.his.request.PatientRequest;
 import com.sd.his.wrapper.PatientWrapper;
+import com.sd.his.wrapper.UserWrapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,10 +31,8 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 
     List<User> findAllByActiveTrueAndDeletedFalseOrderByUsernameAsc(Pageable pageable);
 
-
     List<User> findAllByUsernameIgnoreCaseContainingOrEmailIgnoreCaseContainingOrRoles_role_nameIgnoreCaseContaining(String name,
                                                                                                                      String email, String role, Pageable pageable);
-
     @Query("SELECT u FROM User u JOIN u.branches ub JOIN ub.branch WHERE u.active = TRUE AND u.deleted = FALSE ORDER BY u.username ")
     List<User> findAllUsers(Pageable pageable);
 

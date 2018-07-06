@@ -100,7 +100,7 @@ public class AppointmentAPI {
             }
 
             response.setResponseMessage(messageBundle.getString("appointment.fetched.success"));
-            response.setResponseCode(ResponseEnum.CLI_DPT_FETCH_SUCCESS.getValue());
+            response.setResponseCode(ResponseEnum.APPT_FETCHED_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(appts);
 
@@ -271,7 +271,6 @@ public class AppointmentAPI {
         response.setResponseData(null);
 
         try {
-
             Appointment alreadyExistAppointment = appointmentService.findById(id);
             if (HISCoreUtil.isValidObject(alreadyExistAppointment)) {
                 logger.info("Appointment founded...");

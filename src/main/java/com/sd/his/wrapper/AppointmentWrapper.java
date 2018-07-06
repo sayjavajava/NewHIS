@@ -66,6 +66,7 @@ public class AppointmentWrapper {
     private Long lastAppointmentOn;
     private Long branchId;
 
+
     public AppointmentWrapper() {
     }
 

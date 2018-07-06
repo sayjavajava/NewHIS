@@ -66,4 +66,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "a.patient.profile.firstName, a.patient.profile.lastName, a.branch.id, a.branch.name, a.room.id, a.room.examName) " +
             "FROM Appointment a WHERE a.deleted =FALSE ")
     List<AppointmentWrapper> findAllAppointments();
+
+    int countAllByActiveTrueAndDeletedFalse();
 }

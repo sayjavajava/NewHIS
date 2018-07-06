@@ -64,6 +64,8 @@ public class AppointmentService {
     }
 
     public List<AppointmentWrapper> findAllAppointments() {
+        List<AppointmentWrapper> list = appointmentRepository.findAllAppointments();
+        list.size();
         return appointmentRepository.findAllAppointments();
     }
 
@@ -149,17 +151,22 @@ public class AppointmentService {
         Branch branch = branchRepository.getOne(appointmentWrapper.getBranchId());
 
         appointment.setRecurringDays(new Gson().toJson(appointmentWrapper.getSelectedRecurringDays()));
+        long startTime= HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getStart());
+        appointment.setStartedOn(startTime);
+        appointment.setEndedOn(startTime + appointmentWrapper.getDuration()*60*1000);
         appointment.setUpdatedOn(System.currentTimeMillis());
         appointment.setDeleted(false);
         appointment.setActive(true);
         appointment.setRecurring(appointmentWrapper.isRecurringAppointment());
         appointment.setDuration(appointmentWrapper.getDuration());
+/*
        if(HISCoreUtil.isValidObject((HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFirstAppointment())))){
            appointment.setFirstAppointmentOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFirstAppointment()));
         }
         if(HISCoreUtil.isValidObject((HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getLastAppointment())))){
             appointment.setFirstAppointmentOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getLastAppointment()));
         }
+*/
         appointment.setNotes(appointmentWrapper.getNotes());
         appointment.setColor(appointmentWrapper.getColor());
         appointment.setReason(appointmentWrapper.getReason());
@@ -171,8 +178,7 @@ public class AppointmentService {
         appointment.setFollowUpReasonReminder(appointmentWrapper.getReason());
         appointment.setName(appointmentWrapper.getTitle());
         appointment.setBranch(branch);
-        Room room = findExamRoomById(appointmentWrapper.getExamRoom());
-        if(HISCoreUtil.isValidObject(room)){appointment.setRoom(room);}
+        roomRepository.getOne(appointmentWrapper.getRoomId());
         if(appointmentWrapper.getAppointmentType().contains(AppointmentTypeEnum.NEW_PATIENT.getValue())) {
             User user = userRepository.findByUsernameOrEmail(appointmentWrapper.getPatient(), appointmentWrapper.getEmail());
             Profile profile = user.getProfile();

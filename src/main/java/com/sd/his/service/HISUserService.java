@@ -38,6 +38,8 @@ public class HISUserService implements UserDetailsService {
     InsuranceRepository insuranceRepository;
     @Autowired
     private ICDCodeRepository icdCodeRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     private UserRepository userRepository;
     private PermissionRepository permissionRepo;
@@ -861,8 +863,9 @@ public class HISUserService implements UserDetailsService {
         List<MedicalService> medicalServices = medicalServicesRepository.findAllByDeletedFalse();
         List<ICDCode> icdCodes = icdCodeRepository.findAllByDeletedFalse();
 
+
         adminData.setPatientCount(patients.size());
-        adminData.setAppointmentsCount(0);
+        adminData.setAppointmentsCount(appointmentRepository.countAllByActiveTrueAndDeletedFalse());
         adminData.setMedicalServicesCount(medicalServices.size());
         adminData.setIcdsCount(icdCodes.size());
 
