@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -1139,12 +1140,19 @@ public class UserAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/patient/save", method = RequestMethod.POST)
+    @RequestMapping( value = "/patient/save", method = RequestMethod.POST  )//, consumes = "multipart/form-data"
     public ResponseEntity<?> savePatient(HttpServletRequest request,
-                                         @RequestBody PatientRequest patientRequest) {
+                                         @RequestPart("patientRequest") PatientRequest patientRequest,
+                                         @RequestPart(name = "profileImg", required = false) MultipartFile profileImg,
+                                         @RequestPart(name = "photoFront", required = false) MultipartFile photoFront,
+                                         @RequestPart(name = "photoBack", required = false) MultipartFile photoBack) {
         logger.info("savePatient API - initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
+
+            if(profileImg != null) patientRequest.setProfileImg(profileImg.getBytes());
+            if(photoFront != null) patientRequest.setPhotoFront(photoFront.getBytes());
+            if(photoBack != null) patientRequest.setPhotoBack(photoBack.getBytes());
 
             if (HISCoreUtil.isNull(patientRequest.getEmail()) ||
                     HISCoreUtil.isNull(patientRequest.getUserName()) ||
@@ -1173,12 +1181,11 @@ public class UserAPI {
                 logger.error("savePatient API - user already found.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
+            userService.savePatient(patientRequest);
 
-            String userId = userService.savePatient(patientRequest);
             response.setResponseMessage(messageBundle.getString("patient.save.success"));
             response.setResponseCode(ResponseEnum.PATIENT_SAVE_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(userId);
             logger.error("savePatient API - successfully saved.");
 
         } catch (Exception e) {

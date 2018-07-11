@@ -6,8 +6,13 @@ import com.sd.his.model.User;
 import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.RaceWrapper;
+import javassist.bytecode.ByteArray;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.websocket.Decoder;
+import javax.websocket.Encoder;
 import java.io.File;
+import java.sql.Blob;
 import java.util.List;
 
 /* @author    : Qari Jamal
@@ -41,8 +46,7 @@ public class PatientRequest {
     private String lastName = "";
     private String foreignName = "";
     private String profileImgURL;
-    private File profileImg;
-    private byte[] profileImgByteArray;
+    private byte[] profileImg;
     private String homePhone = "";
     private String cellPhone = "";
     private boolean disableSMSTxt = true;
@@ -84,11 +88,9 @@ public class PatientRequest {
     private String cardExpiryDate = "";
     private String primaryInsuranceNotes = "";
     private String photoFrontURL;
-    private File photoFront;
-    private byte[] photoFrontByteArray;
+    private byte[] photoFront;
     private String photoBackURL;
-    private File photoBack;
-    private byte[] photoBackByteArray;
+    private byte[] photoBack;
 
     public PatientRequest() {
     }
@@ -525,51 +527,28 @@ public class PatientRequest {
         this.racesString = racesString;
     }
 
-    public File getProfileImg() {
+    public byte[] getProfileImg() {
         return profileImg;
     }
 
-    public void setProfileImg(File profileImg) {
+    public void setProfileImg(byte[] profileImg) {
         this.profileImg = profileImg;
     }
 
-    public File getPhotoFront() {
+    public byte[] getPhotoFront() {
         return photoFront;
     }
 
-    public void setPhotoFront(File photoFront) {
+    public void setPhotoFront(byte[] photoFront) {
         this.photoFront = photoFront;
     }
 
-    public File getPhotoBack() {
+    public byte[] getPhotoBack() {
         return photoBack;
     }
 
-    public void setPhotoBack(File photoBack) {
+    public void setPhotoBack(byte[] photoBack) {
         this.photoBack = photoBack;
     }
 
-    public byte[] getProfileImgByteArray() {
-        return profileImgByteArray;
-    }
-
-    public void setProfileImgByteArray(byte[] profileImgByteArray) {
-        this.profileImgByteArray = profileImgByteArray;
-    }
-
-    public byte[] getPhotoFrontByteArray() {
-        return photoFrontByteArray;
-    }
-
-    public void setPhotoFrontByteArray(byte[] photoFrontByteArray) {
-        this.photoFrontByteArray = photoFrontByteArray;
-    }
-
-    public byte[] getPhotoBackByteArray() {
-        return photoBackByteArray;
-    }
-
-    public void setPhotoBackByteArray(byte[] photoBackByteArray) {
-        this.photoBackByteArray = photoBackByteArray;
-    }
 }

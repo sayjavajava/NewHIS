@@ -935,27 +935,29 @@ public class HISUserService implements UserDetailsService {
         /// now saving images against user id
 
         ///profile photo save
-        /*String url = null;
+        String url = null;
+        if (patientRequest.getProfileImg() != null) {
+            url = this.saveImage(patientRequest.getProfileImg(),
+                    HISConstants.S3_USER_PROFILE_DIRECTORY_PATH,
+                    patient.getId()
+                            + "_"
+                            + patient.getInsurance().getId()
+                            + "_"
+                            + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME,
+                    patient.getId()
+                            + "_"
+                            + patient.getInsurance().getId()
+                            + "_"
+                            + HISConstants.S3_USER_PROFILE_GRAPHIC_NAME,
+                    "/"
+                            + HISConstants.S3_USER_PROFILE_DIRECTORY_PATH
+                            + patient.getId()
+                            + "_"
+                            + patient.getInsurance().getId()
+                            + "_"
+                            + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME);
+        }
 
-        url = this.saveImage(patientRequest.getProfileImgByteArray(),
-                HISConstants.S3_USER_PROFILE_DIRECTORY_PATH,
-                patient.getId()
-                        + "_"
-                        + patient.getInsurance().getId()
-                        + "_"
-                        + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME,
-                patient.getId()
-                        + "_"
-                        + patient.getInsurance().getId()
-                        + "_"
-                        + HISConstants.S3_USER_PROFILE_GRAPHIC_NAME,
-                "/"
-                        + HISConstants.S3_USER_PROFILE_DIRECTORY_PATH
-                        + patient.getId()
-                        + "_"
-                        + patient.getInsurance().getId()
-                        + "_"
-                        + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME);
 
         if (HISCoreUtil.isValidObject(url)) {
             patient.getProfile().setProfileImgURL(url);
@@ -966,60 +968,63 @@ public class HISUserService implements UserDetailsService {
 
         ///front photo save
 
-        url = this.saveImage(patientRequest.getPhotoFrontByteArray(),
-                HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
-                patient.getId()
-                        + "_"
-                        + patient.getInsurance().getId()
-                        + "_"
-                        + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME,
-                patient.getId()
-                        + "_"
-                        + patient.getInsurance().getId()
-                        + "_"
-                        + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_GRAPHIC_NAME,
-                "/"
-                        + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
-                        + patient.getId()
-                        + "_"
-                        + patient.getInsurance().getId()
-                        + "_"
-                        + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME);
+        if (patientRequest.getPhotoFront() != null) {
+            url = this.saveImage(patientRequest.getPhotoFront(),
+                    HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
+                    patient.getId()
+                            + "_"
+                            + patient.getInsurance().getId()
+                            + "_"
+                            + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME,
+                    patient.getId()
+                            + "_"
+                            + patient.getInsurance().getId()
+                            + "_"
+                            + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_GRAPHIC_NAME,
+                    "/"
+                            + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
+                            + patient.getId()
+                            + "_"
+                            + patient.getInsurance().getId()
+                            + "_"
+                            + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME);
 
+        }
         if (HISCoreUtil.isValidObject(url)) {
             patient.getInsurance().setPhotoFrontURL(url);
             this.userRepository.save(patient);
             url = null;
         }
-       ///back photo save
-
-        url = this.saveImage(patientRequest.getPhotoFrontByteArray(),
-                HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
-                patient.getId()
-                        + "_"
-                        + patient.getInsurance().getId()
-                        + "_"
-                        + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME,
-                patient.getId()
-                        + "_"
-                        + patient.getInsurance().getId()
-                        + "_"
-                        + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_GRAPHIC_NAME,
-                "/"
-                        + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
-                        + patient.getId()
-                        + "_"
-                        + patient.getInsurance().getId()
-                        + "_"
-                        + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME);
+        ///back photo save
+        if (patientRequest.getPhotoBack() != null) {
+            url = this.saveImage(patientRequest.getPhotoBack(),
+                    HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
+                    patient.getId()
+                            + "_"
+                            + patient.getInsurance().getId()
+                            + "_"
+                            + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME,
+                    patient.getId()
+                            + "_"
+                            + patient.getInsurance().getId()
+                            + "_"
+                            + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_GRAPHIC_NAME,
+                    "/"
+                            + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
+                            + patient.getId()
+                            + "_"
+                            + patient.getInsurance().getId()
+                            + "_"
+                            + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME);
+        }
 
         if (HISCoreUtil.isValidObject(url)) {
             patient.getInsurance().setPhotoBackURL(url);
             this.userRepository.save(patient);
             url = null;
-        }*/
+        }
 
-        return patient.getId()+"";
+        return patient.getId() + "";
 
     }
 
