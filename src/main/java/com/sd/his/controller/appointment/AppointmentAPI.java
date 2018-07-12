@@ -3,6 +3,7 @@ package com.sd.his.controller.appointment;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Appointment;
 import com.sd.his.model.User;
+import com.sd.his.response.BranchResponseWrapper;
 import com.sd.his.response.GenericAPIResponse;
 import com.sd.his.service.AppointmentService;
 import com.sd.his.service.HISUserService;
@@ -62,6 +63,57 @@ public class AppointmentAPI {
 
     @Autowired
     private HISUserService userService;
+
+    @ApiOperation(httpMethod = "GET", value = "All Appointments",
+            notes = "This method will return All Appointments",
+            produces = "application/json", nickname = "All Appointments",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All Appointments  fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllClinicalDepartments(HttpServletRequest request) {
+
+        logger.error("getAllAppointments API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("appointment.fetch.error"));
+        response.setResponseCode(ResponseEnum.APPT_FETCHED_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("getAllAppointments - appt fetching from DB");
+            List<AppointmentWrapper> appts = appointmentService.findAllAppointments();
+            logger.error("getAllAppointments - appt fetched successfully");
+
+            if (HISCoreUtil.isListEmpty(appts)) {
+                response.setResponseMessage(messageBundle.getString("appointment.not-found"));
+                response.setResponseCode(ResponseEnum.APPT_NOT_FOUND_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getAllAppointments API - appts not found");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            response.setResponseMessage(messageBundle.getString("appointment.fetched.success"));
+            response.setResponseCode(ResponseEnum.APPT_FETCHED_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(appts);
+
+            logger.error("getAllAppointments API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllAppointments exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @ApiOperation(httpMethod = "GET", value = "GET Paginated Appointments",
             notes = "This method will return Paginated Appointments",
@@ -219,7 +271,6 @@ public class AppointmentAPI {
         response.setResponseData(null);
 
         try {
-
             Appointment alreadyExistAppointment = appointmentService.findById(id);
             if (HISCoreUtil.isValidObject(alreadyExistAppointment)) {
                 logger.info("Appointment founded...");
@@ -445,6 +496,8 @@ public class AppointmentAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
 
 

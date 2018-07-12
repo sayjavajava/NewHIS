@@ -54,14 +54,21 @@ public class AppointmentService {
     RoomRepository roomRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @Autowired
     UserRepository userRepository;
+
     public List<AppointmentWrapper> findAllPaginatedAppointments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-          List<AppointmentWrapper> list= appointmentRepository.findAllPaginatedAppointments(pageable);
+         // List<AppointmentWrapper> list= appointmentRepository.findAllPaginatedAppointments(pageable);
          return appointmentRepository.findAllPaginatedAppointments(pageable);
     }
+
+    public List<AppointmentWrapper> findAllAppointments() {
+        List<AppointmentWrapper> list = appointmentRepository.findAllAppointments();
+        list.size();
+        return appointmentRepository.findAllAppointments();
+    }
+
 
     public int countAllAppointments() {
         return appointmentRepository.findAll().size();
@@ -83,8 +90,6 @@ public class AppointmentService {
         appointment.setDuration(appointmentWrapper.getDuration());
         appointment.setFirstAppointmentOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFirstAppointment()));
         appointment.setLastAppointmentOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getLastAppointment()));
-        appointment.setStartedOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getStart()));
-        appointment.setEndedOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getEnd()));
         appointment.setNotes(appointmentWrapper.getNotes());
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setType(new Gson().toJson(appointmentWrapper.getAppointmentType()));
@@ -139,7 +144,6 @@ public class AppointmentService {
         return appointmentRepository.findByNameDeletedFalse(name).size();
     }
     public Appointment findById(long id){
-
         return appointmentRepository.findByIdAndDeletedFalse(id);
     }
 
@@ -147,20 +151,22 @@ public class AppointmentService {
         Branch branch = branchRepository.getOne(appointmentWrapper.getBranchId());
 
         appointment.setRecurringDays(new Gson().toJson(appointmentWrapper.getSelectedRecurringDays()));
+        long startTime= HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getStart());
+        appointment.setStartedOn(startTime);
+        appointment.setEndedOn(startTime + appointmentWrapper.getDuration()*60*1000);
         appointment.setUpdatedOn(System.currentTimeMillis());
         appointment.setDeleted(false);
         appointment.setActive(true);
         appointment.setRecurring(appointmentWrapper.isRecurringAppointment());
         appointment.setDuration(appointmentWrapper.getDuration());
+/*
        if(HISCoreUtil.isValidObject((HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFirstAppointment())))){
            appointment.setFirstAppointmentOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFirstAppointment()));
         }
         if(HISCoreUtil.isValidObject((HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getLastAppointment())))){
             appointment.setFirstAppointmentOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getLastAppointment()));
         }
-       // appointment.setLastAppointmentOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFollowUpDate()));
-    //    appointment.setStartedOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getStart()));
-      //  appointment.setEndedOn(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getEnd()));
+*/
         appointment.setNotes(appointmentWrapper.getNotes());
         appointment.setColor(appointmentWrapper.getColor());
         appointment.setReason(appointmentWrapper.getReason());
@@ -168,13 +174,11 @@ public class AppointmentService {
         appointment.setStatus(appointmentWrapper.getStatus());
         appointment.setFollowUpReasonReminder(appointmentWrapper.getFollowUpReason());
         appointment.setFollowUpReminder(appointmentWrapper.getFollowUpReminder());
-     //   appointment.setFollowUpDate(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFollowUpDate()));
+     // appointment.setFollowUpDate(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFollowUpDate()));
         appointment.setFollowUpReasonReminder(appointmentWrapper.getReason());
         appointment.setName(appointmentWrapper.getTitle());
         appointment.setBranch(branch);
-        Room room = findExamRoomById(appointmentWrapper.getExamRoom());
-        if(HISCoreUtil.isValidObject(room)){appointment.setRoom(room);}
-
+        roomRepository.getOne(appointmentWrapper.getRoomId());
         if(appointmentWrapper.getAppointmentType().contains(AppointmentTypeEnum.NEW_PATIENT.getValue())) {
             User user = userRepository.findByUsernameOrEmail(appointmentWrapper.getPatient(), appointmentWrapper.getEmail());
             Profile profile = user.getProfile();
@@ -198,10 +202,8 @@ public class AppointmentService {
             appointment.setPatient(user);
             appointmentRepository.save(appointment);
         }else {
-            //User user = userRepository.findByUsername(appointmentWrapper.getPatient());
-            //appointment.setPatient(user);
             appointmentRepository.save(appointment);}
-        return appointment;
+            return appointment;
     }
 
     public Room findExamRoomById(Long id) {

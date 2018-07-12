@@ -49,6 +49,8 @@ public class HISUserService implements UserDetailsService {
     AWSService awsService;
     @Autowired
     S3KeyGen s3KeyGen;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     private UserRepository userRepository;
     private PermissionRepository permissionRepo;
@@ -873,7 +875,7 @@ public class HISUserService implements UserDetailsService {
         List<ICDCode> icdCodes = icdCodeRepository.findAllByDeletedFalse();
 
         adminData.setPatientCount(patients.size());
-        adminData.setAppointmentsCount(0);
+        adminData.setAppointmentsCount(appointmentRepository.countAllByActiveTrueAndDeletedFalse());
         adminData.setMedicalServicesCount(medicalServices.size());
         adminData.setIcdsCount(icdCodes.size());
 

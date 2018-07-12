@@ -40,7 +40,7 @@ public class AppointmentWrapper {
     private Boolean followUpReminder;
     private String followUpReason;
     private Long startedOn;
-    private Long endedOn;
+    private Long ended;
     private Long createdOn;
     private Long updatedOn;
     private boolean recurringAppointment;
@@ -55,7 +55,6 @@ public class AppointmentWrapper {
     private Long patientId;
     private String patientFirstName;
     private String patientLastName;
-    private Long branchId;
     private Long roomId;
     private String email;
     private List<String> selectedRecurringDays;
@@ -65,11 +64,13 @@ public class AppointmentWrapper {
     private String type;
     private Long firstAppointmentOn;
     private Long lastAppointmentOn;
+    private Long branchId;
+
 
     public AppointmentWrapper() {
     }
 
-    public AppointmentWrapper(Long id, String title, String notes, String reason,String color,String status,String appointmentType,Long duration,
+    public AppointmentWrapper(Long id ,String title, String notes, String reason,String color,String status,String appointmentType,Long duration,
                               Boolean followUpReminder,String followUpReasonReminder,Long startedOn,Long endedOn,Long createdOn, Long updatedOn,
                               boolean recurring,String recurringDays,Long firstAppointmentOn,Long lastAppointmentOn,Long patientId,String patient, String patientFirstName,
                               String patientLastName,Long branchId,String branchName,Long roomId,String examName){
@@ -88,7 +89,7 @@ public class AppointmentWrapper {
         this.followUpReminder = followUpReminder;
     //    this.followUpReason = followUpReasonReminder;
         this.startedOn = startedOn;
-        this.endedOn = endedOn;
+        this.ended = endedOn;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
       //  this.recurring = recurring;
@@ -100,8 +101,8 @@ public class AppointmentWrapper {
         this.patientFirstName = patientFirstName;
         this.patientLastName = patientLastName;
         this.branchId = branchId;
+        this.branchId=branchId;
 
-        this.roomId = roomId;
         this.roomId = roomId;
         this.examName=examName;
         this.branchName =branchName;
@@ -119,6 +120,7 @@ public class AppointmentWrapper {
                 ", duration=" + duration +
                 '}';
     }
+
 
     public Long getFirstAppointmentOn() {
         return firstAppointmentOn;
@@ -314,12 +316,12 @@ public class AppointmentWrapper {
         this.startedOn = startedOn;
     }
 
-    public Long getEndedOn() {
-        return endedOn;
+    public Long getEnded() {
+        return ended;
     }
 
-    public void setEndedOn(Long endedOn) {
-        this.endedOn = endedOn;
+    public void setEnded(Long ended) {
+        this.ended = ended;
     }
 
     public Long getCreatedOn() {
