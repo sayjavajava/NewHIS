@@ -42,30 +42,30 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             " a.duration, a.followUpReminder, a.followUpReasonReminder, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.recurringDays, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.id,a.patient.username, " +
             "a.patient.profile.firstName, a.patient.profile.lastName, a.branch.id, a.branch.name, a.room.id, a.room.examName) " +
-            "FROM Appointment a WHERE a.deleted =FALSE ")
+            "FROM Appointment a ")
     List<AppointmentWrapper> findAllPaginatedAppointments(Pageable pageable);
 
     @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id, a.name, a.notes, a.reason, a.color, a.status, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.recurringDays, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.id,a.patient.username, " +
             "a.patient.profile.firstName, a.patient.profile.lastName, a.branch.id, a.branch.name, a.room.id, a.room.examName) " +
-            "FROM Appointment a WHERE a.deleted =FALSE and a.patient.username LIKE concat('%',:name,'%') ")
-    List<AppointmentWrapper> findByNameDeletedFalse(Pageable pageable, @Param("name") String name);
+            "FROM Appointment a WHERE  a.patient.username LIKE concat('%',:name,'%') ")
+    List<AppointmentWrapper> findByName(Pageable pageable, @Param("name") String name);
 
     @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id, a.name, a.notes, a.reason, a.color, a.status, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.recurringDays, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.id,a.patient.username, " +
             "a.patient.profile.firstName, a.patient.profile.lastName, a.branch.id, a.branch.name, a.room.id, a.room.examName) " +
-            "FROM Appointment a WHERE a.deleted =FALSE and a.patient.username LIKE concat('%',:name,'%') ")
-    List<Appointment> findByNameDeletedFalse(@Param("name") String name);
+            "FROM Appointment a WHERE  a.patient.username LIKE concat('%',:name,'%') ")
+    List<Appointment> findByName(@Param("name") String name);
 
-    Appointment findByIdAndDeletedFalse(long id);
+    Appointment findByIdAnd(long id);
     @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id, a.name, a.notes, a.reason, a.color, a.status, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.recurringDays, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.id,a.patient.username, " +
             "a.patient.profile.firstName, a.patient.profile.lastName, a.branch.id, a.branch.name, a.room.id, a.room.examName) " +
-            "FROM Appointment a WHERE a.deleted =FALSE ")
+            "FROM Appointment a ")
     List<AppointmentWrapper> findAllAppointments();
 
-    int countAllByActiveTrueAndDeletedFalse();
+    int countAllByActiveTrue();
 }

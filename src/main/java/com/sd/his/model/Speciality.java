@@ -58,10 +58,6 @@ public class Speciality implements Serializable {
     @Column(name = "CREATED_ON")
     private long createdOn;
 
-    @JsonIgnore
-    @OneToMany(targetEntity = OrganizationSpecialty.class, mappedBy = "speciality", fetch = FetchType.LAZY)
-    private List<OrganizationSpecialty> organization_specialties;
-
 
     public Speciality() {
     }
@@ -133,11 +129,5 @@ public class Speciality implements Serializable {
         this.createdOn = createdOn;
     }
 
-    public List<OrganizationSpecialty> getOrganization_specialties() {
-        return organization_specialties;
-    }
 
-    public void setOrganization_specialties(List<OrganizationSpecialty> organization_specialties) {
-        this.organization_specialties = organization_specialties;
-    }
 }

@@ -25,7 +25,9 @@ package com.sd.his.enums;
 
 public enum ModuleEnum {
 
-    APPOINTMENT("APPOINTMENT");
+    APPOINTMENT("APPOINTMENT"),
+    PATIENT("PATIENT")
+    ;
 
     private String value;
 

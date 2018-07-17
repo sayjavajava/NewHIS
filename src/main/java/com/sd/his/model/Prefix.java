@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /*
- * @author    : Irfan Nasim
- * @Date      : 24-Apr-18
+ * @author    : Tahir Mehmood
+ * @Date      : 16-Jul-18
  * @version   : ver. 1.0.0
  * 
  * ________________________________________________________________________________________________
@@ -50,18 +51,17 @@ public class Prefix implements Serializable {
     @Column(name = "CURRENT_VALUE")
     private Long currentValue;
 
-    @Column(name = "CREATED_ON")
-    private Long createdOn;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "UPDATED_ON", nullable = false)
+    private Date updatedOn;
 
-    @Column(name = "UPDATED_ON")
-    private Long updatedOn;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATED_ON", nullable = false)
+    private Date createdOn;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PREFIX_ID")
     private Prefix prefix;
-
-    public Prefix() {
-    }
 
     public Long getId() {
         return id;
@@ -103,20 +103,20 @@ public class Prefix implements Serializable {
         this.currentValue = currentValue;
     }
 
-    public Long getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Long createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public Long getUpdatedOn() {
+    public Date getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(Long updatedOn) {
+    public void setUpdatedOn(Date updatedOn) {
         this.updatedOn = updatedOn;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 
     public Prefix getPrefix() {
@@ -125,5 +125,18 @@ public class Prefix implements Serializable {
 
     public void setPrefix(Prefix prefix) {
         this.prefix = prefix;
+    }
+
+    @Override
+    public String toString() {
+        return "Prefix{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", module='" + module + '\'' +
+                ", startValue=" + startValue +
+                ", currentValue=" + currentValue +
+                ", updatedOn=" + updatedOn +
+                ", createdOn=" + createdOn +
+                '}';
     }
 }

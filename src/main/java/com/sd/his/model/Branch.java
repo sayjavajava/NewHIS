@@ -7,11 +7,12 @@ import com.sd.his.wrapper.ExamRooms;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
- * @author    : Irfan Nasim
- * @Date      : 24-Apr-18
+ * @author    : Tahir Mehmood
+ * @Date      : 16-Jul-18
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -99,14 +100,13 @@ public class Branch implements Serializable {
     @Column(name = "SHOW_BRANCH_INFO_ONLINE", columnDefinition = "boolean default true")
     private boolean showBranchInfoOnline;
 
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean deleted;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "UPDATED_ON", nullable = false)
+    private Date updatedOn;
 
-    @Column(name = "UPDATED_ON")
-    private long updatedOn;
-
-    @Column(name = "CREATED_ON")
-    private long createdOn;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATED_ON", nullable = false)
+    private Date createdOn;
 
     @JsonIgnore
     @OneToMany(targetEntity = BranchUser.class, mappedBy = "branch", fetch = FetchType.LAZY)
@@ -132,144 +132,9 @@ public class Branch implements Serializable {
     @OneToMany(targetEntity = Appointment.class, mappedBy = "branch", fetch = FetchType.LAZY)
     private List<Appointment> appointments;
 
-    public Branch() {
-    }
-
-    @Override
-    public String toString() {
-        return "Branch{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", noOfRooms=" + noOfRooms +
-                ", billingName='" + billingName + '\'' +
-                ", billingBranchName='" + billingBranchName + '\'' +
-                ", billingTaxId='" + billingTaxId + '\'' +
-                ", active=" + active +
-                ", deleted=" + deleted +
-                '}';
-    }
-
-    public boolean isSystemBranch() {
-        return systemBranch;
-    }
-
-    public void setSystemBranch(boolean systemBranch) {
-        this.systemBranch = systemBranch;
-    }
-
-    public List<UserVisitBranches> getVisitBranches() {
-        return visitBranches;
-    }
-
-    public void setVisitBranches(List<UserVisitBranches> visitBranches) {
-        this.visitBranches = visitBranches;
-    }
-
-    public Integer getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(Integer zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public List<Room> getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
-    }
-
-    public boolean isAllowOnlineSchedule() {
-        return allowOnlineSchedule;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getOfficePhone() {
-        return officePhone;
-    }
-
-    public void setOfficePhone(String officePhone) {
-        this.officePhone = officePhone;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-
-
-    public String getFormattedAddress() {
-        return formattedAddress;
-    }
-
-    public void setFormattedAddress(String formattedAddress) {
-        this.formattedAddress = formattedAddress;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getOfficeStartTime() {
-        return officeStartTime;
-    }
-
-    public void setOfficeStartTime(String officeStartTime) {
-        this.officeStartTime = officeStartTime;
-    }
-
-    public String getOfficeEndTime() {
-        return officeEndTime;
-    }
-
-    public void setOfficeEndTime(String officeEndTime) {
-        this.officeEndTime = officeEndTime;
-    }
-
-    public void setAllowOnlineSchedule(boolean allowOnlineSchedule) {
-        this.allowOnlineSchedule = allowOnlineSchedule;
-    }
-
-    public boolean isShowBranchInfoOnline() {
-        return showBranchInfoOnline;
-    }
-
-    public void setShowBranchInfoOnline(boolean showBranchInfoOnline) {
-        this.showBranchInfoOnline = showBranchInfoOnline;
-    }
-
-    public String getFax() {
-        return fax;
-    }
-
-    public void setFax(String fax) {
-        this.fax = fax;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BRANCH_ID")
+    private Branch branch;
 
     public Long getId() {
         return id;
@@ -311,6 +176,78 @@ public class Branch implements Serializable {
         this.billingBranchName = billingBranchName;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getOfficePhone() {
+        return officePhone;
+    }
+
+    public void setOfficePhone(String officePhone) {
+        this.officePhone = officePhone;
+    }
+
+    public String getFormattedAddress() {
+        return formattedAddress;
+    }
+
+    public void setFormattedAddress(String formattedAddress) {
+        this.formattedAddress = formattedAddress;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getOfficeStartTime() {
+        return officeStartTime;
+    }
+
+    public void setOfficeStartTime(String officeStartTime) {
+        this.officeStartTime = officeStartTime;
+    }
+
+    public String getOfficeEndTime() {
+        return officeEndTime;
+    }
+
+    public void setOfficeEndTime(String officeEndTime) {
+        this.officeEndTime = officeEndTime;
+    }
+
     public String getBillingTaxId() {
         return billingTaxId;
     }
@@ -327,27 +264,51 @@ public class Branch implements Serializable {
         this.active = active;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    public boolean isSystemBranch() {
+        return systemBranch;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void setSystemBranch(boolean systemBranch) {
+        this.systemBranch = systemBranch;
     }
 
-    public long getUpdatedOn() {
+    public Integer getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(Integer zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public boolean isAllowOnlineSchedule() {
+        return allowOnlineSchedule;
+    }
+
+    public void setAllowOnlineSchedule(boolean allowOnlineSchedule) {
+        this.allowOnlineSchedule = allowOnlineSchedule;
+    }
+
+    public boolean isShowBranchInfoOnline() {
+        return showBranchInfoOnline;
+    }
+
+    public void setShowBranchInfoOnline(boolean showBranchInfoOnline) {
+        this.showBranchInfoOnline = showBranchInfoOnline;
+    }
+
+    public Date getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(long updatedOn) {
+    public void setUpdatedOn(Date updatedOn) {
         this.updatedOn = updatedOn;
     }
 
-    public long getCreatedOn() {
+    public Date getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(long createdOn) {
+    public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
 
@@ -357,6 +318,22 @@ public class Branch implements Serializable {
 
     public void setUsers(List<BranchUser> users) {
         this.users = users;
+    }
+
+    public List<UserVisitBranches> getVisitBranches() {
+        return visitBranches;
+    }
+
+    public void setVisitBranches(List<UserVisitBranches> visitBranches) {
+        this.visitBranches = visitBranches;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
 
     public List<BranchClinicalDepartment> getClinicalDepartments() {
@@ -381,5 +358,13 @@ public class Branch implements Serializable {
 
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 }

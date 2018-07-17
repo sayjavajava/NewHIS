@@ -2,6 +2,7 @@ package com.sd.his.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /*
  * @author    : Irfan Nasim
@@ -70,11 +71,13 @@ public class Appointment implements Serializable {
     @Column(name = "ENDED_ON")
     private Long endedOn;
 
-    @Column(name = "CREATED_ON")
-    private Long createdOn;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "UPDATED_ON", nullable = false)
+    private Date updatedOn;
 
-    @Column(name = "UPDATED_ON")
-    private Long updatedOn;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATED_ON", nullable = false)
+    private Date createdOn;
 
     @ManyToOne
     @JoinColumn(name = "PATIENT_ID")
@@ -106,54 +109,6 @@ public class Appointment implements Serializable {
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
     private boolean active;
 
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean deleted;
-
-    public Appointment() {
-    }
-
-    @Override
-    public String toString() {
-        return "Appointment{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", patient=" + patient.getProfile().getFirstName() + " " + patient.getProfile().getLastName() +
-                ", branch=" + branch.getName() +
-                ", room=" + room.getExamName() +
-                '}';
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public Long getFollowUpDate() {
-        return followUpDate;
-    }
-
-    public void setFollowUpDate(Long followUpDate) {
-        this.followUpDate = followUpDate;
-    }
-
-    public Long getAge() {
-        return age;
-    }
-
-    public void setAge(Long age) {
-        this.age = age;
-    }
 
     public Long getId() {
         return id;
@@ -219,6 +174,14 @@ public class Appointment implements Serializable {
         this.duration = duration;
     }
 
+    public Long getAge() {
+        return age;
+    }
+
+    public void setAge(Long age) {
+        this.age = age;
+    }
+
     public Boolean getFollowUpReminder() {
         return followUpReminder;
     }
@@ -251,20 +214,20 @@ public class Appointment implements Serializable {
         this.endedOn = endedOn;
     }
 
-    public Long getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Long createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public Long getUpdatedOn() {
+    public Date getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(Long updatedOn) {
+    public void setUpdatedOn(Date updatedOn) {
         this.updatedOn = updatedOn;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 
     public User getPatient() {
@@ -307,8 +270,6 @@ public class Appointment implements Serializable {
         this.recurringDays = recurringDays;
     }
 
-
-
     public Long getFirstAppointmentOn() {
         return firstAppointmentOn;
     }
@@ -317,11 +278,27 @@ public class Appointment implements Serializable {
         this.firstAppointmentOn = firstAppointmentOn;
     }
 
+    public Long getFollowUpDate() {
+        return followUpDate;
+    }
+
+    public void setFollowUpDate(Long followUpDate) {
+        this.followUpDate = followUpDate;
+    }
+
     public Long getLastAppointmentOn() {
         return lastAppointmentOn;
     }
 
     public void setLastAppointmentOn(Long lastAppointmentOn) {
         this.lastAppointmentOn = lastAppointmentOn;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

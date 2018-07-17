@@ -47,10 +47,6 @@ public class Timezone implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @JsonIgnore
-    @OneToMany(targetEntity = Organization.class, mappedBy = "organization", fetch = FetchType.LAZY)
-    private List<Organization> organizations;
-
     public Timezone() {
     }
 
@@ -78,11 +74,4 @@ public class Timezone implements Serializable {
         this.name = name;
     }
 
-    public List<Organization> getOrganizations() {
-        return organizations;
-    }
-
-    public void setOrganizations(List<Organization> organizations) {
-        this.organizations = organizations;
-    }
 }

@@ -61,17 +61,17 @@ public class OrganizationResponseWrapper {
     }
 
     public OrganizationResponseWrapper(Organization organization) {
-        this.cellPhone = organization.getCellPhone();
-        this.homePhone = organization.getHomePhone();
-        this.officePhone = organization.getOfficePhone();
-        this.companyName = organization.getCompanyName();
-        this.appointmentSerial = organization.getAptSerialStart();
-        this.defaultBranch = organization.getDefaultBranch();
-        this.durationOfExam = organization.getDurationOFExam();
-        this.followUpExam = organization.getDurationFollowUp();
-        this.timezone = organization.getTimezone();
-        this.website = organization.getWebsite();
-        this.user = organization.getUser();
+//        this.cellPhone = organization.getCellPhone();
+//        this.homePhone = organization.getHomePhone();
+//        this.officePhone = organization.getOfficePhone();
+//        this.companyName = organization.getCompanyName();
+//        this.appointmentSerial = organization.getAptSerialStart();
+//        this.defaultBranch = organization.getDefaultBranch();
+//        this.durationOfExam = organization.getDurationOFExam();
+//        this.followUpExam = organization.getDurationFollowUp();
+//        this.timezone = organization.getTimezone();
+//        this.website = organization.getWebsite();
+//        this.user = organization.getUser();
 
     }
 

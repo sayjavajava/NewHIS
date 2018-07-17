@@ -1,13 +1,12 @@
 package com.sd.his.service;
 
-import com.sd.his.configuration.AWSS3;
 import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.enums.PropertyEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repositories.*;
-import com.sd.his.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.request.PatientRequest;
+import com.sd.his.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.response.UserResponseWrapper;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
@@ -17,19 +16,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.*;
@@ -146,7 +143,7 @@ public class HISUserService implements UserDetailsService {
     }
 
     public User findByUsernameOrEmailAndActiveTrueAndDeletedFalse(String userName, String email) {
-        return userRepository.findByUsernameOrEmailAndActiveTrueAndDeletedFalse(userName, email);
+        return userRepository.findByUsernameOrEmailAndActiveTrue(userName, email);
     }
 
     public User findByUsernameOrEmail(String userName, String email) {
@@ -218,14 +215,13 @@ public class HISUserService implements UserDetailsService {
         UserDutyShift userDutyShift = new UserDutyShift();
         UserRole userRole = new UserRole();
         int primarBranchId = Integer.parseInt(pBranch);
-        branch = branchRepository.findByIdAndDeletedFalse(primarBranchId);
+        branch = branchRepository.findById(primarBranchId);
         String brName = branch.getName();
         if (brName.equalsIgnoreCase(PropertyEnum.PRIMARY_BRANCH.getValue())) {
             branch = new Branch();
-            branch.setDeleted(false);
             branch.setActive(true);
-            branch.setCreatedOn(System.currentTimeMillis());
-            branch.setUpdatedOn(System.currentTimeMillis());
+            branch.setCreatedOn(new Date());
+            branch.setUpdatedOn(new Date());
             branch.setOfficePhone(createRequest.getHomePhone());
             branch.setName("PrimaryBranch" + createRequest.getFirstName());
             branch.setNoOfRooms(1);
@@ -541,7 +537,7 @@ public class HISUserService implements UserDetailsService {
     }
 
     public int totalUser() {
-        return userRepository.countAllByActiveTrueAndDeletedFalse();
+        return userRepository.countAllByActiveTrue();
     }
 
     public User updateUser(UserCreateRequest userCreateRequest, User alreadyExistsUser) {
@@ -834,11 +830,11 @@ public class HISUserService implements UserDetailsService {
     }
 
     public User findUserById(long id) {
-        return userRepository.findByIdAndDeletedFalse(id);
+        return userRepository.findById(id);
     }
 
     public User deleteUser(User user) {
-        user.setDeleted(true);
+      //  user.setDeleted(true);
         return userRepository.save(user);
     }
 
@@ -875,7 +871,7 @@ public class HISUserService implements UserDetailsService {
         List<ICDCode> icdCodes = icdCodeRepository.findAllByDeletedFalse();
 
         adminData.setPatientCount(patients.size());
-        adminData.setAppointmentsCount(appointmentRepository.countAllByActiveTrueAndDeletedFalse());
+        adminData.setAppointmentsCount(appointmentRepository.countAllByActiveTrue());
         adminData.setMedicalServicesCount(medicalServices.size());
         adminData.setIcdsCount(icdCodes.size());
 
@@ -885,30 +881,30 @@ public class HISUserService implements UserDetailsService {
 
     public List<PatientWrapper> findAllPaginatedUserByUserType(int offset, int limit, String userType) {
         Pageable pageable = new PageRequest(offset, limit);
-        return userRepository.findAllByDeletedFalse(pageable, userType);
+        return userRepository.findAll(pageable, userType);
     }
 
     public List<PatientWrapper> searchAllPaginatedUserByUserTypeAndName(int offset, int limit, String userType, String userName) {
         Pageable pageable = new PageRequest(offset, limit);
-        return userRepository.findAllByDeletedFalse(pageable, userType, userName);
+        return userRepository.findAll(pageable, userType, userName);
     }
 
     public int countSearchAllPaginatedUserByUserTypeAndName(String userType, String userName) {
-        return userRepository.findAllByDeletedFalse(userType, userName).size();
+        return userRepository.findAll(userType, userName).size();
     }
 
     public int countAllPaginatedPatients(String userType) {
-        return userRepository.findAllByDeletedFalse(userType).size();
+        return userRepository.findAll(userType).size();
     }
 
     public List<PatientWrapper> findAllPatients() {
-        return userRepository.findAllByDeletedFalse(UserTypeEnum.PATIENT.getValue());
+        return userRepository.findAll(UserTypeEnum.PATIENT.getValue());
     }
 
     public void deletePatientById(long patientId) {
         User user = this.userRepository.findOne(patientId);
         if (user != null) {
-            user.setDeleted(true);
+           // user.setDeleted(true);
             user.getProfile().setDeleted(true);
             user.getProfile().setUpdatedOn(System.currentTimeMillis());
 

@@ -53,10 +53,9 @@ public class User implements Serializable {
     @Column(name = "USER_TYPE")
     private String userType;
 
-    @NotNull
-    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
-            message = "Invalid Email")
-    @Column(name = "EMAIL", unique = true)
+//    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+//            message = "Invalid Email")
+    @Column(name = "EMAIL")
     private String email;
 
     @Column(name = "PASSWORD")
@@ -64,9 +63,6 @@ public class User implements Serializable {
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
     private boolean active;
-
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean deleted;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "PROFILE_ID")
@@ -153,7 +149,6 @@ public class User implements Serializable {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", active=" + active +
-                ", deleted=" + deleted +
                 '}';
     }
 
@@ -244,14 +239,6 @@ public class User implements Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public Profile getProfile() {

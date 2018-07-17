@@ -4,21 +4,19 @@ import com.google.gson.Gson;
 import com.sd.his.enums.AppointmentTypeEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
-import com.sd.his.repositories.*;
-import com.sd.his.request.BranchRequestWrapper;
-import com.sd.his.request.SaveTaxRequest;
-import com.sd.his.utill.APIUtil;
+import com.sd.his.repositories.AppointmentRepository;
+import com.sd.his.repositories.BranchRepository;
+import com.sd.his.repositories.RoomRepository;
+import com.sd.his.repositories.UserRepository;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
-import com.sd.his.wrapper.TaxWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -81,9 +79,8 @@ public class AppointmentService {
         long startTime= HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getStart());
         appointment.setStartedOn(startTime);
         appointment.setEndedOn(startTime + appointmentWrapper.getDuration()*60*1000);
-        appointment.setUpdatedOn(System.currentTimeMillis());
-        appointment.setDeleted(false);
-        appointment.setCreatedOn(System.currentTimeMillis());
+        appointment.setUpdatedOn(new Date());
+        appointment.setCreatedOn(new Date());
         appointment.setActive(true);
         appointment.setColor(appointmentWrapper.getColor());
         appointment.setRecurring(appointmentWrapper.isRecurringAppointment());
@@ -110,7 +107,7 @@ public class AppointmentService {
             user.setEmail(appointmentWrapper.getEmail());
             user.setUsername(appointmentWrapper.getTitle());
             user.setUserType(String.valueOf(UserTypeEnum.PATIENT));
-            user.setDeleted(false);
+        //    user.setDeleted(false);
             user.setActive(true);
 
             profile.setType(String.valueOf(UserTypeEnum.PATIENT));
@@ -138,13 +135,13 @@ public class AppointmentService {
 
     public List<AppointmentWrapper> getPageableSearchedAppointments(int offset, int limit, String name) {
         Pageable pageable = new PageRequest(offset, limit);
-        return appointmentRepository.findByNameDeletedFalse(pageable, name);
+        return appointmentRepository.findByName(pageable, name);
     }
     public int countSearchedAppointments(String name) {
-        return appointmentRepository.findByNameDeletedFalse(name).size();
+        return appointmentRepository.findByName(name).size();
     }
     public Appointment findById(long id){
-        return appointmentRepository.findByIdAndDeletedFalse(id);
+        return appointmentRepository.findById(id);
     }
 
     public Appointment updateAppointment(AppointmentWrapper appointmentWrapper,Appointment appointment) {
@@ -154,8 +151,7 @@ public class AppointmentService {
         long startTime= HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getStart());
         appointment.setStartedOn(startTime);
         appointment.setEndedOn(startTime + appointmentWrapper.getDuration()*60*1000);
-        appointment.setUpdatedOn(System.currentTimeMillis());
-        appointment.setDeleted(false);
+        appointment.setUpdatedOn(new Date());
         appointment.setActive(true);
         appointment.setRecurring(appointmentWrapper.isRecurringAppointment());
         appointment.setDuration(appointmentWrapper.getDuration());
@@ -184,7 +180,7 @@ public class AppointmentService {
             Profile profile = user.getProfile();
             user.setUsername(appointmentWrapper.getPatient());
             user.setUserType(String.valueOf(UserTypeEnum.PATIENT));
-            user.setDeleted(false);
+           // user.setDeleted(false);
             user.setActive(true);
             appointment.setAge(Long.valueOf(appointmentWrapper.getAge()).longValue());
 
@@ -215,7 +211,6 @@ public class AppointmentService {
     }
 
     public void deleteAppointment(Appointment appointment) {
-        appointment.setDeleted(true);
         appointmentRepository.save(appointment);
     }
 

@@ -26,7 +26,7 @@ public class PatientWrapper {
         this.userId = user.getId();
         this.userName = user.getUsername();
         this.active = user.isActive();
-        this.deleted = user.isDeleted();
+        //this.deleted = user.isDeleted();
         this.email = user.getEmail();
         this.userType = user.getUserType();
         if (user.getPrimaryDoctor() != null) {

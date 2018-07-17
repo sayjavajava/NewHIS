@@ -68,10 +68,10 @@ public class BranchService {
         User user;
         Branch branch = new Branch();
         branch.setName(branchRequestWrapper.getBranchName());
-        branch.setCreatedOn(System.currentTimeMillis());
-        branch.setUpdatedOn(System.currentTimeMillis());
+//        branch.setCreatedOn(System.currentTimeMillis());
+//        branch.setUpdatedOn(System.currentTimeMillis());
         branch.setActive(true);
-        branch.setDeleted(false);
+//        branch.setDeleted(false);
         branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setCity(branchRequestWrapper.getCity());
@@ -131,9 +131,9 @@ public class BranchService {
             room.setAllowOnlineScheduling(ex.isAllowOnlineScheduling());
             room.setExamName(ex.getExamName());
             room.setActive(true);
-            room.setDeleted(false);
-            room.setCreatedOn(System.currentTimeMillis());
-            room.setUpdatedOn(System.currentTimeMillis());
+//            room.setDeleted(false);
+//            room.setCreatedOn(System.currentTimeMillis());
+//            room.setUpdatedOn(System.currentTimeMillis());
             room.setBranch(branch);
             roomRepository.save(room);
         }
@@ -146,7 +146,7 @@ public class BranchService {
 
     public List<BranchResponseWrapper> findAllBranches(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        return branchRepository.findAllByNameAndActiveTrueAndDeletedFalse(pageable);
+        return branchRepository.findAllByNameAndActiveTrue(pageable);
     }
 
     public int totalBranches() {
@@ -154,20 +154,20 @@ public class BranchService {
     }
 
     public Branch findById(long id) {
-        return branchRepository.findByIdAndDeletedFalse(id);
+        return branchRepository.findById(id);
     }
 
     public void deleteBranch(Branch branch) {
-        branch.setDeleted(true);
+//        branch.setDeleted(true);
         branchRepository.save(branch);
     }
 
     public BranchResponseWrapper findByID(long id) {
-        Branch branch = branchRepository.findByIdAndDeletedFalse(id);
+        Branch branch = branchRepository.findById(id);
         BranchResponseWrapper branchResponseWrapper = new BranchResponseWrapper(branch);
         List<Room> roomListData = new ArrayList<>();
         for (Room room : branch.getRooms()) {
-            Room room1 = new Room(room.getExamName(), room.isAllowOnlineScheduling());
+            Room room1 = new Room();
             roomListData.add(room1);
         }
         branchResponseWrapper.setExamRooms(roomListData);
@@ -180,9 +180,9 @@ public class BranchService {
     public Branch updateBranch(BranchRequestWrapper branchRequestWrapper, Branch branch) {
 
         branch.setName(branchRequestWrapper.getBranchName());
-        branch.setUpdatedOn(System.currentTimeMillis());
+       // branch.setUpdatedOn(System.currentTimeMillis());
         branch.setActive(true);
-        branch.setDeleted(false);
+
         branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setCity(branchRequestWrapper.getCity());
@@ -205,7 +205,7 @@ public class BranchService {
             Room room = new Room();
             room.setAllowOnlineScheduling(ex.isAllowOnlineScheduling());
             room.setExamName(ex.getExamName());
-            room.setUpdatedOn(System.currentTimeMillis());
+           // room.setUpdatedOn(System.currentTimeMillis());
             room.setBranch(branch);
             roomRepository.save(room);
         }
@@ -215,7 +215,7 @@ public class BranchService {
     }
 
     public List<String> findAllBranchName() {
-        List<Branch> allBranches = branchRepository.findAllByActiveTrueAndDeletedFalse();
+        List<Branch> allBranches = branchRepository.findAllByActiveTrue();
         List<String> branchNames = allBranches.stream()
                 .filter(x -> x.getName() != null)
                 .map(x -> x.getName())
@@ -229,7 +229,7 @@ public class BranchService {
         Pageable pageable = new PageRequest(offset, limit);
         logger.info("branch name" + department);
 
-        List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalseOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(name, department, pageable);
+        List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(name, department, pageable);
 
         List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();
         for (Branch branch : allBranches) {
@@ -241,7 +241,7 @@ public class BranchService {
     }
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
-        List<Branch> branch = branchRepository.findAllByActiveTrueAndDeletedFalse();
+        List<Branch> branch = branchRepository.findAllByActiveTrue();
         //  return branchRepository.findAllByActiveTrueAndDeletedFalse();
         List<BranchResponseWrapper> list = new ArrayList<>();
 

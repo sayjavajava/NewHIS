@@ -36,19 +36,19 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
 
     Branch findByName(String name);
 
-    Branch findByIdAndDeletedFalse(long id);
+    Branch findById(long id);
 
-    @Query("SELECT new com.sd.his.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms,pu.username) FROM Branch b INNER JOIN b.users bu JOIN bu.user pu WHERE b.active = TRUE AND b.deleted = FALSE")
-    List<BranchResponseWrapper> findAllByNameAndActiveTrueAndDeletedFalse(Pageable pageable);
+    @Query("SELECT new com.sd.his.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms,pu.username) FROM Branch b INNER JOIN b.users bu JOIN bu.user pu WHERE b.active = TRUE ")
+    List<BranchResponseWrapper> findAllByNameAndActiveTrue(Pageable pageable);
 
-    List<Branch> findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalseOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(String name, String department, Pageable pageable);
+    List<Branch> findByNameIgnoreCaseContainingAndActiveTrueOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(String name, String department, Pageable pageable);
 
-    List<Branch> findAllByActiveTrueAndDeletedFalseOrderByNameAsc(Pageable pageable);
+    List<Branch> findAllByActiveTrueOrderByNameAsc(Pageable pageable);
 
-    List<Branch> findAllByActiveTrueAndDeletedFalse();
+    List<Branch> findAllByActiveTrue();
 
-    @Query("SELECT new com.sd.his.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms) FROM Branch b  WHERE b.active = TRUE AND b.deleted = FALSE")
-    List<BranchResponseWrapper> findBranchWrapperAllByActiveTrueAndDeletedFalse();
+    @Query("SELECT new com.sd.his.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms) FROM Branch b WHERE b.active = TRUE ")
+    List<BranchResponseWrapper> findBranchWrapperAllByActiveTrue();
 
     List<Branch> findAllByIdIn(List<Long> ids);
 

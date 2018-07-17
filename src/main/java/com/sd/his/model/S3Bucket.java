@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /*
- * @author    : Irfan Nasim
- * @Date      : 24-Apr-18
+ * @author    : Tahir Mehmood
+ * @Date      : 16-Jul-18
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -41,7 +42,7 @@ public class S3Bucket implements Serializable {
     @Column(name = "NAME", unique = true)
     private String name;
 
-    @Column(name = "DESCRIPTION", unique = true)
+    @Column(name = "DESCRIPTION")
     private String description;
 
     @Column(name = "ACCESS_KEY", unique = true)
@@ -56,14 +57,21 @@ public class S3Bucket implements Serializable {
     @Column(name = "PUBLIC_BASE_URL")
     private String publicBaseURL;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "UPDATED_ON", nullable = false)
+    private Date updatedOn;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATED_ON", nullable = false)
+    private Date createdOn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BUCKET_ID")
+    private S3Bucket bucket;
+
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private boolean active;
 
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean deleted;
-
-    public S3Bucket() {
-    }
 
     public Long getId() {
         return id;
@@ -121,6 +129,14 @@ public class S3Bucket implements Serializable {
         this.publicBaseURL = publicBaseURL;
     }
 
+    public S3Bucket getBucket() {
+        return bucket;
+    }
+
+    public void setBucket(S3Bucket bucket) {
+        this.bucket = bucket;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -129,11 +145,35 @@ public class S3Bucket implements Serializable {
         this.active = active;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    public Date getUpdatedOn() {
+        return updatedOn;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
     }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    @Override
+    public String toString() {
+        return "S3Bucket{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", accessKey='" + accessKey + '\'' +
+                ", secretKey='" + secretKey + '\'' +
+                ", accessProtocol='" + accessProtocol + '\'' +
+                ", publicBaseURL='" + publicBaseURL + '\'' +
+                ", active=" + active +
+                '}';
+    }
+
+
 }

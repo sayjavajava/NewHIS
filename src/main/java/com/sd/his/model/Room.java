@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -43,17 +44,16 @@ public class Room implements Serializable {
     private String examName;
 
     @ManyToOne
-    @JoinColumn(name = "Branch_ID")
+    @JoinColumn(name = "BRANCH_ID")
     private Branch branch;
 
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean deleted;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "UPDATED_ON", nullable = false)
+    private Date updatedOn;
 
-    @Column(name = "UPDATED_ON")
-    private long updatedOn;
-
-    @Column(name = "CREATED_ON")
-    private long createdOn;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CREATED_ON", nullable = false)
+    private Date createdOn;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private boolean active;
@@ -64,46 +64,6 @@ public class Room implements Serializable {
     @JsonIgnore
     @OneToMany(targetEntity = Appointment.class, mappedBy = "room", fetch = FetchType.LAZY)
     private List<Appointment> appointments;
-
-    public Room() {
-    }
-
-    public Room(String examName, boolean allowOnlineScheduling) {
-        this.examName = examName;
-        this.allowOnlineScheduling = allowOnlineScheduling;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public long getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(long updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public long getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(long createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 
     public Long getId() {
         return id;
@@ -127,6 +87,30 @@ public class Room implements Serializable {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public boolean isAllowOnlineScheduling() {

@@ -47,8 +47,6 @@ public class OrganizationService {
     @Autowired
     private SpecialtyRepository specialtyRepository;
     @Autowired
-    private OrganizationSpecialtyRepository organizationSpecialtyRepository;
-    @Autowired
     private TimezoneRepository timezoneRepository;
     @Autowired
     private BranchRepository branchRepository;
@@ -64,7 +62,7 @@ public class OrganizationService {
         user.setUsername(organizationRequestWrapper.getUserName());
         user.setPassword(new BCryptPasswordEncoder().encode(organizationRequestWrapper.getPassword()));
         user.setActive(true);
-        user.setDeleted(false);
+       // user.setDeleted(false);
         Profile profile = new Profile();
         profile.setFirstName(organizationRequestWrapper.getFirstName());
         profile.setLastName(organizationRequestWrapper.getLastName());
@@ -79,14 +77,14 @@ public class OrganizationService {
         userRepository.save(user);
 
         int primarBranchId = Integer.parseInt(pBranch);
-        branch = branchRepository.findByIdAndDeletedFalse(primarBranchId);
+        branch = branchRepository.findById(primarBranchId);
         String brName = branch.getName();
         if (brName.equalsIgnoreCase(PropertyEnum.PRIMARY_BRANCH.getValue())) {
             branch = new Branch();
-            branch.setDeleted(false);
+//            branch.setDeleted(false);
             branch.setActive(true);
-            branch.setCreatedOn(System.currentTimeMillis());
-            branch.setUpdatedOn(System.currentTimeMillis());
+//            branch.setCreatedOn(System.currentTimeMillis());
+//            branch.setUpdatedOn(System.currentTimeMillis());
             branch.setOfficePhone(organizationRequestWrapper.getHomePhone());
             branch.setName("PrimaryBranch" + organizationRequestWrapper.getFirstName());
             branch.setNoOfRooms(1);
@@ -106,18 +104,18 @@ public class OrganizationService {
         }
 
         Organization organization = new Organization();
-        organization.setActive(true);
-        organization.setCompanyName(organizationRequestWrapper.getCompanyName());
-        organization.setWebsite(organizationRequestWrapper.getWebsite());
-        organization.setHomePhone(organizationRequestWrapper.getHomePhone());
-        organization.setCellPhone(organizationRequestWrapper.getCellPhone());
-        organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
-        organization.setAptSerialStart(organizationRequestWrapper.getAppointmentSerial());
-        organization.setDefaultBranch(organizationRequestWrapper.getDefaultBranch());
-        organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
-        organization.setDurationFollowUp(organizationRequestWrapper.getFollowUpExam());
-        organization.setTimezone(organizationRequestWrapper.getTimeZone());
-        organization.setUser(user);
+//        organization.setActive(true);
+//        organization.setCompanyName(organizationRequestWrapper.getCompanyName());
+//        organization.setWebsite(organizationRequestWrapper.getWebsite());
+//        organization.setHomePhone(organizationRequestWrapper.getHomePhone());
+//        organization.setCellPhone(organizationRequestWrapper.getCellPhone());
+//        organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
+//        organization.setAptSerialStart(organizationRequestWrapper.getAppointmentSerial());
+//        organization.setDefaultBranch(organizationRequestWrapper.getDefaultBranch());
+//        organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
+//        organization.setDurationFollowUp(organizationRequestWrapper.getFollowUpExam());
+//        organization.setTimezone(organizationRequestWrapper.getTimeZone());
+//        organization.setUser(user);
         organizationRepository.save(organization);
 
         Speciality speciality = new Speciality();
@@ -128,10 +126,10 @@ public class OrganizationService {
         speciality.setName(organizationRequestWrapper.getSpecialty());
         specialtyRepository.save(speciality);
 
-        OrganizationSpecialty organization_specialty = new OrganizationSpecialty();
-        organization_specialty.setOrganization(organization);
-        organization_specialty.setSpeciality(speciality);
-        organizationSpecialtyRepository.save(organization_specialty);
+//        OrganizationSpecialty organization_specialty = new OrganizationSpecialty();
+//        organization_specialty.setOrganization(organization);
+//        organization_specialty.setSpeciality(speciality);
+//        organizationSpecialtyRepository.save(organization_specialty);
 
         return organization;
     }
@@ -139,18 +137,18 @@ public class OrganizationService {
     public Organization saveOrganizationWithExistingUser(User user, OrganizationRequestWrapper organizationRequestWrapper) {
 
         Organization organization = new Organization();
-        organization.setActive(true);
-        organization.setCompanyName(organizationRequestWrapper.getCompanyName());
-        organization.setWebsite(organizationRequestWrapper.getWebsite());
-        organization.setHomePhone(organizationRequestWrapper.getHomePhone());
-        organization.setCellPhone(organizationRequestWrapper.getCellPhone());
-        organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
-        organization.setAptSerialStart(organizationRequestWrapper.getAppointmentSerial());
-        organization.setDefaultBranch(organizationRequestWrapper.getDefaultBranch());
-        organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
-        organization.setDurationFollowUp(organizationRequestWrapper.getFollowUpExam());
-        organization.setTimezone(organizationRequestWrapper.getTimeZone());
-        organization.setUser(user);
+//        organization.setActive(true);
+//        organization.setCompanyName(organizationRequestWrapper.getCompanyName());
+//        organization.setWebsite(organizationRequestWrapper.getWebsite());
+//        organization.setHomePhone(organizationRequestWrapper.getHomePhone());
+//        organization.setCellPhone(organizationRequestWrapper.getCellPhone());
+//        organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
+//        organization.setAptSerialStart(organizationRequestWrapper.getAppointmentSerial());
+//        organization.setDefaultBranch(organizationRequestWrapper.getDefaultBranch());
+//        organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
+//        organization.setDurationFollowUp(organizationRequestWrapper.getFollowUpExam());
+//        organization.setTimezone(organizationRequestWrapper.getTimeZone());
+//        organization.setUser(user);
         organizationRepository.save(organization);
 
         Speciality speciality = new Speciality();
@@ -161,10 +159,6 @@ public class OrganizationService {
         speciality.setName(organizationRequestWrapper.getSpecialty());
         specialtyRepository.save(speciality);
 
-        OrganizationSpecialty organization_specialty = new OrganizationSpecialty();
-        organization_specialty.setOrganization(organization);
-        organization_specialty.setSpeciality(speciality);
-        organizationSpecialtyRepository.save(organization_specialty);
         return organization;
     }
 
@@ -193,10 +187,10 @@ public class OrganizationService {
 
     public OrganizationResponseWrapper getOrganizationByIdWithResponse(long id) {
         Organization organization = organizationRepository.findOne(id);
-        OrganizationSpecialty organizationSpecialty = organizationSpecialtyRepository.findByOrganization(organization);
-        Speciality speciality = organizationSpecialty.getSpeciality();
+//        OrganizationSpecialty organizationSpecialty = organizationSpecialtyRepository.findByOrganization(organization);
+//        Speciality speciality = organizationSpecialty.getSpeciality();
         OrganizationResponseWrapper organizationResponseWrapper = new OrganizationResponseWrapper(organization);
-        organizationResponseWrapper.setSpeciality(speciality);
+//        organizationResponseWrapper.setSpeciality(speciality);
         return organizationResponseWrapper;
     }
 
@@ -205,19 +199,19 @@ public class OrganizationService {
     }
 
     public OrganizationRequestWrapper updateOrganization(OrganizationRequestWrapper organizationRequestWrapper, Organization organization) {
-        organization.setCompanyName(organizationRequestWrapper.getCompanyName());
-        organization.setWebsite(organizationRequestWrapper.getWebsite());
-        organization.setHomePhone(organizationRequestWrapper.getHomePhone());
-        organization.setCellPhone(organizationRequestWrapper.getCellPhone());
-        organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
-        organization.setAptSerialStart(organizationRequestWrapper.getAppointmentSerial());
-        organization.setDefaultBranch(organizationRequestWrapper.getDefaultBranch());
-        organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
-        organization.setDurationFollowUp(organizationRequestWrapper.getFollowUpExam());
-        organization.setTimezone(organizationRequestWrapper.getTimeZone());
+//        organization.setCompanyName(organizationRequestWrapper.getCompanyName());
+//        organization.setWebsite(organizationRequestWrapper.getWebsite());
+//        organization.setHomePhone(organizationRequestWrapper.getHomePhone());
+//        organization.setCellPhone(organizationRequestWrapper.getCellPhone());
+//        organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
+//        organization.setAptSerialStart(organizationRequestWrapper.getAppointmentSerial());
+//        organization.setDefaultBranch(organizationRequestWrapper.getDefaultBranch());
+//        organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
+//        organization.setDurationFollowUp(organizationRequestWrapper.getFollowUpExam());
+//        organization.setTimezone(organizationRequestWrapper.getTimeZone());
 
-        OrganizationSpecialty organizationSpecialty = organizationSpecialtyRepository.findByOrganization(organization);
-        Speciality speciality = organizationSpecialty.getSpeciality();
+
+        Speciality speciality = null; //organizationSpecialty.getSpeciality();
         speciality.setName(organizationRequestWrapper.getSpecialty());
         speciality.setDescription(organizationRequestWrapper.getSpecialty());
         specialtyRepository.save(speciality);

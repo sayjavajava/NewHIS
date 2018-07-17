@@ -442,15 +442,15 @@ public class UserAPI {
             User user = this.userService.findById(id);
             if (HISCoreUtil.isValidObject(user)) {
                 user = userService.deleteUser(user);
-                if (user.isDeleted()) {
-                    response.setResponseData(user);
-                    response.setResponseMessage(messageBundle.getString("user.delete.success"));
-                    response.setResponseCode(ResponseEnum.USER_DELETED_SUCCESS.getValue());
-                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                    logger.info("User Deleted successfully...");
-
-                    return new ResponseEntity<>(response, HttpStatus.OK);
-                }
+//                if (user.isDeleted()) {
+//                    response.setResponseData(user);
+//                    response.setResponseMessage(messageBundle.getString("user.delete.success"));
+//                    response.setResponseCode(ResponseEnum.USER_DELETED_SUCCESS.getValue());
+//                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+//                    logger.info("User Deleted successfully...");
+//
+//                    return new ResponseEntity<>(response, HttpStatus.OK);
+//                }
             } else {
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("user.not.found"));

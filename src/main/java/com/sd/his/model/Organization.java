@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /*
- * @author    : Irfan Nasim
- * @Date      : 24-Apr-18
+ * @author    : Tahir Mehmood
+ * @Date      : 16-Jul-18
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -40,15 +41,8 @@ public class Organization implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ADMIN_ID")
-    private User user;
-
     @Column(name = "COMPANY_NAME")
     private String companyName;
-
-    @Column(name = "DEFAULT_BRANCH")
-    private String defaultBranch;
 
     @Column(name = "DURATION_OF_EXAM")
     private Long durationOFExam;
@@ -57,7 +51,7 @@ public class Organization implements Serializable {
     private String timezone;
 
     @Column(name = "DURATION_FOLLOW_UP")
-    private String durationFollowUp;
+    private Long durationFollowUp;
 
     @Column(name = "OFFICE_PHONE")
     private String officePhone;
@@ -71,80 +65,38 @@ public class Organization implements Serializable {
     @Column(name = "WEBSITE")
     private String website;
 
-    @Column(name = "APT_SERIAL_START")
-    private String aptSerialStart;
-
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
-    private boolean active;
-
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean deleted;
-
     @Column(name = "UPDATED_ON")
     private long updatedOn;
 
     @Column(name = "CREATED_ON")
     private long createdOn;
 
-    @ManyToOne
-    @JoinColumn(name = "ORG_ID")
-    private Organization organization;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "S3_BUCKET_ID")
-    private S3Bucket s3Bucket;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "bucket")
+    private List<S3Bucket> bucketList;
 
     @JsonIgnore
-    @OneToMany(targetEntity = Prefix.class, mappedBy = "prefix", fetch = FetchType.LAZY)
-    private List<Prefix> prefixes;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "prefix")
+    private List<Prefix> prefixList;
 
     @JsonIgnore
-    @OneToMany(targetEntity = OrganizationSpecialty.class, mappedBy = "organization", fetch = FetchType.LAZY)
-    private List<OrganizationSpecialty> organization_specialties;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "branch")
+    private List<Branch> branchList;
 
-
-    public Organization() {
+    public Long getId() {
+        return id;
     }
 
-    @Override
-    public String toString() {
-        return "Organization{" +
-                "id=" + id +
-                ", active=" + active +
-                ", deleted=" + deleted +
-                '}';
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
-
-    public Organization getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(Organization organization) {
-        this.organization = organization;
-    }
-
-    public String getDefaultBranch() {
-        return defaultBranch;
-    }
-
-    public void setDefaultBranch(String defaultBranch) {
-        this.defaultBranch = defaultBranch;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     public Long getDurationOFExam() {
@@ -155,36 +107,20 @@ public class Organization implements Serializable {
         this.durationOFExam = durationOFExam;
     }
 
-    public String getDurationFollowUp() {
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public Long getDurationFollowUp() {
         return durationFollowUp;
     }
 
-    public void setDurationFollowUp(String durationFollowUp) {
+    public void setDurationFollowUp(Long durationFollowUp) {
         this.durationFollowUp = durationFollowUp;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
     }
 
     public String getOfficePhone() {
@@ -211,67 +147,28 @@ public class Organization implements Serializable {
         this.cellPhone = cellPhone;
     }
 
-    public String getAptSerialStart() {
-        return aptSerialStart;
+    public String getWebsite() {
+        return website;
     }
 
-    public void setAptSerialStart(String aptSerialStart) {
-        this.aptSerialStart = aptSerialStart;
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
-    public boolean isActive() {
-        return active;
+
+    public List<S3Bucket> getBucketList() {
+        return bucketList;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setBucketList(List<S3Bucket> bucketList) {
+        this.bucketList = bucketList;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    public List<Prefix> getPrefixList() {
+        return prefixList;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public long getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(long updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public long getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(long createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public S3Bucket getS3Bucket() {
-        return s3Bucket;
-    }
-
-    public void setS3Bucket(S3Bucket s3Bucket) {
-        this.s3Bucket = s3Bucket;
-    }
-
-    public List<Prefix> getPrefixes() {
-        return prefixes;
-    }
-
-    public void setPrefixes(List<Prefix> prefixes) {
-        this.prefixes = prefixes;
-    }
-
-    public List<OrganizationSpecialty> getOrganization_specialties() {
-        return organization_specialties;
-    }
-
-    public void setOrganization_specialties(List<OrganizationSpecialty> organization_specialties) {
-        this.organization_specialties = organization_specialties;
+    public void setPrefixList(List<Prefix> prefixList) {
+        this.prefixList = prefixList;
     }
 }
