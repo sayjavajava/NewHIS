@@ -27,40 +27,21 @@ import java.io.Serializable;
  * All rights reserved.
  * 
  */
+
 @Entity
 @Table(name = "ROLE_PERMISSION")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RolePermission implements Serializable {
+public class RolePermission extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "ROLE_ID")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "ROLE_ID", nullable = false)
     private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "PERMISSION_ID")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "PERMISSION_ID", nullable = false)
     private Permission permission;
-
-    public RolePermission() {
-    }
-
-    public RolePermission(Role role, Permission permission) {
-        this.role = role;
-        this.permission = permission;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Role getRole() {
         return role;
@@ -75,6 +56,11 @@ public class RolePermission implements Serializable {
     }
 
     public void setPermission(Permission permission) {
+        this.permission = permission;
+    }
+
+    public RolePermission(Role role, Permission permission) {
+        this.role = role;
         this.permission = permission;
     }
 }

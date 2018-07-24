@@ -32,53 +32,34 @@ import java.util.List;
 @Entity
 @Table(name = "ROOM")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Room implements Serializable {
+public class Room extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    @Column(name = "EXAM_NAME")
-    private String examName;
+    @Column(name = "ROOM_NAME")
+    private String roomName;
 
-    @ManyToOne
-    @JoinColumn(name = "BRANCH_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BRANCH_ID", nullable = false)
     private Branch branch;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATED_ON", nullable = false)
-    private Date updatedOn;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATED_ON", nullable = false)
-    private Date createdOn;
-
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
-    private boolean active;
+    private Boolean active;
 
     @Column(name = "ALLOW_ONLINE_SCHEDULING")
-    private boolean allowOnlineScheduling;
+    private Boolean allowOnlineScheduling;
 
-    @JsonIgnore
-    @OneToMany(targetEntity = Appointment.class, mappedBy = "room", fetch = FetchType.LAZY)
-    private List<Appointment> appointments;
+//    @JsonIgnore
+//    @OneToMany(targetEntity = Appointment.class, mappedBy = "room", fetch = FetchType.LAZY)
+//    private List<Appointment> appointments;
 
-    public Long getId() {
-        return id;
+
+    public String getRoomName() {
+        return roomName;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getExamName() {
-        return examName;
-    }
-
-    public void setExamName(String examName) {
-        this.examName = examName;
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
     public Branch getBranch() {
@@ -89,43 +70,19 @@ public class Room implements Serializable {
         this.branch = branch;
     }
 
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public boolean isActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    public boolean isAllowOnlineScheduling() {
+    public Boolean getAllowOnlineScheduling() {
         return allowOnlineScheduling;
     }
 
-    public void setAllowOnlineScheduling(boolean allowOnlineScheduling) {
+    public void setAllowOnlineScheduling(Boolean allowOnlineScheduling) {
         this.allowOnlineScheduling = allowOnlineScheduling;
-    }
-
-    public List<Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<Appointment> appointments) {
-        this.appointments = appointments;
     }
 }

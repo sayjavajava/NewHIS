@@ -1,5 +1,4 @@
-package com.sd.his.enums;
-/*
+package com.sd.his.repository;/*
  * @author    : waqas kamran
  * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
@@ -13,14 +12,27 @@ package com.sd.his.enums;
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
- * @Package   : com.sd.his.enums
- * @FileName  : UserTypeEnum
+ * @Package   : com.sd.his.*
+ * @FileName  : UserAuthAPI
  *
  * Copyright © 
  * SolutionDots, 
  * All rights reserved.
  * 
  */
-public enum UserTypeEnum {
-   ADMIN, MANAGER, DOCTOR, RECEPTIONIST, CASHIER, NURSE, PATIENT;
+
+import com.sd.his.model.Role;
+import com.sd.his.model.User;
+import com.sd.his.model.UserRole;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface UserRoleRepository extends JpaRepository<UserRole,Long> {
+
+    List<UserRole> findByRole(Role role);
+
+    List<UserRole> findByUser(User user);
 }

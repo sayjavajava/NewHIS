@@ -1,8 +1,7 @@
 package com.sd.his.enums;
-
 /*
- * @author    : Irfan Nasim
- * @Date      : 18-Apr-17
+ * @author    : Tahir Mehmood
+ * @Date      : 20-Jul-2018
  * @version   : ver. 1.0.0
  * 
  * ________________________________________________________________________________________________
@@ -15,31 +14,13 @@ package com.sd.his.enums;
  *
  * @Project   : HIS
  * @Package   : com.sd.his.enums
- * @FileName  : ResponseEnum
+ * @FileName  : UserTypeEnum
  *
  * Copyright © 
  * SolutionDots, 
  * All rights reserved.
  * 
  */
-
 public enum ModuleEnum {
-
-    APPOINTMENT("APPOINTMENT"),
-    PATIENT("PATIENT")
-    ;
-
-    private String value;
-
-    ModuleEnum(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+    PROFILE, PATIENT, APPOINTMENT;
 }

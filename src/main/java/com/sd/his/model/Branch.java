@@ -2,12 +2,9 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sd.his.wrapper.ExamRooms;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /*
@@ -35,19 +32,14 @@ import java.util.List;
 @Entity
 @Table(name = "BRANCH")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Branch implements Serializable {
+public class Branch extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     @Column(name = "NAME")
     private String name;
 
     @Column(name = "NO_OF_ROOMS")
-    private Integer noOfRooms;
+    private Long noOfRooms;
 
     @Column(name = "BILLING_NAME")
     private String billingName;
@@ -70,9 +62,6 @@ public class Branch implements Serializable {
     @Column(name = "OFFICE_PHONE")
     private String officePhone;
 
-    @Column(name = "FORMATTED_ADDRESS")
-    private String formattedAddress;
-
     @Column(name = "STATE")
     private String state;
 
@@ -86,63 +75,54 @@ public class Branch implements Serializable {
     private String billingTaxId;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
-    private boolean active;
+    private Boolean active;
 
     @Column(name = "SYSTEM_BRANCH", columnDefinition = "boolean default false", nullable = false)
-    private boolean systemBranch;
+    private Boolean systemBranch;
 
     @Column(name = "ZIP_CODE")
     private Integer zipCode;
 
     @Column(name = "ALLOW_ONLINE_SCHEDULE", columnDefinition = "boolean default true")
-    private boolean allowOnlineSchedule;
+    private Boolean allowOnlineSchedule;
 
     @Column(name = "SHOW_BRANCH_INFO_ONLINE", columnDefinition = "boolean default true")
-    private boolean showBranchInfoOnline;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATED_ON", nullable = false)
-    private Date updatedOn;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATED_ON", nullable = false)
-    private Date createdOn;
+    private Boolean showBranchInfoOnline;
 
     @JsonIgnore
-    @OneToMany(targetEntity = BranchUser.class, mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<BranchUser> users;
+    @OneToMany(targetEntity = BranchDoctor.class, mappedBy = "branch")
+    private List<BranchDoctor> branchDoctors;
 
     @JsonIgnore
-    @OneToMany(targetEntity = UserVisitBranches.class, mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<UserVisitBranches> visitBranches;
+    @OneToMany(targetEntity = BranchNurse.class, mappedBy = "branch")
+    private List<BranchNurse> branchNurses;
 
     @JsonIgnore
-    @OneToMany(targetEntity = Room.class, mappedBy = "branch", fetch = FetchType.LAZY)
+    @OneToMany(targetEntity = BranchCashier.class, mappedBy = "branch")
+    private List<BranchCashier> branchCashiers;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = BranchReceptionist.class, mappedBy = "branch")
+    private List<BranchReceptionist> branchReceptionists;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = Room.class, mappedBy = "branch")
     private List<Room> rooms;
-
-    @JsonIgnore
-    @OneToMany(targetEntity = BranchClinicalDepartment.class, mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<BranchClinicalDepartment> clinicalDepartments;
-
-    @JsonIgnore
-    @OneToMany(targetEntity = BranchMedicalService.class, mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<BranchMedicalService> medicalServices;
-
-    @JsonIgnore
-    @OneToMany(targetEntity = Appointment.class, mappedBy = "branch", fetch = FetchType.LAZY)
-    private List<Appointment> appointments;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BRANCH_ID")
-    private Branch branch;
+    private Organization organization;
 
-    public Long getId() {
-        return id;
-    }
+    @JsonIgnore
+    @OneToMany(targetEntity = BranchDepartment.class, mappedBy = "branch")
+    private List<BranchDepartment> branchDepartments;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
+
+//    @JsonIgnore
+//    @OneToMany(targetEntity = Appointment.class, mappedBy = "branch", fetch = FetchType.LAZY)
+//    private List<Appointment> appointments;
+
 
     public String getName() {
         return name;
@@ -152,11 +132,11 @@ public class Branch implements Serializable {
         this.name = name;
     }
 
-    public Integer getNoOfRooms() {
+    public Long getNoOfRooms() {
         return noOfRooms;
     }
 
-    public void setNoOfRooms(Integer noOfRooms) {
+    public void setNoOfRooms(Long noOfRooms) {
         this.noOfRooms = noOfRooms;
     }
 
@@ -216,14 +196,6 @@ public class Branch implements Serializable {
         this.officePhone = officePhone;
     }
 
-    public String getFormattedAddress() {
-        return formattedAddress;
-    }
-
-    public void setFormattedAddress(String formattedAddress) {
-        this.formattedAddress = formattedAddress;
-    }
-
     public String getState() {
         return state;
     }
@@ -256,19 +228,19 @@ public class Branch implements Serializable {
         this.billingTaxId = billingTaxId;
     }
 
-    public boolean isActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    public boolean isSystemBranch() {
+    public Boolean getSystemBranch() {
         return systemBranch;
     }
 
-    public void setSystemBranch(boolean systemBranch) {
+    public void setSystemBranch(Boolean systemBranch) {
         this.systemBranch = systemBranch;
     }
 
@@ -280,52 +252,52 @@ public class Branch implements Serializable {
         this.zipCode = zipCode;
     }
 
-    public boolean isAllowOnlineSchedule() {
+    public Boolean getAllowOnlineSchedule() {
         return allowOnlineSchedule;
     }
 
-    public void setAllowOnlineSchedule(boolean allowOnlineSchedule) {
+    public void setAllowOnlineSchedule(Boolean allowOnlineSchedule) {
         this.allowOnlineSchedule = allowOnlineSchedule;
     }
 
-    public boolean isShowBranchInfoOnline() {
+    public Boolean getShowBranchInfoOnline() {
         return showBranchInfoOnline;
     }
 
-    public void setShowBranchInfoOnline(boolean showBranchInfoOnline) {
+    public void setShowBranchInfoOnline(Boolean showBranchInfoOnline) {
         this.showBranchInfoOnline = showBranchInfoOnline;
     }
 
-    public Date getUpdatedOn() {
-        return updatedOn;
+    public List<BranchDoctor> getBranchDoctors() {
+        return branchDoctors;
     }
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
+    public void setBranchDoctors(List<BranchDoctor> branchDoctors) {
+        this.branchDoctors = branchDoctors;
     }
 
-    public Date getCreatedOn() {
-        return createdOn;
+    public List<BranchNurse> getBranchNurses() {
+        return branchNurses;
     }
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
+    public void setBranchNurses(List<BranchNurse> branchNurses) {
+        this.branchNurses = branchNurses;
     }
 
-    public List<BranchUser> getUsers() {
-        return users;
+    public List<BranchCashier> getBranchCashiers() {
+        return branchCashiers;
     }
 
-    public void setUsers(List<BranchUser> users) {
-        this.users = users;
+    public void setBranchCashiers(List<BranchCashier> branchCashiers) {
+        this.branchCashiers = branchCashiers;
     }
 
-    public List<UserVisitBranches> getVisitBranches() {
-        return visitBranches;
+    public List<BranchReceptionist> getBranchReceptionists() {
+        return branchReceptionists;
     }
 
-    public void setVisitBranches(List<UserVisitBranches> visitBranches) {
-        this.visitBranches = visitBranches;
+    public void setBranchReceptionists(List<BranchReceptionist> branchReceptionists) {
+        this.branchReceptionists = branchReceptionists;
     }
 
     public List<Room> getRooms() {
@@ -336,35 +308,19 @@ public class Branch implements Serializable {
         this.rooms = rooms;
     }
 
-    public List<BranchClinicalDepartment> getClinicalDepartments() {
-        return clinicalDepartments;
+    public Organization getOrganization() {
+        return organization;
     }
 
-    public void setClinicalDepartments(List<BranchClinicalDepartment> clinicalDepartments) {
-        this.clinicalDepartments = clinicalDepartments;
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 
-    public List<BranchMedicalService> getMedicalServices() {
-        return medicalServices;
+    public List<BranchDepartment> getBranchDepartments() {
+        return branchDepartments;
     }
 
-    public void setMedicalServices(List<BranchMedicalService> medicalServices) {
-        this.medicalServices = medicalServices;
-    }
-
-    public List<Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(List<Appointment> appointments) {
-        this.appointments = appointments;
-    }
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
+    public void setBranchDepartments(List<BranchDepartment> branchDepartments) {
+        this.branchDepartments = branchDepartments;
     }
 }

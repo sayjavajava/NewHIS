@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /*
- * @author    : Irfan Nasim
- * @Date      : 24-Apr-18
+ * @author    : Tahir Mehmood
+ * @Date      : 18-Jul-2018
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -20,7 +20,7 @@ import java.io.Serializable;
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
- * @FileName  : UserRole
+ * @FileName  : Nurse
  *
  * Copyright ©
  * SolutionDots,
@@ -28,33 +28,13 @@ import java.io.Serializable;
  *
  */
 @Entity
-@Table(name = "USER_ROLE")
+@Table(name = "MANAGER")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserRole extends BaseEntity implements Serializable {
+public class Manager extends StaffProfile implements Serializable {
     private static final long serialVersionUID = 1L;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", nullable = false)
+    @OneToOne(cascade= CascadeType.ALL)
+    @JoinColumn(name="USER_ID", unique= true)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROLE_ID", nullable = false)
-    private Role role;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }

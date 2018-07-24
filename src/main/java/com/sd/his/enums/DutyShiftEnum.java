@@ -21,6 +21,6 @@ package com.sd.his.enums;
  * All rights reserved.
  * 
  */
-public enum UserTypeEnum {
-   ADMIN, MANAGER, DOCTOR, RECEPTIONIST, CASHIER, NURSE, PATIENT;
+public enum DutyShiftEnum {
+    MORNING, EVENING, NIGHT;
 }

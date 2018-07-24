@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /*
@@ -33,13 +32,8 @@ import java.util.List;
 @Entity
 @Table(name = "ORGANIZATION")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Organization implements Serializable {
+public class Organization extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     @Column(name = "COMPANY_NAME")
     private String companyName;
@@ -65,31 +59,17 @@ public class Organization implements Serializable {
     @Column(name = "WEBSITE")
     private String website;
 
-    @Column(name = "UPDATED_ON")
-    private long updatedOn;
-
-    @Column(name = "CREATED_ON")
-    private long createdOn;
-
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "bucket")
+    @OneToMany(mappedBy = "organization")
     private List<S3Bucket> bucketList;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "prefix")
+    @OneToMany(mappedBy = "organization")
     private List<Prefix> prefixList;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "branch")
-    private List<Branch> branchList;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @OneToMany(mappedBy = "organization", targetEntity = Branch.class)
+    private List<Branch> branches;
 
     public String getCompanyName() {
         return companyName;
@@ -155,7 +135,6 @@ public class Organization implements Serializable {
         this.website = website;
     }
 
-
     public List<S3Bucket> getBucketList() {
         return bucketList;
     }
@@ -170,5 +149,13 @@ public class Organization implements Serializable {
 
     public void setPrefixList(List<Prefix> prefixList) {
         this.prefixList = prefixList;
+    }
+
+    public List<Branch> getBranches() {
+        return branches;
+    }
+
+    public void setBranches(List<Branch> branches) {
+        this.branches = branches;
     }
 }

@@ -2,9 +2,11 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.enums.DutyShiftEnum;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -32,134 +34,48 @@ import java.util.List;
 @Entity
 @Table(name = "DUTY_SHIFT")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DutyShift implements Serializable {
+public class DutyShift extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Enumerated(value = EnumType.STRING) //DutyShiftEnum
+    @Column(name = "SHIFT_NAME")
+    private DutyShiftEnum shiftName;
 
-    @Column(name = "START_TIME_SHIFT1")
-    private String startTimeShift1;
+    @Temporal(TemporalType.TIME)
+    @Column(name = "START_TIME")
+    private Date startTime;
 
-    @Column(name = "END_TIME_SHIFT1")
-    private String endTimeShift1;
+    @Temporal(TemporalType.TIME)
+    @Column(name = "END_TIME")
+    private Date endTime;
 
-    @Column(name = "START_TIME_SHIFT2")
-    private String startTimeShift2;
-
-    @Column(name = "END_TIME_SHIFT2")
-    private String endTimeShift2;
-
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean deleted;
-
-    @Column(name = "UPDATED_ON")
-    private long updatedOn;
-
-    @Column(name = "CREATED_ON")
-    private long createdOn;
-
-    @Column(name = "DUTY_TIMMING_SHIFT_1", columnDefinition = "boolean default false")
-    private Boolean dutyTimmingShift1;
-
-    @Column(name = "DUTY_TIMMING_SHIFT_2", columnDefinition = "boolean default false")
-    private Boolean dutyTimmingShift2;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SHIFT_ID")
+    private Doctor doctor;
 
 
-    @JsonIgnore
-    @OneToMany(targetEntity = UserDutyShift.class, mappedBy = "dutyShift", fetch = FetchType.LAZY)
-    private List<UserDutyShift> users;
-
-    public DutyShift() {
+    public DutyShiftEnum getShiftName() {
+        return shiftName;
     }
 
-    public Boolean getDutyTimmingShift1() {
-        return dutyTimmingShift1;
+    public void setShiftName(DutyShiftEnum shiftName) {
+        this.shiftName = shiftName;
     }
 
-    public void setDutyTimmingShift1(Boolean dutyTimmingShift1) {
-        this.dutyTimmingShift1 = dutyTimmingShift1;
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public Boolean getDutyTimmingShift2() {
-        return dutyTimmingShift2;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
-    public void setDutyTimmingShift2(Boolean dutyTimmingShift2) {
-        this.dutyTimmingShift2 = dutyTimmingShift2;
+    public Date getEndTime() {
+        return endTime;
     }
 
-    public Long getId() {
-        return id;
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getStartTimeShift1() {
-        return startTimeShift1;
-    }
-
-    public void setStartTimeShift1(String startTimeShift1) {
-        this.startTimeShift1 = startTimeShift1;
-    }
-
-    public String getEndTimeShift1() {
-        return endTimeShift1;
-    }
-
-    public void setEndTimeShift1(String endTimeShift1) {
-        this.endTimeShift1 = endTimeShift1;
-    }
-
-    public String getStartTimeShift2() {
-        return startTimeShift2;
-    }
-
-    public void setStartTimeShift2(String startTimeShift2) {
-        this.startTimeShift2 = startTimeShift2;
-    }
-
-    public String getEndTimeShift2() {
-        return endTimeShift2;
-    }
-
-    public void setEndTimeShift2(String endTimeShift2) {
-        this.endTimeShift2 = endTimeShift2;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public long getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(long updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public long getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(long createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public List<UserDutyShift> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<UserDutyShift> users) {
-        this.users = users;
-    }
 }

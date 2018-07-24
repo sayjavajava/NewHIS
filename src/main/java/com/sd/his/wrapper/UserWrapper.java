@@ -23,16 +23,17 @@ public class UserWrapper {
     String aboutMe;
     List<RoleWrapper> roles;
     List<PermissionWrapper> permissions;
-    List<BranchWrapper> branches;
+    //List<BranchWrapper> branches;
     String commaSeparatedRoles;
-
 
     public UserWrapper() {
     }
 
     public UserWrapper(User user) {
         this.id = user.getId();
-        this.email = user.getEmail();
+        this.userType = user.getUserType().name();
+        this.userName=user.getUsername();
+        /*this.email = user.getUEmail();
         this.userName = user.getUsername();
         this.firstName = user.getProfile().getFirstName();
         this.lastName = user.getProfile().getLastName();
@@ -40,12 +41,11 @@ public class UserWrapper {
         this.address = user.getProfile().getAddress();
         this.state = user.getProfile().getState();
         this.city = user.getProfile().getCity();
-        this.userType = user.getUserType();
         this.country = user.getProfile().getCountry();
         this.gender = user.getProfile().getGender();
         this.profileImg = user.getProfile().getProfileImgURL();
         this.status = user.getProfile().getStatus();
-        this.aboutMe = user.getProfile().getAboutMe();
+        this.aboutMe = user.getProfile().getAboutMe();*/
     }
 
     public String getUserType() {
@@ -54,14 +54,6 @@ public class UserWrapper {
 
     public void setUserType(String userType) {
         this.userType = userType;
-    }
-
-    public List<BranchWrapper> getBranches() {
-        return branches;
-    }
-
-    public void setBranches(List<BranchWrapper> branches) {
-        this.branches = branches;
     }
 
     public long getId() {

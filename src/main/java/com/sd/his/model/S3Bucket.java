@@ -1,6 +1,7 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,13 +32,8 @@ import java.util.Date;
 @Entity
 @Table(name = "S3_BUCKET")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class S3Bucket implements Serializable {
+public class S3Bucket extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     @Column(name = "NAME", unique = true)
     private String name;
@@ -57,29 +53,15 @@ public class S3Bucket implements Serializable {
     @Column(name = "PUBLIC_BASE_URL")
     private String publicBaseURL;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATED_ON", nullable = false)
-    private Date updatedOn;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATED_ON", nullable = false)
-    private Date createdOn;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BUCKET_ID")
-    private S3Bucket bucket;
+    private Organization organization;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
-    private boolean active;
+    private Boolean active;
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "SYS_DEFAULT", columnDefinition = "boolean default false", nullable = false)
+    private Boolean sysDefault;
 
     public String getName() {
         return name;
@@ -129,51 +111,27 @@ public class S3Bucket implements Serializable {
         this.publicBaseURL = publicBaseURL;
     }
 
-    public S3Bucket getBucket() {
-        return bucket;
+    public Organization getOrganization() {
+        return organization;
     }
 
-    public void setBucket(S3Bucket bucket) {
-        this.bucket = bucket;
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 
-    public boolean isActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    public Date getUpdatedOn() {
-        return updatedOn;
+    public Boolean getSysDefault() {
+        return sysDefault;
     }
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
+    public void setSysDefault(Boolean sysDefault) {
+        this.sysDefault = sysDefault;
     }
-
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    @Override
-    public String toString() {
-        return "S3Bucket{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", accessKey='" + accessKey + '\'' +
-                ", secretKey='" + secretKey + '\'' +
-                ", accessProtocol='" + accessProtocol + '\'' +
-                ", publicBaseURL='" + publicBaseURL + '\'' +
-                ", active=" + active +
-                '}';
-    }
-
-
 }

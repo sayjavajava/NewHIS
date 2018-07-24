@@ -29,15 +29,10 @@ import java.util.Date;
  * 
  */
 @Entity
-@Table(name = "Prefix")
+@Table(name = "PREFIX")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Prefix implements Serializable {
+public class Prefix extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     @Column(name = "PREFIX")
     private String name;
@@ -51,25 +46,9 @@ public class Prefix implements Serializable {
     @Column(name = "CURRENT_VALUE")
     private Long currentValue;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATED_ON", nullable = false)
-    private Date updatedOn;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATED_ON", nullable = false)
-    private Date createdOn;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PREFIX_ID")
-    private Prefix prefix;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Organization organization;
 
     public String getName() {
         return name;
@@ -103,40 +82,11 @@ public class Prefix implements Serializable {
         this.currentValue = currentValue;
     }
 
-    public Date getUpdatedOn() {
-        return updatedOn;
+    public Organization getOrganization() {
+        return organization;
     }
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public Prefix getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(Prefix prefix) {
-        this.prefix = prefix;
-    }
-
-    @Override
-    public String toString() {
-        return "Prefix{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", module='" + module + '\'' +
-                ", startValue=" + startValue +
-                ", currentValue=" + currentValue +
-                ", updatedOn=" + updatedOn +
-                ", createdOn=" + createdOn +
-                '}';
+    public void setOrganization(Organization organization) {
+        this.organization = organization;
     }
 }

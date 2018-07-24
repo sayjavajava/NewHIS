@@ -40,8 +40,7 @@ public class PermissionWrapper {
         this.id = permission.getId();
         this.name = permission.getName();
         this.description = permission.getDescription();
-        this.deleted = permission.isDeleted();
-        this.active = permission.isActive();
+        this.active = permission.getActive();
 
     }
 

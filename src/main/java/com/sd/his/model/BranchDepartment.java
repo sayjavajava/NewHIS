@@ -9,52 +9,52 @@ import java.io.Serializable;
  * @author    : Irfan Nasim
  * @Date      : 24-Apr-18
  * @version   : ver. 1.0.0
- *
+ * 
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________
- *
- *
+ * ________________________________________________________________________________________________ 
+ *	
+ * 
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
- * @FileName  : UserRole
+ * @FileName  : BranchClinicalDepartment
  *
- * Copyright ©
- * SolutionDots,
+ * Copyright © 
+ * SolutionDots, 
  * All rights reserved.
- *
+ * 
  */
 @Entity
-@Table(name = "USER_ROLE")
+@Table(name = "BRANCH_DEPARTMENT")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserRole extends BaseEntity implements Serializable {
+public class BranchDepartment extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private User user;
+    @JoinColumn(name = "BRANCH_ID", nullable = false)
+    private Branch branch;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROLE_ID", nullable = false)
-    private Role role;
+    @JoinColumn(name = "DEPARTMENT_ID",  nullable = false)
+    private Department department;
 
-    public User getUser() {
-        return user;
+    public Branch getBranch() {
+        return branch;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 
-    public Role getRole() {
-        return role;
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

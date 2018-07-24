@@ -12,7 +12,7 @@ import java.util.List;
 
 /*
  * @author    : Irfan Nasim
- * @Date      : 14-May-18
+ * @Date      : 24-Apr-18
  * @version   : ver. 1.0.0
  * 
  * ________________________________________________________________________________________________
@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
- * @FileName  : MedicalService
+ * @FileName  : ClinicalDepartment
  *
  * Copyright © 
  * SolutionDots, 
@@ -33,40 +33,28 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name = "MEDICAL_SERVICE")
+@Table(name = "DEPARTMENT")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MedicalService extends BaseEntity implements Serializable {
+public class Department extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+
 
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "COST")
-    private Double cost;
-
-    @Column(name = "FEE")
-    private Double fee;
-
-    @Column(name = "DURATION")
-    private Long duration;
-
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "IMG_URL")
-    private String imgURL;
-
-    @Column(name = "STATUS")
-    private Boolean status;
-
-//    @ManyToOne
-//    @JoinColumn(name = "TAX_ID")
-//    private Tax tax;
+    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
+    private Boolean active;
 
     @JsonIgnore
-    @OneToMany(targetEntity = DepartmentMedicalService.class, mappedBy = "medicalService")
-    private List<DepartmentMedicalService> departments;
+    @OneToMany(targetEntity = BranchDepartment.class, mappedBy = "department")
+    private List<BranchDepartment> branchDepartments;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = DepartmentMedicalService.class, mappedBy = "department")
+    private List<DepartmentMedicalService> departments;
 
     public String getName() {
         return name;
@@ -74,30 +62,6 @@ public class MedicalService extends BaseEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Double getCost() {
-        return cost;
-    }
-
-    public void setCost(Double cost) {
-        this.cost = cost;
-    }
-
-    public Double getFee() {
-        return fee;
-    }
-
-    public void setFee(Double fee) {
-        this.fee = fee;
-    }
-
-    public Long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Long duration) {
-        this.duration = duration;
     }
 
     public String getDescription() {
@@ -108,27 +72,19 @@ public class MedicalService extends BaseEntity implements Serializable {
         this.description = description;
     }
 
-    public String getImgURL() {
-        return imgURL;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setImgURL(String imgURL) {
-        this.imgURL = imgURL;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
-    public Boolean getStatus() {
-        return status;
+    public List<BranchDepartment> getBranchDepartments() {
+        return branchDepartments;
     }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public List<DepartmentMedicalService> getDepartments() {
-        return departments;
-    }
-
-    public void setDepartments(List<DepartmentMedicalService> departments) {
-        this.departments = departments;
+    public void setBranchDepartments(List<BranchDepartment> branchDepartments) {
+        this.branchDepartments = branchDepartments;
     }
 }

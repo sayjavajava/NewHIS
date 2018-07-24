@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /*
  * @author    : Irfan Nasim
- * @Date      : 24-Apr-18
+ * @Date      : 14-May-18
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -20,7 +20,7 @@ import java.io.Serializable;
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
- * @FileName  : UserRole
+ * @FileName  : Timezone
  *
  * Copyright ©
  * SolutionDots,
@@ -28,33 +28,30 @@ import java.io.Serializable;
  *
  */
 @Entity
-@Table(name = "USER_ROLE")
+@Table(name = "TIMEZONE")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserRole extends BaseEntity implements Serializable {
+public class TimeZone extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "COUNTRY_CODE")
+    private String countryCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private User user;
+    @Column(name = "NAME")
+    private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROLE_ID", nullable = false)
-    private Role role;
-
-    public User getUser() {
-        return user;
+    public String getCountryCode() {
+        return countryCode;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
-    public Role getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setName(String name) {
+        this.name = name;
     }
 }

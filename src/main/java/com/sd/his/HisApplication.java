@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 /*import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;*/
 
@@ -13,6 +14,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
  * @since 05-Jun-2018
  */
 @SpringBootApplication
+@EnableJpaAuditing
 public class HisApplication {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
 
@@ -27,6 +29,7 @@ public class HisApplication {
  * @since 05-Jun-2018
  */
 /*@SpringBootApplication
+  @EnableJpaAuditing
 public class HisApplication extends SpringBootServletInitializer {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
 

@@ -46,9 +46,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Autowired
-    private AppConfigProperties appConfigProperties;
-
-    @Autowired
     private UserApprovalHandler userApprovalHandler;
 
     @Qualifier("userService")
@@ -65,7 +62,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authorizedGrantTypes(GRANT_TYPE_PASSWORD, REFRESH_TOKEN)
                 .authorities(AUTHORITIES)
                 .scopes(SCOPE_READ, SCOPE_WRITE)
-              //  .resourceIds(RESOURCE_ID)
+               .resourceIds(RESOURCE_ID)
                 .secret(CLIENT_SECRET)
                 .refreshTokenValiditySeconds(REFRESH_TOKEN_VALIDITY_SECONDS)
                 .accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS);*/
@@ -77,4 +74,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore());
        // endpoints.tokenStore(tokenStore()).approvalStoreDisabled();
     }
+
 }

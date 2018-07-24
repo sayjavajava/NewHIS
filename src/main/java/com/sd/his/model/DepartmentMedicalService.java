@@ -7,54 +7,41 @@ import java.io.Serializable;
 
 /*
  * @author    : Irfan Nasim
- * @Date      : 24-Apr-18
+ * @Date      : 14-May-18
  * @version   : ver. 1.0.0
- *
+ * 
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________
- *
- *
+ * ________________________________________________________________________________________________ 
+ *	
+ * 
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.model
- * @FileName  : UserRole
+ * @FileName  : ClinicalDepartmentMedicalService
  *
- * Copyright ©
- * SolutionDots,
+ * Copyright © 
+ * SolutionDots, 
  * All rights reserved.
- *
+ * 
  */
 @Entity
-@Table(name = "USER_ROLE")
+@Table(name = "DEPARTMENT_MEDICAL_SERVICE")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserRole extends BaseEntity implements Serializable {
+public class DepartmentMedicalService extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DEPARTMENT_ID", nullable = false)
+    private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", nullable = false)
-    private User user;
+    @JoinColumn(name = "MEDICAL_SERVICE_ID", nullable = false)
+    private MedicalService medicalService;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROLE_ID", nullable = false)
-    private Role role;
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }

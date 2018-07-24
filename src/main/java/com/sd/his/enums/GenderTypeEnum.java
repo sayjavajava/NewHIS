@@ -1,7 +1,7 @@
 package com.sd.his.enums;
 /*
- * @author    : waqas kamran
- * @Date      : 17-Apr-18
+ * @author    : Tahir Mehmood
+ * @Date      : 20-Jul-2018
  * @version   : ver. 1.0.0
  * 
  * ________________________________________________________________________________________________
@@ -21,6 +21,6 @@ package com.sd.his.enums;
  * All rights reserved.
  * 
  */
-public enum UserTypeEnum {
-   ADMIN, MANAGER, DOCTOR, RECEPTIONIST, CASHIER, NURSE, PATIENT;
+public enum GenderTypeEnum {
+    MALE, FEMALE;
 }

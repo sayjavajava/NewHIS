@@ -27,48 +27,19 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "ICD_CODE_VERSION")
-public class ICDCodeVersion implements Serializable {
+public class ICDCodeVersion extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "ICD_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ICD_ID", nullable = false)
     private ICDCode icd;
 
-    @ManyToOne
-    @JoinColumn(name = "ICD_VERSION_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ICD_VERSION_ID", nullable = false)
     private ICDVersion version;
 
     @Column(name = "description",length = 400)
     private String description;
-
-    public ICDCodeVersion() {
-    }
-
-    public ICDCodeVersion(ICDCode icd, ICDVersion version) {
-        this.icd = icd;
-        this.version = version;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public ICDCode getIcd() {
         return icd;
@@ -84,5 +55,13 @@ public class ICDCodeVersion implements Serializable {
 
     public void setVersion(ICDVersion version) {
         this.version = version;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

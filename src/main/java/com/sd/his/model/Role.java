@@ -1,75 +1,32 @@
 package com.sd.his.model;
 
-import com.sd.his.request.RoleAndPermissionCreateRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Table(name = "Role")
-public class Role implements Serializable {
+@Table(name = "ROLE")
+public class Role extends BaseEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", unique = true, nullable = false)
-    private Long id;
-
-    @Column(name = "NAME")
-    @NotNull
+    @Column(name = "NAME", unique = true, nullable = false)
     private String name;
 
     @Column(name = "DESCRIPTION")
     private String description;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
-    private boolean active;
+    private Boolean active;
 
-    @Column(name = "IS_DELETED", columnDefinition = "boolean default false", nullable = false)
-    private boolean deleted;
+    @JsonIgnore
+    @OneToMany(mappedBy = "role")
+    private List<UserRole> userRoles;
 
-    @Column(name = "UPDATED_ON")
-    private long updatedOn;
-
-    @Column(name = "CREATED_ON")
-    private long createdOn;
-
-    @OneToMany(targetEntity = UserRole.class, mappedBy = "role", fetch = FetchType.LAZY)
-    private List<UserRole> users;
-
-    @OneToMany(targetEntity = RolePermission.class, mappedBy = "role", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @OneToMany(mappedBy = "role")
     private List<RolePermission> rolePermissions;
 
-    public Role() {
-    }
-
-    public Role(RoleAndPermissionCreateRequest role) {
-        this.name = role.getName();
-        this.description = role.getDescription();
-        this.active = role.isActive();
-        this.createdOn = role.getCreatedOn();
-        this.updatedOn = role.getUpdatedOn();
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", active=" + active +
-                ", deleted=" + deleted +
-                '}';
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -87,44 +44,20 @@ public class Role implements Serializable {
         this.description = description;
     }
 
-    public boolean isActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    public List<UserRole> getUserRoles() {
+        return userRoles;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public long getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(long updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public long getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(long createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public List<UserRole> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<UserRole> users) {
-        this.users = users;
+    public void setUserRoles(List<UserRole> userRoles) {
+        this.userRoles = userRoles;
     }
 
     public List<RolePermission> getRolePermissions() {

@@ -1,8 +1,11 @@
 package com.sd.his.configuration;
 
 
-import com.sd.his.model.Properties;
-import com.sd.his.repositories.PropertiesRepository;
+import com.sd.his.model.SystemConfiguration;
+import com.sd.his.repository.PermissionRepository;
+import com.sd.his.repository.RoleRepository;
+import com.sd.his.repository.SystemConfigurationRepository;
+import com.sd.his.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +24,23 @@ public class AppConfigProperties {
     private String clientSecret;
     private String authServerScheme;
 
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    RoleRepository roleRepository;
+    @Autowired
+    PermissionRepository repository;
+
+    @Autowired
+    private SystemConfigurationRepository propertiesRepo;
+
     public AppConfigProperties() {
     }
 
-    @Autowired
-    private PropertiesRepository propertiesRepo;
 
     @PostConstruct
     public void init() {
-        Properties properties = propertiesRepo.findOne(1);
+        SystemConfiguration properties = propertiesRepo.findOne(1L);
         this.setClientId(getClientId());
         this.setClientSecret(properties.getClientSecret());
         this.setAuthServerScheme(properties.getClientSecret());
@@ -67,15 +78,5 @@ public class AppConfigProperties {
         this.authServerScheme = authServerScheme;
     }
 
-    public PropertiesRepository getPropertiesRepo() {
-        return propertiesRepo;
-    }
 
-    public void setPropertiesRepo(PropertiesRepository propertiesRepo) {
-        this.propertiesRepo = propertiesRepo;
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
 }
