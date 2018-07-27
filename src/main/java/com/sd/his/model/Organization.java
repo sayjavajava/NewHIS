@@ -59,16 +59,22 @@ public class Organization extends BaseEntity implements Serializable {
     @Column(name = "WEBSITE")
     private String website;
 
+    @Column(name = "SPECIALTY")
+    private String specialty;
+
+    @Column(name = "EMAIL")
+    private String email;
+
     @JsonIgnore
-    @OneToMany(mappedBy = "organization")
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST)
     private List<S3Bucket> bucketList;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "organization")
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Prefix> prefixList;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "organization", targetEntity = Branch.class)
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Branch> branches;
 
     public String getCompanyName() {
@@ -157,5 +163,37 @@ public class Organization extends BaseEntity implements Serializable {
 
     public void setBranches(List<Branch> branches) {
         this.branches = branches;
+    }
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Organization() {
+    }
+
+    public Organization(String companyName, Long durationOFExam, String timezone, Long durationFollowUp, String officePhone, String homePhone, String cellPhone, String website, String specialty, String email) {
+        this.companyName = companyName;
+        this.durationOFExam = durationOFExam;
+        this.timezone = timezone;
+        this.durationFollowUp = durationFollowUp;
+        this.officePhone = officePhone;
+        this.homePhone = homePhone;
+        this.cellPhone = cellPhone;
+        this.website = website;
+        this.specialty = specialty;
+        this.email = email;
     }
 }

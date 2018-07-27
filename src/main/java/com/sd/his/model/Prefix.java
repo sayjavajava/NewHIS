@@ -1,6 +1,8 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.enums.ModuleEnum;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -37,8 +39,9 @@ public class Prefix extends BaseEntity implements Serializable {
     @Column(name = "PREFIX")
     private String name;
 
-    @Column(name = "MODULE") //ModuleEnum
-    private String module;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "MODULE")
+    private ModuleEnum module;
 
     @Column(name = "START_VALUE")
     private Long startValue;
@@ -47,8 +50,18 @@ public class Prefix extends BaseEntity implements Serializable {
     private Long currentValue;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PREFIX_ID")
+    @JoinColumn(name = "ORGANIZATION_ID")
     private Organization organization;
+
+    public Prefix() {}
+
+    public Prefix(String name, ModuleEnum module, Long startValue, Long currentValue, Organization organization) {
+        this.name = name;
+        this.module = module;
+        this.startValue = startValue;
+        this.currentValue = currentValue;
+        this.organization = organization;
+    }
 
     public String getName() {
         return name;
@@ -56,14 +69,6 @@ public class Prefix extends BaseEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getModule() {
-        return module;
-    }
-
-    public void setModule(String module) {
-        this.module = module;
     }
 
     public Long getStartValue() {

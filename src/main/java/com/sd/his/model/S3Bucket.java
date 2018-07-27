@@ -54,15 +54,28 @@ public class S3Bucket extends BaseEntity implements Serializable {
     private String publicBaseURL;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BUCKET_ID")
+    @JoinColumn(name = "ORGANIZATION_ID")
     private Organization organization;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private Boolean active;
 
-    @Column(name = "SYS_DEFAULT", columnDefinition = "boolean default false", nullable = false)
-    private Boolean sysDefault;
+        @Column(name = "SYS_DEFAULT", columnDefinition = "boolean default false", nullable = false)
+        private Boolean sysDefault;
 
+    public S3Bucket(String name, String description, String accessKey, String secretKey, String accessProtocol, String publicBaseURL, Boolean active, Boolean sysDefault, Organization organization) {
+        this.name = name;
+        this.description = description;
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        this.accessProtocol = accessProtocol;
+        this.publicBaseURL = publicBaseURL;
+        this.active = active;
+        this.sysDefault = sysDefault;
+        this.organization = organization;
+    }
+
+    public S3Bucket(){}
     public String getName() {
         return name;
     }

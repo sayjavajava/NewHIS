@@ -22,5 +22,5 @@ package com.sd.his.enums;
  * 
  */
 public enum UserTypeEnum {
-   ADMIN, MANAGER, DOCTOR, RECEPTIONIST, CASHIER, NURSE, PATIENT;
+    MANAGER, DOCTOR, RECEPTIONIST, CASHIER, NURSE, PATIENT;
 }

@@ -53,6 +53,14 @@ public class User extends BaseEntity implements Serializable {
     @OneToMany(targetEntity = UserRole.class, mappedBy = "user")
     private List<UserRole> userRoles;
 
+    public User(){}
+    public User(String username, UserTypeEnum userType, String password, Boolean active) {
+        this.username = username;
+        this.userType = userType;
+        this.password = password;
+        this.active = active;
+        this.userRoles = userRoles;
+    }
 
     public String getUsername() {
         return username;

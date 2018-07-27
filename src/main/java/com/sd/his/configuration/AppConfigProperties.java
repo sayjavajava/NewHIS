@@ -40,10 +40,10 @@ public class AppConfigProperties {
 
     @PostConstruct
     public void init() {
-        SystemConfiguration properties = propertiesRepo.findOne(1L);
-        this.setClientId(getClientId());
-        this.setClientSecret(properties.getClientSecret());
-        this.setAuthServerScheme(properties.getClientSecret());
+//        SystemConfiguration properties = propertiesRepo.findOne(1L);
+//        this.setClientId(getClientId());
+//        this.setClientSecret(properties.getClientSecret());
+//        this.setAuthServerScheme(properties.getClientSecret());
     }
 
     private final Logger logger = LoggerFactory.getLogger(AppConfigProperties.class);

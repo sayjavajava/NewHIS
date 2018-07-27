@@ -60,9 +60,51 @@ public class Doctor extends StaffProfile implements Serializable {
     private List<BranchDoctor> branchDoctors;
 
 
+    public Long getCheckUpInterval() {
+        return checkUpInterval;
+    }
 
+    public void setCheckUpInterval(Long checkUpInterval) {
+        this.checkUpInterval = checkUpInterval;
+    }
 
+    public List<String> getWorkingDays() {
+        return workingDays;
+    }
 
+    public void setWorkingDays(List<String> workingDays) {
+        this.workingDays = workingDays;
+    }
 
+    public List<NurseWithDoctor> getNurseWithDoctorList() {
+        return nurseWithDoctorList;
+    }
 
+    public void setNurseWithDoctorList(List<NurseWithDoctor> nurseWithDoctorList) {
+        this.nurseWithDoctorList = nurseWithDoctorList;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<DutyShift> getDutyShifts() {
+        return dutyShifts;
+    }
+
+    public void setDutyShifts(List<DutyShift> dutyShifts) {
+        this.dutyShifts = dutyShifts;
+    }
+
+    public List<BranchDoctor> getBranchDoctors() {
+        return branchDoctors;
+    }
+
+    public void setBranchDoctors(List<BranchDoctor> branchDoctors) {
+        this.branchDoctors = branchDoctors;
+    }
 }
