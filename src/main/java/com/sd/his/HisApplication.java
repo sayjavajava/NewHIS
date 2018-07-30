@@ -72,8 +72,8 @@ public class HisApplication {
             organization.setBucketList(Arrays.asList(new S3Bucket("hisdev", "development bucket", "AKIAJGSNPR3WX7C3EVMA", "4enduKPgokQP43xA9B1Qc/Vrymtai9X9M6AMqfcD", "https://", "s3.amazonaws.com", true, true, organization)));
             List<Prefix> prefixes = new ArrayList<>();
             prefixes.add(new Prefix("P", ModuleEnum.PROFILE, 10000L, 10003L, organization));
-            prefixes.add(new Prefix("AP", ModuleEnum.APPOINTMENT, 10000L, 10000L, organization));
-            prefixes.add(new Prefix("AP", ModuleEnum.PATIENT, 10000L, 10000L, organization));
+            prefixes.add(new Prefix("APT", ModuleEnum.APPOINTMENT, 10000L, 10000L, organization));
+            prefixes.add(new Prefix("PAT", ModuleEnum.PATIENT, 10000L, 10000L, organization));
             organization.setPrefixList(prefixes);
 
 

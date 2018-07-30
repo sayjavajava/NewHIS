@@ -59,6 +59,9 @@ public class Doctor extends StaffProfile implements Serializable {
     @OneToMany(targetEntity = BranchDoctor.class, mappedBy = "doctor")
     private List<BranchDoctor> branchDoctors;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "primaryDoctor")
+    private List<Patient> patients;
 
     public Long getCheckUpInterval() {
         return checkUpInterval;
@@ -106,5 +109,13 @@ public class Doctor extends StaffProfile implements Serializable {
 
     public void setBranchDoctors(List<BranchDoctor> branchDoctors) {
         this.branchDoctors = branchDoctors;
+    }
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
     }
 }
