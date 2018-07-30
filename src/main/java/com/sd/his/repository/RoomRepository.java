@@ -1,4 +1,15 @@
-package com.sd.his.wrapper;
+package com.sd.his.repository;
+
+import com.sd.his.model.Branch;
+import com.sd.his.model.Room;
+import com.sd.his.wrapper.response.BranchResponseWrapper;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
  * @author    : waqas kamran
@@ -22,26 +33,8 @@ package com.sd.his.wrapper;
  * All rights reserved.
  *
  */
-public class ExamRooms {
-    boolean allowOnlineScheduling;
-    String roomName;
+@Repository
+public interface RoomRepository extends JpaRepository<Room,Long> {
 
-    public ExamRooms() {
     }
 
-    public boolean isAllowOnlineScheduling() {
-        return allowOnlineScheduling;
-    }
-
-    public void setAllowOnlineScheduling(boolean allowOnlineScheduling) {
-        this.allowOnlineScheduling = allowOnlineScheduling;
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
-
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
-}

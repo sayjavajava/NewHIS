@@ -875,15 +875,16 @@ public class UserService implements UserDetailsService {
 //        return userWrapper;
 //    }
 //
-//    public List<UserResponseWrapper> findByRole(String role) {
-//        List<UserResponseWrapper> userWrapper = new ArrayList<>();
-//        List<User> userRoles = userRepository.findAllByRoles_role_name(role);
-//        for (User user : userRoles) {
-//            UserResponseWrapper userResponseWrapper = new UserResponseWrapper(user);
-//            userWrapper.add(userResponseWrapper);
-//        }
-//        return userWrapper;
-//    }
+    public List<UserWrapper> findByRole(String role) {
+        List<UserWrapper> userWrapper = new ArrayList<>();
+         List<User> userList = userRepository.findAll();
+        for (User  user : userList){
+            UserWrapper userWrapper1 = new UserWrapper(user);
+            userWrapper.add(userWrapper1);
+        }
+
+        return userWrapper;
+    }
 //
 //    public AdminDashboardDataResponseWrapper buildAdminDashboardData() {
 //        AdminDashboardDataResponseWrapper adminData = new AdminDashboardDataResponseWrapper();

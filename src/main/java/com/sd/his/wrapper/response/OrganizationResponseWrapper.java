@@ -31,6 +31,7 @@ public class OrganizationResponseWrapper {
     String lastName;
     String companyName;
     String password;
+    String fax;
     String confirmPassword;
     String homePhone;
     String cellPhone;
@@ -41,22 +42,25 @@ public class OrganizationResponseWrapper {
     String defaultBranch;
     Long durationOfExam;
     Long durationFollowUp;
-    String email;
+    String companyEmail;
     String speciality;
     User user;
+    String address;
 
-    public OrganizationResponseWrapper(Long id, String companyName, String cellPhone, String website, String email,String homePhone, Long durationFollowUp,Long durationOFExam, String timezone,String speciality ) {
+    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email,String homePhone, Long durationFollowUp,Long durationOFExam, String timezone,String speciality ,String fax,String address) {
         this.id = id;
         this.companyName = companyName;
-        this.cellPhone = cellPhone;
+        this.officePhone = officePhone;
 //        this.appointmentSerial = appointmentSerial;
         this.website = website;
-        this.email = email;
+        this.companyEmail = email;
         this.website=website;
         this.homePhone=homePhone;
         this.durationOfExam=durationOFExam;
         this.durationFollowUp=durationFollowUp;
         this.speciality=speciality;
+        this.fax=fax;
+        this.address=address;
 
     }
 /*
@@ -80,6 +84,22 @@ public class OrganizationResponseWrapper {
         this.lastName = user.getProfile().getLastName();
         this.email = user.getEmail();
     }*/
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
 
     public Long getId() {
         return id;
@@ -201,12 +221,12 @@ public class OrganizationResponseWrapper {
         this.durationFollowUp = durationFollowUp;
     }
 
-    public String getEmail() {
-        return email;
+    public String getCompanyEmail() {
+        return companyEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCompanyEmail(String companyEmail) {
+        this.companyEmail = companyEmail;
     }
 
     public String getSpeciality() {

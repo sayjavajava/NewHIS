@@ -2,6 +2,8 @@ package com.sd.his.wrapper.request;
 
 import com.sd.his.wrapper.ExamRooms;
 
+import java.util.Date;
+
 /*
  * @author    Waqas Kamran
  * @Date      ;18
@@ -28,11 +30,11 @@ public class BranchRequestWrapper {
     String branchName;
     String officeHoursStart;
     String officeHoursEnd;
-    int noOfExamRooms;
+    Long noOfExamRooms;
     String state;
     String city;
-    long primaryDoctor;
-    int zipCode;
+    Long primaryDoctor;
+    Integer zipCode;
     String address;
     String officePhone;
     String fax;
@@ -129,11 +131,11 @@ public class BranchRequestWrapper {
         this.officeHoursEnd = officeHoursEnd;
     }
 
-    public int getNoOfExamRooms() {
+    public Long getNoOfExamRooms() {
         return noOfExamRooms;
     }
 
-    public void setNoOfExamRooms(int noOfExamRooms) {
+    public void setNoOfExamRooms(Long noOfExamRooms) {
         this.noOfExamRooms = noOfExamRooms;
     }
 
@@ -149,6 +151,18 @@ public class BranchRequestWrapper {
         return city;
     }
 
+    public void setPrimaryDoctor(Long primaryDoctor) {
+        this.primaryDoctor = primaryDoctor;
+    }
+
+    public Integer getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(Integer zipCode) {
+        this.zipCode = zipCode;
+    }
+
     public void setCity(String city) {
         this.city = city;
     }
@@ -161,13 +175,6 @@ public class BranchRequestWrapper {
         this.primaryDoctor = primaryDoctor;
     }
 
-    public int getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(int zipCode) {
-        this.zipCode = zipCode;
-    }
 
     public String getAddress() {
         return address;

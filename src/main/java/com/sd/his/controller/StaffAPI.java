@@ -1,15 +1,35 @@
 package com.sd.his.controller;
 
+import com.sd.his.enums.ResponseEnum;
+import com.sd.his.service.UserService;
+import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.UserWrapper;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.ResourceBundle;
+
 
 @RestController
 @RequestMapping("/user")
 public class StaffAPI {
 
 //
-//    @Autowired
-//    private HISUserService userService;
+    @Autowired
+    private UserService userService;
 //    @Autowired
 //    private AWSService awsService;
 //    @Autowired
@@ -17,7 +37,8 @@ public class StaffAPI {
 //    @Autowired
 //    InsuranceManager insuranceManager;
 //
-//    private final Logger logger = LoggerFactory.getLogger(UserAPI.class);
+    private final Logger logger = LoggerFactory.getLogger(StaffAPI.class);
+    private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 //    private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 //
 //    @ApiOperation(httpMethod = "GET", value = "Admin LoggedIn",
@@ -465,61 +486,61 @@ public class StaffAPI {
 //        }
 //    }
 //
-//    @ApiOperation(httpMethod = "GET", value = "User By Role",
-//            notes = "This method will return Users By Role",
-//            produces = "application/json", nickname = "Get Users By role ",
-//            response = GenericAPIResponse.class, protocols = "https")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "Users fetched successfully", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-//    @RequestMapping(value = "/role/", method = RequestMethod.GET)
-//    public ResponseEntity<?> findUserByRole(HttpServletRequest request,
-//                                            @RequestParam(value = "name") String role) {
-//
-//        logger.info("find User By Role..");
-//        logger.info("user type..." + role);
-//        GenericAPIResponse response = new GenericAPIResponse();
-//        response.setResponseMessage(messageBundle.getString("user.not.found"));
-//        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
-//        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//        response.setResponseData(null);
-//
-//        try {
-//            if (!HISCoreUtil.isNull(role)) {
-//                List<UserResponseWrapper> userWrappers = userService.findByRole(role);
-//
-//                if (!HISCoreUtil.isListEmpty(userWrappers)) {
-//                    response.setResponseMessage(messageBundle.getString("user.fetched.success"));
-//                    response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
-//                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-//                    response.setResponseData(userWrappers);
-//                    logger.info("user on base of role fetched successfully...");
-//                    return new ResponseEntity<>(response, HttpStatus.OK);
-//                }
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//            } else {
-//                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-//                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-//                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                response.setResponseData(null);
-//                logger.error("Create User insufficient params");
-//
-//            }
-//        } catch (Exception ex) {
-//            logger.error("user by role failed.", ex.fillInStackTrace());
-//            response.setResponseData("");
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-//
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
-//
+    @ApiOperation(httpMethod = "GET", value = "User By Type",
+            notes = "This method will return Users By Type",
+            produces = "application/json", nickname = "Get Users By type ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Users fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/role", method = RequestMethod.GET)
+    public ResponseEntity<?> findUserByRole(HttpServletRequest request,
+                                            @RequestParam(value = "name") String type) {
+
+        logger.info("find User By Type..");
+        logger.info("user type..." + type);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.not.found"));
+        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (!HISCoreUtil.isNull(type)) {
+                List<UserWrapper> userWrappers = userService.findByRole(type);
+
+                if (!HISCoreUtil.isListEmpty(userWrappers)) {
+                    response.setResponseMessage(messageBundle.getString("user.fetched.success"));
+                    response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    response.setResponseData(userWrappers);
+                    logger.info("user on base of Type fetched successfully...");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+               return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Create User insufficient params");
+
+            }
+        } catch (Exception ex) {
+            logger.error("user by role failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 //    @ApiOperation(httpMethod = "GET", value = "SuperAdmin dashboard data",
 //            notes = "This method will return super admin dashboard data",
 //            produces = "application/json", nickname = "Dashboard Data",

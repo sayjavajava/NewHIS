@@ -242,7 +242,7 @@ public class OrganizationAPI {
     }
 
 
-    /*@ApiOperation(httpMethod = "GET", value = "Fetch Organization",
+    @ApiOperation(httpMethod = "GET", value = "Fetch Organization",
             notes = "This method will return Organization based on Id",
             produces = "application/json", nickname = "Get Single Organization",
             response = GenericAPIResponse.class, protocols = "https")
@@ -285,8 +285,7 @@ public class OrganizationAPI {
         }
 
     }
-*/
-  /*  @ApiOperation(httpMethod = "PUT", value = "Update Organization ",
+    @ApiOperation(httpMethod = "PUT", value = "Update Organization ",
             notes = "This method will Update Organization",
             produces = "application/json", nickname = "Update Organization",
             response = GenericAPIResponse.class, protocols = "https")
@@ -301,7 +300,7 @@ public class OrganizationAPI {
                                                 @PathVariable("id") int id,
                                                 @RequestBody OrganizationRequestWrapper organizationRequestWrapper) {
 
-        logger.info("update Organization API called..." + organizationRequestWrapper.getUserName());
+        logger.info("update Organization API called..." + organizationRequestWrapper.getFormName());
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("organization.update.error"));
@@ -342,6 +341,6 @@ public class OrganizationAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-*/
+
 
 }

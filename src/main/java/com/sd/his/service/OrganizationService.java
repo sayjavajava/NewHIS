@@ -23,8 +23,10 @@ package com.sd.his.service;/*
 
 
 
+import com.sd.his.enums.OrganizationFormTypeEnum;
 import com.sd.his.model.Branch;
 import com.sd.his.model.Organization;
+import com.sd.his.model.User;
 import com.sd.his.repository.BranchRepository;
 import com.sd.his.repository.OrganizationRepository;
 import com.sd.his.repository.TimezoneRepository;
@@ -78,40 +80,56 @@ public class OrganizationService {
         return (int) organizationRepository.count();
     }
 
-   /* public OrganizationResponseWrapper getOrganizationByIdWithResponse(long id) {
-        Organization organization = organizationRepository.findOne(id);
-        OrganizationSpecialty organizationSpecialty = organizationSpecialtyRepository.findByOrganization(organization);
-        Speciality speciality = organizationSpecialty.getSpeciality();
-        OrganizationResponseWrapper organizationResponseWrapper = new OrganizationResponseWrapper(organization);
-        organizationResponseWrapper.setSpeciality(speciality);
-        return organizationResponseWrapper;
+    public OrganizationResponseWrapper getOrganizationByIdWithResponse(long id) {
+        return organizationRepository.findById(id);
     }
+        public Organization getByID(long id) {
+            return organizationRepository.getOne(id);
+        }
 
-    public Organization getByID(long id) {
-        return organizationRepository.getOne(id);
-    }
+        public OrganizationRequestWrapper updateOrganization(OrganizationRequestWrapper organizationRequestWrapper, Organization organization) {
 
-    public OrganizationRequestWrapper updateOrganization(OrganizationRequestWrapper organizationRequestWrapper, Organization organization) {
-        organization.setCompanyName(organizationRequestWrapper.getCompanyName());
-        organization.setWebsite(organizationRequestWrapper.getWebsite());
-        organization.setHomePhone(organizationRequestWrapper.getHomePhone());
-        organization.setCellPhone(organizationRequestWrapper.getCellPhone());
-        organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
-        organization.setAptSerialStart(organizationRequestWrapper.getAppointmentSerial());
-        organization.setDefaultBranch(organizationRequestWrapper.getDefaultBranch());
-        organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
-        organization.setDurationFollowUp(organizationRequestWrapper.getFollowUpExam());
-        organization.setTimezone(organizationRequestWrapper.getTimeZone());
+        if(organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.PROFILE.name())){
 
-        OrganizationSpecialty organizationSpecialty = organizationSpecialtyRepository.findByOrganization(organization);
-        Speciality speciality = organizationSpecialty.getSpeciality();
-        speciality.setName(organizationRequestWrapper.getSpecialty());
-        speciality.setDescription(organizationRequestWrapper.getSpecialty());
-        specialtyRepository.save(speciality);
-        organizationRepository.save(organization);
-        return organizationRequestWrapper;
-    }
+            organization.setWebsite(organizationRequestWrapper.getWebsite());
+            organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
+            organization.setFax(organizationRequestWrapper.getFax());
+            organization.setAddress(organizationRequestWrapper.getAddress());
+            organization.setSpecialty(organizationRequestWrapper.getSpecialty());
+            organization.setEmail(organizationRequestWrapper.getCompanyEmail());
+            //  organizationRepository.save(organization);
+            return organizationRequestWrapper;
+        }
+
+/*
+            String defaultBranch;     //geenral form
+            String durationOfExam;
+            String durationFollowUp;
+            String prefixSerialPatient;
+            String prefixSerialUser;
+            String prefixSerialDepartment;
+            String prefixSerialAppointment;
+            String prefixSerialInvoices;
 */
+
+            if(organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.GENERAL.name())){
+
+                organization.setDurationFollowUp(organizationRequestWrapper.getDurationFollowUp());
+                organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
+                //  organizationRepository.save(organization);
+                return organizationRequestWrapper;
+            }
+
+            if(organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.ACCOUNT.name())){
+
+               User user = userRepository.getOne(1L);
+             //   user.setFi(organizationRequestWrapper.get);
+                //  organizationRepository.save(organization);
+                return organizationRequestWrapper;
+            }
+
+            return null;
+    }
     public Organization findOrgnazatinoByCompanyName(String companyName) {
         return organizationRepository.findByCompanyName(companyName);
     }

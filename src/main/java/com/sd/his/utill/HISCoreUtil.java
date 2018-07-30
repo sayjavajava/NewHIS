@@ -1,32 +1,41 @@
 package com.sd.his.utill;
 
+
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/*
- * @author    : irfan
- * @Date      : 16-Apr-18
- * @version   : ver. 1.0.0
- * 
- * ________________________________________________________________________________________________
- *
- *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
- * ________________________________________________________________________________________________
- *
- * @Project   : HIS
- * @Package   : com.sd.ap.util
- * @FileName  : HISCoreUtil
- *
- * Copyright © 
- * SolutionDots, 
- * All rights reserved.
- * 
- */
+        /*
+         * @author    : irfan
+         * @Date      : 16-Apr-18
+         * @version   : ver. 1.0.0
+         *
+         * ________________________________________________________________________________________________
+         *
+         *  Developer				Date		     Version		Operation		Description
+         * ________________________________________________________________________________________________
+         *
+         *
+         * ________________________________________________________________________________________________
+         *
+         * @Project   : HIS
+         * @Package   : com.sd.ap.util
+         * @FileName  : HISCoreUtil
+         *
+         * Copyright ©
+         * SolutionDots,
+         * All rights reserved.
+         *
+         */
 
 public class HISCoreUtil {
 
@@ -75,6 +84,30 @@ public class HISCoreUtil {
             return 0;
         }
     }
+
+    public static Date convertToTime(String str) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(HISConstants.TIME_FORMAT_PATTERN);
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
+    public static String convertToDate(Date time) {
+        SimpleDateFormat form = new SimpleDateFormat("hh:mm:ss");
+        return form.format(time);
+    }
+
+
+//    public static Date convertToDate(LocalTime dateToConvert) {
+//        return new Date(dateToConvert.);
+//    }
 
 
 }

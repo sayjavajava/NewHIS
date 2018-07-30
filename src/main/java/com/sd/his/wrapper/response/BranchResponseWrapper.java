@@ -1,12 +1,14 @@
 package com.sd.his.wrapper.response;
 
 import com.sd.his.model.Branch;
+import com.sd.his.model.Doctor;
 import com.sd.his.model.Room;
 import com.sd.his.model.User;
+import com.sd.his.utill.HISCoreUtil;
 import io.swagger.models.auth.In;
 
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * @author    : waqas kamran
@@ -35,8 +37,8 @@ public class BranchResponseWrapper {
     long id;
     String branchName;
     String name;
-    Date officeHoursStart;
-    Date officeHoursEnd;
+    String officeHoursStart;
+    String officeHoursEnd;
     Integer noOfExamRooms;
     String state;
     String city;
@@ -51,48 +53,62 @@ public class BranchResponseWrapper {
     String billingTaxID;
     Boolean showBranchOnline;
     Boolean allowOnlineSchedulingInBranch;
-    Integer rooms;
+    Long rooms;
     String username;
     List<Room> examRooms;
     String address;
     User user;
     Room roomList;
+    Doctor doctors;
 
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
         this.country = branch.getCountry();
-        this.officeHoursEnd = branch.getOfficeEndTime();
-        this.officeHoursStart = branch.getOfficeStartTime();
+       // this.officeHoursEnd = branch.getOfficeEndTime();
+       // this.officeHoursStart = branch.getOfficeStartTime();
         this.billingBranch = branch.getBillingBranchName();
         this.billingTaxID = branch.getBillingTaxId();
         this.billingName = branch.getBillingName();
         this.city = branch.getCity();
-       // this.rooms = branch.getNoOfRooms();
+        this.rooms = branch.getNoOfRooms();
         this.fax = branch.getFax();
-       // this.formattedAddress = branch.getFormattedAddress();
         this.zipCode = branch.getZipCode();
         this.officePhone = branch.getOfficePhone();
         this.state = branch.getState();
-       // this.showBranchOnline = branch.isShowBranchInfoOnline();
-       // this.allowOnlineSchedulingInBranch = branch.isAllowOnlineSchedule();
         this.name = branch.getName();
         this.id = branch.getId();
         this.address = branch.getAddress();
         this.examRooms = branch.getRooms();
 
+        }
+
+
+    public BranchResponseWrapper(Branch branch,User user) {
+        this.branchName = branch.getName();
+        this.country = branch.getCountry();
+        this.officeHoursEnd = HISCoreUtil.convertToDate(branch.getOfficeEndTime());
+        this.officeHoursStart = HISCoreUtil.convertToDate(branch.getOfficeStartTime());
+        this.billingBranch = branch.getBillingBranchName();
+        this.billingTaxID = branch.getBillingTaxId();
+        this.billingName = branch.getBillingName();
+        this.city = branch.getCity();
+        this.rooms = branch.getNoOfRooms();
+        this.fax = branch.getFax();
+        this.zipCode = branch.getZipCode();
+        this.officePhone = branch.getOfficePhone();
+        this.state = branch.getState();
+        this.name = branch.getName();
+        this.id = branch.getId();
+        this.address = branch.getAddress();
+        this.examRooms = branch.getRooms().stream().filter(x->x.getRoomName() !=null)
+                .map(x-> new Room(x.getId(),x.getRoomName(),x.getAllowOnlineScheduling()))
+                .collect(Collectors.toList());
+        this.user = user;
 
     }
 
-    public BranchResponseWrapper(long id, String name, String country, String city, int rooms) {
-        this.id = id;
-        this.city = city;
-        this.name = name;
-        this.country = country;
-        this.rooms = rooms;
 
-    }
-
-    public BranchResponseWrapper(long id, String name, String country, String city, Integer rooms, String username) {
+  /*  public BranchResponseWrapper(Long id, String name, String country, String city, Long rooms, String username) {
         this.id = id;
         this.city = city;
         this.name = name;
@@ -100,6 +116,24 @@ public class BranchResponseWrapper {
         this.rooms = rooms;
         this.primaryDoctor = username;
 
+    }*/
+
+    public BranchResponseWrapper(long id, String name, String country, String city, Long rooms, User username) {
+        this.id = id;
+        this.city = city;
+        this.name = name;
+        this.country = country;
+        this.rooms = rooms;
+        this.user = username;
+
+    }
+
+    public Doctor getDoctors() {
+        return doctors;
+    }
+
+    public void setDoctors(Doctor doctors) {
+        this.doctors = doctors;
     }
 
     public long getId() {
@@ -126,19 +160,19 @@ public class BranchResponseWrapper {
         this.name = name;
     }
 
-    public Date getOfficeHoursStart() {
+    public String getOfficeHoursStart() {
         return officeHoursStart;
     }
 
-    public void setOfficeHoursStart(Date officeHoursStart) {
+    public void setOfficeHoursStart(String officeHoursStart) {
         this.officeHoursStart = officeHoursStart;
     }
 
-    public Date getOfficeHoursEnd() {
+    public String getOfficeHoursEnd() {
         return officeHoursEnd;
     }
 
-    public void setOfficeHoursEnd(Date officeHoursEnd) {
+    public void setOfficeHoursEnd(String officeHoursEnd) {
         this.officeHoursEnd = officeHoursEnd;
     }
 
@@ -254,11 +288,11 @@ public class BranchResponseWrapper {
         this.allowOnlineSchedulingInBranch = allowOnlineSchedulingInBranch;
     }
 
-    public Integer getRooms() {
+    public Long getRooms() {
         return rooms;
     }
 
-    public void setRooms(Integer rooms) {
+    public void setRooms(Long rooms) {
         this.rooms = rooms;
     }
 

@@ -65,6 +65,12 @@ public class Organization extends BaseEntity implements Serializable {
     @Column(name = "EMAIL")
     private String email;
 
+    @Column(name = "FAX")
+    private String fax;
+
+    @Column(name = "ADDRESS")
+    private String address;
+
     @JsonIgnore
     @OneToMany(mappedBy = "organization")
     private List<S3Bucket> bucketList;
@@ -76,6 +82,22 @@ public class Organization extends BaseEntity implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "organization", targetEntity = Branch.class)
     private List<Branch> branches;
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getEmail() {
         return email;

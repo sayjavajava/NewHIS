@@ -2,68 +2,59 @@ package com.sd.his.wrapper.request;/*
  * @author    : waqas kamran
  * @Date      : 29-May-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.*
  * @FileName  : OrganizationRequestWrapper
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 
 public class OrganizationRequestWrapper {
 
+    String CompanyEmail;    //profile form
+    String companyName;
+    String officePhone;
+    String specialty;
+    String fax;
+    String formName;
+    String address;
+    String website;
+
+    String defaultBranch;     //geenral form
+    Long durationOfExam;
+    Long durationFollowUp;
+    String prefixSerialPatient;
+    String prefixSerialUser;
+    String prefixSerialDepartment;
+    String prefixSerialAppointment;
+    String prefixSerialInvoices;
+
     String firstName;
     String lastName;
     String userName;
-    String companyName;
-    String password;
-    String confirmPassword;
-    String homePhone;
+    String userEmail;
     String cellPhone;
-    String officePhone;
-    String timeZone;
-    String specialty;
-    String appointmentSerial ;
-    String website;
-    String defaultBranch;
-    Long durationOfExam;
-    String followUpExam ;
-    String email;
+    String userAddress;
+    String homePhone;
 
-
-    public String getFirstName() {
-        return firstName;
+    public String getCompanyEmail() {
+        return CompanyEmail;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setCompanyEmail(String companyEmail) {
+        CompanyEmail = companyEmail;
     }
 
     public String getCompanyName() {
@@ -74,60 +65,12 @@ public class OrganizationRequestWrapper {
         this.companyName = companyName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
-    public String getHomePhone() {
-        return homePhone;
-    }
-
-    public void setHomePhone(String homePhone) {
-        this.homePhone = homePhone;
-    }
-
-    public String getCellPhone() {
-        return cellPhone;
-    }
-
-    public void setCellPhone(String cellPhone) {
-        this.cellPhone = cellPhone;
-    }
-
     public String getOfficePhone() {
         return officePhone;
     }
 
     public void setOfficePhone(String officePhone) {
         this.officePhone = officePhone;
-    }
-
-    public String getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        this.timeZone = timeZone;
     }
 
     public String getSpecialty() {
@@ -138,12 +81,28 @@ public class OrganizationRequestWrapper {
         this.specialty = specialty;
     }
 
-    public String getAppointmentSerial() {
-        return appointmentSerial;
+    public String getFax() {
+        return fax;
     }
 
-    public void setAppointmentSerial(String appointmentSerial) {
-        this.appointmentSerial = appointmentSerial;
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getWebsite() {
@@ -170,11 +129,107 @@ public class OrganizationRequestWrapper {
         this.durationOfExam = durationOfExam;
     }
 
-    public String getFollowUpExam() {
-        return followUpExam;
+    public Long getDurationFollowUp() {
+        return durationFollowUp;
     }
 
-    public void setFollowUpExam(String followUpExam) {
-        this.followUpExam = followUpExam;
+    public void setDurationFollowUp(Long durationFollowUp) {
+        this.durationFollowUp = durationFollowUp;
+    }
+
+    public String getPrefixSerialPatient() {
+        return prefixSerialPatient;
+    }
+
+    public void setPrefixSerialPatient(String prefixSerialPatient) {
+        this.prefixSerialPatient = prefixSerialPatient;
+    }
+
+    public String getPrefixSerialUser() {
+        return prefixSerialUser;
+    }
+
+    public void setPrefixSerialUser(String prefixSerialUser) {
+        this.prefixSerialUser = prefixSerialUser;
+    }
+
+    public String getPrefixSerialDepartment() {
+        return prefixSerialDepartment;
+    }
+
+    public void setPrefixSerialDepartment(String prefixSerialDepartment) {
+        this.prefixSerialDepartment = prefixSerialDepartment;
+    }
+
+    public String getPrefixSerialAppointment() {
+        return prefixSerialAppointment;
+    }
+
+    public void setPrefixSerialAppointment(String prefixSerialAppointment) {
+        this.prefixSerialAppointment = prefixSerialAppointment;
+    }
+
+    public String getPrefixSerialInvoices() {
+        return prefixSerialInvoices;
+    }
+
+    public void setPrefixSerialInvoices(String prefixSerialInvoices) {
+        this.prefixSerialInvoices = prefixSerialInvoices;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getCellPhone() {
+        return cellPhone;
+    }
+
+    public void setCellPhone(String cellPhone) {
+        this.cellPhone = cellPhone;
+    }
+
+    public String getUserAddress() {
+        return userAddress;
+    }
+
+    public void setUserAddress(String userAddress) {
+        this.userAddress = userAddress;
+    }
+
+    public String getHomePhone() {
+        return homePhone;
+    }
+
+    public void setHomePhone(String homePhone) {
+        this.homePhone = homePhone;
     }
 }

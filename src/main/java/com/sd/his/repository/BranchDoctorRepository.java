@@ -1,4 +1,9 @@
-package com.sd.his.wrapper;
+package com.sd.his.repository;
+
+import com.sd.his.model.Branch;
+import com.sd.his.model.BranchDoctor;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /*
  * @author    : waqas kamran
@@ -22,26 +27,10 @@ package com.sd.his.wrapper;
  * All rights reserved.
  *
  */
-public class ExamRooms {
-    boolean allowOnlineScheduling;
-    String roomName;
+@Repository
+public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long> {
 
-    public ExamRooms() {
-    }
+     BranchDoctor findByBranch(Branch branch);
 
-    public boolean isAllowOnlineScheduling() {
-        return allowOnlineScheduling;
-    }
-
-    public void setAllowOnlineScheduling(boolean allowOnlineScheduling) {
-        this.allowOnlineScheduling = allowOnlineScheduling;
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
-
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
 }
+

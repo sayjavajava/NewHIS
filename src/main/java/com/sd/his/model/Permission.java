@@ -27,7 +27,6 @@ public class Permission extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "permission")
     private List<RolePermission> rolePermissions;
 
-
     public String getName() {
         return name;
     }
