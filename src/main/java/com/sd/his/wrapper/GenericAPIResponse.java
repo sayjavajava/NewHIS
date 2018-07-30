@@ -23,7 +23,7 @@ package com.sd.his.wrapper;
  * 
  */
 
-public class GenericAPIResponse{
+public class GenericAPIResponse {
 
     private String responseCode;
     private Object responseData;
