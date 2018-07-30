@@ -67,68 +67,69 @@ public class HisApplication {
     public void onBootStartup(ApplicationContextEvent event) {
 
 
-       Organization organization = new Organization("SolutionDots Hospital",30L,"Asia/Karachi",15L,"+96645484654","+964547854","+456498465","https://solutiondots.com/","General","imran@solutiondots.net");
-       organization.setBucketList(Arrays.asList(new S3Bucket("hisdev","development bucket","AKIAJGSNPR3WX7C3EVMA","4enduKPgokQP43xA9B1Qc/Vrymtai9X9M6AMqfcD","https://","s3.amazonaws.com", true, true, organization)));
-       List<Prefix> prefixes = new ArrayList<>();
-       prefixes.add(new Prefix("P", ModuleEnum.PROFILE, 10000L,10003L, organization));
-       prefixes.add(new Prefix("AP",ModuleEnum.APPOINTMENT, 10000L,10000L,organization));
-       prefixes.add(new Prefix("AP",ModuleEnum.PATIENT, 10000L,10000L, organization));
-       organization.setPrefixList(prefixes);
+        if(organizationRepository.findOne(1L) == null) {
+            Organization organization = new Organization("SolutionDots Hospital", 30L, "Asia/Karachi", 15L, "+96645484654", "+964547854", "+456498465", "https://solutiondots.com/", "General", "imran@solutiondots.net");
+            organization.setBucketList(Arrays.asList(new S3Bucket("hisdev", "development bucket", "AKIAJGSNPR3WX7C3EVMA", "4enduKPgokQP43xA9B1Qc/Vrymtai9X9M6AMqfcD", "https://", "s3.amazonaws.com", true, true, organization)));
+            List<Prefix> prefixes = new ArrayList<>();
+            prefixes.add(new Prefix("P", ModuleEnum.PROFILE, 10000L, 10003L, organization));
+            prefixes.add(new Prefix("AP", ModuleEnum.APPOINTMENT, 10000L, 10000L, organization));
+            prefixes.add(new Prefix("AP", ModuleEnum.PATIENT, 10000L, 10000L, organization));
+            organization.setPrefixList(prefixes);
 
 
-        List<Permission> permissions = new ArrayList<>();
-        permissions.add(new Permission("Create Patient","to create patient","/patient",true));
-        permissions.add(new Permission("Version","fasdfa","/asdfasdf",true));
+            List<Permission> permissions = new ArrayList<>();
+            permissions.add(new Permission("Create Patient", "to create patient", "/patient", true));
+            permissions.add(new Permission("Version", "fasdfa", "/asdfasdf", true));
 
 
-        permissionRepository.save(permissions);
+            permissionRepository.save(permissions);
 
-        List<Role> roles = new ArrayList<>();
-        roles.add(new Role(UserTypeEnum.MANAGER.name(),"manager role",true));
-        roles.add(new Role(UserTypeEnum.DOCTOR.name(),"doctor role",true));
-        roles.add(new Role(UserTypeEnum.NURSE.name(),"nurse role",true));
-        roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(),"nurse role",true));
-        roles.add(new Role(UserTypeEnum.CASHIER.name(),"cashier role",true));
-        roleRepository.save(roles);
+            List<Role> roles = new ArrayList<>();
+            roles.add(new Role(UserTypeEnum.MANAGER.name(), "manager role", true));
+            roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
+            roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
+            roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "nurse role", true));
+            roles.add(new Role(UserTypeEnum.CASHIER.name(), "cashier role", true));
+            roleRepository.save(roles);
 
-        List<RolePermission> rolePermissions = new ArrayList<>();
-        rolePermissions.add(new RolePermission(roles.get(0), permissions.get(0), true, true, true));
-        rolePermissions.add(new RolePermission(roles.get(0), permissions.get(1), true, true, true));
-        rolePermissions.add(new RolePermission(roles.get(1), permissions.get(0), true, true, true));
-        rolePermissions.add(new RolePermission(roles.get(2), permissions.get(1), true, true, true));
+            List<RolePermission> rolePermissions = new ArrayList<>();
+            rolePermissions.add(new RolePermission(roles.get(0), permissions.get(0), true, true, true));
+            rolePermissions.add(new RolePermission(roles.get(0), permissions.get(1), true, true, true));
+            rolePermissions.add(new RolePermission(roles.get(1), permissions.get(0), true, true, true));
+            rolePermissions.add(new RolePermission(roles.get(2), permissions.get(1), true, true, true));
 
-        rolePermissionRepository.save(rolePermissions);
+            rolePermissionRepository.save(rolePermissions);
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        User user1 = new User("admin", UserTypeEnum.MANAGER, encoder.encode("admin"), true);
-        User user2 = new User("doctor", UserTypeEnum.DOCTOR, encoder.encode("doctor"), true);
-        userRepository.save(Arrays.asList(user1,user2));
+            User user1 = new User("admin", UserTypeEnum.MANAGER, encoder.encode("admin"), true);
+            User user2 = new User("doctor", UserTypeEnum.DOCTOR, encoder.encode("doctor"), true);
+            userRepository.save(Arrays.asList(user1, user2));
 
-        userRoleRepository.save(Arrays.asList(new UserRole(user1,roles.get(0)),new UserRole(user2,roles.get(1)))) ;
+            userRoleRepository.save(Arrays.asList(new UserRole(user1, roles.get(0)), new UserRole(user2, roles.get(1))));
 
-        Manager manager = new Manager();
-        manager.setDob(new Date());
-        manager.setFirstName("Manager");
-        manager.setGender(GenderTypeEnum.MALE);
-        manager.setProfileId("P-10001");
-        manager.setUser(user1);
-        managerRepository.save(manager);
+            Manager manager = new Manager();
+            manager.setDob(new Date());
+            manager.setFirstName("Manager");
+            manager.setGender(GenderTypeEnum.MALE);
+            manager.setProfileId("P-10001");
+            manager.setUser(user1);
+            managerRepository.save(manager);
 
-        Doctor doctor = new Doctor();
-        doctor.setDob(new Date());
-        doctor.setFirstName("Doctor");
-        doctor.setGender(GenderTypeEnum.MALE);
-        doctor.setProfileId("P-10002");
-        doctor.setUser(user2);
-        doctorRepository.save(doctor);
+            Doctor doctor = new Doctor();
+            doctor.setDob(new Date());
+            doctor.setFirstName("Doctor");
+            doctor.setGender(GenderTypeEnum.MALE);
+            doctor.setProfileId("P-10002");
+            doctor.setUser(user2);
+            doctorRepository.save(doctor);
 
 
-        Branch primaryBranch  = new Branch("DHA Branch", 1L, "DHA Branch", "DHA Branch", "Lahore", "Pakistan", "H Block", "+9245786468", "+9284657867", "Punjab", new Date(), new Date(), "TX0564512387", true, true, 1345464797, true, true, organization);
-        branchRepository.save(primaryBranch);
-        branchDoctorRepository.save(new BranchDoctor(doctor,primaryBranch, true));
-        organizationRepository.saveAndFlush(organization);
-
+            Branch primaryBranch = new Branch("DHA Branch", 1L, "DHA Branch", "DHA Branch", "Lahore", "Pakistan", "H Block", "+9245786468", "+9284657867", "Punjab", new Date(), new Date(), "TX0564512387", true, true, 1345464797, true, true, organization);
+            branchRepository.save(primaryBranch);
+            branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
+            organizationRepository.saveAndFlush(organization);
+        }
     }
 }
 

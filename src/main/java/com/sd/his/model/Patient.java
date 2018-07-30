@@ -1,6 +1,18 @@
 package com.sd.his.model;
 
-public class Patient {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.codehaus.jackson.map.MapperConfig;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "PATIENT")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Patient extends BaseEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     //    @Column(name = "FOREIGN_NAME")
 //    private String foreignName;
