@@ -49,10 +49,13 @@ public class Room extends BaseEntity implements Serializable {
     @Column(name = "ALLOW_ONLINE_SCHEDULING")
     private Boolean allowOnlineScheduling;
 
-//    @JsonIgnore
-//    @OneToMany(targetEntity = Appointment.class, mappedBy = "room", fetch = FetchType.LAZY)
-//    private List<Appointment> appointments;
 
+    public Room(String roomName, Branch branch, Boolean active, Boolean allowOnlineScheduling) {
+        this.roomName = roomName;
+        this.branch = branch;
+        this.active = active;
+        this.allowOnlineScheduling = allowOnlineScheduling;
+    }
 
     public String getRoomName() {
         return roomName;

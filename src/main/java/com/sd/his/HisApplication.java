@@ -2,11 +2,9 @@ package com.sd.his;
 
 import com.sd.his.enums.GenderTypeEnum;
 import com.sd.his.enums.ModuleEnum;
-import com.sd.his.enums.ProfileStatusTypeEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
-import org.hibernate.usertype.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.print.Doc;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +54,8 @@ public class HisApplication {
     private BranchRepository branchRepository;
     @Autowired
     private BranchDoctorRepository branchDoctorRepository;
+    @Autowired
+    private RoomRepository roomRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(HisApplication.class, args);
@@ -125,8 +124,10 @@ public class HisApplication {
             doctorRepository.save(doctor);
 
 
+
             Branch primaryBranch = new Branch("DHA Branch", 1L, "DHA Branch", "DHA Branch", "Lahore", "Pakistan", "H Block", "+9245786468", "+9284657867", "Punjab", new Date(), new Date(), "TX0564512387", true, true, 1345464797, true, true, organization);
             branchRepository.save(primaryBranch);
+            roomRepository.save(new Room("Room1",primaryBranch,true,true));
             branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
             organizationRepository.saveAndFlush(organization);
         }
