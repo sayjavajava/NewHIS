@@ -21,7 +21,7 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
     @Query("SELECT new com.sd.his.wrapper.ICDCodeVersionWrapper(codeVersion,codeVersion.icd,codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion")
     List<ICDCodeVersionWrapper> findAllByOrderByVersion_name();
 
-    @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(codeVersion.icd) FROM com.sd.his.model.ICDCodeVersion codeVersion where codeVersion.version.id=:id")
+    @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(codeVersion,codeVersion.icd) FROM com.sd.his.model.ICDCodeVersion codeVersion where codeVersion.version.id=:id")
     List<ICDCodeWrapper> findAllByVersion_id(@Param("id") long iCDCVsById);
 
     List<Long> deleteAllByVersion_id(long id);

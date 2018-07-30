@@ -1,6 +1,7 @@
 package com.sd.his.wrapper;
 
 import com.sd.his.model.ICDCode;
+import com.sd.his.model.ICDCodeVersion;
 
 
 public class ICDCodeWrapper {
@@ -30,7 +31,16 @@ public class ICDCodeWrapper {
         this.updatedOn = icd.getUpdatedOn().getTime();
         this.description = icd.getDescription();
     }
-
+    public ICDCodeWrapper(ICDCodeVersion icdCodeVersion, ICDCode icd) {
+        this.id = icd.getId();
+        this.code = icd.getCode();
+        this.title = icd.getTitle();
+        this.status = icd.getStatus();
+        this.createdOn = icd.getCreatedOn().getTime();
+        this.updatedOn = icd.getUpdatedOn().getTime();
+        this.description = icd.getDescription();
+        this.descriptionCodeVersion = icdCodeVersion.getDescription();
+    }
     public long getId() {
         return id;
     }

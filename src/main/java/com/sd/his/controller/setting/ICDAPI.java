@@ -22,10 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /*
@@ -1041,23 +1038,27 @@ public class ICDAPI {
             }
             List<ICDCodeWrapper> codes = this.icdService.codes();
             List<ICDCodeWrapper> associatedCodes = this.icdService.getAssociatedICDCVByVId(versionId);//this.iCDService.getAssociatedICDCVByVId(versionId);
-
+            String descriptionCodeVersion = "";
             for (ICDCodeWrapper associatedCodeWrapper:associatedCodes){
 
                 for (ICDCodeWrapper codeWrapper:codes){
                     if (codeWrapper.getId() == associatedCodeWrapper.getId()) {
                         codeWrapper.setCheckedCode(true);
+                       descriptionCodeVersion = associatedCodeWrapper.getDescriptionCodeVersion();
                         break;
                     }
                 }
             }
 
+            Map<String, Object> map = new HashMap<>();
 
             if (!HISCoreUtil.isListEmpty(codes)) {
+                map.put("code",codes);
+                map.put("des",descriptionCodeVersion);
                 response.setResponseMessage(messageBundle.getString("icd.associated.found"));
                 response.setResponseCode(ResponseEnum.ICD_ASSOCIATED_FOUND_SUCCESS.getValue());
+                response.setResponseData(map);
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                response.setResponseData(codes);
                 logger.info("Associated found  Successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
