@@ -2,6 +2,7 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.wrapper.DepartmentWrapper;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,7 +39,6 @@ import java.util.List;
 public class Department extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-
     @Column(name = "NAME")
     private String name;
 
@@ -55,6 +55,15 @@ public class Department extends BaseEntity implements Serializable {
     @JsonIgnore
     @OneToMany(targetEntity = DepartmentMedicalService.class, mappedBy = "department")
     private List<DepartmentMedicalService> departments;
+
+    public Department() {
+    }
+
+    public Department(DepartmentWrapper createRequest) {
+        this.name = createRequest.getName();
+        this.description = createRequest.getDescription();
+        this.active = createRequest.isActive();
+    }
 
     public String getName() {
         return name;
