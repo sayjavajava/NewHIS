@@ -101,20 +101,17 @@ public class UserAuthAPI {
                 logger.info("The Admin is not found...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-
-            if (HISCoreUtil.isValidObject(dbAdmin)) {
-                if (BCrypt.checkpw(loginReq.getPassword(), dbAdmin.getPassword())) {
-
-                    UserWrapper admin = userService.buildUserWrapper(dbAdmin);
-                    response.setResponseData(admin);
-                    response.setResponseMessage(messageBundle.getString("admin.login.success"));
-                    response.setResponseCode(ResponseEnum.ADMIN_ACCESS_GRANTED.getValue());
-                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                    logger.info("Admin Logged in successfully...");
-
-                    return new ResponseEntity<>(response, HttpStatus.OK);
-                }
+            //if (HISCoreUtil.isValidObject(dbAdmin)) {
+            if (BCrypt.checkpw(loginReq.getPassword(), dbAdmin.getPassword())) {
+                UserWrapper userWrapper = userService.buildUserWrapper(dbAdmin);
+                response.setResponseData(userWrapper);
+                response.setResponseMessage(messageBundle.getString("admin.login.success"));
+                response.setResponseCode(ResponseEnum.ADMIN_ACCESS_GRANTED.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Admin Logged in successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
+            //}
         } catch (Exception ex) {
             logger.error("Admin Logged In failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());

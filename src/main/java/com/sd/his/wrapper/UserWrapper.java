@@ -3,6 +3,7 @@ package com.sd.his.wrapper;
 import com.sd.his.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public class UserWrapper {
     long id;

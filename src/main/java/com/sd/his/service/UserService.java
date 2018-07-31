@@ -82,14 +82,20 @@ public class UserService implements UserDetailsService {
     public UserWrapper buildUserWrapper(User dbUser) {
         UserWrapper user = new UserWrapper(dbUser);
         List<PermissionWrapper> permissionWrappers = new ArrayList<>();
-        List<Permission> userPermissions = getIdenticalUserPermissions(dbUser);
-
-        for (Permission per : userPermissions) {
+        //List<Permission> userPermissions = getIdenticalUserPermissions(dbUser);
+        List<RolePermission> userRolePermission = getUserRolePermissions(dbUser);
+        //Map<String, PermissionWrapper> permissionWrapperMap = new HashMap<>();
+        for(RolePermission rolePer : userRolePermission){
+            PermissionWrapper permissionWrapper = new PermissionWrapper(rolePer);
+            permissionWrappers.add(permissionWrapper);
+            //permissionWrapperMap.put(rolePer.getPermission().getName(), permissionWrapper);
+        }
+        /*for (Permission per : userPermissions) {
             PermissionWrapper permissionWrapper = new PermissionWrapper(per);
             permissionWrappers.add(permissionWrapper);
-        }
+        }*/
         user.setPermissions(permissionWrappers);
-
+        //user.setPermissionMap(permissionWrapperMap);
         return user;
     }
 
@@ -106,6 +112,11 @@ public class UserService implements UserDetailsService {
     }
     private List<Permission> getIdenticalUserPermissions(User user) {
      return permissionRepo.findUserPermissionByUserId(user.getId());
+    }
+
+    private List<RolePermission> getUserRolePermissions(User user) {
+        return rolePermissionRepository.findUserRolePermissionByUserId(user.getId());
+        //return permissionRepo.findUserPermissionByUserId(user.getId());
     }
 
     public List<Role> getAllActiveRoles() {
@@ -145,7 +156,15 @@ public class UserService implements UserDetailsService {
         UserWrapper user = new UserWrapper(dbUser);
         List<PermissionWrapper> permissionWrappers = new ArrayList<>();
         List<RoleWrapper> roleWrappers = new ArrayList<>();
-        List<Permission> userPermissions = getIdenticalUserPermissions(dbUser);
+        //List<Permission> userPermissions = getIdenticalUserPermissions(dbUser);
+
+        List<RolePermission> userRolePermission = getUserRolePermissions(dbUser);
+        //Map<String, PermissionWrapper> permissionWrapperMap = new HashMap<>();
+        for(RolePermission rolePer : userRolePermission){
+            PermissionWrapper permissionWrapper = new PermissionWrapper(rolePer);
+            permissionWrappers.add(permissionWrapper);
+            //permissionWrapperMap.put(rolePer.getPermission().getName(), permissionWrapper);
+        }
 
         for (UserRole role : dbUser.getUserRoles()) {
             RoleWrapper roleWrapper = new RoleWrapper(role.getRole());
@@ -157,10 +176,10 @@ public class UserService implements UserDetailsService {
             user.setCommaSeparatedRoles(commaSeparatedRoles);
         }
 
-        for (Permission per : userPermissions) {
+        /*for (Permission per : userPermissions) {
             PermissionWrapper permissionWrapper = new PermissionWrapper(per);
             permissionWrappers.add(permissionWrapper);
-        }
+        }*/
         user.setPermissions(permissionWrappers);
         user.setRoles(roleWrappers);
 
