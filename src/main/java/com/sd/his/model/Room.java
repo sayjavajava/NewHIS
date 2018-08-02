@@ -49,10 +49,6 @@ public class Room extends BaseEntity implements Serializable {
     @Column(name = "ALLOW_ONLINE_SCHEDULING")
     private Boolean allowOnlineScheduling;
 
-
-    @Transient
-    private Long id;
-
 //    @JsonIgnore
 //    @OneToMany(targetEntity = Appointment.class, mappedBy = "room", fetch = FetchType.LAZY)
 //    private List<Appointment> appointments;
@@ -63,17 +59,8 @@ public class Room extends BaseEntity implements Serializable {
 
     public Room(Long id,String roomName, Boolean allowOnlineScheduling) {
         this.roomName = roomName;
-        this.id=id;
+        this.setId(id);
         this.allowOnlineScheduling = allowOnlineScheduling;
-    }
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getRoomName() {
