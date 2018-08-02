@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -63,6 +64,25 @@ public class Doctor extends StaffProfile implements Serializable {
     @OneToMany(mappedBy = "primaryDoctor")
     private List<Patient> patients;
 
+    @Column(name = "VACATION", columnDefinition = "boolean default false")
+    private Boolean vacation;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "VACATION_FROM")
+    private Date vacationFrom;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "VACATION_TO")
+    private Date vacationTO;
+
+    public Boolean getVacation() {
+        return vacation;
+    }
+
+    public void setVacation(Boolean vacation) {
+        this.vacation = vacation;
+    }
+
     public Long getCheckUpInterval() {
         return checkUpInterval;
     }
@@ -105,6 +125,22 @@ public class Doctor extends StaffProfile implements Serializable {
 
     public List<BranchDoctor> getBranchDoctors() {
         return branchDoctors;
+    }
+
+    public Date getVacationFrom() {
+        return vacationFrom;
+    }
+
+    public void setVacationFrom(Date vacationFrom) {
+        this.vacationFrom = vacationFrom;
+    }
+
+    public Date getVacationTO() {
+        return vacationTO;
+    }
+
+    public void setVacationTO(Date vacationTO) {
+        this.vacationTO = vacationTO;
     }
 
     public void setBranchDoctors(List<BranchDoctor> branchDoctors) {

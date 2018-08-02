@@ -1,7 +1,8 @@
 package com.sd.his.repository;
 
 
-import com.sd.his.model.Doctor;
+import com.sd.his.model.Cashier;
+import com.sd.his.model.Nurse;
 import com.sd.his.model.User;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
@@ -37,20 +38,15 @@ import java.util.List;
  *
  */
 @Repository
-public interface DoctorRepository extends JpaRepository<Doctor, Long> {
+public interface NurseRepository extends JpaRepository<Nurse, Long> {
 
-    //Long uId, Long pId, String username, UserTypeEnum userType , String firstName, String lastName, String email, String primaryBranch
-
-    @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,dr.id,du.username,du.userType,dr.firstName,dr.lastName,dr.email,br.name) FROM Doctor dr INNER JOIN dr.user du INNER JOIN dr.branchDoctors branchDr INNER JOIN branchDr.branch  br  WHERE du.active = TRUE AND branchDr.primaryBranch=TRUE")
+    @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,nr.id,du.username,du.userType,nr.firstName,nr.lastName,nr.email,br.name) FROM Nurse nr INNER JOIN nr.user du INNER JOIN nr.branchNurses branchNr INNER JOIN branchNr.branch  br  WHERE du.active = TRUE AND branchNr.primaryBranch=TRUE")
     List<StaffWrapper> findAllByActive(Pageable pageable);
 
-    @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,dr.id,du.userType,dr.firstName,dr.lastName,du.username,dr.email,br.name,dr.homePhone,dr.cellPhone,du.active,br.id,dr.accountExpiry," +
-            "dr.checkUpInterval,dr.vacation,dr.vacationFrom,dr.vacationTO,dr) FROM Doctor dr INNER JOIN dr.user du INNER JOIN dr.branchDoctors branchCr INNER JOIN branchCr.branch br WHERE dr.id =:id AND du.active = TRUE AND branchCr.primaryBranch=TRUE ")
+    @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,nr.id,du.userType,nr.firstName,nr.lastName,du.username,nr.email,br.name,nr.homePhone,nr.cellPhone,du.active,br.id,nr.accountExpiry,nr.managePatientRecords,nr.managePatientInvoices) FROM Nurse nr INNER JOIN nr.user du INNER JOIN nr.branchNurses branchCr INNER JOIN branchCr.branch br WHERE nr.id =:id AND du.active = TRUE AND branchCr.primaryBranch=true ")
     StaffResponseWrapper findAllByIdAndStatusActive(@Param("id") Long id);
 
-    Doctor findByUser(User user);
-    List<Doctor> findAllByUserIn(List<User> ids);
-
+    Nurse findByUser(User user);
 
 }
 

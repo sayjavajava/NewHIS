@@ -1,6 +1,7 @@
 package com.sd.his.repository;
 
 
+import com.sd.his.model.Cashier;
 import com.sd.his.model.Doctor;
 import com.sd.his.model.User;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
@@ -37,20 +38,19 @@ import java.util.List;
  *
  */
 @Repository
-public interface DoctorRepository extends JpaRepository<Doctor, Long> {
+public interface CashierRepository extends JpaRepository<Cashier, Long> {
 
-    //Long uId, Long pId, String username, UserTypeEnum userType , String firstName, String lastName, String email, String primaryBranch
-
-    @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,dr.id,du.username,du.userType,dr.firstName,dr.lastName,dr.email,br.name) FROM Doctor dr INNER JOIN dr.user du INNER JOIN dr.branchDoctors branchDr INNER JOIN branchDr.branch  br  WHERE du.active = TRUE AND branchDr.primaryBranch=TRUE")
+    @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,cr.id,du.username,du.userType,cr.firstName,cr.lastName,cr.email,br.name) FROM Cashier cr INNER JOIN cr.user du INNER JOIN cr.branchCashiers branchCr INNER JOIN branchCr.branch  br  WHERE du.active = TRUE AND branchCr.primaryBranch=TRUE")
     List<StaffWrapper> findAllByActive(Pageable pageable);
 
-    @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,dr.id,du.userType,dr.firstName,dr.lastName,du.username,dr.email,br.name,dr.homePhone,dr.cellPhone,du.active,br.id,dr.accountExpiry," +
-            "dr.checkUpInterval,dr.vacation,dr.vacationFrom,dr.vacationTO,dr) FROM Doctor dr INNER JOIN dr.user du INNER JOIN dr.branchDoctors branchCr INNER JOIN branchCr.branch br WHERE dr.id =:id AND du.active = TRUE AND branchCr.primaryBranch=TRUE ")
+ /*   Long uId,Long pId,String userType,String firstName,String lastName,String userName,
+    String primaryBranch,String email,String homePhone,String cellPhone,String expiryDate,Boolean active,
+    List<Branch> branchLi*/
+
+    @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,cr.id,du.userType,cr.firstName,cr.lastName,du.username,cr.email,br.name,cr.homePhone,cr.cellPhone,du.active,br.id,cr.accountExpiry) FROM Cashier cr INNER JOIN cr.user du INNER JOIN cr.branchCashiers branchCr INNER JOIN branchCr.branch br WHERE cr.id =:id AND du.active = TRUE AND branchCr.primaryBranch=TRUE")
     StaffResponseWrapper findAllByIdAndStatusActive(@Param("id") Long id);
 
-    Doctor findByUser(User user);
-    List<Doctor> findAllByUserIn(List<User> ids);
-
+    Cashier findByUser(User user);
 
 }
 

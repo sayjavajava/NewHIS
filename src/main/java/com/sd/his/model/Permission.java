@@ -39,7 +39,6 @@ public class Permission extends BaseEntity implements Serializable {
         this.active = active;
     }
 
-
     public String getName() {
         return name;
     }

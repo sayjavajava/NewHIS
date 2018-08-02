@@ -1,10 +1,4 @@
-package com.sd.his.repository;
-
-import com.sd.his.model.Branch;
-import com.sd.his.model.BranchDoctor;
-import com.sd.his.model.Doctor;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+package com.sd.his.wrapper;
 
 /*
  * @author    : waqas kamran
@@ -28,15 +22,26 @@ import org.springframework.stereotype.Repository;
  * All rights reserved.
  *
  */
-@Repository
-public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long> {
+public class ExamRooms {
+    boolean allowOnlineScheduling;
+    String roomName;
 
-     BranchDoctor findByBranch(Branch branch);
-     BranchDoctor findByDoctorAndPrimaryBranchTrue(Doctor doctor);
-     void deleteAllByDoctorAndPrimaryBranchFalse(Doctor doctor);
-     void deleteAllByDoctor(Doctor doctor);
+    public ExamRooms() {
+    }
 
+    public boolean isAllowOnlineScheduling() {
+        return allowOnlineScheduling;
+    }
 
+    public void setAllowOnlineScheduling(boolean allowOnlineScheduling) {
+        this.allowOnlineScheduling = allowOnlineScheduling;
+    }
 
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
 }
-

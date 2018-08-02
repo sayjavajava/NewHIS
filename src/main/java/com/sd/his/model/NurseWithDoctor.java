@@ -39,6 +39,19 @@ public class NurseWithDoctor extends BaseEntity implements Serializable {
     @JoinColumn(name = "DOCTOR_ID", nullable = false)
     private Doctor doctor;
 
+    public Nurse getNurse() {
+        return nurse;
+    }
 
+    public void setNurse(Nurse nurse) {
+        this.nurse = nurse;
+    }
 
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
 }

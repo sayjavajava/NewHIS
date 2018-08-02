@@ -28,6 +28,7 @@ public class HISConstants {
     public final static String DATE_FORMATE_TWO = "dd-MM-yyyy hh:mm a";
     public static final String DATE_PATTERN_SAME_YEAR = "d MMM";
     public static final String TIME_PATTERN = "h:mm a";
+    public static final String TIME_FORMAT_PATTERN = "HH:mm";
     public final static String DATE_FORMATE_THREE = "yyyy-MM-dd";
 
     public final static String S3_USER_DIRECTORY = "users";
