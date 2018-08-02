@@ -42,6 +42,13 @@ public class UserRole extends BaseEntity implements Serializable {
     @JoinColumn(name = "ROLE_ID", nullable = false)
     private Role role;
 
+    public UserRole(){}
+
+    public UserRole(User user, Role role) {
+        this.user = user;
+        this.role = role;
+    }
+
     public User getUser() {
         return user;
     }

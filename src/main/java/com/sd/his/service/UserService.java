@@ -141,7 +141,7 @@ public class UserService implements UserDetailsService {
             List<RolePermission> rolePermissions = new ArrayList<>();
             List<Permission> selectedPermissions = permissionRepository.findByIdInAndActiveTrue(authRequest.getPermissionIds());
             for (Permission per : selectedPermissions) {
-                RolePermission rp = new RolePermission(role, per);
+                RolePermission rp = new RolePermission(role, per,true,true,true);
                 rolePermissions.add(rp);
             }
             rolePermissionRepository.save(rolePermissions);

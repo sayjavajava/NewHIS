@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -65,11 +66,13 @@ public class Branch extends BaseEntity implements Serializable {
     @Column(name = "STATE")
     private String state;
 
+    @Temporal(TemporalType.TIME)
     @Column(name = "OFFICE_START_TIME")
-    private String officeStartTime;
+    private Date officeStartTime;
 
+    @Temporal(TemporalType.TIME)
     @Column(name = "OFFICE_END_TIME")
-    private String officeEndTime;
+    private Date officeEndTime;
 
     @Column(name = "BILLING_TAX_ID")
     private String billingTaxId;
@@ -110,7 +113,7 @@ public class Branch extends BaseEntity implements Serializable {
     private List<Room> rooms;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BRANCH_ID")
+    @JoinColumn(name = "ORGANIZATION_ID")
     private Organization organization;
 
     @JsonIgnore
@@ -123,6 +126,30 @@ public class Branch extends BaseEntity implements Serializable {
 //    @OneToMany(targetEntity = Appointment.class, mappedBy = "branch", fetch = FetchType.LAZY)
 //    private List<Appointment> appointments;
 
+
+    public Branch(){}
+
+    public Branch(String name, Long noOfRooms, String billingName, String billingBranchName, String city, String country, String address, String fax, String officePhone, String state, Date officeStartTime, Date officeEndTime, String billingTaxId, Boolean active, Boolean systemBranch, Integer zipCode, Boolean allowOnlineSchedule, Boolean showBranchInfoOnline, Organization organization) {
+        this.name = name;
+        this.noOfRooms = noOfRooms;
+        this.billingName = billingName;
+        this.billingBranchName = billingBranchName;
+        this.city = city;
+        this.country = country;
+        this.address = address;
+        this.fax = fax;
+        this.officePhone = officePhone;
+        this.state = state;
+        this.officeStartTime = officeStartTime;
+        this.officeEndTime = officeEndTime;
+        this.billingTaxId = billingTaxId;
+        this.active = active;
+        this.systemBranch = systemBranch;
+        this.zipCode = zipCode;
+        this.allowOnlineSchedule = allowOnlineSchedule;
+        this.showBranchInfoOnline = showBranchInfoOnline;
+        this.organization = organization;
+    }
 
     public String getName() {
         return name;
@@ -204,19 +231,19 @@ public class Branch extends BaseEntity implements Serializable {
         this.state = state;
     }
 
-    public String getOfficeStartTime() {
+    public Date getOfficeStartTime() {
         return officeStartTime;
     }
 
-    public void setOfficeStartTime(String officeStartTime) {
+    public void setOfficeStartTime(Date officeStartTime) {
         this.officeStartTime = officeStartTime;
     }
 
-    public String getOfficeEndTime() {
+    public Date getOfficeEndTime() {
         return officeEndTime;
     }
 
-    public void setOfficeEndTime(String officeEndTime) {
+    public void setOfficeEndTime(Date officeEndTime) {
         this.officeEndTime = officeEndTime;
     }
 

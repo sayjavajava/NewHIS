@@ -41,6 +41,9 @@ public class ICDCodeVersion extends BaseEntity implements Serializable {
     @Column(name = "description",length = 400)
     private String description;
 
+    public ICDCodeVersion() {
+    }
+
     public ICDCode getIcd() {
         return icd;
     }

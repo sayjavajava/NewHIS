@@ -28,6 +28,14 @@ public class Role extends BaseEntity implements Serializable {
     private List<RolePermission> rolePermissions;
 
 
+    public Role(){}
+
+    public Role(String name, String description, Boolean active) {
+        this.name = name;
+        this.description = description;
+        this.active = active;
+    }
+
     public String getName() {
         return name;
     }

@@ -2,6 +2,8 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.wrapper.ICDVersionWrapper;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -47,6 +49,15 @@ public class ICDVersion extends BaseEntity implements Serializable {
     @JsonIgnore
     @OneToMany(targetEntity = ICDCodeVersion.class, mappedBy = "version", cascade = {CascadeType.ALL})
     private List<ICDCodeVersion> versions;
+
+    public ICDVersion() {
+    }
+
+    public ICDVersion(ICDVersionWrapper createRequest) {
+        this.name = createRequest.getName();
+        this.title = createRequest.getTitle();
+        this.status = createRequest.isStatus();
+    }
 
     public String getName() {
         return name;
