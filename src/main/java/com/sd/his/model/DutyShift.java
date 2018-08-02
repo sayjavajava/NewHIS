@@ -50,7 +50,7 @@ public class DutyShift extends BaseEntity implements Serializable {
     private Date endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SHIFT_ID")
+    @JoinColumn(name = "DOCTOR_ID")
     private Doctor doctor;
 
 
@@ -78,4 +78,11 @@ public class DutyShift extends BaseEntity implements Serializable {
         this.endTime = endTime;
     }
 
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
 }

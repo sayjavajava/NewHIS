@@ -127,6 +127,30 @@ public class Branch extends BaseEntity implements Serializable {
 //    private List<Appointment> appointments;
 
 
+    public Branch(){}
+
+    public Branch(String name, Long noOfRooms, String billingName, String billingBranchName, String city, String country, String address, String fax, String officePhone, String state, Date officeStartTime, Date officeEndTime, String billingTaxId, Boolean active, Boolean systemBranch, Integer zipCode, Boolean allowOnlineSchedule, Boolean showBranchInfoOnline, Organization organization) {
+        this.name = name;
+        this.noOfRooms = noOfRooms;
+        this.billingName = billingName;
+        this.billingBranchName = billingBranchName;
+        this.city = city;
+        this.country = country;
+        this.address = address;
+        this.fax = fax;
+        this.officePhone = officePhone;
+        this.state = state;
+        this.officeStartTime = officeStartTime;
+        this.officeEndTime = officeEndTime;
+        this.billingTaxId = billingTaxId;
+        this.active = active;
+        this.systemBranch = systemBranch;
+        this.zipCode = zipCode;
+        this.allowOnlineSchedule = allowOnlineSchedule;
+        this.showBranchInfoOnline = showBranchInfoOnline;
+        this.organization = organization;
+    }
+
     public String getName() {
         return name;
     }

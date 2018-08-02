@@ -1,14 +1,13 @@
 package com.sd.his.repository;
 
 import com.sd.his.model.Branch;
-import com.sd.his.model.BranchDoctor;
-import com.sd.his.model.Doctor;
+import com.sd.his.model.S3Bucket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /*
- * @author    : waqas kamran
- * @Date      : 17-Apr-18
+ * @author    : Tahir Mehmood
+ * @Date      : 26-Jul-2018
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -29,14 +28,9 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long> {
+public interface S3BucketRepository extends JpaRepository<S3Bucket, Long> {
 
-     BranchDoctor findByBranch(Branch branch);
-     BranchDoctor findByDoctorAndPrimaryBranchTrue(Doctor doctor);
-     void deleteAllByDoctorAndPrimaryBranchFalse(Doctor doctor);
-     void deleteAllByDoctor(Doctor doctor);
-
-
+    Branch findByName(String name);
 
 }
 

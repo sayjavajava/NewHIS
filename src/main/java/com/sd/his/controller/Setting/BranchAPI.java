@@ -57,7 +57,7 @@ public class BranchAPI {
     private final Logger logger = LoggerFactory.getLogger(BranchAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
-   /* @ApiOperation(httpMethod = "GET", value = "All Branches",
+    @ApiOperation(httpMethod = "GET", value = "All Branches",
             notes = "This method will return all Branches",
             produces = "application/json", nickname = "All Branches",
             response = GenericAPIResponse.class, protocols = "https")
@@ -105,7 +105,7 @@ public class BranchAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-*/
+
 
     @ApiOperation(httpMethod = "POST", value = "Create Branch",
             notes = "This method will Create Branch",
@@ -259,15 +259,19 @@ public class BranchAPI {
             Branch dbBranch = this.branchService.findBranchById(id);
 
             if (HISCoreUtil.isValidObject(dbBranch)) {
-                branchService.deleteBranch(dbBranch);
-
+               Branch branch = branchService.deleteBranch(dbBranch);
+                if(HISCoreUtil.isValidObject(branch)){
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("branch.delete.success"));
                 response.setResponseCode(ResponseEnum.BRANCH_DELETED_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.info("Branch Deleted successfully...");
 
-                return new ResponseEntity<>(response, HttpStatus.OK);
+                return new ResponseEntity<>(response, HttpStatus.OK);}
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("branch.not.found"));
+                response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
             } else {
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("branch.not.found"));

@@ -1,8 +1,10 @@
 package com.sd.his.repository;
 
+import com.sd.his.enums.DutyShiftEnum;
 import com.sd.his.model.Branch;
-import com.sd.his.model.BranchDoctor;
+import com.sd.his.model.BranchCashier;
 import com.sd.his.model.Doctor;
+import com.sd.his.model.DutyShift;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -29,14 +31,11 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long> {
+public interface DutyShiftRepository extends JpaRepository<DutyShift, Long> {
 
-     BranchDoctor findByBranch(Branch branch);
-     BranchDoctor findByDoctorAndPrimaryBranchTrue(Doctor doctor);
-     void deleteAllByDoctorAndPrimaryBranchFalse(Doctor doctor);
-     void deleteAllByDoctor(Doctor doctor);
+    void deleteAllByDoctor(Doctor doctor);
 
-
-
+    DutyShift findByDoctorAndShiftName(Doctor doctor ,DutyShiftEnum name);
+    DutyShift findByDoctor(Doctor doctor);
 }
 

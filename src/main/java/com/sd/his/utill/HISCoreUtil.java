@@ -99,15 +99,36 @@ public class HISCoreUtil {
         return date;
     }
 
-    public static String convertToDate(Date time) {
+    public static String convertTimeToString(Date time) {
+         String formatedDate = null;
+        if(time != null){
         SimpleDateFormat form = new SimpleDateFormat("hh:mm:ss");
-        return form.format(time);
+        formatedDate= form.format(time);
+      }
+      return formatedDate;
     }
 
+    public static String convertDateToString(Date date) {
+        String formatedDate = null;
+        if(date != null){
+            SimpleDateFormat form = new SimpleDateFormat("yyyy:mm:dd");
+            formatedDate= form.format(date);
+        }
+        return formatedDate;
+    }
 
-//    public static Date convertToDate(LocalTime dateToConvert) {
-//        return new Date(dateToConvert.);
-//    }
+   public static Date convertToDate(String str) {
+       Date date = null;
+        if (str != null) {
+           SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+           try {
+               date = formatter.parse(str);
+           } catch (ParseException e) {
+               e.printStackTrace();
+           }
 
+       }
+       return date;
+   }
 
 }

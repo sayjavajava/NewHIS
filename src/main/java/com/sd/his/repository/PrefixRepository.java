@@ -1,10 +1,13 @@
 package com.sd.his.repository;
 
-import com.sd.his.model.Branch;
-import com.sd.his.model.BranchDoctor;
+
+import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.Doctor;
+import com.sd.his.model.Prefix;
+import com.sd.his.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 
 /*
  * @author    : waqas kamran
@@ -29,14 +32,8 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long> {
-
-     BranchDoctor findByBranch(Branch branch);
-     BranchDoctor findByDoctorAndPrimaryBranchTrue(Doctor doctor);
-     void deleteAllByDoctorAndPrimaryBranchFalse(Doctor doctor);
-     void deleteAllByDoctor(Doctor doctor);
-
-
+public interface PrefixRepository extends JpaRepository<Prefix, Long> {
+    Prefix findByModule(ModuleEnum moduleEnum);
 
 }
 

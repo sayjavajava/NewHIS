@@ -8,6 +8,7 @@ import com.sd.his.utill.HISCoreUtil;
 import io.swagger.models.auth.In;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /*
@@ -59,35 +60,15 @@ public class BranchResponseWrapper {
     String address;
     User user;
     Room roomList;
-    Doctor doctors;
+    Doctor doctor;
+    String firstName;
+    String lastName;
 
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
         this.country = branch.getCountry();
-       // this.officeHoursEnd = branch.getOfficeEndTime();
-       // this.officeHoursStart = branch.getOfficeStartTime();
-        this.billingBranch = branch.getBillingBranchName();
-        this.billingTaxID = branch.getBillingTaxId();
-        this.billingName = branch.getBillingName();
-        this.city = branch.getCity();
-        this.rooms = branch.getNoOfRooms();
-        this.fax = branch.getFax();
-        this.zipCode = branch.getZipCode();
-        this.officePhone = branch.getOfficePhone();
-        this.state = branch.getState();
-        this.name = branch.getName();
-        this.id = branch.getId();
-        this.address = branch.getAddress();
-        this.examRooms = branch.getRooms();
-
-        }
-
-
-    public BranchResponseWrapper(Branch branch,User user) {
-        this.branchName = branch.getName();
-        this.country = branch.getCountry();
-        this.officeHoursEnd = HISCoreUtil.convertToDate(branch.getOfficeEndTime());
-        this.officeHoursStart = HISCoreUtil.convertToDate(branch.getOfficeStartTime());
+        this.officeHoursEnd = HISCoreUtil.convertTimeToString(branch.getOfficeEndTime());
+        this.officeHoursStart = HISCoreUtil.convertTimeToString(branch.getOfficeStartTime());
         this.billingBranch = branch.getBillingBranchName();
         this.billingTaxID = branch.getBillingTaxId();
         this.billingName = branch.getBillingName();
@@ -118,22 +99,41 @@ public class BranchResponseWrapper {
 
     }*/
 
-    public BranchResponseWrapper(long id, String name, String country, String city, Long rooms, User username) {
+    public BranchResponseWrapper(long id, String name, String country, String city, Long rooms, String firstName) {
         this.id = id;
         this.city = city;
         this.name = name;
         this.country = country;
         this.rooms = rooms;
-        this.user = username;
+        this.firstName=firstName;
+        //this.doctor =doctor;
+        System.out.println(firstName);
 
     }
 
-    public Doctor getDoctors() {
-        return doctors;
+
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setDoctors(Doctor doctors) {
-        this.doctors = doctors;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     public long getId() {

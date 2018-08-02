@@ -1,26 +1,31 @@
 package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.User;
+import com.sd.his.service.StaffService;
 import com.sd.his.service.UserService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.UserWrapper;
+import com.sd.his.wrapper.request.StaffRequestWrapper;
+import com.sd.his.wrapper.response.StaffResponseWrapper;
+import com.sd.his.wrapper.response.StaffWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.slf4j.Logger;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.IntStream;
 
 
 @RestController
@@ -30,6 +35,8 @@ public class StaffAPI {
 //
     @Autowired
     private UserService userService;
+    @Autowired
+    private StaffService staffService;
 //    @Autowired
 //    private AWSService awsService;
 //    @Autowired
@@ -91,322 +98,323 @@ public class StaffAPI {
 //
 //
 //
-//    @ApiOperation(httpMethod = "POST", value = "Create User ",
-//            notes = "This method will Create User",
-//            produces = "application/json", nickname = "Create User",
-//            response = GenericAPIResponse.class, protocols = "https")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "User successfully created", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-//    @RequestMapping(value = "/add", method = RequestMethod.POST)
-//    public ResponseEntity<?> createUser(HttpServletRequest request,
-//                                        @RequestBody UserCreateRequest createRequest) {
-//
-//        long date = System.currentTimeMillis();
-//        logger.info("Create User API called..." + createRequest.getUserType());
-//        logger.info("Create User API called..." + createRequest.getUserName());
-//        createRequest.setCreatedOn(date);
-//        createRequest.setUpdatedOn(date);
-//        GenericAPIResponse response = new GenericAPIResponse();
-//        response.setResponseMessage(messageBundle.getString("user.add.error"));
-//        response.setResponseCode(ResponseEnum.USER_ADD_ERROR.getValue());
-//        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//        response.setResponseData(null);
-//
-//        try {
-//
-//            if (HISCoreUtil.isNull(createRequest.getUserType())) {
-//                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-//                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-//                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                response.setResponseData(null);
-//
-//                logger.error("Create User insufficient params");
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//            }
-//            if (!HISCoreUtil.isNull(createRequest.getUserType())) {
-//                User alreadyExist = userService.findByUserName(createRequest.getUserName());
-//
-//                if (HISCoreUtil.isValidObject(alreadyExist)) {
-//                    response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
-//                    response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
-//                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                    response.setResponseData(null);
-//                    logger.error("User already exist with the same name...");
-//                    return new ResponseEntity<>(response, HttpStatus.OK);
-//                }
-//
-//                User savedUser = userService.saveUser(createRequest);
-//                if (HISCoreUtil.isValidObject(savedUser)) {
-//                    response.setResponseData(savedUser);
-//                    response.setResponseMessage(messageBundle.getString("user.add.success"));
-//                    response.setResponseCode(ResponseEnum.USER_ADD_SUCCESS.getValue());
-//                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-//                    logger.info("User created successfully...");
-//
-//                    return new ResponseEntity<>(response, HttpStatus.OK);
-//                }
-//            }
-//        } catch (Exception ex) {
-//            logger.error("Create User Failed.", ex.fillInStackTrace());
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
-//
-//    @ApiOperation(httpMethod = "GET", value = "Paginated Users",
-//            notes = "This method will return Paginated Users",
-//            produces = "application/json", nickname = "Get Paginated Users ",
-//            response = GenericAPIResponse.class, protocols = "https")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "Paginated Users fetched successfully", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-//    @RequestMapping(value = "/{page}", method = RequestMethod.GET)
-//    public ResponseEntity<?> getAllPaginatedUsers(HttpServletRequest request,
-//                                                  @PathVariable("page") int page,
-//                                                  @RequestParam(value = "pageSize",
-//                                                          required = false, defaultValue = "10") int pageSize) {
-//        logger.info("getAllUsers paginated..");
-//
-//        GenericAPIResponse response = new GenericAPIResponse();
-//        response.setResponseMessage(messageBundle.getString("user.not.found"));
-//        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
-//        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//        response.setResponseData(null);
-//
-//        try {
-//            List<UserResponseWrapper> userWrappers = userService.findAllUsers(page, pageSize);
-//            int countUser = userService.totalUser();
-//            if (!HISCoreUtil.isListEmpty(userWrappers)) {
-//                Integer nextPage, prePage, currPage;
-//                int[] pages;
-//
-//                if (countUser > pageSize) {
-//                    int remainder = countUser % pageSize;
-//                    int totalPages = countUser / pageSize;
-//                    if (remainder > 0) {
-//                        totalPages = totalPages + 1;
-//                    }
-//                    pages = new int[totalPages];
-//                    pages = IntStream.range(0, totalPages).toArray();
-//                    currPage = page;
-//                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
-//                    prePage = currPage > 0 ? currPage : null;
-//                } else {
-//                    pages = new int[1];
-//                    pages[0] = 0;
-//                    currPage = 0;
-//                    nextPage = null;
-//                    prePage = null;
-//                }
-//
-//                Map<String, Object> returnValues = new LinkedHashMap<>();
-//                returnValues.put("nextPage", nextPage);
-//                returnValues.put("prePage", prePage);
-//                returnValues.put("currPage", currPage);
-//                returnValues.put("pages", pages);
-//                returnValues.put("data", userWrappers);
-//
-//                response.setResponseMessage(messageBundle.getString("user.fetched.success"));
-//                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
-//                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-//                response.setResponseData(returnValues);
-//                logger.info("getAllPaginatedUser Fetched successfully...");
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//            }
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception ex) {
-//            logger.error("get all paginated User failed.", ex.fillInStackTrace());
-//            response.setResponseData("");
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-//
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
-//    @ApiOperation(httpMethod = "PUT", value = "Update User ",
-//            notes = "This method will Update User",
-//            produces = "application/json", nickname = "Update User",
-//            response = GenericAPIResponse.class, protocols = "https")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "User successfully updated", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-//    @PutMapping(value = "/edit/{id}")
-//    public ResponseEntity<?> updateUser(HttpServletRequest request,
-//                                        @PathVariable("id") int id,
-//                                        @RequestBody UserCreateRequest createRequest) {
-//
-//
-//        long date = System.currentTimeMillis();
-//        logger.info("update User API called..." + createRequest.getUserType());
-//        logger.info("update User API called..." + createRequest.getUserName());
-//        GenericAPIResponse response = new GenericAPIResponse();
-//        response.setResponseMessage(messageBundle.getString("user.update.error"));
-//        response.setResponseCode(ResponseEnum.USER_UPDATE_ERROR.getValue());
-//        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//        response.setResponseData(null);
-//
-//        try {
-//            if (!HISCoreUtil.isNull(createRequest.getUserType())) {
-//                User alreadyExistUser = userService.findById(id);
-//
-//                if (HISCoreUtil.isValidObject(alreadyExistUser)) {
-//                    logger.info("User founded...");
-//                    User userUpdated = userService.updateUser(createRequest, alreadyExistUser);
-//
-//                    if (HISCoreUtil.isValidObject(userUpdated)) {
-//                        logger.info("User saved...");
-//                        response.setResponseData(userUpdated);
-//                        response.setResponseMessage(messageBundle.getString("user.update.success"));
-//                        response.setResponseCode(ResponseEnum.USER_UPDATE_SUCCESS.getValue());
-//                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-//                        logger.info("User updated successfully...");
-//
-//                        return new ResponseEntity<>(response, HttpStatus.OK);
-//                    }
-//                } else {
-//                    logger.info("User not found...");
-//                    response.setResponseMessage(messageBundle.getString("user.not.found"));
-//                    response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
-//                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                    response.setResponseData(null);
-//                    logger.error("User not updated...");
-//                    return new ResponseEntity<>(response, HttpStatus.OK);
-//                }
-//            } else {
-//                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-//                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-//                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                response.setResponseData(null);
-//                logger.error("Update User insufficient params");
-//            }
-//        } catch (Exception ex) {
-//            logger.error("Update User Failed.", ex.fillInStackTrace());
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
-//
-//    @ApiOperation(httpMethod = "GET", value = "User",
-//            notes = "This method will return User on base of id",
-//            produces = "application/json", nickname = "Get Single User",
-//            response = GenericAPIResponse.class, protocols = "https")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "User found successfully", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-//    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
-//    public ResponseEntity<?> getUserById(HttpServletRequest request,
-//                                         @PathVariable("id") long id
-//    ) {
-//
-//        GenericAPIResponse response = new GenericAPIResponse();
-//        response.setResponseMessage(messageBundle.getString("user.not.found"));
-//        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
-//        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//        response.setResponseData(null);
-//
-//        try {
-//            UserResponseWrapper user = this.userService.findByIdAndResponse(id);
-//
-//            if (HISCoreUtil.isValidObject(user)) {
-//                response.setResponseData(user);
-//                response.setResponseMessage(messageBundle.getString("user.found"));
-//                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
-//                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-//                logger.info("User Found successfully...");
-//
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//            } else {
-//                response.setResponseData(null);
-//                response.setResponseMessage(messageBundle.getString("user.not.found"));
-//                response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
-//                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                logger.info("User Not Found ...");
-//            }
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception ex) {
-//            logger.error("User Not Found", ex.fillInStackTrace());
-//            response.setResponseData("");
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-//
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
-//    @ApiOperation(httpMethod = "DELETE", value = "Delete User",
-//            notes = "This method will Delete User on base of id",
-//            produces = "application/json", nickname = "Delete Single User",
-//            response = GenericAPIResponse.class, protocols = "https")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "User Deleted successfully", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-//    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-//    public ResponseEntity<?> deleteUser(HttpServletRequest request,
-//                                        @PathVariable("id") long id) {
-//
-//        GenericAPIResponse response = new GenericAPIResponse();
-//        response.setResponseMessage(messageBundle.getString("user.delete.error"));
-//        response.setResponseCode(ResponseEnum.USER_NOT_DELETED.getValue());
-//        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//        response.setResponseData(null);
-//
-//        try {
-//            User user = this.userService.findById(id);
-//            if (HISCoreUtil.isValidObject(user)) {
-//                user = userService.deleteUser(user);
-////                if (user.isDeleted()) {
-////                    response.setResponseData(user);
-////                    response.setResponseMessage(messageBundle.getString("user.delete.success"));
-////                    response.setResponseCode(ResponseEnum.USER_DELETED_SUCCESS.getValue());
-////                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-////                    logger.info("User Deleted successfully...");
-////
-////                    return new ResponseEntity<>(response, HttpStatus.OK);
-////                }
-//            } else {
-//                response.setResponseData(null);
-//                response.setResponseMessage(messageBundle.getString("user.not.found"));
-//                response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
-//                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                logger.info("User Not Found ...");
-//            }
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception ex) {
-//            logger.error("User Not Deleted", ex.fillInStackTrace());
-//            response.setResponseData("");
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-//
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-//
+    @ApiOperation(httpMethod = "POST", value = "Create Staff",
+            notes = "This method will Create Staff",
+            produces = "application/json", nickname = "Create Staff",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Staff successfully created", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public ResponseEntity<?> createUser(HttpServletRequest request,
+                                        @RequestBody StaffRequestWrapper createRequest) {
+
+        long date = System.currentTimeMillis();
+        logger.info("Create Staff API called..." + createRequest.getUserType());
+        logger.info("Create Staff API called..." + createRequest.getUserName());
+        createRequest.setCreatedOn(date);
+        createRequest.setUpdatedOn(date);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.add.error"));
+        response.setResponseCode(ResponseEnum.USER_ADD_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (HISCoreUtil.isNull(createRequest.getUserType())) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                logger.error("Create User insufficient params");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (!HISCoreUtil.isNull(createRequest.getUserType())) {
+                User alreadyExist = userService.findByUsername(createRequest.getUserName());
+
+                if (HISCoreUtil.isValidObject(alreadyExist)) {
+                    response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
+                    response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+                    logger.error("User already exist with the same name...");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+
+                User savedUser = staffService.saveUser(createRequest);
+                if (HISCoreUtil.isValidObject(savedUser)) {
+                    response.setResponseData(savedUser);
+                    response.setResponseMessage(messageBundle.getString("user.add.success"));
+                    response.setResponseCode(ResponseEnum.USER_ADD_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("User created successfully...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            }
+        } catch (Exception ex) {
+            logger.error("Create User Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "Paginated Users",
+            notes = "This method will return Paginated Users",
+            produces = "application/json", nickname = "Get Paginated Users ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated Users fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllPaginatedUsers(HttpServletRequest request,
+                                                  @PathVariable("page") int page,
+                                                  @RequestParam(value = "pageSize",
+                                                          required = false, defaultValue = "10") int pageSize) {
+        logger.info("getAllUsers paginated..");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.not.found"));
+        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            List<StaffWrapper> userWrappers = staffService.findAllStaff(page, pageSize);
+            int countUser = staffService.countAllStaff();
+            if (!HISCoreUtil.isListEmpty(userWrappers)) {
+                Integer nextPage, prePage, currPage;
+                int[] pages;
+
+                if (countUser > pageSize) {
+                    int remainder = countUser % pageSize;
+                    int totalPages = countUser / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = page;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
+
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);
+                returnValues.put("data", userWrappers);
+
+                response.setResponseMessage(messageBundle.getString("user.fetched.success"));
+                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+                logger.info("getAllPaginatedUser Fetched successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("get all paginated User failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "PUT", value = "Update User ",
+            notes = "This method will Update User",
+            produces = "application/json", nickname = "Update User",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User successfully updated", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @PutMapping(value = "/edit/{id}")
+    public ResponseEntity<?> updateUser(HttpServletRequest request,
+                                        @PathVariable("id") Long id,
+                                        @RequestBody StaffRequestWrapper createRequest) {
+
+
+        long date = System.currentTimeMillis();
+        logger.info("update User API called..." + createRequest.getUserType());
+        logger.info("update User API called..." + createRequest.getUserName());
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.update.error"));
+        response.setResponseCode(ResponseEnum.USER_UPDATE_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (!HISCoreUtil.isNull(createRequest.getUserType())) {
+                User alreadyExistUser = staffService.findById(id);
+
+                if (HISCoreUtil.isValidObject(alreadyExistUser)) {
+                    logger.info("User founded...");
+                    User userUpdated = staffService.updateStaffData(createRequest, alreadyExistUser);
+
+                    if (HISCoreUtil.isValidObject(userUpdated)) {
+                        logger.info("User saved...");
+                        response.setResponseData(userUpdated);
+                        response.setResponseMessage(messageBundle.getString("user.update.success"));
+                        response.setResponseCode(ResponseEnum.USER_UPDATE_SUCCESS.getValue());
+                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                        logger.info("User updated successfully...");
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    }
+                } else {
+                    logger.info("User not found...");
+                    response.setResponseMessage(messageBundle.getString("user.not.found"));
+                    response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+                    logger.error("User not updated...");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            } else {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Update User insufficient params");
+            }
+        } catch (Exception ex) {
+            logger.error("Update User Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "User",
+            notes = "This method will return User on base of id",
+            produces = "application/json", nickname = "Get Single User",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserById(HttpServletRequest request,
+                                         @PathVariable("id") long id,
+                                         @RequestParam(value = "userType", required = false) String userType)
+     {
+
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.not.found"));
+        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            StaffResponseWrapper user = this.staffService.findByIdAndResponse(id,userType);
+
+            if (HISCoreUtil.isValidObject(user)) {
+                response.setResponseData(user);
+                response.setResponseMessage(messageBundle.getString("user.found"));
+                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("User Found successfully...");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("user.not.found"));
+                response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                logger.info("User Not Found ...");
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("User Not Found", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "DELETE", value = "Delete User",
+            notes = "This method will Delete User on base of id",
+            produces = "application/json", nickname = "Delete Single User",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User Deleted successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteUser(HttpServletRequest request,
+                                        @PathVariable("id") long id) {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.delete.error"));
+        response.setResponseCode(ResponseEnum.USER_NOT_DELETED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            User user = this.staffService.findById(id);
+            if (HISCoreUtil.isValidObject(user)) {
+                user = staffService.deleteUser(user);
+                if (HISCoreUtil.isValidObject(user)) {
+                    response.setResponseData(user);
+                    response.setResponseMessage(messageBundle.getString("user.delete.success"));
+                    response.setResponseCode(ResponseEnum.USER_DELETED_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("User Deleted successfully...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            } else {
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("user.not.found"));
+                response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                logger.info("User Not Found ...");
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("User Not Deleted", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 //    @ApiOperation(httpMethod = "GET", value = "Search User",
 //            notes = "This method will return User on base of search",
 //            produces = "application/json", nickname = "Search Users",
@@ -540,6 +548,7 @@ public class StaffAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 //    @ApiOperation(httpMethod = "GET", value = "SuperAdmin dashboard data",
 //            notes = "This method will return super admin dashboard data",

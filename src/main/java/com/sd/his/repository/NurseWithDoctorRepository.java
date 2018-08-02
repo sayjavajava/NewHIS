@@ -1,8 +1,6 @@
 package com.sd.his.repository;
 
-import com.sd.his.model.Branch;
-import com.sd.his.model.BranchDoctor;
-import com.sd.his.model.Doctor;
+import com.sd.his.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -29,14 +27,9 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long> {
+public interface NurseWithDoctorRepository extends JpaRepository<NurseWithDoctor, Long> {
 
-     BranchDoctor findByBranch(Branch branch);
-     BranchDoctor findByDoctorAndPrimaryBranchTrue(Doctor doctor);
-     void deleteAllByDoctorAndPrimaryBranchFalse(Doctor doctor);
-     void deleteAllByDoctor(Doctor doctor);
-
-
-
+   void deleteAllByNurse(Nurse nurse);
+   void deleteAllByDoctor(Doctor doctor);
 }
 
