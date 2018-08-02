@@ -1,17 +1,16 @@
 package com.sd.his.repository;
 
-
 import com.sd.his.enums.ModuleEnum;
-import com.sd.his.model.Doctor;
 import com.sd.his.model.Prefix;
-import com.sd.his.model.User;
+import com.sd.his.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 
 /*
- * @author    : waqas kamran
- * @Date      : 17-Apr-18
+ * @author    : Tahir Mehmood
+ * @Date      : 30-Jul-2018
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -33,7 +32,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PrefixRepository extends JpaRepository<Prefix, Long> {
-    Prefix findByModule(ModuleEnum moduleEnum);
+
+    Prefix findByModule(ModuleEnum moduleName);
+
 
 }
 

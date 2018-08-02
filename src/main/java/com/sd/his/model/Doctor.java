@@ -60,6 +60,10 @@ public class Doctor extends StaffProfile implements Serializable {
     @OneToMany(targetEntity = BranchDoctor.class, mappedBy = "doctor")
     private List<BranchDoctor> branchDoctors;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "primaryDoctor")
+    private List<Patient> patients;
+
     @Column(name = "VACATION", columnDefinition = "boolean default false")
     private Boolean vacation;
 
@@ -143,4 +147,11 @@ public class Doctor extends StaffProfile implements Serializable {
         this.branchDoctors = branchDoctors;
     }
 
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
+    }
 }

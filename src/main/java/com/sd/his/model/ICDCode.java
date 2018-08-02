@@ -2,6 +2,7 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.wrapper.request.ICDCodeCreateRequest;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -53,6 +54,15 @@ public class ICDCode extends BaseEntity implements Serializable {
     @OneToMany(targetEntity = ICDCodeVersion.class, mappedBy = "icd",cascade = {CascadeType.ALL})
     private List<ICDCodeVersion> icdCodes;
 
+    public ICDCode() {
+    }
+
+    public ICDCode(ICDCodeCreateRequest createRequest) {
+        this.code = createRequest.getCode();
+        this.status = createRequest.isStatus();
+        this.title = createRequest.getTitle();
+        this.description = createRequest.getDescription();
+    }
 
     public String getCode() {
         return code;
