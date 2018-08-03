@@ -1,5 +1,8 @@
 package com.sd.his.model;
 
+import com.sd.his.enums.AppointmentStatusTypeEnum;
+import com.sd.his.enums.AppointmentTypeEnum;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -28,13 +31,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "APPOINTMENT")
-public class Appointment implements Serializable {
+public class Appointment extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
     @Column(name = "NAME")
     private String name;
@@ -48,14 +46,17 @@ public class Appointment implements Serializable {
     @Column(name = "COLOR")
     private String color;
 
-    @Column(name = "STATUS")  //AppointmentStatusTypeEnum
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS")
+    private AppointmentStatusTypeEnum status;
 
-    @Column(name = "TYPE") //AppointmentTypeEnum
-    private String type;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TYPE")
+    private AppointmentTypeEnum type;
 
     @Column(name = "DURATION") //minutes
     private Long duration;
+
     @Column(name = "AGE")
     private Long age;
 
@@ -65,19 +66,13 @@ public class Appointment implements Serializable {
     @Column(name = "FOLLOW_UP_REMINDER_REASON")
     private String followUpReasonReminder;
 
+    @Temporal(TemporalType.TIME)
     @Column(name = "STARTED_ON")
-    private Long startedOn;
+    private Date startedOn;
 
+    @Temporal(TemporalType.TIME)
     @Column(name = "ENDED_ON")
-    private Long endedOn;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATED_ON", nullable = false)
-    private Date updatedOn;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATED_ON", nullable = false)
-    private Date createdOn;
+    private Date endedOn;
 
     @ManyToOne
     @JoinColumn(name = "PATIENT_ID")
@@ -106,199 +101,6 @@ public class Appointment implements Serializable {
     @Column(name = "LAST_APPOINTMENT_ON")
     private Long lastAppointmentOn;
 
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
-    private boolean active;
 
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Long duration) {
-        this.duration = duration;
-    }
-
-    public Long getAge() {
-        return age;
-    }
-
-    public void setAge(Long age) {
-        this.age = age;
-    }
-
-    public Boolean getFollowUpReminder() {
-        return followUpReminder;
-    }
-
-    public void setFollowUpReminder(Boolean followUpReminder) {
-        this.followUpReminder = followUpReminder;
-    }
-
-    public String getFollowUpReasonReminder() {
-        return followUpReasonReminder;
-    }
-
-    public void setFollowUpReasonReminder(String followUpReasonReminder) {
-        this.followUpReasonReminder = followUpReasonReminder;
-    }
-
-    public Long getStartedOn() {
-        return startedOn;
-    }
-
-    public void setStartedOn(Long startedOn) {
-        this.startedOn = startedOn;
-    }
-
-    public Long getEndedOn() {
-        return endedOn;
-    }
-
-    public void setEndedOn(Long endedOn) {
-        this.endedOn = endedOn;
-    }
-
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public User getPatient() {
-        return patient;
-    }
-
-    public void setPatient(User patient) {
-        this.patient = patient;
-    }
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public Boolean getRecurring() {
-        return recurring;
-    }
-
-    public void setRecurring(Boolean recurring) {
-        this.recurring = recurring;
-    }
-
-    public String getRecurringDays() {
-        return recurringDays;
-    }
-
-    public void setRecurringDays(String recurringDays) {
-        this.recurringDays = recurringDays;
-    }
-
-    public Long getFirstAppointmentOn() {
-        return firstAppointmentOn;
-    }
-
-    public void setFirstAppointmentOn(Long firstAppointmentOn) {
-        this.firstAppointmentOn = firstAppointmentOn;
-    }
-
-    public Long getFollowUpDate() {
-        return followUpDate;
-    }
-
-    public void setFollowUpDate(Long followUpDate) {
-        this.followUpDate = followUpDate;
-    }
-
-    public Long getLastAppointmentOn() {
-        return lastAppointmentOn;
-    }
-
-    public void setLastAppointmentOn(Long lastAppointmentOn) {
-        this.lastAppointmentOn = lastAppointmentOn;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }

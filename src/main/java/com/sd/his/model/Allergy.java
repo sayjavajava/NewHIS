@@ -1,11 +1,10 @@
 package com.sd.his.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.List;
 
 /*
  * @author    : Tahir Mehmood
@@ -32,7 +31,7 @@ import java.util.List;
 @Entity
 @Table(name = "DOCUMENT")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Document extends BaseEntity implements Serializable {
+public class Allergy extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

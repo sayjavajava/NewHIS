@@ -1,6 +1,9 @@
 package com.sd.his.model;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 /*
  * @author    : Irfan Nasim
@@ -26,12 +29,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "EMAIL_CONFIGURATION")
-public class EmailConfiguration {
-
-    @Id
-    @Column(name = "ID", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class EmailConfiguration extends BaseEntity implements Serializable {
 
     @Column(name = "SENDER_EMAIL")
     private String senderEmail;
@@ -45,7 +44,7 @@ public class EmailConfiguration {
     @Column(name = "SMTP_HOST")
     private String smtpHost;
 
-    @Column(name = "SERVER_TYPE") //SMTP or SES
+    @Column(name = "SERVER_TYPE") //SMTP/SES
     private String serverType;
 
     @Column(name = "SES_ACCESS_KEY")
@@ -55,33 +54,7 @@ public class EmailConfiguration {
     private String sesSecretKey;
 
     @Column(name = "IS_SYSTEM_DEFAULT", columnDefinition = "boolean default false")
-    private boolean systemDefault;
-
-    public EmailConfiguration() {
-    }
-
-    @Override
-    public String toString() {
-        return "EmailConfiguration{" +
-                "id=" + id +
-                ", senderEmail='" + senderEmail + '\'' +
-                ", smptPassword='" + smptPassword + '\'' +
-                ", smtpPort='" + smtpPort + '\'' +
-                ", smtpHost='" + smtpHost + '\'' +
-                ", serverType='" + serverType + '\'' +
-                ", sesAccessKey='" + sesAccessKey + '\'' +
-                ", sesSecretKey='" + sesSecretKey + '\'' +
-                ", systemDefault=" + systemDefault +
-                '}';
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Boolean systemDefault;
 
     public String getSenderEmail() {
         return senderEmail;
@@ -139,11 +112,11 @@ public class EmailConfiguration {
         this.sesSecretKey = sesSecretKey;
     }
 
-    public boolean isSystemDefault() {
+    public Boolean getSystemDefault() {
         return systemDefault;
     }
 
-    public void setSystemDefault(boolean systemDefault) {
+    public void setSystemDefault(Boolean systemDefault) {
         this.systemDefault = systemDefault;
     }
 }

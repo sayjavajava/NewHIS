@@ -1,7 +1,8 @@
 package com.sd.his.repository;
 
 import com.sd.his.model.Doctor;
-import com.sd.his.model.Manager;
+import com.sd.his.model.EmailConfiguration;
+import org.hibernate.validator.constraints.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -28,8 +29,9 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface DoctorRepository extends JpaRepository<Doctor, Long> {
+public interface EmailConfigurationRepository extends JpaRepository<EmailConfiguration, Long> {
 
+    EmailConfiguration findBySystemDefaultTrue();
     
 
 

@@ -24,22 +24,7 @@ package com.sd.his.enums;
  */
 public enum AppointmentTypeEnum {
 
-    REGULAR("REGULAR"),
-    WALK_IN("WALK_IN"),
-    NEW_PATIENT("NewPatient"),
-    TRANSACTION_OF_CARE("TRANSACTION_OF_CARE");
+    REGULAR,
+    WALK_IN
 
-    private String value;
-
-    AppointmentTypeEnum(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }

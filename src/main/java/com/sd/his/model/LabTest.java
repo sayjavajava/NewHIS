@@ -31,7 +31,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "DOCUMENT")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LabOrder extends BaseEntity implements Serializable {
+public class LabTest extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
