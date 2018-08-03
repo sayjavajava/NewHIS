@@ -76,6 +76,14 @@ public class RolePermission extends BaseEntity implements Serializable {
 
     }
 
+    public RolePermission(Role role, Permission permission,Boolean create, Boolean update, Boolean delete) {
+        this.create = create;
+        this.update = update;
+        this.delete = delete;
+        this.role = role;
+        this.permission = permission;
+    }
+
     public Boolean getCreate() {
         return create;
     }
