@@ -1,6 +1,7 @@
 package com.sd.his.wrapper;
 
 import com.sd.his.model.*;
+import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -35,15 +36,10 @@ public class MedicalServiceWrapper {
     private boolean status;
     private String description;
     private long duration;
-
-    @Autowired
-    private DepartmentWrapper departmentWrapper;
-    @Autowired
     private TaxWrapper tax;
-    @Autowired
-    private BranchWrapper branchWrapper;
-    private List<BranchWrapper> branches;//checkedBranch
-    private List<BranchWrapper> checkedBranches;
+
+    private List<BranchResponseWrapper> branches;//checkedBranch
+    private List<BranchResponseWrapper> checkedBranches;
     private List<DepartmentWrapper> departments;
     private List<DepartmentWrapper> checkedDepartments;
     private List<TaxWrapper> taxes;
@@ -64,6 +60,7 @@ public class MedicalServiceWrapper {
     public MedicalServiceWrapper(MedicalService ms) {
         if (ms.getTax() == null) {
             this.tax = new TaxWrapper();
+            this.tax.setId(-1);
         } else {
             this.tax = new TaxWrapper(ms.getTax());
         }
@@ -75,52 +72,6 @@ public class MedicalServiceWrapper {
         this.description = ms.getDescription();
         this.duration = ms.getDuration();
     }
-
-    public MedicalServiceWrapper(MedicalService ms, List<DepartmentWrapper> allDepartmentWrappers, List<BranchWrapper> allBranchWrappers) {
-
-        /*if (ms.getDepartmentMedicalServices() != null) {
-            for (DepartmentMedicalService dMS : ms.getDepartmentMedicalServices()) {
-                if (dMS.getDepartment() != null){
-                    for (DepartmentWrapper departmentWrapper:allDepartmentWrappers){
-                        if(dMS.getDepartment().getId() == departmentWrapper.getId()){
-                            departmentWrapper.setCheckedDepartment(true);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        this.getDepartments = new ArrayList<>();
-        this.setDepartments(allDepartmentWrappers);
-        if (ms.getBranchMedicalServices() != null) {
-            for (BranchMedicalService branchMedicalService : ms.getBranchMedicalServices()) {
-                if (branchMedicalService.getBranch() != null){
-                    for (BranchWrapper br:allBranchWrappers){
-                        if(branchMedicalService.getBranch().getId() == br.getId()){
-                            br.setCheckedBranch(true);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        this.branches = new ArrayList<>();
-        this.setBranches(allBranchWrappers);*/
-        if (ms.getTax() == null) {
-            this.tax = new TaxWrapper();
-        } else {
-            this.tax = new TaxWrapper(ms.getTax());
-        }
-        this.id = ms.getId();
-        this.name = ms.getName();
-        this.fee = ms.getFee();
-        this.cost = ms.getCost();
-        this.status = ms.getStatus();
-        this.description = ms.getDescription();
-        this.duration = ms.getDuration();
-    }
-
 
     public long getId() {
         return id;
@@ -130,12 +81,28 @@ public class MedicalServiceWrapper {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public double getFee() {
         return fee;
     }
 
     public void setFee(double fee) {
         this.fee = fee;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 
     public boolean isStatus() {
@@ -162,14 +129,6 @@ public class MedicalServiceWrapper {
         this.duration = duration;
     }
 
-    public DepartmentWrapper getDepartmentWrapper() {
-        return departmentWrapper;
-    }
-
-    public void setDepartmentWrapper(DepartmentWrapper departmentWrapper) {
-        this.departmentWrapper = departmentWrapper;
-    }
-
     public TaxWrapper getTax() {
         return tax;
     }
@@ -178,20 +137,20 @@ public class MedicalServiceWrapper {
         this.tax = tax;
     }
 
-    public BranchWrapper getBranchWrapper() {
-        return branchWrapper;
-    }
-
-    public void setBranchWrapper(BranchWrapper branchWrapper) {
-        this.branchWrapper = branchWrapper;
-    }
-
-    public List<BranchWrapper> getBranches() {
+    public List<BranchResponseWrapper> getBranches() {
         return branches;
     }
 
-    public void setBranches(List<BranchWrapper> branches) {
+    public void setBranches(List<BranchResponseWrapper> branches) {
         this.branches = branches;
+    }
+
+    public List<BranchResponseWrapper> getCheckedBranches() {
+        return checkedBranches;
+    }
+
+    public void setCheckedBranches(List<BranchResponseWrapper> checkedBranches) {
+        this.checkedBranches = checkedBranches;
     }
 
     public List<DepartmentWrapper> getDepartments() {
@@ -202,43 +161,19 @@ public class MedicalServiceWrapper {
         this.departments = departments;
     }
 
-    public List<TaxWrapper> getTaxes() {
-        return taxes;
-    }
-
-    public void setTaxes(List<TaxWrapper> taxes) {
-        this.taxes = taxes;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getCost() {
-        return cost;
-    }
-
-    public void setCost(double cost) {
-        this.cost = cost;
-    }
-
-    public List<BranchWrapper> getCheckedBranches() {
-        return checkedBranches;
-    }
-
-    public void setCheckedBranches(List<BranchWrapper> checkedBranches) {
-        this.checkedBranches = checkedBranches;
-    }
-
     public List<DepartmentWrapper> getCheckedDepartments() {
         return checkedDepartments;
     }
 
     public void setCheckedDepartments(List<DepartmentWrapper> checkedDepartments) {
         this.checkedDepartments = checkedDepartments;
+    }
+
+    public List<TaxWrapper> getTaxes() {
+        return taxes;
+    }
+
+    public void setTaxes(List<TaxWrapper> taxes) {
+        this.taxes = taxes;
     }
 }

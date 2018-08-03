@@ -63,6 +63,7 @@ public class BranchResponseWrapper {
     Doctor doctor;
     String firstName;
     String lastName;
+    boolean checkedBranch;
 
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
@@ -87,6 +88,7 @@ public class BranchResponseWrapper {
         this.user = user;
 
     }
+    public BranchResponseWrapper(){}
 
 
   /*  public BranchResponseWrapper(Long id, String name, String country, String city, Long rooms, String username) {
@@ -111,6 +113,13 @@ public class BranchResponseWrapper {
 
     }
 
+    public boolean isCheckedBranch() {
+        return checkedBranch;
+    }
+
+    public void setCheckedBranch(boolean checkedBranch) {
+        this.checkedBranch = checkedBranch;
+    }
 
     public String getFirstName() {
         return firstName;

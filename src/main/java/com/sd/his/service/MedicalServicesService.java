@@ -3,9 +3,9 @@ package com.sd.his.service;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.BranchWrapper;
 import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.MedicalServiceWrapper;
+import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
- * @author    : Irfan Nasim
- * @Date      : 15-May-2018
+ * @author    : Qari Muhammad Jamal
+ * @Date      : 30-july-2018
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -76,7 +76,7 @@ public class MedicalServicesService {
                     mSW.setCheckedBranches(new ArrayList<>());
                     for (BranchMedicalService branchMedicalService : ms.getBranchMedicalServices()) {
                         if (branchMedicalService.getBranch() != null) {
-                            mSW.getCheckedBranches().add(new BranchWrapper(branchMedicalService.getBranch()));
+                            mSW.getCheckedBranches().add(new BranchResponseWrapper(branchMedicalService.getBranch()));
                         }
                     }
                 }
@@ -117,7 +117,7 @@ public class MedicalServicesService {
         medicalServiceRepository.save(medicalService);
         if (HISCoreUtil.isListValid(createRequest.getBranches())) {
             List<BranchMedicalService> list = new ArrayList<>();
-            for (BranchWrapper branchWrapper : createRequest.getBranches()) {
+            for (BranchResponseWrapper branchWrapper : createRequest.getBranches()) {
                 if (branchWrapper.isCheckedBranch()) {
                     Branch branch = this.branchRepository.findOne(branchWrapper.getId());
                     BranchMedicalService branchMedicalService = new BranchMedicalService(branch, medicalService);
@@ -151,12 +151,14 @@ public class MedicalServicesService {
         new MedicalService(medicalService, createRequest);
         if (tax != null) {
             medicalService.setTax(tax);
+        }else {
+            medicalService.setTax(null);
         }
         medicalServiceRepository.save(medicalService);
         if (HISCoreUtil.isListValid(createRequest.getBranches())) {
             List<BranchMedicalService> list = new ArrayList<>();
             this.branchMedicalServiceRepository.deleteByMedicalService_id(medicalService.getId());
-            for (BranchWrapper branchWrapper : createRequest.getBranches()) {
+            for (BranchResponseWrapper branchWrapper : createRequest.getBranches()) {
                 if (branchWrapper.isCheckedBranch()) {
                     Branch branch = this.branchRepository.findOne(branchWrapper.getId());
                     BranchMedicalService branchMedicalService = new BranchMedicalService(branch, medicalService);
@@ -212,7 +214,7 @@ public class MedicalServicesService {
                 mSW.setCheckedBranches(new ArrayList<>());
                 for (BranchMedicalService branchMedicalService : mS.getBranchMedicalServices()) {
                     if (branchMedicalService.getBranch() != null) {
-                        mSW.getCheckedBranches().add(new BranchWrapper(branchMedicalService.getBranch()));
+                        mSW.getCheckedBranches().add(new BranchResponseWrapper(branchMedicalService.getBranch()));
                     }
                 }
             }

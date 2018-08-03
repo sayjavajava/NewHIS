@@ -2,13 +2,14 @@ package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.MedicalService;
+import com.sd.his.service.BranchService;
 import com.sd.his.service.DepartmentService;
 import com.sd.his.service.MedicalServicesService;
-import com.sd.his.wrapper.BranchWrapper;
-import com.sd.his.wrapper.DepartmentWrapper;
-import com.sd.his.wrapper.MedicalServiceWrapper;
-import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.DepartmentWrapper;
+import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.MedicalServiceWrapper;
+import com.sd.his.wrapper.response.BranchResponseWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -53,9 +54,11 @@ public class MedicalServiceAPI {
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @Autowired
-    MedicalServicesService medicalServicesService;
+    private MedicalServicesService medicalServicesService;
     @Autowired
     private DepartmentService departmentService;
+    @Autowired
+    private BranchService branchService;
 
     @ApiOperation(httpMethod = "GET", value = "Paginated Medical Services",
             notes = "This method will return Paginated Medical Services",
@@ -248,9 +251,9 @@ public class MedicalServiceAPI {
                 }
             }
             mss.setBranches(new ArrayList<>());
-//            mss.getBranches().addAll(this.branchService.getBranches());
-            for (BranchWrapper b : mss.getBranches()) {
-                for (BranchWrapper checked : mss.getBranches()) {
+            mss.getBranches().addAll(this.branchService.getAllActiveBranches());
+            for (BranchResponseWrapper b : mss.getBranches()) {
+                for (BranchResponseWrapper checked : mss.getCheckedBranches()) {
                     if (checked.getId() == b.getId())
                         b.setCheckedBranch(true);
                 }
@@ -388,10 +391,6 @@ public class MedicalServiceAPI {
     public ResponseEntity<?> updateMedicalService(HttpServletRequest request,
                                                   @RequestBody MedicalServiceWrapper createRequest) {
         logger.info("updateMedicalService API initiated..");
-        for (DepartmentWrapper s : createRequest.getDepartments()) {
-            if (s.isCheckedDepartment())
-                System.out.println(s.isCheckedDepartment());
-        }
         GenericAPIResponse response = new GenericAPIResponse();
 
         try {
