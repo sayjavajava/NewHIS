@@ -9,7 +9,7 @@ import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.ICDCodeVersionWrapper;
 import com.sd.his.wrapper.ICDCodeWrapper;
 import com.sd.his.wrapper.ICDVersionWrapper;
-import com.sd.his.wrapper.request.ICDCodeCreateRequest;
+import com.sd.his.wrapper.ICDCodeCreateRequest;
 import com.sd.his.wrapper.GenericAPIResponse;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

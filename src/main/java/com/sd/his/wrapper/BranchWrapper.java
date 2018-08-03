@@ -1,18 +1,14 @@
-package com.sd.his.wrapper.response;
+package com.sd.his.wrapper;
 
 import com.sd.his.model.Branch;
 import com.sd.his.model.Doctor;
 import com.sd.his.model.Room;
 import com.sd.his.model.User;
-import com.sd.his.utill.HISCoreUtil;
-import io.swagger.models.auth.In;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /*
- * @author    : waqas kamran
+ * @author    : Qari Muhammad Jamal
  * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
  *
@@ -26,123 +22,66 @@ import java.util.stream.Collectors;
  *
  * @Project   : HIS
  * @Package   : com.sd.his.*
- * @FileName  : UserAuthAPI
+ * @FileName  : BranchWrapper
  *
  * Copyright ©
  * SolutionDots,
  * All rights reserved.
  *
  */
-public class BranchResponseWrapper {
+public class BranchWrapper {
 
-    long id;
-    String branchName;
-    String name;
-    String officeHoursStart;
-    String officeHoursEnd;
-    Integer noOfExamRooms;
-    String state;
-    String city;
-    String primaryDoctor;
-    Integer zipCode;
-    String country;
-    String officePhone;
-    String fax;
-    String formattedAddress;
-    String billingName;
-    String billingBranch;
-    String billingTaxID;
-    Boolean showBranchOnline;
-    Boolean allowOnlineSchedulingInBranch;
-    Long rooms;
-    String username;
-    List<Room> examRooms;
-    String address;
-    User user;
-    Room roomList;
-    Doctor doctor;
-    String firstName;
-    String lastName;
-    boolean checkedBranch;
+    private String billingBranchName;
+    private String billingTaxId;
+    private int noOfRooms;
+    private boolean primaryBranch;
+    private  boolean primaryDr;
+    private boolean checkedBranch;
+    private  long id;
+    private String branchName;
+    private String name;
+    private  String officeHoursStart;
+    private  String officeHoursEnd;
+    private  Integer noOfExamRooms;
+    private  String state;
+    private  String city;
+    private  String primaryDoctor;
+    private  Integer zipCode;
+    private  String country;
+    private  String officePhone;
+    private  String fax;
+    private  String formattedAddress;
+    private  String billingName;
+    private  String billingBranch;
+    private  String billingTaxID;
+    private Boolean showBranchOnline;
+    private  Boolean allowOnlineSchedulingInBranch;
+    private  Long rooms;
+    private  String username;
+    private   List<Room> examRooms;
+    private  String address;
+    private  User user;
+    private  Room roomList;
+    private  Doctor doctor;
+    private  String firstName;
+    private  String lastName;
 
-    public BranchResponseWrapper(Branch branch) {
-        this.branchName = branch.getName();
-        this.country = branch.getCountry();
-        this.officeHoursEnd = HISCoreUtil.convertTimeToString(branch.getOfficeEndTime());
-        this.officeHoursStart = HISCoreUtil.convertTimeToString(branch.getOfficeStartTime());
-        this.billingBranch = branch.getBillingBranchName();
-        this.billingTaxID = branch.getBillingTaxId();
-        this.billingName = branch.getBillingName();
-        this.city = branch.getCity();
-        this.rooms = branch.getNoOfRooms();
-        this.fax = branch.getFax();
-        this.zipCode = branch.getZipCode();
-        this.officePhone = branch.getOfficePhone();
-        this.state = branch.getState();
-        this.name = branch.getName();
-        this.id = branch.getId();
-        this.address = branch.getAddress();
-        this.examRooms = branch.getRooms().stream().filter(x->x.getRoomName() !=null)
-                .map(x-> new Room(x.getId(),x.getRoomName(),x.getAllowOnlineScheduling()))
-                .collect(Collectors.toList());
-        this.user = user;
-
+    public BranchWrapper() {
     }
-    public BranchResponseWrapper(){}
 
-
-  /*  public BranchResponseWrapper(Long id, String name, String country, String city, Long rooms, String username) {
-        this.id = id;
-        this.city = city;
-        this.name = name;
-        this.country = country;
-        this.rooms = rooms;
-        this.primaryDoctor = username;
-
+    /*public BranchWrapper(BranchUser branchUser) {
+        this.name = branchUser.getBranch().getName();
+        this.billingBranchName = branchUser.getBranch().getBillingBranchName();
+        this.billingTaxId = branchUser.getBranch().getBillingTaxId();
+        this.noOfRooms = branchUser.getBranch().getNoOfRooms();
+        this.primaryBranch = branchUser.isPrimaryBranch();
+        this.primaryDr = branchUser.isPrimaryDr();
+        this.billingBranch = branchUser.isBillingBranch();
     }*/
 
-    public BranchResponseWrapper(long id, String name, String country, String city, Long rooms, String firstName) {
-        this.id = id;
-        this.city = city;
-        this.name = name;
-        this.country = country;
-        this.rooms = rooms;
-        this.firstName=firstName;
-        //this.doctor =doctor;
-        System.out.println(firstName);
-
-    }
-
-    public boolean isCheckedBranch() {
-        return checkedBranch;
-    }
-
-    public void setCheckedBranch(boolean checkedBranch) {
-        this.checkedBranch = checkedBranch;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public Doctor getDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
+    public BranchWrapper(Branch branch) {
+        this.id = branch.getId();
+        this.name = branch.getName();
     }
 
     public long getId() {
@@ -153,20 +92,68 @@ public class BranchResponseWrapper {
         this.id = id;
     }
 
-    public String getBranchName() {
-        return branchName;
-    }
-
-    public void setBranchName(String branchName) {
-        this.branchName = branchName;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBillingBranchName() {
+        return billingBranchName;
+    }
+
+    public void setBillingBranchName(String billingBranchName) {
+        this.billingBranchName = billingBranchName;
+    }
+
+    public String getBillingTaxId() {
+        return billingTaxId;
+    }
+
+    public void setBillingTaxId(String billingTaxId) {
+        this.billingTaxId = billingTaxId;
+    }
+
+    public int getNoOfRooms() {
+        return noOfRooms;
+    }
+
+    public void setNoOfRooms(int noOfRooms) {
+        this.noOfRooms = noOfRooms;
+    }
+
+    public boolean isPrimaryBranch() {
+        return primaryBranch;
+    }
+
+    public void setPrimaryBranch(boolean primaryBranch) {
+        this.primaryBranch = primaryBranch;
+    }
+
+    public boolean isPrimaryDr() {
+        return primaryDr;
+    }
+
+    public void setPrimaryDr(boolean primaryDr) {
+        this.primaryDr = primaryDr;
+    }
+
+    public boolean isCheckedBranch() {
+        return checkedBranch;
+    }
+
+    public void setCheckedBranch(boolean checkedBranch) {
+        this.checkedBranch = checkedBranch;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 
     public String getOfficeHoursStart() {
@@ -343,5 +330,29 @@ public class BranchResponseWrapper {
 
     public void setRoomList(Room roomList) {
         this.roomList = roomList;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

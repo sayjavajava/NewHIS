@@ -2,11 +2,9 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.wrapper.MedicalServiceWrapper;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -59,14 +57,40 @@ public class MedicalService extends BaseEntity implements Serializable {
     @Column(name = "STATUS")
     private Boolean status;
 
-//    @ManyToOne
-//    @JoinColumn(name = "TAX_ID")
-//    private Tax tax;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TAX_ID")
+    private Tax tax;
 
     @JsonIgnore
-    @OneToMany(targetEntity = DepartmentMedicalService.class, mappedBy = "medicalService")
-    private List<DepartmentMedicalService> departments;
+    @OneToMany(targetEntity = DepartmentMedicalService.class, mappedBy = "medicalService",orphanRemoval = true)
+    private List<DepartmentMedicalService> departmentMedicalServices;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = BranchMedicalService.class, mappedBy = "medicalService",orphanRemoval = true)
+    private List<BranchMedicalService> branchMedicalServices;
+
+    public MedicalService() {
+    }
+
+    public MedicalService(MedicalServiceWrapper createRequest) {
+        this.name = createRequest.getName();
+        this.cost = createRequest.getCost();
+        this.fee = createRequest.getFee();
+        this.duration = createRequest.getDuration();
+        this.description = createRequest.getDescription();
+//        this.getImgURL() = createRequest.get
+        this.status = createRequest.isStatus();
+    }
+
+    public MedicalService(MedicalService medicalService, MedicalServiceWrapper createRequest) {
+        medicalService.setName(createRequest.getName());
+        medicalService.setCost(createRequest.getCost());
+        medicalService.setFee(createRequest.getFee());
+        medicalService.setDuration(createRequest.getDuration());
+        medicalService.setDescription(createRequest.getDescription());
+//      medicalService.getImgURL() = createRequest.get
+        medicalService.setStatus(createRequest.isStatus());
+    }
 
     public String getName() {
         return name;
@@ -124,11 +148,29 @@ public class MedicalService extends BaseEntity implements Serializable {
         this.status = status;
     }
 
-    public List<DepartmentMedicalService> getDepartments() {
-        return departments;
+    public List<DepartmentMedicalService> getDepartmentMedicalServices() {
+        return departmentMedicalServices;
     }
 
-    public void setDepartments(List<DepartmentMedicalService> departments) {
-        this.departments = departments;
+    public void setDepartmentMedicalServices(List<DepartmentMedicalService> departmentMedicalServices) {
+        this.departmentMedicalServices = departmentMedicalServices;
     }
+
+    public Tax getTax() {
+        return tax;
+    }
+
+    public void setTax(Tax tax) {
+        this.tax = tax;
+    }
+
+    public List<BranchMedicalService> getBranchMedicalServices() {
+        return branchMedicalServices;
+    }
+
+    public void setBranchMedicalServices(List<BranchMedicalService> branchMedicalServices) {
+        this.branchMedicalServices = branchMedicalServices;
+    }
+
+
 }
