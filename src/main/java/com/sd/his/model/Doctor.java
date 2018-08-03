@@ -75,6 +75,10 @@ public class Doctor extends StaffProfile implements Serializable {
     @Column(name = "VACATION_TO")
     private Date vacationTO;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "doctor")
+    private List<Appointment> appointments;
+
     public Boolean getVacation() {
         return vacation;
     }
@@ -153,5 +157,13 @@ public class Doctor extends StaffProfile implements Serializable {
 
     public void setPatients(List<Patient> patients) {
         this.patients = patients;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
     }
 }

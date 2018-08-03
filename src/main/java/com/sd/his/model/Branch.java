@@ -122,9 +122,9 @@ public class Branch extends BaseEntity implements Serializable {
 
 
 
-//    @JsonIgnore
-//    @OneToMany(targetEntity = Appointment.class, mappedBy = "branch", fetch = FetchType.LAZY)
-//    private List<Appointment> appointments;
+    @JsonIgnore
+    @OneToMany(mappedBy = "branch")
+    private List<Appointment> appointments;
 
 
     public Branch(){}
