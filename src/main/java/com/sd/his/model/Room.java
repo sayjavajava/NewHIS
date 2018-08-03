@@ -62,6 +62,12 @@ public class Room extends BaseEntity implements Serializable {
         this.allowOnlineScheduling = allowOnlineScheduling;
     }
 
+    public Room(String roomName, Branch branch, Boolean active, Boolean allowOnlineScheduling) {
+        this.roomName = roomName;
+        this.branch = branch;
+        this.active = active;
+        this.allowOnlineScheduling = allowOnlineScheduling;
+    }
 
     public String getRoomName() {
         return roomName;
