@@ -30,9 +30,16 @@ public class DepartmentWrapper {
     String name;
     String description;
     boolean active;
-    long branchId;
+    private boolean checkedDepartment;
 
     public DepartmentWrapper() {
+    }
+
+    public DepartmentWrapper(DepartmentWrapper departmentWrapper) {
+        this.id = departmentWrapper.getId();
+        this.name = departmentWrapper.getName();
+        this.description = departmentWrapper.description;
+        this.active = departmentWrapper.isActive();
     }
 
     public DepartmentWrapper(Department dpt) {
@@ -74,4 +81,11 @@ public class DepartmentWrapper {
         this.active = active;
     }
 
+    public boolean isCheckedDepartment() {
+        return checkedDepartment;
+    }
+
+    public void setCheckedDepartment(boolean checkedDepartment) {
+        this.checkedDepartment = checkedDepartment;
+    }
 }

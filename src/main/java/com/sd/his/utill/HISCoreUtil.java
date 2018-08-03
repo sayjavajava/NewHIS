@@ -51,6 +51,18 @@ public class HISCoreUtil {
         return false;
     }
 
+    /***
+     * Valid mean , not null and not empty the list
+     *
+     *
+     */
+    public static boolean isListValid(List<?> dataList) {
+        if (null == dataList || dataList.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
     public static boolean isMapEmpty(Map<?, ?> dataMap) {
         if (null == dataMap || dataMap.isEmpty()) {
             return true;

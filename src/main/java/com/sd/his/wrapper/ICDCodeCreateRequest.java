@@ -1,4 +1,4 @@
-package com.sd.his.wrapper.request;
+package com.sd.his.wrapper;
 
 /*
  * @author    : Qari Jamal

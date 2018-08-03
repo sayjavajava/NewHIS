@@ -109,6 +109,10 @@ public class Branch extends BaseEntity implements Serializable {
     private List<BranchReceptionist> branchReceptionists;
 
     @JsonIgnore
+    @OneToMany(targetEntity = BranchMedicalService.class, mappedBy = "branch")
+    private List<BranchMedicalService> branchMedicalServices;
+
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = Room.class, mappedBy = "branch")
     private List<Room> rooms;
 
@@ -321,6 +325,14 @@ public class Branch extends BaseEntity implements Serializable {
 
     public List<BranchReceptionist> getBranchReceptionists() {
         return branchReceptionists;
+    }
+
+    public List<BranchMedicalService> getBranchMedicalServices() {
+        return branchMedicalServices;
+    }
+
+    public void setBranchMedicalServices(List<BranchMedicalService> branchMedicalServices) {
+        this.branchMedicalServices = branchMedicalServices;
     }
 
     public void setBranchReceptionists(List<BranchReceptionist> branchReceptionists) {

@@ -2,7 +2,7 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sd.his.wrapper.request.ICDCodeCreateRequest;
+import com.sd.his.wrapper.ICDCodeCreateRequest;
 
 import javax.persistence.*;
 import java.io.Serializable;

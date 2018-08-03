@@ -44,7 +44,7 @@ public class DepartmentService {
 
     private final Logger logger = LoggerFactory.getLogger(DepartmentService.class);
 
-    public List<DepartmentWrapper> getAllActiveClinicalDepartments() {
+    public List<DepartmentWrapper> getDepartments() {
         List<Department> dpts = departmentRepository.findAll();
         List<DepartmentWrapper> dptsWrappers = new ArrayList<>();
 
