@@ -32,6 +32,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
 @EnableJpaAuditing
 public class HisApplication {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
+
     @Autowired
     private UserRepository userRepository;
     @Autowired

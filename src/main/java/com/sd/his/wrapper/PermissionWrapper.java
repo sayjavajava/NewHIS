@@ -2,6 +2,7 @@ package com.sd.his.wrapper;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.model.Permission;
+import com.sd.his.model.RolePermission;
 
 /*
  * @author    : waqas kamran
@@ -33,6 +34,14 @@ public class PermissionWrapper {
     boolean deleted;
     boolean active;
 
+    //url for routing on front end
+    String routeUrl;
+    //permission actions according to role
+    boolean canAdd;
+    boolean candEdit;
+    boolean canDelete;
+    String permissionIcon;
+
     public PermissionWrapper() {
     }
 
@@ -41,7 +50,6 @@ public class PermissionWrapper {
         this.name = permission.getName();
         this.description = permission.getDescription();
         this.active = permission.getActive();
-
     }
 
     public PermissionWrapper(String name, String description) {
@@ -55,6 +63,18 @@ public class PermissionWrapper {
         this.description = description;
         this.deleted = deleted;
         this.active = active;
+    }
+
+    public PermissionWrapper(RolePermission rolePermission) {
+        this.id = rolePermission.getPermission().getId();
+        this.name = rolePermission.getPermission().getName();
+        this.description = rolePermission.getPermission().getDescription();
+        this.permissionIcon = rolePermission.getPermission().getPermissionIcon();
+        this.active = rolePermission.getPermission().getActive();
+        this.canAdd = rolePermission.getCreate();
+        this.candEdit = rolePermission.getUpdate();
+        this.canDelete = rolePermission.getDelete();
+        this.routeUrl = rolePermission.getPermission().getUrl();
     }
 
     public long getId() {
@@ -95,5 +115,45 @@ public class PermissionWrapper {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getRouteUrl() {
+        return routeUrl;
+    }
+
+    public void setRouteUrl(String routeUrl) {
+        this.routeUrl = routeUrl;
+    }
+
+    public boolean isCanAdd() {
+        return canAdd;
+    }
+
+    public void setCanAdd(boolean canAdd) {
+        this.canAdd = canAdd;
+    }
+
+    public boolean isCandEdit() {
+        return candEdit;
+    }
+
+    public void setCandEdit(boolean candEdit) {
+        this.candEdit = candEdit;
+    }
+
+    public boolean isCanDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
+    }
+
+    public String getPermissionIcon() {
+        return permissionIcon;
+    }
+
+    public void setPermissionIcon(String permissionIcon) {
+        this.permissionIcon = permissionIcon;
     }
 }

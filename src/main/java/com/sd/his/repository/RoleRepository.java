@@ -1,5 +1,6 @@
 package com.sd.his.repository;
 
+import com.sd.his.model.Branch;
 import com.sd.his.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,5 +15,7 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
     Role findByName(String name);
 
     List<Role> findAllByActiveTrue();
+
+    List<Role> findAllByIdIn(List<Long> ids);
 
 }

@@ -1,8 +1,15 @@
 package com.sd.his.repository;
 
 import com.sd.his.model.Branch;
+
+import com.sd.his.wrapper.response.BranchResponseWrapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
  * @author    : waqas kamran
@@ -31,6 +38,19 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
 
     Branch findByName(String name);
 
+
+    @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms,bb.firstName) FROM Branch b LEFT OUTER JOIN b.branchDoctors bu LEFT OUTER JOIN bu.doctor bb WHERE b.active = TRUE ")
+    List<BranchResponseWrapper> findAllByActive(Pageable pageable);
+
+    @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b) FROM Branch b WHERE b.id =:id ")
+    BranchResponseWrapper findAllById(@Param("id") Long id);
+
+    List<Branch> findAllByIdIn(List<Long> ids);
+
+    List<Branch> findAllByActiveTrue();
+
+
+
  /*   Branch findByIdAndDeletedFalse(long id);
 
     @Query("SELECT new com.sd.his.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms,pu.username) FROM Branch b INNER JOIN b.users bu JOIN bu.user pu WHERE b.active = TRUE AND b.deleted = FALSE")
@@ -45,7 +65,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     @Query("SELECT new com.sd.his.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms) FROM Branch b  WHERE b.active = TRUE AND b.deleted = FALSE")
     List<BranchResponseWrapper> findBranchWrapperAllByActiveTrueAndDeletedFalse();
 
-    List<Branch> findAllByIdIn(List<Long> ids);
+  ;
 */
 }
 

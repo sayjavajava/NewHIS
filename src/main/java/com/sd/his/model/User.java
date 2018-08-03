@@ -50,7 +50,7 @@ public class User extends BaseEntity implements Serializable {
     private Boolean active;
 
     @JsonIgnore
-    @OneToMany(targetEntity = UserRole.class, mappedBy = "user")
+    @OneToMany(targetEntity = UserRole.class, mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UserRole> userRoles;
 
     public User(){}

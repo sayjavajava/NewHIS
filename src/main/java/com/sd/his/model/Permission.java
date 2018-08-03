@@ -23,6 +23,9 @@ public class Permission extends BaseEntity implements Serializable {
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
     private Boolean active;
 
+    @Column(name = "PERMISSION_ICON")
+    private String permissionIcon;
+
     @JsonIgnore
     @OneToMany(mappedBy = "permission")
     private List<RolePermission> rolePermissions;
@@ -35,7 +38,6 @@ public class Permission extends BaseEntity implements Serializable {
         this.url = url;
         this.active = active;
     }
-
 
     public String getName() {
         return name;
@@ -75,5 +77,13 @@ public class Permission extends BaseEntity implements Serializable {
 
     public void setRolePermissions(List<RolePermission> rolePermissions) {
         this.rolePermissions = rolePermissions;
+    }
+
+    public String getPermissionIcon() {
+        return permissionIcon;
+    }
+
+    public void setPermissionIcon(String permissionIcon) {
+        this.permissionIcon = permissionIcon;
     }
 }

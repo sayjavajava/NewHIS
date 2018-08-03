@@ -22,16 +22,29 @@ package com.sd.his.repository;/*
  */
 
 import com.sd.his.model.Organization;
+
+
+import com.sd.his.wrapper.response.OrganizationResponseWrapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
 
 
-//    @Query("SELECT new com.sd.his.wrapper.response.OrganizationResponseWrapper(o.id, o.companyName,o.cellPhone,o.website,o.email,o.homePhone,o.durationFollowUp,o.durationOFExam,o.timezone,o.specialty) FROM Organization o")
-//    List<OrganizationResponseWrapper> findAllByName(Pageable pageable);
+
+    @Query("SELECT new com.sd.his.wrapper.response.OrganizationResponseWrapper(o.id, o.companyName,o.officePhone,o.website,o.email,o.homePhone,o.durationFollowUp,o.durationOFExam,o.timezone,o.specialty,o.fax,o.address) FROM Organization o")
+    List<OrganizationResponseWrapper> findAllByName(Pageable pageable);
+
+    @Query("SELECT new com.sd.his.wrapper.response.OrganizationResponseWrapper(o.id, o.companyName,o.officePhone,o.website,o.email,o.homePhone,o.durationFollowUp,o.durationOFExam,o.timezone,o.specialty,o.fax,o.address) FROM Organization o WHERE o.id=:id ")
+    OrganizationResponseWrapper findById(@Param("id") Long id);
+
 
 
     Organization findByCompanyName(String companyName);

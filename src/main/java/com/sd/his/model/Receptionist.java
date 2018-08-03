@@ -20,4 +20,20 @@ public class Receptionist extends StaffProfile implements Serializable {
     @JsonIgnore
     @OneToMany(targetEntity = BranchReceptionist.class, mappedBy = "receptionist")
     private List<BranchReceptionist> branchReceptionists;
+
+    public User getUser() {
+        return user;
+    }
+
+    public List<BranchReceptionist> getBranchReceptionists() {
+        return branchReceptionists;
+    }
+
+    public void setBranchReceptionists(List<BranchReceptionist> branchReceptionists) {
+        this.branchReceptionists = branchReceptionists;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

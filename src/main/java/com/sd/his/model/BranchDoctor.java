@@ -42,12 +42,24 @@ public class BranchDoctor extends BaseEntity implements Serializable {
     @Column(name = "PRIMARY_BRANCH", columnDefinition = "boolean default true")
     private Boolean primaryBranch;
 
-    public BranchDoctor(){}
+
+    @Override
+    public String toString() {
+        return "BranchDoctor{" +
+                "doctor=" + doctor +
+                ", branch=" + branch +
+                ", primaryBranch=" + primaryBranch +
+                '}';
+    }
+
+    public BranchDoctor() {
+    }
 
     public BranchDoctor(Doctor doctor, Branch branch, Boolean primaryBranch) {
         this.doctor = doctor;
         this.branch = branch;
         this.primaryBranch = primaryBranch;
+
     }
 
     public Doctor getDoctor() {

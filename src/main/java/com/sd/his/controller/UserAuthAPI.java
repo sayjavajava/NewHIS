@@ -1,10 +1,13 @@
 package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Role;
 import com.sd.his.model.User;
 import com.sd.his.service.UserService;
+import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.RoleWrapper;
 import com.sd.his.wrapper.UserWrapper;
 import com.sd.his.wrapper.request.UserRequestWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /*
@@ -57,6 +62,7 @@ public class UserAuthAPI {
     private UserService userService;
     @Autowired
     private TokenStore tokenStore;
+
 
     private final Logger logger = LoggerFactory.getLogger(UserAuthAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
@@ -101,20 +107,17 @@ public class UserAuthAPI {
                 logger.info("The Admin is not found...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-
-            if (HISCoreUtil.isValidObject(dbAdmin)) {
-                if (BCrypt.checkpw(loginReq.getPassword(), dbAdmin.getPassword())) {
-
-                    UserWrapper admin = userService.buildUserWrapper(dbAdmin);
-                    response.setResponseData(admin);
-                    response.setResponseMessage(messageBundle.getString("admin.login.success"));
-                    response.setResponseCode(ResponseEnum.ADMIN_ACCESS_GRANTED.getValue());
-                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                    logger.info("Admin Logged in successfully...");
-
-                    return new ResponseEntity<>(response, HttpStatus.OK);
-                }
+            //if (HISCoreUtil.isValidObject(dbAdmin)) {
+            if (BCrypt.checkpw(loginReq.getPassword(), dbAdmin.getPassword())) {
+                UserWrapper userWrapper = userService.buildUserWrapper(dbAdmin);
+                response.setResponseData(userWrapper);
+                response.setResponseMessage(messageBundle.getString("admin.login.success"));
+                response.setResponseCode(ResponseEnum.ADMIN_ACCESS_GRANTED.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Admin Logged in successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
+            //}
         } catch (Exception ex) {
             logger.error("Admin Logged In failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -130,7 +133,7 @@ public class UserAuthAPI {
      * @author Irfan Nasim
      * @description API will return All Authorities like Roles and Permissions.
      * @since 20-04-2018
-     *//*
+     */
     @ApiOperation(httpMethod = "GET", value = "All Systems Authorities",
             notes = "This API will return All Authorities like Roles and Permissions",
             produces = "application/json", nickname = "Authorities",
@@ -153,10 +156,9 @@ public class UserAuthAPI {
         response.setResponseData(null);
 
         try {
-            List<Role> dbRoles = roleService.getAllActiveRoles();
-            List<Permission> dbPermissions = permissionService.getAllActivePermissions();
+            List<Role> dbRoles = userService.getAllActiveRoles();
+            //List<Permission> dbPermissions = userService.getAllActivePermissions();
             Map<String, Object> returnValues = new LinkedHashMap<>();
-
             if (HISCoreUtil.isListEmpty(dbRoles)) {
                 response.setResponseMessage(messageBundle.getString("role.permissions.not.found.error"));
                 response.setResponseCode(ResponseEnum.NOT_FOUND.getValue());
@@ -168,10 +170,9 @@ public class UserAuthAPI {
             }
 
             List<RoleWrapper> allRolesAndPermissions = APIUtil.buildRoleWrapper(dbRoles);
-            List<PermissionWrapper> allPermissions = APIUtil.buildPermissionWrapper(dbPermissions);
+           // List<PermissionWrapper> allPermissions = APIUtil.buildPermissionWrapper(dbPermissions);
             if (!HISCoreUtil.isListEmpty(allRolesAndPermissions)) {
                 returnValues.put("allRoleAndPermissions", allRolesAndPermissions);
-                returnValues.put("allPermissions", allPermissions);
 
                 response.setResponseMessage(messageBundle.getString("role.permissions.success"));
                 response.setResponseCode(ResponseEnum.ROLE_PERMISSION_FETCH_SUCCESS.getValue());
@@ -189,9 +190,9 @@ public class UserAuthAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }*/
-
-    @ApiOperation(httpMethod = "GET", value = "Admin LoggedIn",
+    }
+    /*
+     @ApiOperation(httpMethod = "GET", value = "Admin LoggedIn",
             notes = "This method will return logged in User",
             produces = "application/json", nickname = "Logging In ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -238,7 +239,7 @@ public class UserAuthAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
+*/
     @ApiOperation(httpMethod = "GET", value = "Admin Logged out ",
             notes = "This method will Log out the User",
             produces = "application/json", nickname = "Logging Out ",

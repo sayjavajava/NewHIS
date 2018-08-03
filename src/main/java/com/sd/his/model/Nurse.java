@@ -48,12 +48,34 @@ public class Nurse extends StaffProfile implements Serializable {
     @OneToMany(targetEntity = BranchNurse.class, mappedBy = "nurse")
     private List<BranchNurse> branchNurses;
 
+    @Column(name = "MANAGE_PATIENT_INVOICES", columnDefinition = "boolean default false")
+    private Boolean managePatientInvoices;
+
+    @Column(name = "MANAGE_PATIENT_RECORDS", columnDefinition = "boolean default false")
+    private Boolean managePatientRecords;
+
     public List<NurseWithDoctor> getNurseWithDoctorList() {
         return nurseWithDoctorList;
     }
 
     public void setNurseWithDoctorList(List<NurseWithDoctor> nurseWithDoctorList) {
         this.nurseWithDoctorList = nurseWithDoctorList;
+    }
+
+    public Boolean getManagePatientInvoices() {
+        return managePatientInvoices;
+    }
+
+    public void setManagePatientInvoices(Boolean managePatientInvoices) {
+        this.managePatientInvoices = managePatientInvoices;
+    }
+
+    public Boolean getManagePatientRecords() {
+        return managePatientRecords;
+    }
+
+    public void setManagePatientRecords(Boolean managePatientRecords) {
+        this.managePatientRecords = managePatientRecords;
     }
 
     public User getUser() {

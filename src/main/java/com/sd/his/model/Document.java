@@ -1,0 +1,40 @@
+package com.sd.his.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
+
+/*
+ * @author    : Tahir Mehmood
+ * @Date      : 31-Jul-2018
+ * @version   : ver. 1.0.0
+ *
+ * ________________________________________________________________________________________________
+ *
+ *  Developer				Date		     Version		Operation		Description
+ * ________________________________________________________________________________________________
+ *
+ *
+ * ________________________________________________________________________________________________
+ *
+ * @Project   : HIS
+ * @Package   : com.sd.his.model
+ * @FileName  : User
+ *
+ * Copyright ©
+ * SolutionDots,
+ * All rights reserved.
+ *
+ */
+@Entity
+@Table(name = "DOCUMENT")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Document extends BaseEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+
+}

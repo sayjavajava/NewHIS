@@ -34,6 +34,14 @@ import java.io.Serializable;
 public class RolePermission extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "CAN_CREATE", columnDefinition = "boolean default true", nullable = false)
+    private Boolean create;
+
+    @Column(name = "CAN_UPDATE", columnDefinition = "boolean default true", nullable = false)
+    private Boolean update;
+
+    @Column(name = "CAN_DELETE", columnDefinition = "boolean default true", nullable = false)
+    private Boolean delete;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ROLE_ID", nullable = false)
@@ -42,50 +50,6 @@ public class RolePermission extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "PERMISSION_ID", nullable = false)
     private Permission permission;
-
-    @Column(name = "CAN_UPDATE", columnDefinition = "boolean default true", nullable = false)
-    private Boolean update;
-
-    @Column(name = "CAN_CREATE", columnDefinition = "boolean default true", nullable = false)
-    private Boolean create;
-
-    @Column(name = "CAN_DELETE", columnDefinition = "boolean default true", nullable = false)
-    private Boolean delete;
-
-    public RolePermission(){}
-
-    public RolePermission(Role role, Permission permission, Boolean update, Boolean create, Boolean delete) {
-        this.role = role;
-        this.permission = permission;
-        this.update = update;
-        this.create = create;
-        this.delete = delete;
-
-    }
-
-    public Boolean getUpdate() {
-        return update;
-    }
-
-    public void setUpdate(Boolean update) {
-        this.update = update;
-    }
-
-    public Boolean getCreate() {
-        return create;
-    }
-
-    public void setCreate(Boolean create) {
-        this.create = create;
-    }
-
-    public Boolean getDelete() {
-        return delete;
-    }
-
-    public void setDelete(Boolean delete) {
-        this.delete = delete;
-    }
 
     public Role getRole() {
         return role;
@@ -103,5 +67,44 @@ public class RolePermission extends BaseEntity implements Serializable {
         this.permission = permission;
     }
 
+    public RolePermission(Role role, Permission permission) {
+        this.role = role;
+        this.permission = permission;
+    }
 
+    public RolePermission(){
+
+    }
+
+    public RolePermission(Role role, Permission permission,Boolean create, Boolean update, Boolean delete) {
+        this.create = create;
+        this.update = update;
+        this.delete = delete;
+        this.role = role;
+        this.permission = permission;
+    }
+
+    public Boolean getCreate() {
+        return create;
+    }
+
+    public void setCreate(Boolean create) {
+        this.create = create;
+    }
+
+    public Boolean getUpdate() {
+        return update;
+    }
+
+    public void setUpdate(Boolean update) {
+        this.update = update;
+    }
+
+    public Boolean getDelete() {
+        return delete;
+    }
+
+    public void setDelete(Boolean delete) {
+        this.delete = delete;
+    }
 }
