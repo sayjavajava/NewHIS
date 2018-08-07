@@ -7,6 +7,7 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /*
  * @author    : Irfan Nasim
@@ -100,7 +101,7 @@ public class Appointment extends BaseEntity implements Serializable {
 
     @ElementCollection
     @Column(name = "RECURRING_DAYS")
-    private String recurringDays; //should be save json of days
+    private List<String> recurringDays; //should be save json of days
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FIRST_APPOINTMENT_ON")
@@ -258,14 +259,6 @@ public class Appointment extends BaseEntity implements Serializable {
         this.recurring = recurring;
     }
 
-    public String getRecurringDays() {
-        return recurringDays;
-    }
-
-    public void setRecurringDays(String recurringDays) {
-        this.recurringDays = recurringDays;
-    }
-
     public Date getFirstAppointmentOn() {
         return firstAppointmentOn;
     }
@@ -288,5 +281,13 @@ public class Appointment extends BaseEntity implements Serializable {
 
     public void setLastAppointmentOn(Date lastAppointmentOn) {
         this.lastAppointmentOn = lastAppointmentOn;
+    }
+
+    public List<String> getRecurringDays() {
+        return recurringDays;
+    }
+
+    public void setRecurringDays(List<String> recurringDays) {
+        this.recurringDays = recurringDays;
     }
 }

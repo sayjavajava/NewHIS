@@ -1,14 +1,17 @@
 package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Permission;
 import com.sd.his.model.Role;
 import com.sd.his.model.User;
 import com.sd.his.service.UserService;
 import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.PermissionWrapper;
 import com.sd.his.wrapper.RoleWrapper;
 import com.sd.his.wrapper.UserWrapper;
+import com.sd.his.wrapper.request.AssignAuthoritiesRequestWrapper;
 import com.sd.his.wrapper.request.UserRequestWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -21,10 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
@@ -157,7 +157,7 @@ public class UserAuthAPI {
 
         try {
             List<Role> dbRoles = userService.getAllActiveRoles();
-            //List<Permission> dbPermissions = userService.getAllActivePermissions();
+            List<Permission> dbPermissions = userService.getAllActivePermissions();
             Map<String, Object> returnValues = new LinkedHashMap<>();
             if (HISCoreUtil.isListEmpty(dbRoles)) {
                 response.setResponseMessage(messageBundle.getString("role.permissions.not.found.error"));
@@ -170,10 +170,10 @@ public class UserAuthAPI {
             }
 
             List<RoleWrapper> allRolesAndPermissions = APIUtil.buildRoleWrapper(dbRoles);
-           // List<PermissionWrapper> allPermissions = APIUtil.buildPermissionWrapper(dbPermissions);
+            List<PermissionWrapper> allPermissions = APIUtil.buildPermissionWrapper(dbPermissions);
             if (!HISCoreUtil.isListEmpty(allRolesAndPermissions)) {
                 returnValues.put("allRoleAndPermissions", allRolesAndPermissions);
-
+                returnValues.put("allPermissions", allPermissions);
                 response.setResponseMessage(messageBundle.getString("role.permissions.success"));
                 response.setResponseCode(ResponseEnum.ROLE_PERMISSION_FETCH_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -279,6 +279,240 @@ public class UserAuthAPI {
             }
         } catch (Exception ex) {
             logger.error("logOutUser failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * @return Response with status of Role & Permission.
+     * @author Irfan Nasim
+     * @description API will return status of Role & Permission creation.
+     * @since 27-04-2018
+     */
+    @ApiOperation(httpMethod = "POST", value = "Create Role & Permission",
+            notes = "This method will Create Role & Permission",
+            produces = "application/json", nickname = "Create Role & Permission",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Role & Permission successfully created", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/addRole", method = RequestMethod.POST)
+    public ResponseEntity<?> addRole(HttpServletRequest request,
+                                                  @RequestBody RoleWrapper createRequest) {
+
+        logger.info("addRole API called...");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("role.add.error"));
+        response.setResponseCode(ResponseEnum.ROLE_ADD_SUCCESS.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (HISCoreUtil.isNull(createRequest.getName())) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Create Role insufficient params");
+            }
+
+
+                Role alreadyExist = userService.getRoleByName(createRequest.getName());
+                if (HISCoreUtil.isValidObject(alreadyExist)) {
+                    response.setResponseMessage(messageBundle.getString("role.add.already-found.error"));
+                    response.setResponseCode(ResponseEnum.ROLE_ALREADY_EXIST_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+                    logger.error("Role already exist with the same name...");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+
+                Role savedRole = userService.saveRole(createRequest);
+                if (HISCoreUtil.isValidObject(savedRole)) {
+                    response.setResponseData(null);
+                    response.setResponseMessage(messageBundle.getString("role.add.success"));
+                    response.setResponseCode(ResponseEnum.ROLE_ADD_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("Role created successfully...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+
+        } catch (Exception ex) {
+            logger.error("addRole failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+//    /**
+//     * @return Response with status of  Role & Permission update.
+//     * @author Irfan Nasim
+//     * @description API will return status of Role & Permission update.
+//     * @since 27-04-2018
+//     */
+//    @ApiOperation(httpMethod = "POST", value = "Update Role & Permission",
+//            notes = "This method will Update Role & Permission",
+//            produces = "application/json", nickname = "Update Role & Permission",
+//            response = GenericAPIResponse.class, protocols = "https")
+//    @ApiResponses({
+//            @ApiResponse(code = 200, message = "Role & Permission successfully updated", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+//    @RequestMapping(value = "/update", method = RequestMethod.POST)
+//    public ResponseEntity<?> updateRoleAndPermission(HttpServletRequest request,
+//                                                     @RequestBody RoleAndPermissionUpdateRequest updateRequest) {
+//
+//        logger.info("updateRoleAndPermission API called...");
+//        GenericAPIResponse response = new GenericAPIResponse();
+//        response.setResponseMessage(messageBundle.getString("role.add.error"));
+//        response.setResponseCode(ResponseEnum.ROLE_ADD_SUCCESS.getValue());
+//        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+//        response.setResponseData(null);
+//
+//        try {
+//
+//        } catch (Exception ex) {
+//            logger.error("updateRoleAndPermission failed.", ex.fillInStackTrace());
+//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
+//
+    @ApiOperation(httpMethod = "GET", value = "All Systems Authorities",
+            notes = "This API will return All Authorities like Roles and Permissions",
+            produces = "application/json", nickname = "Authorities",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Authorities fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/permission", method = RequestMethod.GET)
+    public ResponseEntity<?> getPermissionByRole(HttpServletRequest request,
+                                                    @RequestParam("name") String name) {
+
+        logger.info("Get Permissions by Role api called...");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("permission.error"));
+        response.setResponseCode(ResponseEnum.ROLE_PERMISSION_FETCH_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            Role role = userService.getRoleByName(name);
+
+            if (!HISCoreUtil.isValidObject(role)) {
+                response.setResponseMessage(messageBundle.getString("role.not.found.error"));
+                response.setResponseCode(ResponseEnum.NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.info("Role not found ");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            List<Permission> permissions = userService.getPermissionByRole(role.getId());
+
+            if (HISCoreUtil.isListEmpty(permissions)) {
+                response.setResponseMessage(messageBundle.getString("permission.not.found.error"));
+                response.setResponseCode(ResponseEnum.NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.info("Permission not found against" + role.getName());
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            List<PermissionWrapper> allPermissions = APIUtil.buildPermissionWrapper(permissions);
+            if (!HISCoreUtil.isListEmpty(allPermissions)) {
+
+                response.setResponseMessage(messageBundle.getString("permission.success"));
+                response.setResponseCode(ResponseEnum.ROLE_PERMISSION_FETCH_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(allPermissions);
+                logger.info("permission fetched successfully");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            logger.error("Get Permissions failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * @return Response with Save Authorities.
+     * @author Irfan Nasim
+     * @description API will return response Authorities assigned or not.
+     * @since 20-04-2018
+     */
+    @ApiOperation(httpMethod = "POST", value = "Assigned Authorities to Roles",
+            notes = "This API will return Response Authorities are assigned or not",
+            produces = "application/json", nickname = "Assignment of Authorities to Roles",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Authorities Assigned to roles successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/assignAuthorities", method = RequestMethod.POST)
+    public ResponseEntity<?> assignAuthoritiesToRoles(HttpServletRequest request,
+                                                      @RequestBody AssignAuthoritiesRequestWrapper authRequest) {
+
+        logger.info("Assign Authorities to Roles api called...");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("role.permission.assign.error"));
+        response.setResponseCode(ResponseEnum.ROLE_PERMISSION_ASSIGN_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (HISCoreUtil.isNull(authRequest.getSelectedRole())) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.info("assignAuthoritiesToRoles insufficient params");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            Boolean isRolePermissionAssigned = userService.assignPermissionsToRole(authRequest);
+            if (isRolePermissionAssigned) {
+                response.setResponseMessage(messageBundle.getString("role.permission.assigned.success"));
+                response.setResponseCode(ResponseEnum.ROLE_PERMISSION_ASSIGN_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(null);
+                logger.info("assignAuthoritiesToRoles assigned successfully");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            logger.error("Assign Authorities to Roles api failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));

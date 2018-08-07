@@ -129,11 +129,10 @@ public class UserService implements UserDetailsService {
         return roleRepository.findByName(name);
     }
 
-   /* public Role save(RoleAndPermissionCreateRequest roleRequest) {
+    public Role saveRole(RoleWrapper roleRequest) {
         Role role = new Role(roleRequest);
         return roleRepository.save(role);
     }
-*/
     @Transactional(rollbackOn = Throwable.class)
     public Boolean assignPermissionsToRole(AssignAuthoritiesRequestWrapper authRequest) {
         Boolean permissionAssigned;
@@ -195,7 +194,9 @@ public class UserService implements UserDetailsService {
         return permissionRepository.findByName(name);
     }
 
-
+    public List<Permission> getPermissionByRole(long roleId){
+        return permissionRepository.findByRoles(roleId);
+    }
 
 //
 //    public User findByUsernameOrEmail(String userName, String email) {
