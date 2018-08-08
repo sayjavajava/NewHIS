@@ -1,8 +1,13 @@
-package com.sd.his.enums;
+package com.sd.his.repository;
+
+import com.sd.his.model.Appointment;
+import com.sd.his.model.Patient;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /*
- * @author    : Irfan Nasim
- * @Date      :08-Jun-18
+ * @author    : waqas kamran
+ * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -14,25 +19,17 @@ package com.sd.his.enums;
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
- * @Package   : com.sd.his.enums
- * @FileName  : AppointmentStatusTypeEnum
+ * @Package   : com.sd.his.*
+ * @FileName  : UserAuthAPI
  *
  * Copyright ©
  * SolutionDots,
  * All rights reserved.
  *
  */
-public enum AppointmentStatusTypeEnum {
+@Repository
+public interface PatientRepository extends JpaRepository<Patient, Long> {
 
-
-    IN_ROOM,
-    IN_SESSION,
-    COMPLETE,
-    CONFIRMED,
-    NOT_CONFIRMED,
-    RE_SCHEDULED,
-    CANCELLED,
-    CHECK_IN,
-    REGULAR
 
 }
+

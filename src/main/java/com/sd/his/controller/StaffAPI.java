@@ -518,7 +518,7 @@ public class StaffAPI {
 
         try {
             if (!HISCoreUtil.isNull(type)) {
-                List<UserWrapper> userWrappers = userService.findByRole(type);
+                List<StaffResponseWrapper> userWrappers = staffService.findByRole(type);
 
                 if (!HISCoreUtil.isListEmpty(userWrappers)) {
                     response.setResponseMessage(messageBundle.getString("user.fetched.success"));

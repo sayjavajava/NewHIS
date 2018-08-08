@@ -602,7 +602,7 @@ public class UserService implements UserDetailsService {
 //
     public List<UserWrapper> findByRole(String role) {
         List<UserWrapper> userWrapper = new ArrayList<>();
-        List<User> userList = userRepository.findAllByUserRoles_role_name(role);
+        List<User> userList = userRepository.findAllByUserRoles_role_nameAndActiveTrue(role);
         for (User  user : userList){
             UserWrapper userWrapper1 = new UserWrapper(user);
             userWrapper.add(userWrapper1);

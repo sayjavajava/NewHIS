@@ -110,4 +110,19 @@ public class DateTimeUtil {
         SimpleDateFormat format = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         return format.format(date);
     }
+
+    public static int convertApptTime(String time){
+        int temp = 0;
+        if(time !=null) {
+            String[] h1 = time.split(":");
+            int hour = Integer.parseInt(h1[0]);
+            int minute = Integer.parseInt(h1[1]);
+            int second = Integer.parseInt(h1[2]);
+
+
+            int result = second + (60 * minute) + (3600 * hour);
+            temp = result + 720;
+        }
+        return  temp;
+    }
 }
