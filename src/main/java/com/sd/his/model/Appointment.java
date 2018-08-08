@@ -7,6 +7,7 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /*
  * @author    : Irfan Nasim
@@ -55,9 +56,12 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "STATUS")
     private AppointmentStatusTypeEnum status;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "PATIENT_ID")
+    private Patient patient;
+
     @Column(name = "TYPE")
-    private AppointmentTypeEnum type;
+    private String type;
 
     @Column(name = "DURATION") //minutes
     private Integer duration;
@@ -100,7 +104,7 @@ public class Appointment extends BaseEntity implements Serializable {
 
     @ElementCollection
     @Column(name = "RECURRING_DAYS")
-    private String recurringDays; //should be save json of days
+    private List<String> recurringDays; //should be save json of days
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FIRST_APPOINTMENT_ON")
@@ -113,6 +117,15 @@ public class Appointment extends BaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "LAST_APPOINTMENT_ON")
     private Date lastAppointmentOn;
+
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 
     public String getName() {
         return name;
@@ -162,11 +175,11 @@ public class Appointment extends BaseEntity implements Serializable {
         this.status = status;
     }
 
-    public AppointmentTypeEnum getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(AppointmentTypeEnum type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -258,11 +271,11 @@ public class Appointment extends BaseEntity implements Serializable {
         this.recurring = recurring;
     }
 
-    public String getRecurringDays() {
+    public List<String> getRecurringDays() {
         return recurringDays;
     }
 
-    public void setRecurringDays(String recurringDays) {
+    public void setRecurringDays(List<String> recurringDays) {
         this.recurringDays = recurringDays;
     }
 

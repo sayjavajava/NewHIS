@@ -110,4 +110,9 @@ public class DateTimeUtil {
         SimpleDateFormat format = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         return format.format(date);
     }
+
+    public static Long convertApptTime(){
+
+        return 0L;
+    }
 }

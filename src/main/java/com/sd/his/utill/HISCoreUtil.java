@@ -123,7 +123,7 @@ public class HISCoreUtil {
     public static String convertDateToString(Date date) {
         String formatedDate = null;
         if(date != null){
-            SimpleDateFormat form = new SimpleDateFormat("yyyy:mm:dd");
+            SimpleDateFormat form = new SimpleDateFormat("dd MMMM yyyy");
             formatedDate= form.format(date);
         }
         return formatedDate;
@@ -143,4 +143,12 @@ public class HISCoreUtil {
        return date;
    }
 
+
+    public static Date addTimetoDate(Date str , long duration) {
+        Date date = null;
+        if (str != null) {
+            date = Date.from(str.toInstant().plusSeconds(duration*60));
+            }
+        return date;
+    }
 }

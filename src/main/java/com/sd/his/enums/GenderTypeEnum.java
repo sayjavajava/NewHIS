@@ -22,5 +22,11 @@ package com.sd.his.enums;
  * 
  */
 public enum GenderTypeEnum {
-    MALE, FEMALE;
+    MALE("MALE"),
+    FEMALE("FEMALE");
+
+    GenderTypeEnum(String value) {
+    }
+
+
 }

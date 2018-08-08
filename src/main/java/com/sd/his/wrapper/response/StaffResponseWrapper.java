@@ -32,6 +32,7 @@ public class StaffResponseWrapper{
 
     Long uid;
     Long pId;
+    Long id;
     Long primaryBranchId;
     String userType;
     String email;
@@ -54,6 +55,13 @@ public class StaffResponseWrapper{
     List<DutyShift> dutyShifts;
     Boolean managePatientRecords;
     Boolean managePatientInvoices;
+    String phoneNumber;
+    String address;
+    String city;
+    String country;
+    String status;
+    String profileImg;
+
 
      // List<ClinicalDepartment> clinicalDepartments;
     // List<DutyWithDoctor> dutyWithDoctors;
@@ -145,6 +153,23 @@ public StaffResponseWrapper(Long uId,Long pId,UserTypeEnum userType,String first
     // this.visitBranches=branchCashiers;
 
 }
+  //Role based constructor
+  public StaffResponseWrapper(StaffProfile object){
+
+          this.id = object.getId();
+         // this.userType = object.getUser().getUserType().name();
+          this.email = object.getEmail();
+         // this.userName = object.getUser().getUsername();
+          this.firstName = object.getFirstName();
+          this.lastName = object.getLastName();
+          this.cellPhone = object.getCellPhone();
+          this.address = object.getAddress();
+          this.city = object.getCity();
+          this.country = object.getCountry();
+       //   this.profileImg = object.getProfileImgURL();
+       //   this.status = object.getStatus().name();
+
+  }
 
     public Boolean getManagePatientRecords() {
         return managePatientRecords;
@@ -336,5 +361,61 @@ public StaffResponseWrapper(Long uId,Long pId,UserTypeEnum userType,String first
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getProfileImg() {
+        return profileImg;
+    }
+
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
     }
 }

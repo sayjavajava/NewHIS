@@ -48,8 +48,7 @@ public abstract class StaffProfile extends BaseEntity implements Serializable {
     private Date accountExpiry;
 
     @Column(name = "GENDER")
-    @Enumerated(EnumType.STRING)
-    private GenderTypeEnum gender;
+    private String gender;
 
     @Column(name = "PROFILE_IMG_URL")
     private String profileImgURL;
@@ -155,11 +154,11 @@ public abstract class StaffProfile extends BaseEntity implements Serializable {
         this.accountExpiry = accountExpiry;
     }
 
-    public GenderTypeEnum getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(GenderTypeEnum gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 

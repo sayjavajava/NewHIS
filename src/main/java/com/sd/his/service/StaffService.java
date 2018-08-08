@@ -899,5 +899,26 @@ public class StaffService {
         //userRepository.delete(user);
         return null;
     }
+    public List<StaffResponseWrapper> findByRole(String role) {
+        List<StaffResponseWrapper> userWrapper = new ArrayList<>();
+        List<User> userList = userRepository.findAllByUserRoles_role_nameAndActiveTrue(role);
+        StaffResponseWrapper userWraper = new StaffResponseWrapper();
+        switch(role){
+            case "DOCTOR":
+                List<Doctor> doctorList =doctorRepository.findAllByUserIn(userList);
+                for (Doctor  doctor : doctorList){
+                    userWraper = new StaffResponseWrapper(doctor);
+                    userWrapper.add(userWraper);
+                }
+                break;
 
+        }
+
+      /*  for (User  user : userList){
+            UserWrapper userWrapper1 = new UserWrapper(user);
+            userWrapper.add(userWrapper1);
+        }*/
+
+        return userWrapper;
+    }
 }

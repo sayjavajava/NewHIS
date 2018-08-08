@@ -278,15 +278,8 @@ public class BranchService {
 
 */
 public List<BranchResponseWrapper> getAllActiveBranches() {
-    List<Branch> branch = branchRepository.findAllByActiveTrue();
-    //  return branchRepository.findAllByActiveTrueAndDeletedFalse();
-    List<BranchResponseWrapper> list = new ArrayList<>();
-
-    for (Branch branch1 : branch) {
-        BranchResponseWrapper branchResponseWrapper = new BranchResponseWrapper(branch1);
-        list.add(branchResponseWrapper);
-    }
-    return list;
+    List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActiveTrue();
+    return branchRepository.findAllByActiveTrue();
 }
     private String generateEmail(String domain, int length) {
         return RandomStringUtils.random(length, "abcdefghijklmnopqrstuvwxyz") + "@" + domain;
