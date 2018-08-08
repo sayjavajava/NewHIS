@@ -3,6 +3,7 @@ package com.sd.his.service;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.BranchWrapper;
 import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
@@ -238,5 +239,17 @@ public class MedicalServicesService {
                                                                    Double serviceFee) {
         return medicalServiceRepository.countAllByParam(serviceName,branchId,departmentId,serviceFee).size();
     }
+
+    public List<BranchResponseWrapper> getCheckedBranchesByMedicalServiceId(long msId){
+        List<BranchResponseWrapper> branchWrappers = new ArrayList<>();
+        branchWrappers.addAll(this.findMedicalServiceById(msId).getCheckedBranches());
+        return branchWrappers;
+    }
+    public List<DepartmentWrapper> getCheckedDepartsByMedicalServiceId(long msId){
+        List<DepartmentWrapper> branchWrappers = new ArrayList<>();
+        branchWrappers.addAll(this.findMedicalServiceById(msId).getCheckedDepartments());
+        return branchWrappers;
+    }
+
 
 }
