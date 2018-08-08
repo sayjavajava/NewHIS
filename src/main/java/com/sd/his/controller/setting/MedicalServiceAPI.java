@@ -439,7 +439,6 @@ public class MedicalServiceAPI {
     public ResponseEntity<?> searchMedicalServicesByParam(HttpServletRequest request,
                                                           @PathVariable("page") int pageNo,
                                                           @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                                          @RequestParam(value = "serviceId") long serviceId,
                                                           @RequestParam(value = "serviceName") String serviceName,
                                                           @RequestParam(value = "branchId") long branchId,
                                                           @RequestParam(value = "departmentId") long departId,
@@ -454,15 +453,13 @@ public class MedicalServiceAPI {
 
         try {
 
-            List<MedicalServiceWrapper> medS = this.medicalServicesService.searchMedicalServicesByParam(
-                    (serviceId > 0 ? serviceId : null),
+            List<MedicalServiceWrapper> medS = this.medicalServicesService.searchMedicalServiceByParam(
                     (serviceName.length() > 0 ? serviceName : null),
                     (branchId > 0 ? branchId : null),
                     (departId > 0 ? departId : null),
                     (serviceFee > 0 ? serviceFee : null),
                     pageNo, pageSize);
-            int medServCount = this.medicalServicesService.countSearchMedicalServicesByParam(
-                    (serviceId > 0 ? serviceId : null),
+            int medServCount = this.medicalServicesService.countSearchMedicalServiceByParam(
                     (serviceName.length() > 0 ? serviceName : null),
                     (branchId > 0 ? branchId : null),
                     (departId > 0 ? departId : null),

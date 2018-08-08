@@ -222,27 +222,21 @@ public class MedicalServicesService {
         return mSW;
     }
 
-    public List<MedicalServiceWrapper> searchMedicalServicesByParam(
-            Long serviceId,
-            String serviceName,
-            Long branchId,
-            Long departmentId,
-            Double serviceFee,
-            int pageNo,
-            int pageSize) {
+    public List<MedicalServiceWrapper> searchMedicalServiceByParam(String serviceName,
+                                                                   Long branchId,
+                                                                   Long departmentId,
+                                                                   Double serviceFee,
+                                                                   int pageNo,
+                                                                   int pageSize) {
         Pageable pageable = new PageRequest(pageNo, pageSize);
-
-        return null; // this.medicalServiceRepository.findAllByParam(serviceId, serviceName, branchId, departmentId, serviceFee, pageable);
+        return medicalServiceRepository.findAllByParam(serviceName,branchId,departmentId,serviceFee,pageable);
     }
 
-    public int countSearchMedicalServicesByParam(
-            Long serviceId,
-            String serviceName,
-            Long branchId,
-            Long departmentId,
-            Double serviceFee) {
-
-        return 0;//this.medicalServiceRepository.countAllByParam(serviceId, serviceName, branchId, departmentId, serviceFee).size();
+    public int countSearchMedicalServiceByParam(String serviceName,
+                                                                   Long branchId,
+                                                                   Long departmentId,
+                                                                   Double serviceFee) {
+        return medicalServiceRepository.countAllByParam(serviceName,branchId,departmentId,serviceFee).size();
     }
 
 }
