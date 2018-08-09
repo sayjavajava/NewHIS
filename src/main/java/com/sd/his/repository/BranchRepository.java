@@ -47,7 +47,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
 
     List<Branch> findAllByIdIn(List<Long> ids);
 
-    List<Branch> findAllByActiveTrue();
+    List<BranchResponseWrapper> findAllByActiveTrue();
 
 
 

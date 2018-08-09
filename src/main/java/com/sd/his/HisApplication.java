@@ -62,7 +62,7 @@ public class HisApplication {
         SpringApplication.run(HisApplication.class, args);
     }
 
-    @EventListener
+/*    @EventListener
     @Transactional(rollbackOn = Throwable.class)
     public void onBootStartup(ApplicationContextEvent event) {
 
@@ -132,7 +132,7 @@ public class HisApplication {
             branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
             organizationRepository.saveAndFlush(organization);
         }
-    }
+    }*/
 }
 
 /**
