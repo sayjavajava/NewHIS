@@ -1,6 +1,7 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sd.his.wrapper.RoleWrapper;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -74,5 +75,11 @@ public class Role extends BaseEntity implements Serializable {
 
     public void setRolePermissions(List<RolePermission> rolePermissions) {
         this.rolePermissions = rolePermissions;
+    }
+
+    public Role(RoleWrapper roleWrapper) {
+        this.name = roleWrapper.getName();
+        this.active = roleWrapper.isActive();
+        this.description = roleWrapper.getDescription();
     }
 }

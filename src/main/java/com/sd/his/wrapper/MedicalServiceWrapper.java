@@ -73,6 +73,22 @@ public class MedicalServiceWrapper {
         this.duration = ms.getDuration();
     }
 
+    public MedicalServiceWrapper(MedicalService ms,String search) {
+        if (ms.getTax() == null) {
+            this.tax = new TaxWrapper();
+            this.tax.setId(-1);
+        } else {
+            this.tax = new TaxWrapper(ms.getTax());
+        }
+        this.id = ms.getId();
+        this.name = ms.getName();
+        this.fee = ms.getFee();
+        this.cost = ms.getCost();
+        this.status = ms.getStatus();
+        this.description = ms.getDescription();
+        this.duration = ms.getDuration();
+    }
+
     public long getId() {
         return id;
     }

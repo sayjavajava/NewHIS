@@ -3,6 +3,7 @@ package com.sd.his.service;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.BranchWrapper;
 import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
@@ -222,27 +223,33 @@ public class MedicalServicesService {
         return mSW;
     }
 
-    public List<MedicalServiceWrapper> searchMedicalServicesByParam(
-            Long serviceId,
-            String serviceName,
-            Long branchId,
-            Long departmentId,
-            Double serviceFee,
-            int pageNo,
-            int pageSize) {
+    public List<MedicalServiceWrapper> searchMedicalServiceByParam(String serviceName,
+                                                                   Long branchId,
+                                                                   Long departmentId,
+                                                                   Double serviceFee,
+                                                                   int pageNo,
+                                                                   int pageSize) {
         Pageable pageable = new PageRequest(pageNo, pageSize);
-
-        return null; // this.medicalServiceRepository.findAllByParam(serviceId, serviceName, branchId, departmentId, serviceFee, pageable);
+        return medicalServiceRepository.findAllByParam(serviceName,branchId,departmentId,serviceFee,pageable);
     }
 
-    public int countSearchMedicalServicesByParam(
-            Long serviceId,
-            String serviceName,
-            Long branchId,
-            Long departmentId,
-            Double serviceFee) {
-
-        return 0;//this.medicalServiceRepository.countAllByParam(serviceId, serviceName, branchId, departmentId, serviceFee).size();
+    public int countSearchMedicalServiceByParam(String serviceName,
+                                                                   Long branchId,
+                                                                   Long departmentId,
+                                                                   Double serviceFee) {
+        return medicalServiceRepository.countAllByParam(serviceName,branchId,departmentId,serviceFee).size();
     }
+
+    public List<BranchResponseWrapper> getCheckedBranchesByMedicalServiceId(long msId){
+        List<BranchResponseWrapper> branchWrappers = new ArrayList<>();
+        branchWrappers.addAll(this.findMedicalServiceById(msId).getCheckedBranches());
+        return branchWrappers;
+    }
+    public List<DepartmentWrapper> getCheckedDepartsByMedicalServiceId(long msId){
+        List<DepartmentWrapper> branchWrappers = new ArrayList<>();
+        branchWrappers.addAll(this.findMedicalServiceById(msId).getCheckedDepartments());
+        return branchWrappers;
+    }
+
 
 }
