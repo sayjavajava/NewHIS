@@ -76,44 +76,67 @@ public class HisApplication {
             prefixes.add(new Prefix("PAT", ModuleEnum.PATIENT, 10000L, 10000L, organization));
             organization.setPrefixList(prefixes);
 
-
             List<Permission> permissions = new ArrayList<>();
-            permissions.add(new Permission("Create Patient", "to create patient", "/patient", true));
-            permissions.add(new Permission("Version", "fasdfa", "/asdfasdf", true));
 
+            permissions.add(new Permission("Appointment", "Appointment", "/dashboard/appointment/manage", true));
+            permissions.add(new Permission("Associate Code Version", "Associate Code Version", "/dashboard/setting/codeVersion", true));
+            permissions.add(new Permission("Branch", "Branch", "/dashboard/setting/branch", true));
+            permissions.add(new Permission("Code", "Code", "/dashboard/setting/Code", true));
+            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
+            permissions.add(new Permission("Email Template", "Email Template", "/dashboard/setting/email-template", true));
+            permissions.add(new Permission("Invoices", "Invoices", "dashboard/invoice", true));
+            permissions.add(new Permission("Medical Services", "Medical Services", "/dashboard/setting/medicalServices", true));
+            permissions.add(new Permission("Open/Close Day", "Open/Close Day", "dashboard/ocDay", true));
+            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
+            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
+            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
+            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
+            permissions.add(new Permission("Patient", "patient", "/dashboard/patient/manage", true));
+            permissions.add(new Permission("Payments", "Payments", "/dashboard/payment", true));
+            permissions.add(new Permission("Refunds", "Refunds", "/dashboard/refund", true));
+            permissions.add(new Permission("Reports", "Reports", "/dashboard/report", true));
+            permissions.add(new Permission("Roles & Permissions", "Roles & Permissions", "/dashboard/setting/role-permissions", true));
+            permissions.add(new Permission("Service Tax", "Service Tax", "/dashboard/setting/service-tax", true));
+            permissions.add(new Permission("Staff", "Staff", "/dashboard/setting/staff", true));
+            permissions.add(new Permission("Today Appointment", "Today Appointment", "/dashboard/todayAppointment", true));
+            permissions.add(new Permission("Version", "version", "/asdfasdf", true));
 
             permissionRepository.save(permissions);
 
             List<Role> roles = new ArrayList<>();
-            roles.add(new Role(UserTypeEnum.MANAGER.name(), "manager role", true));
-            roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
-            roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
-            roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "nurse role", true));
-            roles.add(new Role(UserTypeEnum.CASHIER.name(), "cashier role", true));
+    /*  0 */roles.add(new Role(UserTypeEnum.ADMIN.name(), "admin role", true));
+    /*  1 */roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
+    /*  2 */roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
+    /*  3 */roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "receptionist role", true));
+    /*  4 */roles.add(new Role(UserTypeEnum.CASHIER.name(), "cashier role", true));
             roleRepository.save(roles);
 
             List<RolePermission> rolePermissions = new ArrayList<>();
-            rolePermissions.add(new RolePermission(roles.get(0), permissions.get(0), true, true, true));
-            rolePermissions.add(new RolePermission(roles.get(0), permissions.get(1), true, true, true));
-            rolePermissions.add(new RolePermission(roles.get(1), permissions.get(0), true, true, true));
-            rolePermissions.add(new RolePermission(roles.get(2), permissions.get(1), true, true, true));
+            for (Permission permission:permissions){
+                rolePermissions.add(new RolePermission(roles.get(0), permission, true, true, true));
+            }
 
             rolePermissionRepository.save(rolePermissions);
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-            User user1 = new User("admin", UserTypeEnum.MANAGER, encoder.encode("admin"), true);
-            User user2 = new User("doctor", UserTypeEnum.DOCTOR, encoder.encode("doctor"), true);
-            userRepository.save(Arrays.asList(user1, user2));
+            User admin = new User("admin", UserTypeEnum.ADMIN, encoder.encode("admin"), true);
+            User doctorU = new User("doctor", UserTypeEnum.DOCTOR, encoder.encode("doctor"), true);
 
-            userRoleRepository.save(Arrays.asList(new UserRole(user1, roles.get(0)), new UserRole(user2, roles.get(1))));
+            User nurse = new User("nurse", UserTypeEnum.NURSE, encoder.encode("nurse"), true);
+            User receptionist = new User("receptionist", UserTypeEnum.RECEPTIONIST, encoder.encode("receptionist"), true);
+            User cashier = new User("cashier", UserTypeEnum.CASHIER, encoder.encode("cashier"), true);
+
+            userRepository.save(Arrays.asList(admin, doctorU,nurse,receptionist,cashier));
+
+            userRoleRepository.save(Arrays.asList(new UserRole(admin, roles.get(0)), new UserRole(doctorU, roles.get(1))));
 
             Manager manager = new Manager();
             manager.setDob(new Date());
-            manager.setFirstName("Manager");
+            manager.setFirstName("admin");
             manager.setGender(GenderTypeEnum.MALE);
             manager.setProfileId("P-10001");
-            manager.setUser(user1);
+            manager.setUser(admin);
             managerRepository.save(manager);
 
             Doctor doctor = new Doctor();
@@ -121,7 +144,7 @@ public class HisApplication {
             doctor.setFirstName("Doctor");
             doctor.setGender(GenderTypeEnum.MALE);
             doctor.setProfileId("P-10002");
-            doctor.setUser(user2);
+            doctor.setUser(doctorU);
             doctorRepository.save(doctor);
 
 
