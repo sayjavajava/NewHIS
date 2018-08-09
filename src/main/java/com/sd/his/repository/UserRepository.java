@@ -17,12 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long>, PagingAndSort
 
       User findById(Long id);
       List<User> findAllByActiveTrue(Pageable pageable);
-
-
-
       User findByUsernameAndActiveTrue(String name);
-
-     List<User> findAllByUserRoles_role_nameAndActiveTrue(String role);
+      List<User> findAllByUserRoles_role_nameAndActiveTrue(String role);
      List<User> findAllByIdIn(List<Long> ids);
      int countAllByActiveTrue();
 }

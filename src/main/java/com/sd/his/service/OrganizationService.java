@@ -22,15 +22,13 @@ package com.sd.his.service;/*
  */
 
 
-
 import com.sd.his.enums.OrganizationFormTypeEnum;
+import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.Branch;
+import com.sd.his.model.Manager;
 import com.sd.his.model.Organization;
 import com.sd.his.model.User;
-import com.sd.his.repository.BranchRepository;
-import com.sd.his.repository.OrganizationRepository;
-import com.sd.his.repository.TimezoneRepository;
-import com.sd.his.repository.UserRepository;
+import com.sd.his.repository.*;
 import com.sd.his.wrapper.TimezoneWrapper;
 import com.sd.his.wrapper.request.OrganizationRequestWrapper;
 import com.sd.his.wrapper.response.OrganizationResponseWrapper;
@@ -52,6 +50,11 @@ public class OrganizationService {
     private UserRepository userRepository;
     @Autowired
     private TimezoneRepository timezoneRepository;
+    @Autowired
+    private ManagerRepository managerRepository;
+    @Autowired
+    private BranchRepository branchRepository;
+
   /*  @Autowired
     private BranchRepository branchRepository;*/
    /* @Autowired
@@ -83,13 +86,14 @@ public class OrganizationService {
     public OrganizationResponseWrapper getOrganizationByIdWithResponse(long id) {
         return organizationRepository.findById(id);
     }
-        public Organization getByID(long id) {
-            return organizationRepository.getOne(id);
-        }
 
-        public OrganizationRequestWrapper updateOrganization(OrganizationRequestWrapper organizationRequestWrapper, Organization organization) {
+    public Organization getByID(long id) {
+        return organizationRepository.getOne(id);
+    }
 
-        if(organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.PROFILE.name())){
+    public OrganizationRequestWrapper updateOrganization(OrganizationRequestWrapper organizationRequestWrapper, Organization organization) {
+
+        if (organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.PROFILE.name())) {
 
             organization.setWebsite(organizationRequestWrapper.getWebsite());
             organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
@@ -97,40 +101,54 @@ public class OrganizationService {
             organization.setAddress(organizationRequestWrapper.getAddress());
             organization.setSpecialty(organizationRequestWrapper.getSpecialty());
             organization.setEmail(organizationRequestWrapper.getCompanyEmail());
+            organizationRepository.save(organization);
+            return organizationRequestWrapper;
+        }
+        if (organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.GENERAL.name())) {
+            Branch branch = branchRepository.findBySystemBranchTrue();
+            branch.setSystemBranch(false);
+            Branch branch1 = branchRepository.findOne(organizationRequestWrapper.getDefaultBranch());
+            branch1.setSystemBranch(true);
+            branchRepository.save(branch1);
+            organization.setDurationFollowUp(organizationRequestWrapper.getDurationFollowUp());
+            organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
+            organizationRepository.save(organization);
+            return organizationRequestWrapper;
+        }
+
+        if (organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.ACCOUNT.name())) {
+
+            User user = userRepository.findOne(organizationRequestWrapper.getUserId());
+            Manager manager = managerRepository.findByUser(user);
+            manager.setCellPhone(organizationRequestWrapper.getCellPhone());
+            manager.setHomePhone(organizationRequestWrapper.getHomePhone());
+            manager.setAddress(organizationRequestWrapper.getUserAddress());
+            manager.setFirstName(organizationRequestWrapper.getFirstName());
+            manager.setLastName(organizationRequestWrapper.getLastName());
+            manager.setEmail(organizationRequestWrapper.getUserEmail());
+
+            managerRepository.save(manager);
+            //   user.setFi(organizationRequestWrapper.get);
             //  organizationRepository.save(organization);
             return organizationRequestWrapper;
         }
 
-/*
-            String defaultBranch;     //geenral form
-            String durationOfExam;
-            String durationFollowUp;
-            String prefixSerialPatient;
-            String prefixSerialUser;
-            String prefixSerialDepartment;
-            String prefixSerialAppointment;
-            String prefixSerialInvoices;
-*/
-
-            if(organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.GENERAL.name())){
-
-                organization.setDurationFollowUp(organizationRequestWrapper.getDurationFollowUp());
-                organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
-                //  organizationRepository.save(organization);
-                return organizationRequestWrapper;
-            }
-
-            if(organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.ACCOUNT.name())){
-
-               User user = userRepository.getOne(1L);
-             //   user.setFi(organizationRequestWrapper.get);
-                //  organizationRepository.save(organization);
-                return organizationRequestWrapper;
-            }
-
-            return null;
+        return null;
     }
+
     public Organization findOrgnazatinoByCompanyName(String companyName) {
         return organizationRepository.findByCompanyName(companyName);
     }
+
+    public OrganizationResponseWrapper getOrganizationManagerAccountData() {
+        User user = userRepository.findByUsernameAndActiveTrue("admin");
+        Manager manager = managerRepository.findByUser(user);
+        Branch branch = branchRepository.findBySystemBranchTrue();
+        OrganizationResponseWrapper organizationResponseWrapper = new OrganizationResponseWrapper(user.getId(), user.getUserType().toString()
+                , user.getUsername(), manager.getEmail(), manager.getFirstName(), manager.getLastName(), manager.getCellPhone(), manager.getHomePhone(), manager.getAddress()
+        ,branch.getName(),branch.getId());
+        return organizationResponseWrapper;
+    }
+
+
 }

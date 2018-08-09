@@ -1,6 +1,7 @@
 package com.sd.his.wrapper;
 import com.sd.his.enums.AppointmentStatusTypeEnum;
 import com.sd.his.enums.AppointmentTypeEnum;
+import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.utill.JSONUtil;
 
@@ -76,6 +77,8 @@ public class AppointmentWrapper {
     private Date scheduleDateAndTime;
     private String docFirstName;
     private String docLastName;
+    private int appointmentConvertedTime;
+    private int appointmentEndedConvertedTime;
 
 
 
@@ -96,7 +99,8 @@ public class AppointmentWrapper {
         //Long patientId,Long branchId, String branchName, Long roomId,
         this.id = id;
         this.title = title;
-        this.appointmentStartedOn = HISCoreUtil.convertTimeToString(startedOn);
+        this.appointmentConvertedTime =convertAppointmentTime(startedOn);
+        this.appointmentEndedConvertedTime =convertAppointmentTime(startedOn) + duration ;
         this.appointmentEndedOn = HISCoreUtil.convertTimeToString(endedOn);
         this.scheduleDate =HISCoreUtil.convertDateToString(scheduleDate);
         this.draggable = draggable;
@@ -142,12 +146,32 @@ public class AppointmentWrapper {
                 ", duration=" + duration +
                 '}';
     }
+
+    public int getAppointmentEndedConvertedTime() {
+        return appointmentEndedConvertedTime;
+    }
+
+    public void setAppointmentEndedConvertedTime(int appointmentEndedConvertedTime) {
+        this.appointmentEndedConvertedTime = appointmentEndedConvertedTime;
+    }
+
+    static int convertAppointmentTime(Date startedOn){
+       return DateTimeUtil.convertAppointmentTime(HISCoreUtil.convertTimeToString(startedOn));
+    }
     public String getDocFirstName() {
         return docFirstName;
     }
 
     public String getColorHash() {
         return colorHash;
+    }
+
+    public int getAppointmentConvertedTime() {
+        return appointmentConvertedTime;
+    }
+
+    public void setAppointmentConvertedTime(int appointmentConvertedTime) {
+        this.appointmentConvertedTime = appointmentConvertedTime;
     }
 
     public void setColorHash(String colorHash) {

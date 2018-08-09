@@ -27,6 +27,8 @@ import com.sd.his.model.User;
 public class OrganizationResponseWrapper {
 
     Long id;
+    Long branchId;
+    String branchName;
     String firstName;
     String lastName;
     String companyName;
@@ -45,9 +47,13 @@ public class OrganizationResponseWrapper {
     String companyEmail;
     String speciality;
     User user;
+    String username;
+    String email;
     String address;
+    String userType;
 
-    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email,String homePhone, Long durationFollowUp,Long durationOFExam, String timezone,String speciality ,String fax,String address) {
+    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email,String homePhone, Long durationFollowUp,Long durationOFExam, String timezone,String speciality ,String fax,String address,String branchName
+    ) {
         this.id = id;
         this.companyName = companyName;
         this.officePhone = officePhone;
@@ -61,29 +67,90 @@ public class OrganizationResponseWrapper {
         this.speciality=speciality;
         this.fax=fax;
         this.address=address;
-
-    }
-/*
-    public OrganizationResponseWrapper(Organization organization) {
-        this.cellPhone = organization.getCellPhone();
-        this.homePhone = organization.getHomePhone();
-        this.officePhone = organization.getOfficePhone();
-        this.companyName = organization.getCompanyName();
-        this.appointmentSerial = organization.getAptSerialStart();
-        this.defaultBranch = organization.getDefaultBranch();
-        this.durationOfExam = organization.getDurationOFExam();
-        this.followUpExam = organization.getDurationFollowUp();
-        this.timezone = organization.getTimezone();
-        this.website = organization.getWebsite();
-        this.user = organization.getUser();
+     //   this.branchId =brId;
+     //   this.branchName =brName;
 
     }
 
-    public OrganizationResponseWrapper(User user) {
-        this.firstName = user.getProfile().getFirstName();
-        this.lastName = user.getProfile().getLastName();
-        this.email = user.getEmail();
-    }*/
+    //organization pagination cons
+    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email,String homePhone, Long durationFollowUp,Long durationOFExam, String timezone,String speciality ,String fax,String address
+    ) {
+        this.id = id;
+        this.companyName = companyName;
+        this.officePhone = officePhone;
+//        this.appointmentSerial = appointmentSerial;
+        this.website = website;
+        this.companyEmail = email;
+        this.website=website;
+        this.homePhone=homePhone;
+        this.durationOfExam=durationOFExam;
+        this.durationFollowUp=durationFollowUp;
+        this.speciality=speciality;
+        this.fax=fax;
+        this.address=address;
+        //   this.branchId =brId;
+        //   this.branchName =brName;
+
+    }
+
+    public OrganizationResponseWrapper(Long id,String userType,String userName,String email,String firstName,String lastName,
+                                       String cellPhone,String homePhone,String address,String branchName,Long branchId) {
+        this.id = id;
+        this.cellPhone = cellPhone;
+        this.homePhone = homePhone;
+        this.username = userName;
+        this.email =email;
+        this.userType =userType;
+        this.firstName =firstName;
+        this.lastName =lastName;
+        this.address =address;
+        this.branchId =branchId;
+        this.branchName = branchName;
+
+
+    }
+
+
+
+    public Long getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(Long branchId) {
+        this.branchId = branchId;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getAddress() {
         return address;

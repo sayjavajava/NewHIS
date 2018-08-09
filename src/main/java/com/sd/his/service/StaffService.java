@@ -634,7 +634,7 @@ public class StaffService {
                 nurse.setManagePatientRecords(createRequest.isManagePatientRecords());
                 nurseRepository.save(nurse);
                 Branch primaryBranchNurse = branchRepository.findOne(createRequest.getPrimaryBranch());
-                BranchNurse branchNurse = branchNurseRepository.findByNurse(nurse);
+                BranchNurse branchNurse = branchNurseRepository.findByNurseAndPrimaryBranchTrue(nurse);
                 branchNurse.setBranch(primaryBranchNurse);
                 branchNurseRepository.save(branchNurse);
 
