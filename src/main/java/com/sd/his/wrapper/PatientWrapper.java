@@ -18,6 +18,7 @@ public class PatientWrapper {
     //////IMPORTANT INFORMATION
     private String patientId;//natural id of patient
     private long id;         //pk of patient
+    private Long patient;
     private long selectedDoctor = -1;
     private String titlePrefix = "-1";
     private String firstName = "";
@@ -127,6 +128,14 @@ public class PatientWrapper {
         *//*this.photoFront = insurance.getPhotoFront();
         this.photoBack = insurance.getPhotoBack();*//*
     }*/
+
+    public Long getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Long patient) {
+        this.patient = patient;
+    }
 
     public long getId() {
         return id;

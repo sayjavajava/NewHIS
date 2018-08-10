@@ -88,8 +88,8 @@ public class AppointmentService {
         // appointment.setRecurringDays(new Gson().toJson(appointmentWrapper.getSelectedRecurringDays()));
          Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
          appointment.setSchdeulledDate(scheduleDate);
-        Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
-        appointment.setStartedOn(date2);
+         Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
+         appointment.setStartedOn(date2);
        //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
          appointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
 
@@ -152,7 +152,7 @@ public class AppointmentService {
             appointment.setPatient(user);
             appointmentRepository.save(appointment);
         }*/
-        Patient patient = patientRepository.findOne(1L);
+        Patient patient = patientRepository.findOne(appointmentWrapper.getPatientId());
         appointment.setPatient(patient);
         appointmentRepository.save(appointment);
         return appointment;
