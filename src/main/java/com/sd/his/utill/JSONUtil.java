@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -65,5 +66,11 @@ public class JSONUtil {
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    public static List<String> convertJsonToList(String data){
+        Gson gson = new Gson();
+        List<String> nameList = gson.fromJson(data, ArrayList.class);
+        return nameList;
     }
 }

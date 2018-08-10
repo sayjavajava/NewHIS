@@ -135,11 +135,10 @@ public class UserService implements UserDetailsService {
         return roleRepository.findByName(name);
     }
 
-   /* public Role save(RoleAndPermissionCreateRequest roleRequest) {
+    public Role saveRole(RoleWrapper roleRequest) {
         Role role = new Role(roleRequest);
         return roleRepository.save(role);
     }
-*/
     @Transactional(rollbackOn = Throwable.class)
     public Boolean assignPermissionsToRole(AssignAuthoritiesRequestWrapper authRequest) {
         Boolean permissionAssigned;
@@ -201,7 +200,9 @@ public class UserService implements UserDetailsService {
         return permissionRepository.findByName(name);
     }
 
-
+    public List<Permission> getPermissionByRole(long roleId){
+        return permissionRepository.findByRoles(roleId);
+    }
 
 //
 //    public User findByUsernameOrEmail(String userName, String email) {
@@ -605,24 +606,16 @@ public class UserService implements UserDetailsService {
 //        return userWrapper;
 //    }
 //
-    /*public List<UserWrapper> findByRole(String role) {
+    public List<UserWrapper> findByRole(String role) {
         List<UserWrapper> userWrapper = new ArrayList<>();
-        List<User> userList = userRepository.findAllByUserRoles_role_name(role);
-        switch(role){
-            case UserTypeEnum.DOCTOR.name():
-
-            end;
-            default:
-                break;
-        }
-          List<Doctor> listOfDoc =doctorRepository.findAllByUserIn(userList);
-      *//*  for (User  user : userList){
+        List<User> userList = userRepository.findAllByUserRoles_role_nameAndActiveTrue(role);
+        for (User  user : userList){
             UserWrapper userWrapper1 = new UserWrapper(user);
             userWrapper.add(userWrapper1);
-        }*//*
+        }
 
         return userWrapper;
-    }*/
+    }
 //
 //    public AdminDashboardDataResponseWrapper buildAdminDashboardData() {
 //        AdminDashboardDataResponseWrapper adminData = new AdminDashboardDataResponseWrapper();
@@ -712,12 +705,12 @@ public class UserService implements UserDetailsService {
 //        return false;
 //    }
 //
-    /*public boolean isEmailAlreadyExists(String email) {
-        List<User> users = this.userRepository.findAllByEmail(email);
-        if (!HISCoreUtil.isListEmpty(users))
-            return true;
-        return false;
-    }*/
+//    public boolean isEmailAlreadyExists(String email) {
+//        List<User> users = this.userRepository.findAllByEmail(email);
+//        if (!HISCoreUtil.isListEmpty(users))
+//            return true;
+//        return false;
+//    }
 //
 //    public boolean isEmailAlreadyExistsAgainstUserId(long id, String email) {
 //        List<User> users = this.userRepository.findAllByIdNotAndEmail(id, email);
@@ -740,11 +733,11 @@ public class UserService implements UserDetailsService {
 //        return false;
 //    }
 //
-//    public PatientWrapper getUserByUserTypeAndId(long id) {
+//    public PatientRequest getUserByUserTypeAndId(long id) {
 //        return this.userRepository.findUserById(id);
 //    }
 //
-//    public void updatePatient(PatientWrapper patientRequest) throws ParseException, Exception {
+//    public void updatePatient(PatientRequest patientRequest) throws ParseException, Exception {
 //        Profile profile = this.profileRepository.findOne(patientRequest.getProfileId());
 //        UserRole userRole;
 //        new Profile(profile, patientRequest);
@@ -771,4 +764,3 @@ public class UserService implements UserDetailsService {
 //
 //
 }
-//

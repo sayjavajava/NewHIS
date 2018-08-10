@@ -27,11 +27,11 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
     List<Long> deleteAllByVersion_id(long id);
 
 
-    @Query("SELECT new com.sd.his.wrapper.ICDCodeVersionWrapper(codeVersion,codeVersion.icd,codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion " +
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(codeVersion,codeVersion.icd,codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion " +
             "where codeVersion.version.name LIKE CONCAT('%',:name,'%') or codeVersion.icd.code LIKE CONCAT('%',:code,'%') ")
     List<ICDCodeVersionWrapper> findAllByVersion_NameContainingOrIcd_CodeContaining(@Param("name") String versionName, @Param("code") String code, Pageable pageable);
 
-    @Query("SELECT new com.sd.his.wrapper.ICDCodeVersionWrapper(codeVersion,codeVersion.icd,codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion " +
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(codeVersion,codeVersion.icd,codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion " +
             "where codeVersion.version.name LIKE CONCAT('%',:name,'%') or codeVersion.icd.code LIKE CONCAT('%',:code,'%') ")
     List<ICDCodeVersionWrapper> findAllByVersion_NameContainingOrIcd_CodeContaining(@Param("name") String versionName, @Param("code") String code);
 

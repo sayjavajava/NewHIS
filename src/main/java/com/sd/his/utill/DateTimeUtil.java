@@ -110,4 +110,20 @@ public class DateTimeUtil {
         SimpleDateFormat format = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         return format.format(date);
     }
+
+    public static int convertAppointmentTime(String time){
+        int temp = 0;
+        if(time !=null) {
+            int pmResult =0;
+            String[] h1 = time.split(":");
+            int hour = Integer.parseInt(h1[0]);
+            int minute = Integer.parseInt(h1[1]);
+            if(hour <= 12){
+                temp = minute + (60 * hour);
+            }else{
+                //logic will be change
+                temp =minute + ((hour + 12) * 60);}
+        }
+        return  temp;
+    }
 }

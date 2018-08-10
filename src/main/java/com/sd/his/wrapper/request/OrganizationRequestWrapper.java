@@ -32,7 +32,7 @@ public class OrganizationRequestWrapper {
     String address;
     String website;
 
-    String defaultBranch;     //geenral form
+    Long defaultBranch;     //geenral form
     Long durationOfExam;
     Long durationFollowUp;
     String prefixSerialPatient;
@@ -48,6 +48,15 @@ public class OrganizationRequestWrapper {
     String cellPhone;
     String userAddress;
     String homePhone;
+    Long userId;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public String getCompanyEmail() {
         return CompanyEmail;
@@ -113,11 +122,11 @@ public class OrganizationRequestWrapper {
         this.website = website;
     }
 
-    public String getDefaultBranch() {
+    public Long getDefaultBranch() {
         return defaultBranch;
     }
 
-    public void setDefaultBranch(String defaultBranch) {
+    public void setDefaultBranch(Long defaultBranch) {
         this.defaultBranch = defaultBranch;
     }
 

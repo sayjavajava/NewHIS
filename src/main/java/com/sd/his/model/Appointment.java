@@ -56,9 +56,12 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "STATUS")
     private AppointmentStatusTypeEnum status;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "PATIENT_ID")
+    private Patient patient;
+
     @Column(name = "TYPE")
-    private AppointmentTypeEnum type;
+    private String type;
 
     @Column(name = "DURATION") //minutes
     private Integer duration;
@@ -115,6 +118,15 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "LAST_APPOINTMENT_ON")
     private Date lastAppointmentOn;
 
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
     public String getName() {
         return name;
     }
@@ -163,11 +175,11 @@ public class Appointment extends BaseEntity implements Serializable {
         this.status = status;
     }
 
-    public AppointmentTypeEnum getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(AppointmentTypeEnum type) {
+    public void setType(String type) {
         this.type = type;
     }
 

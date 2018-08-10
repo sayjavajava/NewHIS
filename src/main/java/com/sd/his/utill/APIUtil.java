@@ -1,9 +1,6 @@
 package com.sd.his.utill;
 
-import com.sd.his.model.Permission;
-import com.sd.his.model.Role;
-import com.sd.his.model.User;
-import com.sd.his.model.UserRole;
+import com.sd.his.model.*;
 import com.sd.his.wrapper.PermissionWrapper;
 import com.sd.his.wrapper.RoleWrapper;
 
@@ -76,10 +73,10 @@ public class APIUtil {
         for (Role role : dbRoles) {
             RoleWrapper roleWrapper;
             List<PermissionWrapper> rolePermissions = new ArrayList<>();
-            /*for (Permission permission : role.getPermissions()) {
+            for (RolePermission permission : role.getRolePermissions()) {
                 PermissionWrapper rolePermission = new PermissionWrapper(permission);
                 rolePermissions.add(rolePermission);
-            }*/
+            }
             roleWrapper = new RoleWrapper(role);
             roleWrapper.setPermissions(rolePermissions);
             rolesAndPermissions.add(roleWrapper);

@@ -24,19 +24,14 @@ package com.sd.his.controller.Setting;
          */
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.Branch;
 import com.sd.his.model.Organization;
-import com.sd.his.model.User;
-import com.sd.his.repository.OrganizationRepository;
-import com.sd.his.wrapper.request.BranchRequestWrapper;
-import com.sd.his.wrapper.request.OrganizationRequestWrapper;
-import com.sd.his.wrapper.response.BranchResponseWrapper;
-import com.sd.his.wrapper.GenericAPIResponse;
-import com.sd.his.wrapper.response.OrganizationResponseWrapper;
-import com.sd.his.service.UserService;
 import com.sd.his.service.OrganizationService;
+import com.sd.his.service.UserService;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.TimezoneWrapper;
+import com.sd.his.wrapper.request.OrganizationRequestWrapper;
+import com.sd.his.wrapper.response.OrganizationResponseWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -106,10 +101,10 @@ public class OrganizationAPI {
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(timezone);
 
-            logger.error("getAllBranches API - Branches successfully fetched.");
+            logger.error("getAllTimezone API - Timezone successfully fetched.");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("getAllBranches API -  exception..", ex.fillInStackTrace());
+            logger.error("getAllTimezone API -  exception..", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
@@ -117,55 +112,55 @@ public class OrganizationAPI {
         }
     }
 
-   /* @ApiOperation(httpMethod = "GET", value = "All Branches",
-            notes = "This method will return all Branches",
-            produces = "application/json", nickname = "All Branches",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "All Organization fetched successfully.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllBranches(HttpServletRequest request) {
+    /* @ApiOperation(httpMethod = "GET", value = "All Branches",
+             notes = "This method will return all Branches",
+             produces = "application/json", nickname = "All Branches",
+             response = GenericAPIResponse.class, protocols = "https")
+     @ApiResponses({
+             @ApiResponse(code = 200, message = "All Organization fetched successfully.", response = GenericAPIResponse.class),
+             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+     @RequestMapping(value = "/all", method = RequestMethod.GET)
+     public ResponseEntity<?> getAllBranches(HttpServletRequest request) {
 
-        logger.error("getAllOrganization API initiated");
-        GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("organization.fetch.error"));
-        response.setResponseCode(ResponseEnum.ORGANIZATION_FETCH_FAILED.getValue());
-        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-        response.setResponseData(null);
+         logger.error("getAllOrganization API initiated");
+         GenericAPIResponse response = new GenericAPIResponse();
+         response.setResponseMessage(messageBundle.getString("organization.fetch.error"));
+         response.setResponseCode(ResponseEnum.ORGANIZATION_FETCH_FAILED.getValue());
+         response.setResponseStatus(ResponseEnum.ERROR.getValue());
+         response.setResponseData(null);
 
-        try {
-            logger.error("getAllOrganization API - org fetching from DB");
-            List<OrganizationResponseWrapper> branches = organizationService.getAllActiveOrganizations();
-            if (HISCoreUtil.isListEmpty(branches)) {
-                response.setResponseMessage(messageBundle.getString("organization.not-found"));
-                response.setResponseCode(ResponseEnum.ORGANIZATION_NOT_FOUND.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("getAllOrganization API -Organization not found");
+         try {
+             logger.error("getAllOrganization API - org fetching from DB");
+             List<OrganizationResponseWrapper> branches = organizationService.getAllActiveOrganizations();
+             if (HISCoreUtil.isListEmpty(branches)) {
+                 response.setResponseMessage(messageBundle.getString("organization.not-found"));
+                 response.setResponseCode(ResponseEnum.ORGANIZATION_NOT_FOUND.getValue());
+                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                 response.setResponseData(null);
+                 logger.error("getAllOrganization API -Organization not found");
 
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+                 return new ResponseEntity<>(response, HttpStatus.OK);
+             }
 
-            response.setResponseMessage(messageBundle.getString("organization.fetch.success"));
-            response.setResponseCode(ResponseEnum.ORGANIZATION_FETCH_SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(branches);
+             response.setResponseMessage(messageBundle.getString("organization.fetch.success"));
+             response.setResponseCode(ResponseEnum.ORGANIZATION_FETCH_SUCCESS.getValue());
+             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+             response.setResponseData(branches);
 
-            logger.error("getAllOrganization API - Organization successfully fetched.");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception ex) {
-            logger.error("getAllOrganization API -  exception..", ex.fillInStackTrace());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-*/
+             logger.error("getAllOrganization API - Organization successfully fetched.");
+             return new ResponseEntity<>(response, HttpStatus.OK);
+         } catch (Exception ex) {
+             logger.error("getAllOrganization API -  exception..", ex.fillInStackTrace());
+             response.setResponseStatus(ResponseEnum.ERROR.getValue());
+             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+             response.setResponseMessage(messageBundle.getString("exception.occurs"));
+             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+         }
+     }
+ */
     @ApiOperation(httpMethod = "GET", value = "Paginated Organization",
             notes = "This method will return Paginated Organization",
             produces = "application/json", nickname = "Get Paginated Organization ",
@@ -285,6 +280,7 @@ public class OrganizationAPI {
         }
 
     }
+
     @ApiOperation(httpMethod = "PUT", value = "Update Organization ",
             notes = "This method will Update Organization",
             produces = "application/json", nickname = "Update Organization",
@@ -342,5 +338,54 @@ public class OrganizationAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    //fetch organization account
+    @ApiOperation(httpMethod = "GET", value = "Admin Account Organization",
+            notes = "This method will return organization's admin Account ",
+            produces = "application/json", nickname = "Organization admin",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = " Organization account fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/account", method = RequestMethod.GET)
+    public ResponseEntity<?> getOrganizationAccount(HttpServletRequest request) {
+
+        logger.error("Get Organization API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("organization.fetch.error"));
+        response.setResponseCode(ResponseEnum.ORGANIZATION_ACCOUNT_FETCH_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("get Organization Account API - Organization fetching from DB");
+            OrganizationResponseWrapper organizationAccountData = organizationService.getOrganizationManagerAccountData();
+            if (!HISCoreUtil.isValidObject(organizationAccountData)) {
+                response.setResponseMessage(messageBundle.getString("organization.account.not-found"));
+                response.setResponseCode(ResponseEnum.ORGANIZATION_ACCOUNT_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Organization API - Org Account not found");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            response.setResponseMessage(messageBundle.getString("organization.account.fetch.success"));
+            response.setResponseCode(ResponseEnum.ORGANIZATION_ACCOUNT_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(organizationAccountData);
+
+            logger.error("Organization API - Organization successfully fetched.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("Organization API -  exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

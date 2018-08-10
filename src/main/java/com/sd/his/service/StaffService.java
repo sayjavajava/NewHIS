@@ -257,6 +257,7 @@ public class StaffService {
                 }
                 branchNurseRepository.save(nurseVisitBranchesData);
             }
+
             List<User> doctorsList = userRepository.findAllByIdIn(Arrays.asList(createRequest.getDutyWithDoctors()));
             List<Doctor> doctors = doctorRepository.findAllByUserIn(doctorsList);
             List<NurseWithDoctor> dutyWithDoctorsData = new ArrayList<>();

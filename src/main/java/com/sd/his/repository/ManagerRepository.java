@@ -2,6 +2,7 @@ package com.sd.his.repository;
 
 import com.sd.his.model.Branch;
 import com.sd.his.model.Manager;
+import com.sd.his.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -30,8 +31,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
-
-
+    Manager findByUser(User user);
 
 }
 

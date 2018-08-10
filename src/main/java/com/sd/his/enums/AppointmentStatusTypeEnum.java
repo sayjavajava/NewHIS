@@ -31,7 +31,8 @@ public enum AppointmentStatusTypeEnum {
     CONFIRMED,
     NOT_CONFIRMED,
     RE_SCHEDULED,
-    CANCELLED
-
+    CANCELLED,
+    CHECK_IN,
+    REGULAR
 
 }

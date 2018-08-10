@@ -27,8 +27,10 @@ import java.time.temporal.ChronoField;
  * All rights reserved.
  * 
  */
-public class Test {
+public class Test extends bike implements car {
+
     public static void main(String ...args){
+
      System.out.println(new BCryptPasswordEncoder().encode("Password*1"));
 
         Instant instant = Instant.parse( "2018-05-02T19:00:00.000Z");
@@ -41,5 +43,19 @@ public class Test {
        // long time= HISCoreUtil.convertDateToMilliSeconds(instant.toString());
 
 
+    }
+
+}
+
+interface car{
+//    default String test(){
+//        System.out.println("car");
+//        return null;
+//    }
+    String test();
+}
+abstract class bike{
+    public String test() {
+   return null;
     }
 }

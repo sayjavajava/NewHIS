@@ -3,7 +3,6 @@ package com.sd.his.wrapper.response;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.utill.HISCoreUtil;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,13 +55,16 @@ public class StaffResponseWrapper{
     List<DutyShift> dutyShifts;
     Boolean managePatientRecords;
     Boolean managePatientInvoices;
-
-    Long id;
+    String phoneNumber;
     String address;
     String city;
     String country;
-    String profileImg;
     String status;
+    String profileImg;
+    Long id;
+
+     // List<ClinicalDepartment> clinicalDepartments;
+    // List<DutyWithDoctor> dutyWithDoctors;
 
     List<Branch> staffBranches = new ArrayList();
     List<Doctor> dutyWithDoctors;
