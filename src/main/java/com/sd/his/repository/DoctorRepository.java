@@ -1,6 +1,7 @@
 package com.sd.his.repository;
 
 
+import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.Doctor;
 import com.sd.his.model.User;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
@@ -50,7 +51,9 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     Doctor findByUser(User user);
     List<Doctor> findAllByUserIn(List<User> ids);
-
     List<Doctor> findAllByIdIn(List<Long> ids);
+
+    @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,dr.id,du.username,du.userType,dr.firstName,dr.lastName,dr.email,br.name) FROM Doctor dr INNER JOIN dr.user du INNER JOIN dr.branchDoctors branchDr INNER JOIN branchDr.branch br WHERE (lower( dr.firstName ) LIKE concat('%',:name,'%') or lower( dr.lastName ) LIKE concat('%',:name,'%') OR du.userType=:userType ) AND du.active = TRUE AND branchDr.primaryBranch=TRUE")
+    List<StaffWrapper> findAllBySearchCriteria(@Param("name") String name, @Param("userType") String userType, Pageable pageable);
 }
 

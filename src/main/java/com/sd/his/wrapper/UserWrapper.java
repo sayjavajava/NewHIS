@@ -32,7 +32,7 @@ public class UserWrapper {
 
     public UserWrapper(User user) {
         this.id = user.getId();
-        this.userType = user.getUserType().name();
+        this.userType = user.getUserType();
         this.userName=user.getUsername();
         /*this.email = user.getUEmail();
         this.userName = user.getUsername();

@@ -40,8 +40,8 @@ public class User extends BaseEntity implements Serializable {
     private String username;
 
     @Column(name = "USER_TYPE", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserTypeEnum userType;
+    //@Enumerated(EnumType.STRING)
+    private String userType;
 
     @Column(name = "PASSWORD", nullable = false)
     private String password;
@@ -54,7 +54,7 @@ public class User extends BaseEntity implements Serializable {
     private List<UserRole> userRoles;
 
     public User(){}
-    public User(String username, UserTypeEnum userType, String password, Boolean active) {
+    public User(String username, String userType, String password, Boolean active) {
         this.username = username;
         this.userType = userType;
         this.password = password;
@@ -70,11 +70,11 @@ public class User extends BaseEntity implements Serializable {
         this.username = username;
     }
 
-    public UserTypeEnum getUserType() {
+    public String getUserType() {
         return userType;
     }
 
-    public void setUserType(UserTypeEnum userType) {
+    public void setUserType(String userType) {
         this.userType = userType;
     }
 

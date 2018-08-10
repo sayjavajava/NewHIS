@@ -73,14 +73,14 @@ public class StaffResponseWrapper{
     }
 
     //constructor for cashier and receptionist
-    public StaffResponseWrapper(Long uId,Long pId,UserTypeEnum userType,String firstName,String lastName,String userName,
+    public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
                                 String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
                                 Date expiryDate
 
                                 ){
         this.uid = uId;
         this.pId=pId;
-        this.userType = userType.name();
+        this.userType = userType;
         this.userName = userName;
         this.firstName=firstName;
         this.lastName =lastName;
@@ -88,7 +88,7 @@ public class StaffResponseWrapper{
         this.primaryBranchId=primaryId;
      //   this.visitBranches=branchList;
         this.active=active;
-        this.expiryDate= HISCoreUtil.convertDateToString(expiryDate);
+        this.expiryDate= HISCoreUtil.convertDateToStringWithZone(expiryDate);
         this.homePhone=homePhone;
         this.cellPhone=cellPhone;
         this.primaryBranch=primaryBranch;
@@ -99,7 +99,7 @@ public class StaffResponseWrapper{
 
 
     //constructor for doctor
-    public StaffResponseWrapper(Long uId,Long pId,UserTypeEnum userType,String firstName,String lastName,String userName,
+    public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
                                 String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
                                 Date expiryDate,Long checkUpInterval, Boolean vacation,Date vacationFrom,Date vacationTo,
                                 Doctor doctor
@@ -107,7 +107,7 @@ public class StaffResponseWrapper{
     ){
         this.uid = uId;
         this.pId=pId;
-        this.userType = userType.name();
+        this.userType = userType;
         this.userName = userName;
         this.firstName=firstName;
         this.lastName =lastName;
@@ -131,14 +131,14 @@ public class StaffResponseWrapper{
     }
 
     //constructor for nurse
-    public StaffResponseWrapper(Long uId,Long pId,UserTypeEnum userType,String firstName,String lastName,String userName,
+    public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
                                 String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
                                 Date expiryDate,Boolean managePatientRecords,Boolean managePatientInvoices
 
     ){
         this.uid = uId;
         this.pId=pId;
-        this.userType = userType.name();
+        this.userType = userType;
         this.userName = userName;
         this.firstName=firstName;
         this.lastName =lastName;
@@ -161,7 +161,7 @@ public class StaffResponseWrapper{
     public StaffResponseWrapper(Nurse nurse){
         this.uid = nurse.getUser().getId();
         this.pId= nurse.getId();
-        this.userType = nurse.getUser().getUserType().name();
+        this.userType = nurse.getUser().getUserType();
         this.userName = nurse.getUser().getUsername();
         this.firstName=nurse.getFirstName();
         this.lastName =nurse.getLastName();
@@ -186,7 +186,7 @@ public class StaffResponseWrapper{
         if(object instanceof Doctor){
             Doctor doctor = (Doctor)object;
             this.id = doctor.getId();
-            this.userType = doctor.getUser().getUserType().name();
+            this.userType = doctor.getUser().getUserType();
             this.email = doctor.getEmail();
             this.userName = doctor.getUser().getUsername();
             this.firstName = doctor.getFirstName();

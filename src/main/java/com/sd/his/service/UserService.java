@@ -9,6 +9,8 @@ import com.sd.his.wrapper.request.AssignAuthoritiesRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -589,23 +591,6 @@ public class UserService implements UserDetailsService {
 //    public User findUserById(long id) {
 //        return userRepository.findById(id);
 //    }
-//
-
-//
-//    public List<UserWrapper> searchByNameOrEmailOrRole(String name, String email, String role, int offset, int limit) {
-//        Pageable pageable = new PageRequest(offset, limit);
-//        logger.info("role assigned" + role);
-//        Role Assignedrole = roleRepo.findByName(role.toUpperCase());
-//        List<User> alluser = userRepository.findAllByUsernameIgnoreCaseContainingOrEmailIgnoreCaseContainingOrRoles_role_nameIgnoreCaseContaining(name, email, role, pageable);
-//        List<UserWrapper> userWrapper = new ArrayList<>();
-//
-//        for (User user : alluser) {
-//            UserWrapper userWrapper1 = new UserWrapper(user);
-//            userWrapper.add(userWrapper1);
-//        }
-//        return userWrapper;
-//    }
-//
     public List<UserWrapper> findByRole(String role) {
         List<UserWrapper> userWrapper = new ArrayList<>();
         List<User> userList = userRepository.findAllByUserRoles_role_nameAndActiveTrue(role);
