@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PatientService {
+public class  PatientService {
     @Autowired
     private PatientRepository patientRepository;
     @Autowired
@@ -35,7 +35,7 @@ public class PatientService {
 
     @Autowired
     private HISUtilService hisUtilService;
-
+//response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
         patientWrapper.setId(patient.getId());//patient pk
         patientWrapper.setPatientId(patient.getPatientId());//patient natural id
@@ -80,6 +80,7 @@ public class PatientService {
         patientWrapper.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
     }
 
+    //Request Populate
     private void populatePatient(Patient patient, PatientWrapper patientWrapper) throws ParseException {
         patient.setTitle(patientWrapper.getTitlePrefix());
         patient.setPatientSSN(patientWrapper.getPatientSSN());
@@ -298,6 +299,11 @@ public class PatientService {
             patientWrapperList.add(patientWrapper);
         }
         return patientWrapperList;*/
+    }
+    public List<PatientWrapper> getAllPatientList(){
+       List<Patient> patient =  patientRepository.findAll();
+       return this.getPatientWrapperList(patient);
+
     }
 
     public PatientWrapper getPatientById(long id) {

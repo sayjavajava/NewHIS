@@ -440,7 +440,7 @@ public class BranchAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+*/
     @ApiOperation(httpMethod = "GET", value = "Search Branch",
             notes = "This method will return Branch on base of search",
             produces = "application/json", nickname = "Search Branch",
@@ -455,9 +455,9 @@ public class BranchAPI {
     public ResponseEntity<?> searchPaginatedBranches(HttpServletRequest request,
                                                      @PathVariable("page") int page,
                                                      @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                                     @RequestParam(value = "branch") String name,
-                                                     @RequestParam(value = "department") String department) {
-        logger.info("search:" + name);
+                                                     @RequestParam(value = "branch") Long branchName,
+                                                     @RequestParam(value = "department") Long department) {
+
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("branch.not.found"));
         response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
@@ -466,7 +466,7 @@ public class BranchAPI {
 
         try {
             //
-            List<BranchResponseWrapper> branchWrappers = branchService.searchByBranchNameAndDepartment(name, department,page, pageSize);
+            List<BranchResponseWrapper> branchWrappers = branchService.searchByBranchNameAndDepartment(branchName, department,page, pageSize);
 
             int countBranch = branchService.totalBranches();
 
@@ -518,5 +518,5 @@ public class BranchAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-*/
+
 }
