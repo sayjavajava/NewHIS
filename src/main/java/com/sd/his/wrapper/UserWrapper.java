@@ -1,6 +1,6 @@
 package com.sd.his.wrapper;
 
-import com.sd.his.model.User;
+import com.sd.his.model.*;
 
 import java.util.List;
 import java.util.Map;

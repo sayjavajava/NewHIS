@@ -79,4 +79,8 @@ public interface MedicalServiceRepository extends JpaRepository<MedicalService, 
 //                                                @Param("serviceFee") Double serviceFee);
 
 //    void deleteById(long id);
+    List<MedicalService> findAllByStatusTrue();
+
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms WHERE ms.status=:status")
+    List<MedicalServiceWrapper> findAllMedicalServiceWrappers(@Param("status") Boolean status);
 }

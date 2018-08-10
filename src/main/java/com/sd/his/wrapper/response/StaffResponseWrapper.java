@@ -3,8 +3,10 @@ package com.sd.his.wrapper.response;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.utill.HISCoreUtil;
-import java.util.Date;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /*
  * @author    : waqas kamran
@@ -55,9 +57,16 @@ public class StaffResponseWrapper{
     Boolean managePatientRecords;
     Boolean managePatientInvoices;
 
-     // List<ClinicalDepartment> clinicalDepartments;
-    // List<DutyWithDoctor> dutyWithDoctors;
+    Long id;
+    String address;
+    String city;
+    String country;
+    String profileImg;
+    String status;
 
+    List<Branch> staffBranches = new ArrayList();
+    List<Doctor> dutyWithDoctors;
+    boolean checkedDoc;
     public StaffResponseWrapper() {
     }
 
@@ -119,32 +128,118 @@ public class StaffResponseWrapper{
 
     }
 
-//constructor for nurse
-public StaffResponseWrapper(Long uId,Long pId,UserTypeEnum userType,String firstName,String lastName,String userName,
-                            String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
-                            Date expiryDate,Boolean managePatientRecords,Boolean managePatientInvoices
+    //constructor for nurse
+    public StaffResponseWrapper(Long uId,Long pId,UserTypeEnum userType,String firstName,String lastName,String userName,
+                                String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
+                                Date expiryDate,Boolean managePatientRecords,Boolean managePatientInvoices
 
-){
-    this.uid = uId;
-    this.pId=pId;
-    this.userType = userType.name();
-    this.userName = userName;
-    this.firstName=firstName;
-    this.lastName =lastName;
-    this.email=email;
-    this.primaryBranchId=primaryId;
-    //   this.visitBranches=branchList;
-    this.active=active;
-    this.expiryDate= HISCoreUtil.convertDateToString(expiryDate);
-    this.homePhone=homePhone;
-    this.cellPhone=cellPhone;
-    this.primaryBranch=primaryBranch;
-    this.managePatientInvoices=managePatientInvoices;
-    this.managePatientRecords=managePatientRecords;
+    ){
+        this.uid = uId;
+        this.pId=pId;
+        this.userType = userType.name();
+        this.userName = userName;
+        this.firstName=firstName;
+        this.lastName =lastName;
+        this.email=email;
+        this.primaryBranchId=primaryId;
+        //   this.visitBranches=branchList;
+        this.active=active;
+        this.expiryDate= HISCoreUtil.convertDateToString(expiryDate);
+        this.homePhone=homePhone;
+        this.cellPhone=cellPhone;
+        this.primaryBranch=primaryBranch;
+        this.managePatientInvoices=managePatientInvoices;
+        this.managePatientRecords=managePatientRecords;
 
-    // this.visitBranches=branchCashiers;
+        // this.visitBranches=branchCashiers;
 
-}
+    }
+
+    //constructor for nurse
+    public StaffResponseWrapper(Nurse nurse){
+        this.uid = nurse.getUser().getId();
+        this.pId= nurse.getId();
+        this.userType = nurse.getUser().getUserType().name();
+        this.userName = nurse.getUser().getUsername();
+        this.firstName=nurse.getFirstName();
+        this.lastName =nurse.getLastName();
+        this.email=nurse.getEmail();
+        OptionalLong pbId =nurse.getBranchNurses().stream().filter(b->b.getPrimaryBranch()==true).mapToLong(pb->pb.getId()).findFirst();
+        this.primaryBranchId = pbId.getAsLong();
+        //   this.visitBranches=branchList;
+        this.active=nurse.getUser().getActive();
+        this.expiryDate= HISCoreUtil.convertDateToString(nurse.getAccountExpiry());
+        this.homePhone=nurse.getHomePhone();
+        this.cellPhone=nurse.getCellPhone();
+        this.primaryBranch = nurse.getBranchNurses().stream().filter(p->p.getPrimaryBranch()==true).map(pb->pb.getBranch().getName()).findAny().get();
+        this.managePatientInvoices=nurse.getManagePatientInvoices();
+        this.managePatientRecords=nurse.getManagePatientRecords();
+        //List<Branch> branches = nurse.getBranchNurses().stream().map(b->b.getBranch()).collect(Collectors.toList());
+        //this.staffBranches = branches;
+        //this.dutyWithDoctors = nurse.getNurseWithDoctorList().stream().map(d->d.getDoctor()).collect(Collectors.toList());
+    }
+
+    public StaffResponseWrapper(Object object){
+        Object obj = new Object();
+        if(object instanceof Doctor){
+            Doctor doctor = (Doctor)object;
+            this.id = doctor.getId();
+            this.userType = doctor.getUser().getUserType().name();
+            this.email = doctor.getEmail();
+            this.userName = doctor.getUser().getUsername();
+            this.firstName = doctor.getFirstName();
+            this.lastName = doctor.getLastName();
+            this.cellPhone = doctor.getCellPhone();
+            this.address = doctor.getAddress();
+            this.city = doctor.getCity();
+            this.country = doctor.getCountry();
+            //this.gender = doctor.getGender().name();
+            this.profileImg = doctor.getProfileImgURL();
+            this.status = doctor.getStatus().name();
+        }else
+        if(object instanceof Nurse){
+            Nurse nurse = (Nurse)object;
+            this.email = nurse.getEmail();
+            this.userName = nurse.getUser().getUsername();
+            this.firstName = nurse.getFirstName();
+            this.lastName = nurse.getLastName();
+            this.cellPhone = nurse.getCellPhone();
+            this.address = nurse.getAddress();
+            this.city = nurse.getCity();
+            this.country = nurse.getCountry();
+            //this.gender = nurse.getGender().name();
+            this.profileImg = nurse.getProfileImgURL();
+            this.status = nurse.getStatus().name();
+        }else
+        if(object instanceof Cashier){
+            Cashier cashier = (Cashier)object;
+            this.email = cashier.getEmail();
+            this.userName = cashier.getUser().getUsername();
+            this.firstName = cashier.getFirstName();
+            this.lastName = cashier.getLastName();
+            this.cellPhone = cashier.getCellPhone();
+            this.address = cashier.getAddress();
+            this.city = cashier.getCity();
+            this.country = cashier.getCountry();
+            //this.gender = cashier.getGender().name();
+            this.profileImg = cashier.getProfileImgURL();
+            this.status = cashier.getStatus().name();
+        }else
+        if(object instanceof Receptionist) {
+            Receptionist receptionist = (Receptionist) object;
+            this.email = receptionist.getEmail();
+            this.userName = receptionist.getUser().getUsername();
+            this.firstName = receptionist.getFirstName();
+            this.lastName = receptionist.getLastName();
+            this.cellPhone = receptionist.getCellPhone();
+            this.address = receptionist.getAddress();
+            this.city = receptionist.getCity();
+            this.country = receptionist.getCountry();
+            //this.gender = receptionist.getGender().name();
+            this.profileImg = receptionist.getProfileImgURL();
+            this.status = receptionist.getStatus().name();
+        }
+    }
 
     public Boolean getManagePatientRecords() {
         return managePatientRecords;
@@ -336,5 +431,77 @@ public StaffResponseWrapper(Long uId,Long pId,UserTypeEnum userType,String first
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getProfileImg() {
+        return profileImg;
+    }
+
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<Branch> getStaffBranches() {
+        return staffBranches;
+    }
+
+    public void setStaffBranches(List<Branch> staffBranches) {
+        this.staffBranches = staffBranches;
+    }
+
+    public List<Doctor> getDutyWithDoctors() {
+        return dutyWithDoctors;
+    }
+
+    public void setDutyWithDoctors(List<Doctor> dutyWithDoctors) {
+        this.dutyWithDoctors = dutyWithDoctors;
+    }
+
+    public boolean isCheckedDoc() {
+        return checkedDoc;
+    }
+
+    public void setCheckedDoc(boolean checkedDoc) {
+        this.checkedDoc = checkedDoc;
     }
 }

@@ -22,5 +22,5 @@ package com.sd.his.enums;
  * 
  */
 public enum MaritalStatusTypeEnum {
-    SINGLE, MARRIED, ENGAGED, DIVOCED;
+    SINGLE, MARRIED, ENGAGED, DIVORCED, SEPERATED, WIDOWED;
 }

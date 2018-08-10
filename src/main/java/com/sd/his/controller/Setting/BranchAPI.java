@@ -1,5 +1,4 @@
-package com.sd.his.controller.Setting;
-
+package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Branch;

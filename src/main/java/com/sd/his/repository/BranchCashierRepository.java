@@ -5,7 +5,11 @@ import com.sd.his.model.BranchCashier;
 import com.sd.his.model.BranchDoctor;
 import com.sd.his.model.Cashier;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
  * @author    : waqas kamran
@@ -37,6 +41,8 @@ public interface BranchCashierRepository extends JpaRepository<BranchCashier, Lo
      BranchCashier findByCashier(Cashier cashier);
      void deleteAllByCashier(Cashier cashier);
      BranchCashier findByCashierAndPrimaryBranchTrue(Cashier cashier);
-
+     void deleteAllByCashierAndPrimaryBranchFalse(Cashier cashier);
+     @Query("select b from BranchCashier bc inner join bc.branch b where bc.cashier.id=:id")
+     List<Branch> getCashierBranches(@Param("id") Long id);//id=>cashier pk id
 }
 

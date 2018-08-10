@@ -6,7 +6,7 @@ import com.sd.his.service.StaffService;
 import com.sd.his.service.UserService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
-import com.sd.his.wrapper.UserWrapper;
+import com.sd.his.wrapper.PatientWrapper;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
@@ -518,13 +518,12 @@ public class StaffAPI {
 
         try {
             if (!HISCoreUtil.isNull(type)) {
-                List<UserWrapper> userWrappers = userService.findByRole(type);
-
-                if (!HISCoreUtil.isListEmpty(userWrappers)) {
+                List<StaffResponseWrapper> staffResponseWrapper = staffService.findByRole(type);
+                if (!HISCoreUtil.isListEmpty(staffResponseWrapper)) {
                     response.setResponseMessage(messageBundle.getString("user.fetched.success"));
                     response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
                     response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                    response.setResponseData(userWrappers);
+                    response.setResponseData(staffResponseWrapper);
                     logger.info("user on base of Type fetched successfully...");
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
@@ -1076,74 +1075,73 @@ public class StaffAPI {
 //        }
 //    }
 //
-//    @ApiOperation(httpMethod = "POST", value = "Save Patient",
-//            notes = "This method will save the patient.",
-//            produces = "application/json", nickname = "Save Patient",
-//            response = GenericAPIResponse.class, protocols = "https")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "Save Patient successfully ", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-//    @RequestMapping( value = "/patient/save", method = RequestMethod.POST  )//, consumes = "multipart/form-data"
-//    public ResponseEntity<?> savePatient(HttpServletRequest request,
-//                                         @RequestPart("patientRequest") PatientRequest patientRequest,
-//                                         @RequestPart(name = "profileImg", required = false) MultipartFile profileImg,
-//                                         @RequestPart(name = "photoFront", required = false) MultipartFile photoFront,
-//                                         @RequestPart(name = "photoBack", required = false) MultipartFile photoBack) {
-//        logger.info("savePatient API - initiated..");
-//        GenericAPIResponse response = new GenericAPIResponse();
-//        try {
-//
-//            if(profileImg != null) patientRequest.setProfileImg(profileImg.getBytes());
-//            if(photoFront != null) patientRequest.setPhotoFront(photoFront.getBytes());
-//            if(photoBack != null) patientRequest.setPhotoBack(photoBack.getBytes());
-//
-//            if (HISCoreUtil.isNull(patientRequest.getEmail()) ||
-//                    HISCoreUtil.isNull(patientRequest.getUserName()) ||
-//                    patientRequest.getUserName() == "" ||
-//                    HISCoreUtil.isNull(patientRequest.getCellPhone())) {
-//                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-//                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-//                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                response.setResponseData(null);
-//                logger.error("savePatient API - insufficient params.");
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//            }
-//            if (userService.isEmailAlreadyExists(patientRequest.getEmail())) {
-//                response.setResponseMessage(messageBundle.getString("user.add.email.already-found.error"));
-//                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
-//                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                response.setResponseData(null);
-//                logger.error("savePatient API - email already found.");
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//            }
-//            if (userService.isUserNameAlreadyExists(patientRequest.getUserName())) {
-//                response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
-//                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
-//                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                response.setResponseData(null);
-//                logger.error("savePatient API - user already found.");
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//            }
-//            userService.savePatient(patientRequest);
-//
-//            response.setResponseMessage(messageBundle.getString("patient.save.success"));
-//            response.setResponseCode(ResponseEnum.PATIENT_SAVE_SUCCESS.getValue());
-//            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-//            logger.error("savePatient API - successfully saved.");
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            logger.error("savePatient exception.", e.fillInStackTrace());
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
+    /*@ApiOperation(httpMethod = "POST", value = "Save Patient",
+            notes = "This method will save the patient.",
+            produces = "application/json", nickname = "Save Patient",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Save Patient successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping( value = "/patient/save", method = RequestMethod.POST  )//, consumes = "multipart/form-data"
+    public ResponseEntity<?> savePatient(HttpServletRequest request,
+                                         @RequestPart("patientRequest") PatientWrapper patientRequest,
+                                         @RequestPart(name = "profileImg", required = false) MultipartFile profileImg,
+                                         @RequestPart(name = "photoFront", required = false) MultipartFile photoFront,
+                                         @RequestPart(name = "photoBack", required = false) MultipartFile photoBack) {
+        logger.info("savePatient API - initiated..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            if(profileImg != null) patientRequest.setProfileImg(profileImg.getBytes());
+            if(photoFront != null) patientRequest.setPhotoFront(photoFront.getBytes());
+            if(photoBack != null) patientRequest.setPhotoBack(photoBack.getBytes());
+
+            *//*if (HISCoreUtil.isNull(patientRequest.getEmail()) ||
+                    HISCoreUtil.isNull(patientRequest.getUserName()) ||
+                    patientRequest.getUserName() == "" ||
+                    HISCoreUtil.isNull(patientRequest.getCellPhone())) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("savePatient API - insufficient params.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }*//*
+            if (patientRequest.getEmail()!=null && userService.isEmailAlreadyExists(patientRequest.getEmail())) {
+                response.setResponseMessage(messageBundle.getString("user.add.email.already-found.error"));
+                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("savePatient API - email already found.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            *//*if (userService.isUserNameAlreadyExists(patientRequest.getUserName())) {
+                response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
+                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("savePatient API - user already found.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }*//*
+            userService.savePatient(patientRequest);
+
+            response.setResponseMessage(messageBundle.getString("patient.save.success"));
+            response.setResponseCode(ResponseEnum.PATIENT_SAVE_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.error("savePatient API - successfully saved.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("savePatient exception.", e.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }*/
 //
 //    @ApiOperation(httpMethod = "GET", value = "User",
 //            notes = "This method will return User on base of id",
@@ -1166,7 +1164,7 @@ public class StaffAPI {
 //        response.setResponseData(null);
 //
 //        try {
-//            PatientRequest user = this.userService.getUserByUserTypeAndId(id);
+//            PatientWrapper user = this.userService.getUserByUserTypeAndId(id);
 //            if (HISCoreUtil.isValidObject(user)) {
 //                response.setResponseData(user);
 //                response.setResponseMessage(messageBundle.getString("user.found"));
@@ -1206,7 +1204,7 @@ public class StaffAPI {
 //            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
 //    @RequestMapping(value = "/patient/update", method = RequestMethod.PUT)
 //    public ResponseEntity<?> updatePatient(HttpServletRequest request,
-//                                           @RequestBody PatientRequest patientRequest) {
+//                                           @RequestBody PatientWrapper patientRequest) {
 //        logger.info("updatePatient API - initiated.");
 //        GenericAPIResponse response = new GenericAPIResponse();
 //        try {

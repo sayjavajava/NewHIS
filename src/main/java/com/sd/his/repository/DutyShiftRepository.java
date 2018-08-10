@@ -6,7 +6,11 @@ import com.sd.his.model.BranchCashier;
 import com.sd.his.model.Doctor;
 import com.sd.his.model.DutyShift;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
  * @author    : waqas kamran
@@ -37,5 +41,6 @@ public interface DutyShiftRepository extends JpaRepository<DutyShift, Long> {
 
     DutyShift findByDoctorAndShiftName(Doctor doctor ,DutyShiftEnum name);
     DutyShift findByDoctor(Doctor doctor);
+
 }
 

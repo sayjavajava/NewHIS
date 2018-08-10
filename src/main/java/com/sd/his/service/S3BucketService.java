@@ -1,13 +1,14 @@
-package com.sd.his.repository;
+package com.sd.his.service;
 
-import com.sd.his.model.Branch;
 import com.sd.his.model.S3Bucket;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.sd.his.repository.S3BucketRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 
 /*
- * @author    : Tahir Mehmood
- * @Date      : 26-Jul-2018
+ * @author    : Irfan Nasim
+ * @Date      : 26-Jun-18
  * @version   : ver. 1.0.0
  *
  * ________________________________________________________________________________________________
@@ -19,19 +20,21 @@ import org.springframework.stereotype.Repository;
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
- * @Package   : com.sd.his.*
- * @FileName  : UserAuthAPI
+ * @Package   : com.sd.his.service
+ * @FileName  : S3BucketService
  *
  * Copyright ©
  * SolutionDots,
  * All rights reserved.
  *
  */
-@Repository
-public interface S3BucketRepository extends JpaRepository<S3Bucket, Long> {
+@Service
+public class S3BucketService {
 
-    Branch findByName(String name);
+    @Autowired
+    S3BucketRepository s3BucketRepository;
 
-    S3Bucket findByActiveTrue();
+    public S3Bucket findActiveBucket() {
+        return s3BucketRepository.findByActiveTrue();
+    }
 }
-

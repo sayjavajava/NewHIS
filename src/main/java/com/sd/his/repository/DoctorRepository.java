@@ -51,6 +51,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     Doctor findByUser(User user);
     List<Doctor> findAllByUserIn(List<User> ids);
 
-
+    List<Doctor> findAllByIdIn(List<Long> ids);
 }
 
