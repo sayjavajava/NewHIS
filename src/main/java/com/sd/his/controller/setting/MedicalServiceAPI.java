@@ -6,7 +6,6 @@ import com.sd.his.service.BranchService;
 import com.sd.his.service.DepartmentService;
 import com.sd.his.service.MedicalServicesService;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.BranchWrapper;
 import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.MedicalServiceWrapper;
@@ -286,7 +285,7 @@ public class MedicalServiceAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             logger.error("getMedicalServiceById - Medical Service fetching from DB");
-            MedicalServiceWrapper mss = medicalServicesService.findMedicalServiceById(id);
+            MedicalServiceWrapper mss = medicalServicesService.findMedicalServicesDetailsById(id);
             mss.setDepartments(new ArrayList<>());
             mss.getDepartments().addAll(this.departmentService.getDepartments());
             /***/

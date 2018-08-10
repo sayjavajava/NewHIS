@@ -3,7 +3,6 @@ package com.sd.his.service;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.BranchWrapper;
 import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
@@ -42,15 +41,15 @@ import java.util.List;
 public class MedicalServicesService {
 
     @Autowired
-    private  MedicalServiceRepository medicalServiceRepository;
+    private MedicalServiceRepository medicalServiceRepository;
     @Autowired
-    private  BranchRepository branchRepository;
+    private BranchRepository branchRepository;
     @Autowired
-    private  DepartmentRepository departmentRepository;
+    private DepartmentRepository departmentRepository;
     @Autowired
-    private  TaxRepository taxRepository;
+    private TaxRepository taxRepository;
     @Autowired
-    private  BranchMedicalServiceRepository branchMedicalServiceRepository;
+    private BranchMedicalServiceRepository branchMedicalServiceRepository;
     @Autowired
     private DepartmentMedicalServiceRepository departmentMedicalServiceRepository;
     @Autowired
@@ -64,23 +63,6 @@ public class MedicalServicesService {
             mSWList = new ArrayList<>();
             for (MedicalService ms : mSList) {
                 MedicalServiceWrapper mSW = new MedicalServiceWrapper(ms);
-
-                if (ms.getDepartmentMedicalServices() != null) {
-                    mSW.setCheckedDepartments(new ArrayList<>());
-                    for (DepartmentMedicalService dMS : ms.getDepartmentMedicalServices()) {
-                        if (dMS.getDepartment() != null) {
-                            mSW.getCheckedDepartments().add(new DepartmentWrapper(dMS.getDepartment()));
-                        }
-                    }
-                }
-                if (ms.getBranchMedicalServices() != null) {
-                    mSW.setCheckedBranches(new ArrayList<>());
-                    for (BranchMedicalService branchMedicalService : ms.getBranchMedicalServices()) {
-                        if (branchMedicalService.getBranch() != null) {
-                            mSW.getCheckedBranches().add(new BranchResponseWrapper(branchMedicalService.getBranch()));
-                        }
-                    }
-                }
                 mSWList.add(mSW);
             }
         }
@@ -89,7 +71,7 @@ public class MedicalServicesService {
 
     public List<MedicalServiceWrapper> findAllMedicalServices() {
 
-        return medicalServiceRepository.findAllMedicalServiceWrappers(true);
+        return medicalServiceRepository.findAllMedicalServiceWrappers();
     }
 
     public int countAllMedicalServices() {
@@ -152,7 +134,7 @@ public class MedicalServicesService {
         new MedicalService(medicalService, createRequest);
         if (tax != null) {
             medicalService.setTax(tax);
-        }else {
+        } else {
             medicalService.setTax(null);
         }
         medicalServiceRepository.save(medicalService);
@@ -197,8 +179,35 @@ public class MedicalServicesService {
         return false;
     }
 
-    @Transactional(rollbackOn = Throwable.class)
-    public MedicalServiceWrapper findMedicalServiceById(Long msId) {
+    public List<MedicalServiceWrapper> searchMedicalServiceByParam(String serviceName,
+                                                                   Long branchId,
+                                                                   Long departmentId,
+                                                                   Double serviceFee,
+                                                                   int pageNo,
+                                                                   int pageSize) {
+        Pageable pageable = new PageRequest(pageNo, pageSize);
+        return medicalServiceRepository.findAllByParam(serviceName, branchId, departmentId, serviceFee, pageable);
+    }
+
+    public int countSearchMedicalServiceByParam(String serviceName,
+                                                Long branchId,
+                                                Long departmentId,
+                                                Double serviceFee) {
+        return medicalServiceRepository.countAllByParam(serviceName, branchId, departmentId, serviceFee).size();
+    }
+
+    public List<BranchResponseWrapper> getCheckedBranchesByMedicalServiceId(long msId) {
+        List<BranchResponseWrapper> branchWrappers = new ArrayList<>();
+        branchWrappers.addAll(this.findMedicalServicesDetailsById(msId).getCheckedBranches());
+        return branchWrappers;
+    }
+    public List<DepartmentWrapper> getCheckedDepartsByMedicalServiceId(long msId) {
+        List<DepartmentWrapper> branchWrappers = new ArrayList<>();
+        branchWrappers.addAll(this.findMedicalServicesDetailsById(msId).getCheckedDepartments());
+        return branchWrappers;
+    }
+
+    public MedicalServiceWrapper findMedicalServicesDetailsById(Long msId) {
         MedicalService mS = medicalServiceRepository.findOne(msId);
         MedicalServiceWrapper mSW = null;
         if (mS != null) {
@@ -221,34 +230,6 @@ public class MedicalServicesService {
             }
         }
         return mSW;
-    }
-
-    public List<MedicalServiceWrapper> searchMedicalServiceByParam(String serviceName,
-                                                                   Long branchId,
-                                                                   Long departmentId,
-                                                                   Double serviceFee,
-                                                                   int pageNo,
-                                                                   int pageSize) {
-        Pageable pageable = new PageRequest(pageNo, pageSize);
-        return medicalServiceRepository.findAllByParam(serviceName,branchId,departmentId,serviceFee,pageable);
-    }
-
-    public int countSearchMedicalServiceByParam(String serviceName,
-                                                                   Long branchId,
-                                                                   Long departmentId,
-                                                                   Double serviceFee) {
-        return medicalServiceRepository.countAllByParam(serviceName,branchId,departmentId,serviceFee).size();
-    }
-
-    public List<BranchResponseWrapper> getCheckedBranchesByMedicalServiceId(long msId){
-        List<BranchResponseWrapper> branchWrappers = new ArrayList<>();
-        branchWrappers.addAll(this.findMedicalServiceById(msId).getCheckedBranches());
-        return branchWrappers;
-    }
-    public List<DepartmentWrapper> getCheckedDepartsByMedicalServiceId(long msId){
-        List<DepartmentWrapper> branchWrappers = new ArrayList<>();
-        branchWrappers.addAll(this.findMedicalServiceById(msId).getCheckedDepartments());
-        return branchWrappers;
     }
 
 
