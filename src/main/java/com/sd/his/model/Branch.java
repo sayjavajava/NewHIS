@@ -116,6 +116,7 @@ public class Branch extends BaseEntity implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = Room.class, mappedBy = "branch")
     private List<Room> rooms;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORGANIZATION_ID")
     private Organization organization;

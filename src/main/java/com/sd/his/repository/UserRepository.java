@@ -14,11 +14,12 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, PagingAndSortingRepository<User, Long> {
-
-      User findById(Long id);
-      List<User> findAllByActiveTrue(Pageable pageable);
-      User findByUsernameAndActiveTrue(String name);
-      List<User> findAllByUserRoles_role_nameAndActiveTrue(String role);
-     List<User> findAllByIdIn(List<Long> ids);
-     int countAllByActiveTrue();
+    User findById(Long id);
+    List<User> findAllByActiveTrue(Pageable pageable);
+    User findByUsernameAndActiveTrue(String name);
+    List<User> findAllByUserRoles_role_name(String role);
+    List<User> findAllByUserRoles_role_nameAndActiveTrue(String role);
+    List<User> findAllByIdIn(List<Long> ids);
+    int countAllByActiveTrue();
+    User findByUsername(String userName);
 }

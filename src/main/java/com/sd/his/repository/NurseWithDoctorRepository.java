@@ -2,7 +2,11 @@ package com.sd.his.repository;
 
 import com.sd.his.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
  * @author    : waqas kamran
@@ -31,5 +35,7 @@ public interface NurseWithDoctorRepository extends JpaRepository<NurseWithDoctor
 
    void deleteAllByNurse(Nurse nurse);
    void deleteAllByDoctor(Doctor doctor);
+   @Query("select nwd.doctor from NurseWithDoctor nwd inner join nwd.nurse n where n.id=:id ")
+   List<Doctor> findNurseWithDoctors(@Param("id") Long id);//id=>nurseId
 }
 

@@ -1,11 +1,10 @@
 package com.sd.his.service;
 
+import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.PermissionWrapper;
-import com.sd.his.wrapper.RoleWrapper;
-import com.sd.his.wrapper.UserWrapper;
+import com.sd.his.wrapper.*;
 import com.sd.his.wrapper.request.AssignAuthoritiesRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,8 +27,8 @@ import java.util.stream.Collectors;
 @Service(value = "userService")
 @Transactional
 public class UserService implements UserDetailsService {
-
-
+    @Autowired
+    private AWSService awsService;
     @Autowired
     private UserRepository userRepository;
 
@@ -42,8 +43,13 @@ public class UserService implements UserDetailsService {
     PermissionRepository permissionRepository;
     @Autowired
     UserRoleRepository userRoleRepository;
+    @Autowired
+    DoctorRepository doctorRepository;
+    @Autowired
+    PatientRepository patientRepository;
 
-
+    @Autowired
+    private S3KeyGen s3KeyGen;
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -203,9 +209,9 @@ public class UserService implements UserDetailsService {
 //        return userRepository.findByUsernameOrEmail(userName, email);
 //    }
 //
-//    public User findByUserName(String name) {
-//        return userRepository.findByUsername(name);
-//    }
+    public User findByUserName(String name) {
+        return userRepository.findByUsername(name);
+    }
 //
 //    public UserWrapper buildUserWrapper(User dbUser) {
 //        UserWrapper user = new UserWrapper(dbUser);
@@ -576,10 +582,10 @@ public class UserService implements UserDetailsService {
 //    }
 //
 //
-//    public User findById(long id) {
-//        return userRepository.findAllById(id);
-//    }
-//
+        public User findById(long id) {
+            return userRepository.findById(id);
+        }
+
 //    public User findUserById(long id) {
 //        return userRepository.findById(id);
 //    }
@@ -662,140 +668,28 @@ public class UserService implements UserDetailsService {
 //            this.userRepository.save(user);
 //        }
 //    }
-//
-//    public String savePatient(PatientRequest patientRequest) throws ParseException, Exception {
-//        Profile profile = new Profile(patientRequest);
-//        UserRole userRole;
-//        User selectedDoctor = this.userRepository.findOne(patientRequest.getSelectedDoctor());
-//        Insurance insurance = new Insurance(patientRequest);
-//        User patient = new User(patientRequest, UserTypeEnum.PATIENT.toString());
-//        patient.setPrimaryDoctor(selectedDoctor);
-//
-//        this.profileRepository.save(profile);
-//        this.insuranceRepository.save(insurance);
-//        patient.setProfile(profile);
-//        patient.setInsurance(insurance);
-//        this.userRepository.save(patient);
-//        userRole = new UserRole(patient, roleRepo.findByName(UserTypeEnum.PATIENT.getValue()));
-//        userRoleRepository.save(userRole);
-//
-//        /// now saving images against user id
-//
-//        ///profile photo save
-//        String url = null;
-//        if (patientRequest.getProfileImg() != null) {
-//            url = this.saveImage(patientRequest.getProfileImg(),
-//                    HISConstants.S3_USER_PROFILE_DIRECTORY_PATH,
-//                    patient.getId()
-//                            + "_"
-//                            + patient.getInsurance().getId()
-//                            + "_"
-//                            + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME,
-//                    patient.getId()
-//                            + "_"
-//                            + patient.getInsurance().getId()
-//                            + "_"
-//                            + HISConstants.S3_USER_PROFILE_GRAPHIC_NAME,
-//                    "/"
-//                            + HISConstants.S3_USER_PROFILE_DIRECTORY_PATH
-//                            + patient.getId()
-//                            + "_"
-//                            + patient.getInsurance().getId()
-//                            + "_"
-//                            + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME);
-//        }
-//
-//
-//        if (HISCoreUtil.isValidObject(url)) {
-//            patient.getProfile().setProfileImgURL(url);
-//            this.userRepository.save(patient);
-//            url = null;
-//        }
-//        ///profile photo save
-//
-//        ///front photo save
-//
-//        if (patientRequest.getPhotoFront() != null) {
-//            url = this.saveImage(patientRequest.getPhotoFront(),
-//                    HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
-//                    patient.getId()
-//                            + "_"
-//                            + patient.getInsurance().getId()
-//                            + "_"
-//                            + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME,
-//                    patient.getId()
-//                            + "_"
-//                            + patient.getInsurance().getId()
-//                            + "_"
-//                            + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_GRAPHIC_NAME,
-//                    "/"
-//                            + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
-//                            + patient.getId()
-//                            + "_"
-//                            + patient.getInsurance().getId()
-//                            + "_"
-//                            + HISConstants.S3_USER_INSURANCE_FRONT_PHOTO_THUMBNAIL_GRAPHIC_NAME);
-//
-//        }
-//        if (HISCoreUtil.isValidObject(url)) {
-//            patient.getInsurance().setPhotoFrontURL(url);
-//            this.userRepository.save(patient);
-//            url = null;
-//        }
-//        ///back photo save
-//        if (patientRequest.getPhotoBack() != null) {
-//            url = this.saveImage(patientRequest.getPhotoBack(),
-//                    HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH,
-//                    patient.getId()
-//                            + "_"
-//                            + patient.getInsurance().getId()
-//                            + "_"
-//                            + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME,
-//                    patient.getId()
-//                            + "_"
-//                            + patient.getInsurance().getId()
-//                            + "_"
-//                            + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_GRAPHIC_NAME,
-//                    "/"
-//                            + HISConstants.S3_USER_INSURANCE_DIRECTORY_PATH
-//                            + patient.getId()
-//                            + "_"
-//                            + patient.getInsurance().getId()
-//                            + "_"
-//                            + HISConstants.S3_USER_INSURANCE_BACK_PHOTO_THUMBNAIL_GRAPHIC_NAME);
-//        }
-//
-//        if (HISCoreUtil.isValidObject(url)) {
-//            patient.getInsurance().setPhotoBackURL(url);
-//            this.userRepository.save(patient);
-//            url = null;
-//        }
-//
-//        return patient.getId() + "";
-//
-//    }
-//
-//    public String saveImage(byte[] byteArary,
-//                            String directoryPath,
-//                            String fullThumbName,
-//                            String fullImgName,
-//                            String fullPathAndThumbNailGraphicName) throws Exception {
-//
-//        String imgURL = null;
-//
-////        byte[] byteArr = Files.readAllBytes(path);
-//        InputStream is = new ByteArrayInputStream(byteArary);
-//        boolean isSaved = false;
-//        isSaved = awsService.uploadImageByUserId(is,
-//                directoryPath,
-//                fullThumbName,
-//                fullImgName);
-//        if (isSaved) {
-//            imgURL = this.s3KeyGen.getImagePublicURL(fullPathAndThumbNailGraphicName, false);
-//        }
-//
-//        return imgURL;
-//    }
+
+    public String saveImage(byte[] byteArary,
+                            String directoryPath,
+                            String fullThumbName,
+                            String fullImgName,
+                            String fullPathAndThumbNailGraphicName) throws Exception {
+
+        String imgURL = null;
+
+//        byte[] byteArr = Files.readAllBytes(path);
+        InputStream is = new ByteArrayInputStream(byteArary);
+        boolean isSaved = false;
+        isSaved = awsService.uploadImageByUserId(is,
+                directoryPath,
+                fullThumbName,
+                fullImgName);
+        if (isSaved) {
+            imgURL = this.s3KeyGen.getImagePublicURL(fullPathAndThumbNailGraphicName, false);
+        }
+
+        return imgURL;
+    }
 //
 //    public boolean isUserNameAlreadyExists(String userName) {
 //        List<User> users = this.userRepository.findAllByUsername(userName);

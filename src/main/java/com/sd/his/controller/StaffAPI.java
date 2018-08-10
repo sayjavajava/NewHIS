@@ -6,7 +6,7 @@ import com.sd.his.service.StaffService;
 import com.sd.his.service.UserService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
-import com.sd.his.wrapper.UserWrapper;
+import com.sd.his.wrapper.PatientWrapper;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
@@ -518,13 +518,12 @@ public class StaffAPI {
 
         try {
             if (!HISCoreUtil.isNull(type)) {
-                List<StaffResponseWrapper> userWrappers = staffService.findByRole(type);
-
-                if (!HISCoreUtil.isListEmpty(userWrappers)) {
+                List<StaffResponseWrapper> staffResponseWrapper = staffService.findByRole(type);
+                if (!HISCoreUtil.isListEmpty(staffResponseWrapper)) {
                     response.setResponseMessage(messageBundle.getString("user.fetched.success"));
                     response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
                     response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                    response.setResponseData(userWrappers);
+                    response.setResponseData(staffResponseWrapper);
                     logger.info("user on base of Type fetched successfully...");
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }

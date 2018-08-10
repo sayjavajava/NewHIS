@@ -5,7 +5,11 @@ import com.sd.his.model.BranchCashier;
 import com.sd.his.model.BranchReceptionist;
 import com.sd.his.model.Receptionist;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
  * @author    : waqas kamran
@@ -37,7 +41,9 @@ public interface BranchReceptionistRepository extends JpaRepository<BranchRecept
      BranchReceptionist findByReceptionist(Receptionist receptionist);
      void deleteAllByReceptionist(Receptionist receptionist);
      BranchReceptionist findByReceptionistAndPrimaryBranchTrue(Receptionist receptionist);
+     @Query("select b from BranchReceptionist br inner join br.branch b where br.receptionist.id=:id")
+     List<Branch> getReceptionistBranches(@Param("id") Long id);//id=>recetionist pk id
 
-
+     void deleteAllByReceptionistAndPrimaryBranchFalse(Receptionist receptionist);
 }
 

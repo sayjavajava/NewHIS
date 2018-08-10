@@ -10,6 +10,7 @@ import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.UserWrapper;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
@@ -61,6 +62,10 @@ public class StaffService {
     DutyShiftRepository dutyShiftRepository;
     @Autowired
     BranchDoctorRepository branchDoctorRepository;
+    @Autowired
+    BranchService branchService;
+    @Autowired
+    StaffService staffService;
 
     List<StaffWrapper> finalStaffList = new ArrayList<>();
     private final Logger logger = LoggerFactory.getLogger(StaffService.class);
@@ -373,20 +378,31 @@ public class StaffService {
     }
 
     public StaffResponseWrapper findByIdAndResponse(long id, String userType) {
-
+        StaffResponseWrapper staffResponseWrapper = null;
         if (userType.equalsIgnoreCase("CASHIER")) {
-            return cashierRepository.findAllByIdAndStatusActive(id);
+            staffResponseWrapper = cashierRepository.findAllByIdAndStatusActive(id);
+            staffResponseWrapper.setStaffBranches(branchCashierRepository.getCashierBranches(id));
+            return staffResponseWrapper;//cashierRepository.findAllByIdAndStatusActive(id);
         }
         if (userType.equalsIgnoreCase("RECEPTIONIST")) {
-            return cashierRepository.findAllByIdAndStatusActive(id);
+            //return cashierRepository.findAllByIdAndStatusActive(id);
+            staffResponseWrapper = receptionistRepository.findAllByIdAndStatusActive(id);
+            staffResponseWrapper.setStaffBranches(branchReceptionistRepository.getReceptionistBranches(id));
+            return staffResponseWrapper;//cashierRepository.findAllByIdAndStatusActive(id);
         }
         if (userType.equalsIgnoreCase("DOCTOR")) {
-            StaffResponseWrapper staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(id);
+            staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(id);
             return doctorRepository.findAllByIdAndStatusActive(id);
         }
         if (userType.equalsIgnoreCase("NURSE")) {
-            StaffResponseWrapper staffResponseWrapper = nurseRepository.findAllByIdAndStatusActive(id);
-            return nurseRepository.findAllByIdAndStatusActive(id);
+            staffResponseWrapper = nurseRepository.findAllByIdAndStatusActive(id);
+            Nurse nurse = nurseRepository.findOne(id);
+            //branchService.getAllActiveBranches();
+            staffResponseWrapper.setStaffBranches( branchNurseRepository.getNurseBranches(id) );
+            //staffService.findByRole("DOCTOR");
+            staffResponseWrapper.setDutyWithDoctors(nurseWithDoctorRepository.findNurseWithDoctors(id));
+
+            return staffResponseWrapper;
         }
 
       /* User user = userRepository.findAllById(id);
@@ -562,19 +578,19 @@ public class StaffService {
                 receptionist.setLastName(createRequest.getLastName());
                 receptionist.setFirstName(createRequest.getFirstName());
                 receptionistRepository.save(receptionist);
-                Branch branch = branchRepository.findOne(createRequest.getPrimaryBranch());
-                BranchReceptionist branchReceptionist = branchReceptionistRepository.findByReceptionist(receptionist);
-                branchReceptionist.setBranch(branch);
+                Branch primaryBranchReceptionist = branchRepository.findOne(createRequest.getPrimaryBranch());
+                BranchReceptionist branchReceptionist = branchReceptionistRepository.findByReceptionistAndPrimaryBranchTrue(receptionist);
+                branchReceptionist.setBranch(primaryBranchReceptionist);
                 branchReceptionistRepository.save(branchReceptionist);
 
                 List<Branch> allowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
                 List<BranchReceptionist> receptionistVisitBranchesData = new ArrayList<>();
                 if (!HISCoreUtil.isListEmpty(allowBranches)) {
-                    branchReceptionistRepository.deleteAllByReceptionist(receptionist);
+                    branchReceptionistRepository.deleteAllByReceptionistAndPrimaryBranchFalse(receptionist);
                 }
                 if (!HISCoreUtil.isListEmpty(allowBranches)) {
                     for (Branch userVisitBr : allowBranches) {
-                        if (userVisitBr.getId() == branch.getId())
+                        if (userVisitBr.getId() == primaryBranchReceptionist.getId())
                             continue;
                         BranchReceptionist userVisitBranches = new BranchReceptionist();
                         userVisitBranches.setBranch(userVisitBr);
@@ -597,18 +613,19 @@ public class StaffService {
                 cashier.setLastName(createRequest.getLastName());
                 cashier.setFirstName(createRequest.getFirstName());
                 cashierRepository.save(cashier);
-                Branch primaryBranchReceptionist = branchRepository.findOne(createRequest.getPrimaryBranch());
-                BranchCashier branchCashier = branchCashierRepository.findByCashier(cashier);
-                branchCashier.setBranch(primaryBranchReceptionist);
+
+                Branch primaryBranchCashier = branchRepository.findOne(createRequest.getPrimaryBranch());
+                BranchCashier branchCashier = branchCashierRepository.findByCashierAndPrimaryBranchTrue(cashier);
+                branchCashier.setBranch(primaryBranchCashier);
                 branchCashierRepository.save(branchCashier);
 
-                List<Branch> recepAllowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
+                List<Branch> cashierAllowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
                 List<BranchCashier> cashierVisitBranchesData = new ArrayList<>();
-                if (!HISCoreUtil.isListEmpty(recepAllowBranches)) {
-                    branchCashierRepository.deleteAllByCashier(cashier);
+                if (!HISCoreUtil.isListEmpty(cashierAllowBranches)) {
+                    branchCashierRepository.deleteAllByCashierAndPrimaryBranchFalse(cashier);
                 }
-                if (!HISCoreUtil.isListEmpty(recepAllowBranches)) {
-                    for (Branch userVisitBr : recepAllowBranches) {
+                if (!HISCoreUtil.isListEmpty(cashierAllowBranches)) {
+                    for (Branch userVisitBr : cashierAllowBranches) {
                         if (userVisitBr.getId() == branchCashier.getId())
                             continue;
                         BranchCashier userVisitBranches = new BranchCashier();
@@ -619,7 +636,7 @@ public class StaffService {
                     }
                     branchCashierRepository.save(cashierVisitBranchesData);
                 }
-
+                break;
             case NURSE:
                 Nurse nurse = nurseRepository.findByUser(alreadyExistsUser);
                 alreadyExistsUser.setActive(createRequest.isActive());
@@ -640,8 +657,8 @@ public class StaffService {
 
                 List<Branch> nurseAllowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
                 List<BranchNurse> nurseAllowBranchesData = new ArrayList<>();
-                if (!HISCoreUtil.isListEmpty(nurseAllowBranchesData)) {
-                    branchNurseRepository.deleteAllByNurse(nurse);
+                if (!HISCoreUtil.isListEmpty(nurseAllowBranches)) {
+                    branchNurseRepository.deleteAllByNurseAndPrimaryBranchFalse(nurse);
                 }
                 if (!HISCoreUtil.isListEmpty(nurseAllowBranches)) {
                     for (Branch userVisitBr : nurseAllowBranches) {
@@ -655,6 +672,23 @@ public class StaffService {
                     }
                     branchNurseRepository.save(nurseAllowBranchesData);
                 }
+
+                //nurse with doctor logic
+                //List<User> doctorsList = userRepository.findAllByIdIn(Arrays.asList(createRequest.getDutyWithDoctors()));
+
+                List<Doctor> doctorList = doctorRepository.findAllByIdIn(Arrays.asList(createRequest.getDutyWithDoctors()));
+                List<NurseWithDoctor> dutyWithDoctorsData = new ArrayList<>();
+                if( !HISCoreUtil.isListEmpty(doctorList) ) {
+                    nurseWithDoctorRepository.deleteAllByNurse(nurse);
+                    for (Doctor docUser : doctorList) {
+                        NurseWithDoctor dutyWithDoctor1 = new NurseWithDoctor();
+                        dutyWithDoctor1.setNurse(nurse);
+                        dutyWithDoctor1.setDoctor(docUser);
+                        dutyWithDoctorsData.add(dutyWithDoctor1);
+                    }
+                }
+                nurseWithDoctorRepository.save(dutyWithDoctorsData);
+                //nurseWithDoctorRepository
 
                 break;
 
@@ -899,26 +933,21 @@ public class StaffService {
         //userRepository.delete(user);
         return null;
     }
+
     public List<StaffResponseWrapper> findByRole(String role) {
-        List<StaffResponseWrapper> userWrapper = new ArrayList<>();
-        List<User> userList = userRepository.findAllByUserRoles_role_nameAndActiveTrue(role);
-        StaffResponseWrapper userWraper = new StaffResponseWrapper();
+        List<StaffResponseWrapper> staffRespWrapper = new ArrayList<>();
+        List<User> userList = userRepository.findAllByUserRoles_role_name(role);
+        StaffResponseWrapper staffWraper = new StaffResponseWrapper();
         switch(role){
             case "DOCTOR":
                 List<Doctor> doctorList =doctorRepository.findAllByUserIn(userList);
                 for (Doctor  doctor : doctorList){
-                    userWraper = new StaffResponseWrapper(doctor);
-                    userWrapper.add(userWraper);
+                    staffRespWrapper.add(new StaffResponseWrapper(doctor));
                 }
                 break;
-
+            default:
+                break;
         }
-
-      /*  for (User  user : userList){
-            UserWrapper userWrapper1 = new UserWrapper(user);
-            userWrapper.add(userWrapper1);
-        }*/
-
-        return userWrapper;
+        return staffRespWrapper;
     }
 }

@@ -89,7 +89,7 @@ public class MedicalServicesService {
 
     public List<MedicalServiceWrapper> findAllMedicalServices() {
 
-        return null/*medicalServiceRepository.findAllMedicalServiceWrappers()*/;
+        return medicalServiceRepository.findAllMedicalServiceWrappers(true);
     }
 
     public int countAllMedicalServices() {

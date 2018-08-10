@@ -22,5 +22,5 @@ package com.sd.his.enums;
  * 
  */
 public enum PatientStatusTypeEnum {
-    ACTIVE, BLOCKED;
+    ACTIVE, BLOCKED,INACTIVE;
 }

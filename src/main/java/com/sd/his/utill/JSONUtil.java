@@ -1,6 +1,7 @@
 package com.sd.his.utill;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -56,6 +57,15 @@ public class JSONUtil {
 
     public static String gsonListToJSON(List<?> objects) {
         return new Gson().toJson(objects);
+    }
+
+    public static <T> Object jsonToPOGO(String json, Class<T> objectType) throws IOException {
+        try {
+            Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
+            return gson.fromJson(json, objectType);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public static List<String> convertJsonToList(String data){

@@ -1,6 +1,7 @@
 package com.sd.his.repository;
 
 
+import com.sd.his.model.Branch;
 import com.sd.his.model.Cashier;
 import com.sd.his.model.Nurse;
 import com.sd.his.model.User;
@@ -47,6 +48,5 @@ public interface NurseRepository extends JpaRepository<Nurse, Long> {
     StaffResponseWrapper findAllByIdAndStatusActive(@Param("id") Long id);
 
     Nurse findByUser(User user);
-
 }
 

@@ -74,7 +74,7 @@ public class Patient extends BaseEntity implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "MARITAL_STATUS")
-    private MaritalStatusTypeEnum martialStatus;
+    private MaritalStatusTypeEnum maritalStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
@@ -90,10 +90,6 @@ public class Patient extends BaseEntity implements Serializable {
 
     @Column(name = "REMINDER_LANGUAGE")
     private String reminderLanguage;
-
-
-    @Column(name = "ADDRESS")
-    private String address;
 
     @Column(name = "STREET_ADDRESS")
     private String streetAddress;
@@ -274,12 +270,12 @@ public class Patient extends BaseEntity implements Serializable {
         this.email = email;
     }
 
-    public MaritalStatusTypeEnum getMartialStatus() {
-        return martialStatus;
+    public MaritalStatusTypeEnum getMaritalStatus() {
+        return maritalStatus;
     }
 
-    public void setMartialStatus(MaritalStatusTypeEnum martialStatus) {
-        this.martialStatus = martialStatus;
+    public void setMaritalStatus(MaritalStatusTypeEnum maritalStatus) {
+        this.maritalStatus = maritalStatus;
     }
 
     public PatientStatusTypeEnum getStatus() {
@@ -314,13 +310,13 @@ public class Patient extends BaseEntity implements Serializable {
         this.reminderLanguage = reminderLanguage;
     }
 
-    public String getAddress() {
+    /*public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
-    }
+    }*/
 
     public String getStreetAddress() {
         return streetAddress;

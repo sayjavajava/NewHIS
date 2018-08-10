@@ -1,35 +1,19 @@
 package com.sd.his.repository;
 
-import com.sd.his.model.Appointment;
 import com.sd.his.model.Patient;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-/*
- * @author    : waqas kamran
- * @Date      : 17-Apr-18
- * @version   : ver. 1.0.0
- *
- * ________________________________________________________________________________________________
- *
- *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________
- *
- *
- * ________________________________________________________________________________________________
- *
- * @Project   : HIS
- * @Package   : com.sd.his.*
- * @FileName  : UserAuthAPI
- *
- * Copyright ©
- * SolutionDots,
- * All rights reserved.
- *
- */
-@Repository
+import java.util.List;
+
 public interface PatientRepository extends JpaRepository<Patient, Long> {
+    Patient findAllByEmail(String email);
 
+    @Query("SELECT p FROM com.sd.his.model.Patient p")
+    List<Patient> getAllPaginatedPatients(Pageable pageable);
 
+    @Query("SELECT p FROM Patient p WHERE ( lower( p.firstName ) LIKE concat('%',:searchString,'%') or lower( p.middleName ) LIKE concat('%',:searchString,'%') or lower( p.lastName ) LIKE concat('%',:searchString,'%') or p.cellPhone LIKE concat('%',:searchString,'%') ) order by p.firstName asc")
+    List<Patient> searchPatientByNameOrCellNbr(Pageable pageable,@Param("searchString") String searchString);
 }
-
