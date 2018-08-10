@@ -104,11 +104,11 @@ public class HisApplication {
             permissionRepository.save(permissions);
 
             List<Role> roles = new ArrayList<>();
-    /*  0 */roles.add(new Role(UserTypeEnum.ADMIN.name(), "admin role", true));
-    /*  1 */roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
-    /*  2 */roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
-    /*  3 */roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "receptionist role", true));
-    /*  4 */roles.add(new Role(UserTypeEnum.CASHIER.name(), "cashier role", true));
+    roles.add(new Role(UserTypeEnum.ADMIN.name(), "admin role", true));
+    roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
+    roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
+    roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "receptionist role", true));
+    roles.add(new Role(UserTypeEnum.CASHIER.name(), "cashier role", true));
             roleRepository.save(roles);
 
             List<RolePermission> rolePermissions = new ArrayList<>();
@@ -175,5 +175,5 @@ public class HisApplication extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(HisApplication.class);
-    }
-}*/
+    }*/
+}
