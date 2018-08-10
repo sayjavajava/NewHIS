@@ -62,7 +62,7 @@ public class HisApplication {
         SpringApplication.run(HisApplication.class, args);
     }
 
-/*    @EventListener
+    @EventListener
     @Transactional(rollbackOn = Throwable.class)
     public void onBootStartup(ApplicationContextEvent event) {
 
@@ -99,7 +99,7 @@ public class HisApplication {
             permissions.add(new Permission("Service Tax", "Service Tax", "/dashboard/setting/service-tax", true));
             permissions.add(new Permission("Staff", "Staff", "/dashboard/setting/staff", true));
             permissions.add(new Permission("Today Appointment", "Today Appointment", "/dashboard/todayAppointment", true));
-            permissions.add(new Permission("Version", "version", "/asdfasdf", true));
+            permissions.add(new Permission("Version", "version", "/dashboard/setting/version", true));
 
             permissionRepository.save(permissions);
 
@@ -134,7 +134,7 @@ public class HisApplication {
             Manager manager = new Manager();
             manager.setDob(new Date());
             manager.setFirstName("admin");
-            manager.setGender(GenderTypeEnum.MALE);
+            manager.setGender(GenderTypeEnum.MALE.name());
             manager.setProfileId("P-10001");
             manager.setUser(admin);
             managerRepository.save(manager);
@@ -142,7 +142,7 @@ public class HisApplication {
             Doctor doctor = new Doctor();
             doctor.setDob(new Date());
             doctor.setFirstName("Doctor");
-            doctor.setGender(GenderTypeEnum.MALE);
+            doctor.setGender(GenderTypeEnum.MALE.name());
             doctor.setProfileId("P-10002");
             doctor.setUser(doctorU);
             doctorRepository.save(doctor);
@@ -155,7 +155,7 @@ public class HisApplication {
             branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
             organizationRepository.saveAndFlush(organization);
         }
-    }*/
+    }
 }
 
 /**
