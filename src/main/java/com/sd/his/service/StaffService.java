@@ -79,12 +79,12 @@ public class StaffService {
         // String brName = branch.getName();
         User user = null;
 
-        if (usertype.equalsIgnoreCase(CASHIER.name())) {
+        if (usertype.equalsIgnoreCase("CASHIER") ) {
             user = new User();
             user.setActive(true);
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
             user.setUsername(createRequest.getUserName());
-            user.setUserType(CASHIER);
+            user.setUserType("CASHIER");
             userRepository.save(user);
 
             List<Role> allRoles = roleRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedRoles()));
@@ -141,7 +141,7 @@ public class StaffService {
             user.setActive(true);
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
             user.setUsername(createRequest.getUserName());
-            user.setUserType(RECEPTIONIST);
+            user.setUserType("RECEPTIONIST");
             userRepository.save(user);
 
             List<Role> allRoles = roleRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedRoles()));
@@ -196,7 +196,7 @@ public class StaffService {
             user.setActive(true);
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
             user.setUsername(createRequest.getUserName());
-            user.setUserType(NURSE);
+            user.setUserType("NURSE");
             userRepository.save(user);
             List<Role> allRoles = roleRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedRoles()));
             List<UserRole> recAssignedRole = new ArrayList<>();
@@ -277,7 +277,7 @@ public class StaffService {
             user.setActive(true);
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
             user.setUsername(createRequest.getUserName());
-            user.setUserType(DOCTOR);
+            user.setUserType("DOCTOR");
             userRepository.save(user);
             List<Role> allRoles = roleRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedRoles()));
             List<UserRole> recAssignedRole = new ArrayList<>();
@@ -491,12 +491,9 @@ public class StaffService {
         List<StaffWrapper> crStaffList = cashierRepository.findAllByActive(pageable);
         List<StaffWrapper> rtStaffList = receptionistRepository.findAllByActive(pageable);
         List<StaffWrapper> nrStaffList = nurseRepository.findAllByActive(pageable);
-
         finalStaffList = Stream.of(drStaffList, crStaffList, rtStaffList, nrStaffList)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-
-
         return finalStaffList;
     }
 
@@ -507,8 +504,8 @@ public class StaffService {
 
     @Transactional
     public User updateStaffData(StaffRequestWrapper createRequest, User alreadyExistsUser) {
-        switch (alreadyExistsUser.getUserType()) {
-            case DOCTOR:
+        switch (alreadyExistsUser.getUserType().toUpperCase()) {
+            case "DOCTOR":
                 Doctor doctor = doctorRepository.findByUser(alreadyExistsUser);
                 alreadyExistsUser.setActive(createRequest.isActive());
                 userRepository.save(alreadyExistsUser);
@@ -567,7 +564,7 @@ public class StaffService {
                 }
 
                 break;
-            case RECEPTIONIST:
+            case "RECEPTIONIST":
                 Receptionist receptionist = receptionistRepository.findByUser(alreadyExistsUser);
                 alreadyExistsUser.setActive(createRequest.isActive());
                 userRepository.save(alreadyExistsUser);
@@ -602,7 +599,7 @@ public class StaffService {
                 }
 
                 break;
-            case CASHIER:
+            case "CASHIER":
                 Cashier cashier = cashierRepository.findByUser(alreadyExistsUser);
                 alreadyExistsUser.setActive(createRequest.isActive());
                 userRepository.save(alreadyExistsUser);
@@ -637,7 +634,7 @@ public class StaffService {
                     branchCashierRepository.save(cashierVisitBranchesData);
                 }
                 break;
-            case NURSE:
+            case "NURSE":
                 Nurse nurse = nurseRepository.findByUser(alreadyExistsUser);
                 alreadyExistsUser.setActive(createRequest.isActive());
                 userRepository.save(alreadyExistsUser);
@@ -894,22 +891,22 @@ public class StaffService {
     @Transactional
     public User deleteUser(User user) {
         //  user.setDeleted(true);
-        String userType = user.getUserType().name();
-        if (userType.equalsIgnoreCase(UserTypeEnum.CASHIER.name())) {
+        String userType = user.getUserType();
+        if (userType.equalsIgnoreCase("CASHIER")) {
             Cashier cashier = cashierRepository.findByUser(user);
             userRepository.delete(user);
             branchCashierRepository.deleteAllByCashier(cashier);
             cashierRepository.delete(cashier);
             return user;
         }
-        if (userType.equalsIgnoreCase(UserTypeEnum.RECEPTIONIST.name())) {
+        if (userType.equalsIgnoreCase("RECEPTIONIST")) {
             Receptionist receptionist = receptionistRepository.findByUser(user);
             branchReceptionistRepository.deleteAllByReceptionist(receptionist);
             userRepository.delete(user);
             receptionistRepository.delete(receptionist);
             return user;
         }
-        if (userType.equalsIgnoreCase(UserTypeEnum.NURSE.name())) {
+        if (userType.equalsIgnoreCase("NURSE")) {
             Nurse nurse = nurseRepository.findByUser(user);
             branchNurseRepository.deleteAllByNurse(nurse);
             userRepository.delete(user);
@@ -919,7 +916,7 @@ public class StaffService {
            ;
             return user;
         }
-        if (userType.equalsIgnoreCase(UserTypeEnum.DOCTOR.name())) {
+        if (userType.equalsIgnoreCase("DOCTOR")) {
             Doctor doctor = doctorRepository.findByUser(user);
             branchDoctorRepository.deleteAllByDoctor(doctor);
         //    userRoleRepository.deleteAllByUser(user);
@@ -949,5 +946,22 @@ public class StaffService {
                 break;
         }
         return staffRespWrapper;
+    }
+
+    public List<StaffWrapper> searchByNameOrRole(String name, String userType, int offset, int limit) {
+        Pageable pageable = new PageRequest(offset, limit);
+        if(userType!=null && !userType.isEmpty())
+            userType = userType.toLowerCase();
+        List<StaffWrapper> drStaffList = doctorRepository.findAllBySearchCriteria(name, userType, pageable);
+        List<StaffWrapper> crStaffList = cashierRepository.findAllBySearchCriteria(name, userType, pageable);
+        List<StaffWrapper> rtStaffList = receptionistRepository.findAllBySearchCriteria(name, userType, pageable);
+        List<StaffWrapper> nrStaffList = nurseRepository.findAllBySearchCriteria(name, userType, pageable);
+
+        finalStaffList = Stream.of(drStaffList, crStaffList, rtStaffList, nrStaffList)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+
+        return finalStaffList;
     }
 }

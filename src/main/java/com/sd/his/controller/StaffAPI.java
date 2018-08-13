@@ -415,84 +415,80 @@ public class StaffAPI {
         }
     }
 
-//    @ApiOperation(httpMethod = "GET", value = "Search User",
-//            notes = "This method will return User on base of search",
-//            produces = "application/json", nickname = "Search Users",
-//            response = GenericAPIResponse.class, protocols = "https")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "User found successfully", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-//    @RequestMapping(value = "/search/{page}", method = RequestMethod.GET)
-//    public ResponseEntity<?> searchUser(HttpServletRequest request,
-//                                        @PathVariable("page") int page,
-//                                        @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-//                                        @RequestParam(value = "name") String name,
-//                                        @RequestParam(value = "role") String role,
-//                                        @RequestParam(value = "email") String email) {
-//        logger.info("search:" + role);
-//        GenericAPIResponse response = new GenericAPIResponse();
-//        response.setResponseMessage(messageBundle.getString("user.not.found"));
-//        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
-//        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//        response.setResponseData(null);
-//
-//        try {
-//
-//            List<UserWrapper> userWrappers = userService.searchByNameOrEmailOrRole(name, email, role, page, pageSize);
-//
-//            int countUser = userService.totalUser();
-//
-//            if (!HISCoreUtil.isListEmpty(userWrappers)) {
-//                Integer nextPage, prePage, currPage;
-//                int[] pages;
-//
-//                if (countUser > pageSize) {
-//                    int remainder = countUser % pageSize;
-//                    int totalPages = countUser / pageSize;
-//                    if (remainder > 0) {
-//                        totalPages = totalPages + 1;
-//                    }
-//                    pages = new int[totalPages];
-//                    pages = IntStream.range(0, totalPages).toArray();
-//                    currPage = page;
-//                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
-//                    prePage = currPage > 0 ? currPage : null;
-//                } else {
-//                    pages = new int[1];
-//                    pages[0] = 0;
-//                    currPage = 0;
-//                    nextPage = null;
-//                    prePage = null;
-//                }
-//
-//                Map<String, Object> returnValues = new LinkedHashMap<>();
-//                returnValues.put("nextPage", nextPage);
-//                returnValues.put("prePage", prePage);
-//                returnValues.put("currPage", currPage);
-//                returnValues.put("pages", pages);
-//                returnValues.put("data", userWrappers);
-//
-//                response.setResponseMessage(messageBundle.getString("user.fetched.success"));
-//                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
-//                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-//                response.setResponseData(returnValues);
-//                logger.info("searched User Fetched successfully...");
-//                return new ResponseEntity<>(response, HttpStatus.OK);
-//            }
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        } catch (Exception ex) {
-//            logger.error("searched User failed.", ex.fillInStackTrace());
-//            response.setResponseData("");
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-//
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @ApiOperation(httpMethod = "GET", value = "Search User",
+            notes = "This method will return User on base of search",
+            produces = "application/json", nickname = "Search Users",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/search/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> searchUser(HttpServletRequest request,
+                                        @PathVariable("page") int page,
+                                        @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                        @RequestParam(value = "name") String name,
+                                        @RequestParam(value = "userType") String userType) {
+        logger.info("search:" + userType);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.not.found"));
+        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+            //List<UserWrapper> userWrappers = userService.searchByNameOrEmailOrRole(name, email, role, page, pageSize);
+            List<StaffWrapper> userWrappers = staffService.searchByNameOrRole(name.toLowerCase(), userType.toLowerCase(), page, pageSize);
+            int countUser = staffService.countAllStaff();
+            if (!HISCoreUtil.isListEmpty(userWrappers)) {
+                Integer nextPage, prePage, currPage;
+                int[] pages;
+
+                if (countUser > pageSize) {
+                    int remainder = countUser % pageSize;
+                    int totalPages = countUser / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = page;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
+
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);
+                returnValues.put("data", userWrappers);
+
+                response.setResponseMessage(messageBundle.getString("user.fetched.success"));
+                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+                logger.info("searched User Fetched successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("searched User failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 //
     @ApiOperation(httpMethod = "GET", value = "User By Type",
             notes = "This method will return Users By Type",

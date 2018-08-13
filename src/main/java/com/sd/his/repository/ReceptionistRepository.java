@@ -1,6 +1,7 @@
 package com.sd.his.repository;
 
 
+import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.Cashier;
 import com.sd.his.model.Receptionist;
 import com.sd.his.model.User;
@@ -47,6 +48,7 @@ public interface ReceptionistRepository extends JpaRepository<Receptionist, Long
     @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,rt.id,du.userType,rt.firstName,rt.lastName,du.username,rt.email,br.name,rt.homePhone,rt.cellPhone,du.active,br.id,rt.accountExpiry) FROM Receptionist rt INNER JOIN rt.user du INNER JOIN rt.branchReceptionists branchCr INNER JOIN branchCr.branch br WHERE rt.id =:id AND du.active = TRUE AND branchCr.primaryBranch=true")
     StaffResponseWrapper findAllByIdAndStatusActive(@Param("id") Long id);
 
-
+    @Query("SELECT distinct new com.sd.his.wrapper.response.StaffWrapper(ru.id,r.id,ru.username,ru.userType,r.firstName,r.lastName,r.email,b.name) FROM Receptionist r INNER JOIN r.user ru INNER JOIN r.branchReceptionists br INNER JOIN br.branch b WHERE (lower( r.firstName ) LIKE concat('%',:name,'%') or lower( r.lastName ) LIKE concat('%',:name,'%') OR ru.userType=:userType ) AND ru.active = TRUE AND br.primaryBranch=TRUE")
+    List<StaffWrapper> findAllBySearchCriteria(@Param("name") String name, @Param("userType") String userType, Pageable pageable);
 }
 

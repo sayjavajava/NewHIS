@@ -13,7 +13,7 @@ public class StaffWrapper {
     String username;
     String userType;
 
-    public StaffWrapper(Long uId, Long pId, String username, UserTypeEnum userType , String firstName, String lastName, String email, String primaryBranch) {
+    public StaffWrapper(Long uId, Long pId, String username, String userType , String firstName, String lastName, String email, String primaryBranch) {
         this.uId = uId;
         this.pId = pId;
         this.username=username;
@@ -21,7 +21,7 @@ public class StaffWrapper {
         this.lastName = lastName;
         this.email = email;
         this.primaryBranch = primaryBranch;
-        this.userType=userType.name();
+        this.userType=userType;
     }
 
     public Long getuId() {
