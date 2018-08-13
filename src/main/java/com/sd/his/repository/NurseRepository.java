@@ -1,6 +1,7 @@
 package com.sd.his.repository;
 
 
+import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.Branch;
 import com.sd.his.model.Cashier;
 import com.sd.his.model.Nurse;
@@ -48,5 +49,8 @@ public interface NurseRepository extends JpaRepository<Nurse, Long> {
     StaffResponseWrapper findAllByIdAndStatusActive(@Param("id") Long id);
 
     Nurse findByUser(User user);
+
+    @Query("SELECT distinct new com.sd.his.wrapper.response.StaffWrapper(nu.id,n.id,nu.username,nu.userType,n.firstName,n.lastName,n.email,br.name) FROM Nurse n INNER JOIN n.user nu INNER JOIN n.branchNurses bn INNER JOIN bn.branch br WHERE (lower( n.firstName ) LIKE concat('%',:name,'%') or lower( n.lastName ) LIKE concat('%',:name,'%') OR nu.userType=:userType ) AND nu.active = TRUE AND bn.primaryBranch=TRUE")
+    List<StaffWrapper> findAllBySearchCriteria(@Param("name") String name, @Param("userType") String userType, Pageable pageable);
 }
 

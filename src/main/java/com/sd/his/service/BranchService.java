@@ -297,7 +297,6 @@ public List<BranchResponseWrapper> searchByBranchNameAndDepartment(Long name, Lo
 
 
 public List<BranchResponseWrapper> getAllActiveBranches() {
-    List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActiveTrue();
     return branchRepository.findAllByActiveTrue();
 }
     private String generateEmail(String domain, int length) {
