@@ -79,6 +79,7 @@ public class AppointmentWrapper {
     private String docLastName;
     private int appointmentConvertedTime;
     private int appointmentEndedConvertedTime;
+    private Date compareDate;
 
 
 
@@ -114,6 +115,7 @@ public class AppointmentWrapper {
         this.status = status.name();
         this.followUpReminder = followUpReminder;
         this.duration =duration;
+        this.compareDate =scheduleDate;
         this.appointmentType = JSONUtil.convertJsonToList(appointmentType);
     //    this.followUpReason = followUpReasonReminder;
       /*  this.startedOn = startedOn;
@@ -145,6 +147,14 @@ public class AppointmentWrapper {
                 ", type='" + type + '\'' +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public Date getCompareDate() {
+        return compareDate;
+    }
+
+    public void setCompareDate(Date compareDate) {
+        this.compareDate = compareDate;
     }
 
     public int getAppointmentEndedConvertedTime() {

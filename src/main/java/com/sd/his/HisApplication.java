@@ -62,7 +62,7 @@ public class HisApplication {
         SpringApplication.run(HisApplication.class, args);
     }
 
-    @EventListener
+    /*@EventListener
     @Transactional(rollbackOn = Throwable.class)
     public void onBootStartup(ApplicationContextEvent event) {
 
@@ -157,7 +157,7 @@ public class HisApplication {
         }
     }
 }
-
+*/
 /**
  * @author Irfan Nasim
  * @description To create WAR Packaging

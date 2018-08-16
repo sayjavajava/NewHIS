@@ -69,6 +69,9 @@ public class PatientWrapper {
     private String primaryInsuranceNotes = "";
     private byte[] photoFront;
     private byte[] photoBack;
+    ////////////Appointment
+    List<AppointmentWrapper> futureAppointments;
+    List<AppointmentWrapper> pastAppointments;
 
     public PatientWrapper() {
     }
@@ -128,6 +131,22 @@ public class PatientWrapper {
         *//*this.photoFront = insurance.getPhotoFront();
         this.photoBack = insurance.getPhotoBack();*//*
     }*/
+
+    public List<AppointmentWrapper> getFutureAppointments() {
+        return futureAppointments;
+    }
+
+    public void setFutureAppointments(List<AppointmentWrapper> futureAppointments) {
+        this.futureAppointments = futureAppointments;
+    }
+
+    public List<AppointmentWrapper> getPastAppointments() {
+        return pastAppointments;
+    }
+
+    public void setPastAppointments(List<AppointmentWrapper> pastAppointments) {
+        this.pastAppointments = pastAppointments;
+    }
 
     public Long getPatient() {
         return patient;
