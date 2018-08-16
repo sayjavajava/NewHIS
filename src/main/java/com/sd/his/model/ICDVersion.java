@@ -50,6 +50,9 @@ public class ICDVersion extends BaseEntity implements Serializable {
     @OneToMany(targetEntity = ICDCodeVersion.class, mappedBy = "version", cascade = {CascadeType.ALL})
     private List<ICDCodeVersion> versions;
 
+    @OneToMany(mappedBy = "icdVersion")
+    private List<Problem> problems;
+
     public ICDVersion() {
     }
 

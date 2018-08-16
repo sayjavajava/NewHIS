@@ -1,13 +1,5 @@
 package com.sd.his.wrapper;
 
-import com.sd.his.model.Insurance;
-//import com.sd.his.model.Profile;
-import com.sd.his.model.User;
-//import com.sd.his.utill.DateUtil;
-import com.sd.his.utill.HISConstants;
-import com.sd.his.wrapper.RaceWrapper;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,62 +63,6 @@ public class PatientWrapper {
 
     public PatientWrapper() {
     }
-
-    /*public PatientWrapper(User user, Profile profile, Insurance insurance) {
-        this.userId = user.getId();
-        this.userName = user.getUsername();
-        this.statusUser = user.isActive();
-//        this.deleted = user.isDeleted();
-        this.email = user.getEmail();
-//        this.Type = user.getUserType();
-
-        this.profileId = profile.getId();
-        this.patientSSN = profile.getPatientSSN();
-        this.firstName = profile.getFirstName();
-        this.middleName = profile.getMiddleName();
-        this.lastName = profile.getLastName() == null ? "" : profile.getLastName();
-        this.foreignName = profile.getForeignName();
-        this.homePhone = profile.getHomePhone() == null ? "" : profile.getHomePhone();
-        this.cellPhone = profile.getCellPhone() == null ? "" : profile.getCellPhone();
-        this.officePhone = profile.getOfficePhone();
-        this.officeExtension = profile.getOfficeExtension();
-        this.preferredCommunication = profile.getPreferredCommunication();
-        this.reminderLanguage = profile.getReminderLanguage();
-        this.emergencyContactName = profile.getEmergencyContactName();
-        this.emergencyContactPhone = profile.getEmergencyContactPhone();
-        this.emergencyContactRelation = profile.getEmergencyContactRelation();
-        this.disableSMSTxt = profile.getDisableSMSText();
-        this.formattedAddress = profile.getFormattedAddress();
-        this.streetAddress = profile.getStreetAddress();
-        this.marital = profile.getMaritalStatus();
-        this.zipCode = profile.getZipCode();
-        this.signatureOnFile = profile.getSignatureOnFile();
-
-        this.gender = profile.getGender() == null ? null : profile.getGender();
-        this.profileImg = profile.getProfileImg() == null ? "" : profile.getProfileImg();
-        this.city = profile.getCity() == null ? "" : profile.getCity();
-        this.state = profile.getState() == null ? "" : profile.getState();
-        this.country = profile.getCountry() == null ? "" : profile.getCountry();
-        this.racesString = profile.getRaces();
-        this.dob = profile.getDob() == null ? "" : DateUtil.getFormattedDateFromDate(profile.getDob(), HISConstants.DATE_FORMATE_THREE);
-
-        this.titlePrefix = profile.getTitlePrefix();
-        if (user.getPrimaryDoctor() != null) {
-            this.selectedDoctor = user.getPrimaryDoctor().getId();
-        }
-
-        this.insuranceId = insurance.getId();
-        this.company = insurance.getCompany();
-        this.insuranceIdNumber = insurance.getInsuranceID();
-        this.groupNumber = insurance.getGroupNumber();
-        this.planName = insurance.getPlanName();
-        this.planType = insurance.getPlanType();
-        this.cardIssuedDate = insurance.getCardIssuedDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
-        this.cardExpiryDate = insurance.getCardExpiryDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
-        this.primaryInsuranceNotes = insurance.getPrimaryInsuranceNotes();
-        *//*this.photoFront = insurance.getPhotoFront();
-        this.photoBack = insurance.getPhotoBack();*//*
-    }*/
 
     public long getId() {
         return id;

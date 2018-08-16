@@ -19,7 +19,7 @@ public interface RolePermissionRepository extends JpaRepository<RolePermission, 
 
     //@Query("SELECT DISTINCT p FROM Permission p INNER JOIN p.rolePermissions rp INNER JOIN rp.role r INNER JOIN r.userRoles ur INNER JOIN ur.user u WHERE u.id=:userId")
 
-    @Query("SELECT rp FROM RolePermission rp INNER JOIN rp.permission p INNER JOIN rp.role r INNER JOIN r.userRoles ur INNER JOIN ur.user u WHERE u.id=:userId")
+    @Query("SELECT rp FROM RolePermission rp INNER JOIN rp.permission p INNER JOIN rp.role r INNER JOIN r.userRoles ur INNER JOIN ur.user u WHERE u.id=:userId ORDER BY p.name")
     List<RolePermission> findUserRolePermissionByUserId(@Param("userId") Long userId);
 
 }
