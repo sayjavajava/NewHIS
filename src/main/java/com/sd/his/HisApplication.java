@@ -62,7 +62,7 @@ public class HisApplication {
         SpringApplication.run(HisApplication.class, args);
     }
 
-/*    @EventListener
+    /*@EventListener
     @Transactional(rollbackOn = Throwable.class)
     public void onBootStartup(ApplicationContextEvent event) {
 
@@ -99,16 +99,16 @@ public class HisApplication {
             permissions.add(new Permission("Service Tax", "Service Tax", "/dashboard/setting/service-tax", true));
             permissions.add(new Permission("Staff", "Staff", "/dashboard/setting/staff", true));
             permissions.add(new Permission("Today Appointment", "Today Appointment", "/dashboard/todayAppointment", true));
-            permissions.add(new Permission("Version", "version", "/asdfasdf", true));
+            permissions.add(new Permission("Version", "version", "/dashboard/setting/version", true));
 
             permissionRepository.save(permissions);
 
             List<Role> roles = new ArrayList<>();
-    /*  0 */roles.add(new Role(UserTypeEnum.ADMIN.name(), "admin role", true));
-    /*  1 */roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
-    /*  2 */roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
-    /*  3 */roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "receptionist role", true));
-    /*  4 */roles.add(new Role(UserTypeEnum.CASHIER.name(), "cashier role", true));
+    roles.add(new Role(UserTypeEnum.ADMIN.name(), "admin role", true));
+    roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
+    roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
+    roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "receptionist role", true));
+    roles.add(new Role(UserTypeEnum.CASHIER.name(), "cashier role", true));
             roleRepository.save(roles);
 
             List<RolePermission> rolePermissions = new ArrayList<>();
@@ -134,7 +134,7 @@ public class HisApplication {
             Manager manager = new Manager();
             manager.setDob(new Date());
             manager.setFirstName("admin");
-            manager.setGender(GenderTypeEnum.MALE);
+            manager.setGender(GenderTypeEnum.MALE.name());
             manager.setProfileId("P-10001");
             manager.setUser(admin);
             managerRepository.save(manager);
@@ -142,7 +142,7 @@ public class HisApplication {
             Doctor doctor = new Doctor();
             doctor.setDob(new Date());
             doctor.setFirstName("Doctor");
-            doctor.setGender(GenderTypeEnum.MALE);
+            doctor.setGender(GenderTypeEnum.MALE.name());
             doctor.setProfileId("P-10002");
             doctor.setUser(doctorU);
             doctorRepository.save(doctor);
@@ -155,9 +155,9 @@ public class HisApplication {
             branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
             organizationRepository.saveAndFlush(organization);
         }
-    }*/
+    }
 }
-
+*/
 /**
  * @author Irfan Nasim
  * @description To create WAR Packaging
@@ -175,5 +175,5 @@ public class HisApplication extends SpringBootServletInitializer {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(HisApplication.class);
-    }
-}*/
+    }*/
+}

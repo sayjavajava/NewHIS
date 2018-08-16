@@ -4,13 +4,16 @@ import com.sd.his.enums.GenderTypeEnum;
 import com.sd.his.enums.MaritalStatusTypeEnum;
 import com.sd.his.enums.ModuleEnum;
 import com.sd.his.enums.PatientStatusTypeEnum;
+import com.sd.his.model.Appointment;
 import com.sd.his.model.Doctor;
 import com.sd.his.model.Insurance;
 import com.sd.his.model.Patient;
+import com.sd.his.repository.AppointmentRepository;
 import com.sd.his.repository.DoctorRepository;
 import com.sd.his.repository.PatientRepository;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
+import com.sd.his.wrapper.AppointmentWrapper;
 import com.sd.his.wrapper.PatientWrapper;
 import com.sd.his.wrapper.RaceWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +22,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PatientService {
+public class  PatientService {
     @Autowired
     private PatientRepository patientRepository;
     @Autowired
     private DoctorRepository doctorRepository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private HISUtilService hisUtilService;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
+    //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
         patientWrapper.setId(patient.getId());//patient pk
         patientWrapper.setPatientId(patient.getPatientId());//patient natural id
@@ -80,6 +87,7 @@ public class PatientService {
         patientWrapper.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
     }
 
+    //Request Populate
     private void populatePatient(Patient patient, PatientWrapper patientWrapper) throws ParseException {
         patient.setTitle(patientWrapper.getTitlePrefix());
         patient.setPatientSSN(patientWrapper.getPatientSSN());
@@ -299,6 +307,11 @@ public class PatientService {
         }
         return patientWrapperList;*/
     }
+    public List<PatientWrapper> getAllPatientList(){
+       List<Patient> patient =  patientRepository.findAll();
+       return this.getPatientWrapperList(patient);
+
+    }
 
     public PatientWrapper getPatientById(long id) {
         Patient patient = patientRepository.findOne(id);
@@ -306,6 +319,7 @@ public class PatientService {
         this.populatePatientWrapper(patientWrapper, patient);
         patientWrapper.setSelectedDoctor(patient.getPrimaryDoctor().getId());
         this.populateRaces(patientWrapper, patient);
+        this.populateAppointments(patientWrapper,patient);
         this.populateInsurance(patientWrapper, patient);
         return patientWrapper;
     }
@@ -320,6 +334,21 @@ public class PatientService {
             raceWrapperList.add(raceWrapper);
         }
         patientWrapper.setRaces(raceWrapperList);
+    }
+
+    private void populateAppointments(PatientWrapper patientWrapper, Patient patient){
+        List<AppointmentWrapper> apptFutureWrapperList = new ArrayList<>();
+        List<AppointmentWrapper> apptPastWrapperList = new ArrayList<>();
+        List<AppointmentWrapper>  listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patient.getId());
+        for (AppointmentWrapper appointment  : listOfAppointments){
+            if(appointment.getCompareDate().toInstant().isAfter(ZonedDateTime.now().toInstant()))
+                apptFutureWrapperList.add(appointment);
+            else
+                apptPastWrapperList.add(appointment);
+        }
+
+        patientWrapper.setFutureAppointments(apptFutureWrapperList);
+        patientWrapper.setPastAppointments(apptPastWrapperList);
     }
 
     public void deletePatientById(long patientId) {

@@ -69,4 +69,8 @@ public interface MedicalServiceRepository extends JpaRepository<MedicalService, 
     List<MedicalServiceWrapper> findAllMedicalServiceWrappers(@Param("status") Boolean status);
 
     List<MedicalService> findAllByIdIn(List<Long> ids);
+    List<MedicalServiceWrapper> findAllMedicalServiceWrappersByStatus(@Param("status") Boolean status);
+
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms")
+    List<MedicalServiceWrapper> findAllMedicalServiceWrappers();
 }

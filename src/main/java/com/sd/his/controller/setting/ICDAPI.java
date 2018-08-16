@@ -882,10 +882,11 @@ public class ICDAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            response.setResponseMessage(messageBundle.getString("icd.version.delete.error"));
-            response.setResponseCode(ResponseEnum.ICD_VERSION_DELETE_ERROR.getValue());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseMessage(messageBundle.getString("icd.already.deleted"));
+            response.setResponseCode(ResponseEnum.NOT_FOUND.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(null);
+            logger.info("ICDs Already Deleted...");
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (Exception ex) {

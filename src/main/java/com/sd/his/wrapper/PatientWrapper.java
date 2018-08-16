@@ -18,6 +18,7 @@ public class PatientWrapper {
     //////IMPORTANT INFORMATION
     private String patientId;//natural id of patient
     private long id;         //pk of patient
+    private Long patient;
     private long selectedDoctor = -1;
     private String titlePrefix = "-1";
     private String firstName = "";
@@ -68,6 +69,9 @@ public class PatientWrapper {
     private String primaryInsuranceNotes = "";
     private byte[] photoFront;
     private byte[] photoBack;
+    ////////////Appointment
+    List<AppointmentWrapper> futureAppointments;
+    List<AppointmentWrapper> pastAppointments;
 
     public PatientWrapper() {
     }
@@ -127,6 +131,30 @@ public class PatientWrapper {
         *//*this.photoFront = insurance.getPhotoFront();
         this.photoBack = insurance.getPhotoBack();*//*
     }*/
+
+    public List<AppointmentWrapper> getFutureAppointments() {
+        return futureAppointments;
+    }
+
+    public void setFutureAppointments(List<AppointmentWrapper> futureAppointments) {
+        this.futureAppointments = futureAppointments;
+    }
+
+    public List<AppointmentWrapper> getPastAppointments() {
+        return pastAppointments;
+    }
+
+    public void setPastAppointments(List<AppointmentWrapper> pastAppointments) {
+        this.pastAppointments = pastAppointments;
+    }
+
+    public Long getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Long patient) {
+        this.patient = patient;
+    }
 
     public long getId() {
         return id;

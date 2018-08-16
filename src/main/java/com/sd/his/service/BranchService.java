@@ -71,6 +71,8 @@ public class BranchService {
     private UserRepository userRepository;
     @Autowired
     private OrganizationRepository organizationRepository;
+    @Autowired
+    private  DepartmentRepository departmentRepository;
     /*private BranchUserRepository branchUserRepository;
     private UserRepository userRepository;
     private RoomRepository roomRepository;
@@ -134,7 +136,7 @@ public class BranchService {
 
     public List<BranchResponseWrapper> findAllBranches(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-         List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActive(pageable);
+       //  List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActive(pageable);
         return branchRepository.findAllByActive(pageable);
     }
 
@@ -210,7 +212,7 @@ public class BranchService {
         branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setCity(branchRequestWrapper.getCity());
-        branch.setSystemBranch(false);
+    //    branch.setSystemBranch(false);
         branch.setState(branchRequestWrapper.getState());
         branch.setZipCode(branchRequestWrapper.getZipCode());
         branch.setOfficePhone(branchRequestWrapper.getOfficePhone());
@@ -277,8 +279,24 @@ public class BranchService {
 
 
 */
+public List<BranchResponseWrapper> searchByBranchNameAndDepartment(Long name, Long department, int offset, int limit) {
+    Pageable pageable = new PageRequest(offset, limit);
+    logger.info("searching branches");
+    Branch branch1 =  branchRepository.findOne(name);
+    Department department1 = departmentRepository.findOne(department);
+
+    List<BranchResponseWrapper> branches = branchRepository.findByNameAndBranchDepartments(branch1.getName(),pageable);
+   /* List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueOrBranchDepartments_department_nameIgnoreCaseContaining(branch1.getName(), department1.getName(), pageable);
+    List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();
+    for (Branch branch : allBranches) {
+        BranchResponseWrapper brw = new BranchResponseWrapper(branch.getId(), branch.getName(), branch.getCountry(), branch.getCity(), branch.getNoOfRooms());
+        branchResponseWrapper.add(brw);
+    }*/
+    return branches;
+}
+
+
 public List<BranchResponseWrapper> getAllActiveBranches() {
-    List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActiveTrue();
     return branchRepository.findAllByActiveTrue();
 }
     private String generateEmail(String domain, int length) {

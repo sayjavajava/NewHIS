@@ -109,7 +109,7 @@ public class BranchResponseWrapper {
         this.rooms = rooms;
         this.firstName=firstName;
         //this.doctor =doctor;
-        System.out.println(firstName);
+
 
     }
 

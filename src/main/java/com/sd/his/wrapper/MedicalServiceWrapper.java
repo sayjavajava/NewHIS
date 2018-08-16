@@ -37,6 +37,8 @@ public class MedicalServiceWrapper {
     private String description;
     private long duration;
     private TaxWrapper tax;
+    private long checkedDepartmentCount;
+    private long checkedBranchCount;
 
     private List<BranchResponseWrapper> branches;//checkedBranch
     private List<BranchResponseWrapper> checkedBranches;
@@ -71,9 +73,11 @@ public class MedicalServiceWrapper {
         this.status = ms.getStatus();
         this.description = ms.getDescription();
         this.duration = ms.getDuration();
+        this.checkedBranchCount = ms.getBranchMedicalServices() == null ? 0 : ms.getBranchMedicalServices().size();
+        this.checkedDepartmentCount = ms.getDepartmentMedicalServices() == null ? 0 : ms.getDepartmentMedicalServices().size();
     }
 
-    public MedicalServiceWrapper(MedicalService ms,String search) {
+    public MedicalServiceWrapper(MedicalService ms, String search) {
         if (ms.getTax() == null) {
             this.tax = new TaxWrapper();
             this.tax.setId(-1);
@@ -191,5 +195,21 @@ public class MedicalServiceWrapper {
 
     public void setTaxes(List<TaxWrapper> taxes) {
         this.taxes = taxes;
+    }
+
+    public long getCheckedDepartmentCount() {
+        return checkedDepartmentCount;
+    }
+
+    public void setCheckedDepartmentCount(long checkedDepartmentCount) {
+        this.checkedDepartmentCount = checkedDepartmentCount;
+    }
+
+    public long getCheckedBranchCount() {
+        return checkedBranchCount;
+    }
+
+    public void setCheckedBranchCount(long checkedBranchCount) {
+        this.checkedBranchCount = checkedBranchCount;
     }
 }
