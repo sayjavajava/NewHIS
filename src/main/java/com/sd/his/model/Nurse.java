@@ -48,6 +48,10 @@ public class Nurse extends StaffProfile implements Serializable {
     @OneToMany(targetEntity = BranchNurse.class, mappedBy = "nurse")
     private List<BranchNurse> branchNurses;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = NurseDepartment.class, mappedBy = "nurse", cascade=CascadeType.ALL)
+    private List<NurseDepartment> nurseDepartments;
+
     @Column(name = "MANAGE_PATIENT_INVOICES", columnDefinition = "boolean default false")
     private Boolean managePatientInvoices;
 
@@ -92,5 +96,13 @@ public class Nurse extends StaffProfile implements Serializable {
 
     public void setBranchNurses(List<BranchNurse> branchNurses) {
         this.branchNurses = branchNurses;
+    }
+
+    public List<NurseDepartment> getNurseDepartments() {
+        return nurseDepartments;
+    }
+
+    public void setNurseDepartments(List<NurseDepartment> nurseDepartments) {
+        this.nurseDepartments = nurseDepartments;
     }
 }

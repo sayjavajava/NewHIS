@@ -4,7 +4,11 @@ import com.sd.his.model.Branch;
 import com.sd.his.model.BranchDoctor;
 import com.sd.his.model.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
  * @author    : waqas kamran
@@ -35,8 +39,7 @@ public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long
      BranchDoctor findByDoctorAndPrimaryBranchTrue(Doctor doctor);
      void deleteAllByDoctorAndPrimaryBranchFalse(Doctor doctor);
      void deleteAllByDoctor(Doctor doctor);
-
-
-
+     @Query("select b from BranchDoctor bd inner join bd.branch b where bd.doctor.id=:id")
+     List<Branch> getDoctorBranches(@Param("id") Long id);//id=>doctor pk id
 }
 

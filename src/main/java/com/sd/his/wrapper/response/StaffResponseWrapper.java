@@ -63,12 +63,16 @@ public class StaffResponseWrapper{
     String profileImg;
     Long id;
 
+    Long docDepartmentId;
+    List<Department> nurseDepartmentList;
      // List<ClinicalDepartment> clinicalDepartments;
     // List<DutyWithDoctor> dutyWithDoctors;
 
     List<Branch> staffBranches = new ArrayList();
     List<Doctor> dutyWithDoctors;
     boolean checkedDoc;
+    List<MedicalService> doctorMedicalSrvcList = new ArrayList();
+
     public StaffResponseWrapper() {
     }
 
@@ -102,9 +106,7 @@ public class StaffResponseWrapper{
     public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
                                 String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
                                 Date expiryDate,Long checkUpInterval, Boolean vacation,Date vacationFrom,Date vacationTo,
-                                Doctor doctor
-
-    ){
+                                Doctor doctor){
         this.uid = uId;
         this.pId=pId;
         this.userType = userType;
@@ -127,7 +129,7 @@ public class StaffResponseWrapper{
         this.workingDays = doctor.getWorkingDays();
         this.dutyShifts = doctor.getDutyShifts();
         // this.visitBranches=branchCashiers;
-
+        this.docDepartmentId = doctor.getDepartment().getId();
     }
 
     //constructor for nurse
@@ -198,6 +200,7 @@ public class StaffResponseWrapper{
             //this.gender = doctor.getGender().name();
             this.profileImg = doctor.getProfileImgURL();
             this.status = doctor.getStatus().name();
+            this.docDepartmentId = doctor.getDepartment().getId();
         }else
         if(object instanceof Nurse){
             Nurse nurse = (Nurse)object;
@@ -505,5 +508,29 @@ public class StaffResponseWrapper{
 
     public void setCheckedDoc(boolean checkedDoc) {
         this.checkedDoc = checkedDoc;
+    }
+
+    public Long getDocDepartmentId() {
+        return docDepartmentId;
+    }
+
+    public void setDocDepartmentId(Long docDepartmentId) {
+        this.docDepartmentId = docDepartmentId;
+    }
+
+    public List<Department> getNurseDepartmentList() {
+        return nurseDepartmentList;
+    }
+
+    public void setNurseDepartmentList(List<Department> nurseDepartmentList) {
+        this.nurseDepartmentList = nurseDepartmentList;
+    }
+
+    public List<MedicalService> getDoctorMedicalSrvcList() {
+        return doctorMedicalSrvcList;
+    }
+
+    public void setDoctorMedicalSrvcList(List<MedicalService> doctorMedicalSrvcList) {
+        this.doctorMedicalSrvcList = doctorMedicalSrvcList;
     }
 }
