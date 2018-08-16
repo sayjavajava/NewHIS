@@ -1,8 +1,10 @@
 package com.sd.his.service;
 
+import com.sd.his.model.Appointment;
 import com.sd.his.model.ICDCode;
 import com.sd.his.model.ICDVersion;
 import com.sd.his.model.Problem;
+import com.sd.his.repository.AppointmentRepository;
 import com.sd.his.repository.ICDCodeRepository;
 import com.sd.his.repository.ICDVersionRepository;
 import com.sd.his.repository.ProblemRepository;
@@ -12,14 +14,12 @@ import com.sd.his.wrapper.ProblemWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by jamal on 8/15/2018.
@@ -34,40 +34,47 @@ public class ProblemService {
     private ICDCodeRepository icdCodeRepository;
     @Autowired
     private ICDVersionRepository icdVersionRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
-    public void savePatientProblem(ProblemWrapper problemWrapper) throws ParseException {
-
+    public void savePatientProblem(ProblemWrapper problemWrapper) throws Exception {
         Problem problem = new Problem();
         this.populateProblem(problemWrapper, problem);
-
-
         this.problemRepository.save(problem);
-
     }
 
-    private void populateProblem(ProblemWrapper problemWrapper, Problem problem) throws ParseException {
-        if (problemWrapper.getId() != null && problemWrapper.getId() > 0) {
-            problem.setId(problemWrapper.getId());
+    public void deleteProblemById(long problemId) {
+        Problem problem = this.problemRepository.findOne(problemId);
+        if (problem != null) {
+            this.problemRepository.delete(problem);
+        }
+    }
+
+    public void updatePatientProblem(ProblemWrapper problemWrapper) throws Exception {
+        Problem problem = this.problemRepository.findOne(problemWrapper.getId());
+        this.populateProblem(problemWrapper, problem);
+        this.problemRepository.save(problem);
+    }
+
+    private void populateProblem(ProblemWrapper problemWrapper, Problem problem) throws Exception {
+        Appointment appointment = null;
+        if (problemWrapper.getAppointmentWrapper().getId() != null && problemWrapper.getAppointmentWrapper().getId() > 0) {
+            appointment = this.appointmentRepository.findOne(problemWrapper.getAppointmentWrapper().getId());
+            if (appointment != null) {
+                problem.setAppointment(appointment);
+            }
         }
         if (problemWrapper.getSelectedICDVersionId() > 0) {
             ICDVersion icdVersion = this.icdVersionRepository.findOne(problemWrapper.getSelectedICDVersionId());
             if (icdVersion != null) {
                 problem.setIcdVersion(icdVersion);
-            } else {
-                new Exception("Version not found");
             }
-        } else {
-            new Exception("Please provide Version ");
         }
         if (problemWrapper.getSelectedCodeId() > 0) {
             ICDCode icdCode = this.icdCodeRepository.findOne(problemWrapper.getSelectedCodeId());
             if (icdCode != null) {
                 problem.setIcdCode(icdCode);
-            } else {
-                new Exception("Code not found");
             }
-        } else {
-            new Exception("Please provide code");
         }
 
         if (problemWrapper.getDateDiagnosis() != null) {
@@ -85,6 +92,15 @@ public class ProblemService {
         if (problem.getId() != null && problem.getId() > 0) {
             problemWrapper.setId(problem.getId());
         }
+        if (problem.getAppointment() != null) {
+            problemWrapper.getAppointmentWrapper().setId(problem.getAppointment().getId());
+            if (problem.getAppointment().getSchdeulledDate() != null) {
+                problemWrapper.getAppointmentWrapper().setScheduleDate(problem.getAppointment().getSchdeulledDate() + "");
+            }
+            if (problem.getAppointment().getStartedOn() != null) {
+                problemWrapper.getAppointmentWrapper().setStartedOn(problem.getAppointment().getStartedOn().getTime());
+            }
+        }
         if (problem.getIcdVersion() != null) {
             ICDVersion icdVersion = this.icdVersionRepository.findOne(problem.getIcdVersion().getId());
             if (icdVersion != null) {
@@ -101,7 +117,7 @@ public class ProblemService {
         }
 
         if (problem.getDateDiagnosis() != null) {
-            problemWrapper.setDateDiagnosis(problem.getDateDiagnosis() + "");
+            problemWrapper.setDateDiagnosis(DateTimeUtil.getFormattedDateFromDate(problem.getDateDiagnosis(),HISConstants.DATE_FORMATE_THREE));
         }
         if (problem.getStatus() != null) {
             problemWrapper.setStatus(problem.getStatus());
@@ -130,4 +146,13 @@ public class ProblemService {
         return this.problemRepository.findAll().size();
     }
 
+    public ProblemWrapper getProblemById(long id) throws ParseException {
+        Problem problem = this.problemRepository.findOne(id);
+        if (problem != null) {
+            ProblemWrapper problemWrapper = new ProblemWrapper();
+            this.populateProblemWrapper(problemWrapper, problem);
+            return problemWrapper;
+        }
+        return null;
+    }
 }

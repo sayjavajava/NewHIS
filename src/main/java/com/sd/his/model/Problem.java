@@ -44,7 +44,7 @@ public class Problem extends BaseEntity implements Serializable {
     @JoinColumn(name = "ICD_CODE_ID")
     private ICDCode icdCode;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "DATE_DIAGNOSIS")
     private Date dateDiagnosis;
 
@@ -96,5 +96,13 @@ public class Problem extends BaseEntity implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
     }
 }

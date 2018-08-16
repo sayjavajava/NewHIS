@@ -307,4 +307,12 @@ public class Appointment extends BaseEntity implements Serializable {
     public void setLastAppointmentOn(Date lastAppointmentOn) {
         this.lastAppointmentOn = lastAppointmentOn;
     }
+
+    public List<Problem> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(List<Problem> problems) {
+        this.problems = problems;
+    }
 }

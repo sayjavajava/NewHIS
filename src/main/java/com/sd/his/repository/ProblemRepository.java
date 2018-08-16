@@ -17,4 +17,5 @@ import java.util.List;
 public interface ProblemRepository extends JpaRepository<Problem,Long> {
 
     Page<Problem> findAllByCreatedOnNotNull(Pageable page);
+
 }

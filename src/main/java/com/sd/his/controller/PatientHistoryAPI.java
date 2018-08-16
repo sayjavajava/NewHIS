@@ -74,6 +74,15 @@ public class PatientHistoryAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
 
+            if (problemWrapper.getAppointmentWrapper().getId() <= 0) {
+                response.setResponseMessage(messageBundle.getString("patient.problem.save.appointment.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("savePatientProblem API - Required version ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
             if (problemWrapper.getSelectedICDVersionId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("patient.problem.save.version.required"));
                 response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
@@ -108,6 +117,154 @@ public class PatientHistoryAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiOperation(httpMethod = "POST", value = "Update Patient Problem",
+            notes = "This method will Update the patient Problem.",
+            produces = "application/json", nickname = "Update Patient Problem",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Update Patient Problem successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/problem/update", method = RequestMethod.PUT)//, consumes = "multipart/form-data"
+    public ResponseEntity<?> updatePatientProblem(HttpServletRequest request,
+                                                  @RequestBody ProblemWrapper problemWrapper) {
+        logger.info("updatePatientProblem API - initiated..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+
+            /*if (problemWrapper.getAppointmentWrapper().getId() == null || problemWrapper.getAppointmentWrapper().getId() <= 0) {
+                response.setResponseMessage(messageBundle.getString("patient.problem.save.appointment.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatientProblem API - Required version ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }*/
+
+            if (problemWrapper.getSelectedICDVersionId() <= 0) {
+                response.setResponseMessage(messageBundle.getString("patient.problem.save.version.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatientProblem API - Required version ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (problemWrapper.getSelectedCodeId() <= 0) {
+                response.setResponseMessage(messageBundle.getString("patient.problem.save.code.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_CODE_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatientProblem API - Required code ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            problemService.updatePatientProblem(problemWrapper);
+
+            response.setResponseMessage(messageBundle.getString("patient.problem.update.success"));
+            response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.error("updatePatientProblem API - successfully saved.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("updatePatientProblem exception.", e.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "DELETE", value = "Delete Patient Problem",
+            notes = "This method will Delete the Patient Problem",
+            produces = "application/json", nickname = "Delete Patient Problem",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Deleted Patient Problem successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/problem/delete/{problemId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deletePatientProblem(HttpServletRequest request,
+                                                  @PathVariable("problemId") long problemId) {
+        logger.info("deletePatientProblem API - Called..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            if (problemId <= 0) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("deletePatientProblem API - insufficient params.");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            this.problemService.deleteProblemById(problemId);
+            response.setResponseMessage(messageBundle.getString("patient.problem.delete.success"));
+            response.setResponseCode(ResponseEnum.PATIENT_DELETE_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(null);
+            logger.info("deletePatientProblem API - Deleted Successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("deletePatientProblem API - deleted failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "Patient",
+            notes = "This method will return User on base of id",
+            produces = "application/json", nickname = "Get Single User",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Patient found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/problem/get", method = RequestMethod.GET)
+    public ResponseEntity<?> getProblemById(HttpServletRequest request, @RequestParam("problemId") int id) {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            ProblemWrapper problemWrapper = this.problemService.getProblemById(id);
+            if (HISCoreUtil.isValidObject(problemWrapper)) {
+                response.setResponseData(problemWrapper);
+                response.setResponseMessage(messageBundle.getString("patient.found"));
+                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("getProblemById User Found successfully...");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("patient.search.not.found"));
+                response.setResponseCode(ResponseEnum.PATIENT_FETCHED_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                logger.info("getProblemById Not Found ...");
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getProblemById Exception", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ApiOperation(httpMethod = "GET", value = "GET Paginated Problems",
             notes = "This method will return Paginated  Problems",
             produces = "application/json", nickname = "GET Paginated  Problems",
@@ -120,8 +277,8 @@ public class PatientHistoryAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/problem/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getPaginatedProblem(HttpServletRequest request,
-                                                         @PathVariable("page") int page,
-                                                         @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+                                                 @PathVariable("page") int page,
+                                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
 
         logger.error("getPaginatedProblem API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
