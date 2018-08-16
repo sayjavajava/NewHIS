@@ -1,0 +1,160 @@
+package com.sd.his.wrapper.response;
+
+public class DashboardResponseWrapper {
+    private String inTime;
+    private String branch;
+    private String group;
+    private String scheduleAt;
+    private String doctorFirstName;
+    private String doctorLastName;
+    private String examRoom;
+    private String status;
+    private String cashierName;
+    private Long branchId;
+    private Long doctorId;
+    private Long roomId;
+    private Long appointmentId;
+    private String patientFirstName;
+    private String patientLastName;
+
+
+    public DashboardResponseWrapper(Long appointmentId,String patientFirstName,String patientLastName,String inTime, String doctorFirstName,String doctorLastName, String branch, String group, String scheduleAt, String doctor, String examRoom, String status, String cashierName, Long branchId, Long doctorId, Long roomId) {
+        this.inTime = inTime;
+        this.patientFirstName =patientFirstName;
+        this.patientLastName =patientLastName;
+        this.appointmentId =appointmentId;
+        this.branch = branch;
+        this.group = group;
+        this.scheduleAt = scheduleAt;
+        this.doctorFirstName = doctorFirstName;
+        this.doctorLastName =doctorLastName;
+        this.examRoom = examRoom;
+        this.status = status;
+        this.cashierName = cashierName;
+        this.branchId = branchId;
+        this.doctorId = doctorId;
+        this.roomId = roomId;
+    }
+
+    public String getDoctorFirstName() {
+        return doctorFirstName;
+    }
+
+    public void setDoctorFirstName(String doctorFirstName) {
+        this.doctorFirstName = doctorFirstName;
+    }
+
+    public String getDoctorLastName() {
+        return doctorLastName;
+    }
+
+    public void setDoctorLastName(String doctorLastName) {
+        this.doctorLastName = doctorLastName;
+    }
+
+    public String getPatientFirstName() {
+        return patientFirstName;
+    }
+
+    public void setPatientFirstName(String patientFirstName) {
+        this.patientFirstName = patientFirstName;
+    }
+
+    public String getPatientLastName() {
+        return patientLastName;
+    }
+
+    public void setPatientLastName(String patientLastName) {
+        this.patientLastName = patientLastName;
+    }
+
+    public Long getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(Long appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public String getInTime() {
+        return inTime;
+    }
+
+    public void setInTime(String inTime) {
+        this.inTime = inTime;
+    }
+
+
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getScheduleAt() {
+        return scheduleAt;
+    }
+
+    public void setScheduleAt(String scheduleAt) {
+        this.scheduleAt = scheduleAt;
+    }
+
+    public String getExamRoom() {
+        return examRoom;
+    }
+
+    public void setExamRoom(String examRoom) {
+        this.examRoom = examRoom;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCashierName() {
+        return cashierName;
+    }
+
+    public void setCashierName(String cashierName) {
+        this.cashierName = cashierName;
+    }
+
+    public Long getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(Long branchId) {
+        this.branchId = branchId;
+    }
+
+    public Long getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(Long doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+}

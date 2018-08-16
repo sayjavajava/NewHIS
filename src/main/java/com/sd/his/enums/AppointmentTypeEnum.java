@@ -25,6 +25,7 @@ package com.sd.his.enums;
 public enum AppointmentTypeEnum {
 
     REGULAR,
-    WALK_IN
+    WALK_IN,
+    NEW_PATIENT
 
 }

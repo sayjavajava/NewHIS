@@ -75,6 +75,16 @@ public class PatientWrapper {
 
     public PatientWrapper() {
     }
+    public PatientWrapper(Long id, String firstName,String lastName,String email,String city,String address,String cellPhone){
+        this.id =id;
+        this.firstName = firstName;
+        this.lastName =lastName;
+        this.email =email;
+        this.city =city;
+        this.formattedAddress =address;
+        this.cellPhone =cellPhone;
+
+    }
 
     /*public PatientWrapper(User user, Profile profile, Insurance insurance) {
         this.userId = user.getId();

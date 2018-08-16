@@ -23,10 +23,12 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -340,15 +342,16 @@ public class  PatientService {
         List<AppointmentWrapper> apptFutureWrapperList = new ArrayList<>();
         List<AppointmentWrapper> apptPastWrapperList = new ArrayList<>();
         List<AppointmentWrapper>  listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patient.getId());
-        for (AppointmentWrapper appointment  : listOfAppointments){
+       /* for (AppointmentWrapper appointment  : listOfAppointments){
             if(appointment.getCompareDate().toInstant().isAfter(ZonedDateTime.now().toInstant()))
                 apptFutureWrapperList.add(appointment);
             else
                 apptPastWrapperList.add(appointment);
-        }
-
-        patientWrapper.setFutureAppointments(apptFutureWrapperList);
-        patientWrapper.setPastAppointments(apptPastWrapperList);
+        }*/
+       Map<Boolean,List<AppointmentWrapper>> listOfApp = listOfAppointments.stream()
+                .collect(Collectors.partitioningBy(x->x.getCompareDate().toInstant().isAfter(Instant.now())));
+        patientWrapper.setFutureAppointments(listOfApp.get(true));
+        patientWrapper.setPastAppointments(listOfApp.get(false));
     }
 
     public void deletePatientById(long patientId) {
@@ -370,5 +373,9 @@ public class  PatientService {
             patientWrapperList.add(patientWrapper);
         }
         return patientWrapperList;
+    }
+
+    public List<PatientWrapper> getAllPatient(){
+       return   patientRepository.getAllByStatusTrue();
     }
 }

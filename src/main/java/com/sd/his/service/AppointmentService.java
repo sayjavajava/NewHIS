@@ -16,9 +16,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /*
  * @author    : Irfan Nasim
@@ -62,6 +64,8 @@ public class AppointmentService {
     @Autowired
     HISUtilService hisUtilService;
 
+
+
     public List<AppointmentWrapper> findAllPaginatedAppointments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
          // List<AppointmentWrapper> list= appointmentRepository.findAllPaginatedAppointments(pageable);
@@ -82,8 +86,23 @@ public class AppointmentService {
     public int countAllAppointments() {
         return appointmentRepository.findAll().size();
     }
+    @Transactional
     public Appointment saveAppointment(AppointmentWrapper appointmentWrapper){
         Appointment appointment =new Appointment();
+        Patient patient =null;
+        Optional<String> patientType  =  appointmentWrapper.getAppointmentType().stream()
+                                         .filter(x->x.equalsIgnoreCase("NewPatient")).findFirst();
+        if(patientType.isPresent()){
+         patient = new Patient();
+         patient.setEmail(appointmentWrapper.getEmail());
+         patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+         patient.setFirstName(appointmentWrapper.getNewPatient());
+        // patient.setLastName(appointmentWrapper.getNewPatient());
+         patient.setCellPhone(appointmentWrapper.getCellPhone());
+         patient.setDob(appointmentWrapper.getDateOfBirth());
+         patientRepository.save(patient);
+         appointment.setPatient(patient);
+        }
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
         // appointment.setRecurringDays(new Gson().toJson(appointmentWrapper.getSelectedRecurringDays()));
          Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
@@ -93,9 +112,8 @@ public class AppointmentService {
        //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
          appointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
 
-      //   Date newDate = new Date(appointment.getSchdeulledDate().getTime() + appointment.getDuration());
-
-       // appointment.setEndedOn(newDate);
+         // Date newDate = new Date(appointment.getSchdeulledDate().getTime() + appointment.getDuration());
+        // appointment.setEndedOn(newDate);
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setNotes(appointmentWrapper.getNotes());
         appointment.setColor(appointmentWrapper.getColor());
@@ -121,7 +139,6 @@ public class AppointmentService {
         if(HISCoreUtil.isValidObject(room)){appointment.setRoom(room);}
         Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
         appointment.setDoctor(doctor);
-
         /*if(appointmentWrapper.getAppointmentType().contains(AppointmentTypeEnum.NEW_PATIENT.getValue())) {
             User user = new User();
             Profile profile = new Profile();
@@ -152,8 +169,11 @@ public class AppointmentService {
             appointment.setPatient(user);
             appointmentRepository.save(appointment);
         }*/
-        Patient patient = patientRepository.findOne(appointmentWrapper.getPatientId());
-        appointment.setPatient(patient);
+        if(appointmentWrapper.getPatientId() != null){
+            patient = patientRepository.findOne(appointmentWrapper.getPatientId());
+            appointment.setPatient(patient);}
+
+
         appointmentRepository.save(appointment);
         return appointment;
     }
@@ -180,7 +200,9 @@ public class AppointmentService {
         alreadyExistAppointment.setDoctor(doctor);
 
         Patient patient = patientRepository.findOne(1L);
-        alreadyExistAppointment.setPatient(patient);
+        if(appointmentWrapper.getPatientId() != null){
+            patient = patientRepository.findOne(appointmentWrapper.getPatientId());
+            alreadyExistAppointment.setPatient(patient);}
         appointmentRepository.save(alreadyExistAppointment);
         return alreadyExistAppointment;
     }
