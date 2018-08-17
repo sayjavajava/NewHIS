@@ -1,8 +1,5 @@
 package com.sd.his.wrapper;
 
-import com.sd.his.enums.StatusEnum;
-import com.sd.his.model.Appointment;
-
 /**
  * Created by jamal on 8/13/2018.
  *
@@ -26,16 +23,16 @@ import com.sd.his.model.Appointment;
 public class ProblemWrapper {
 
     private Long id;
+    private long appointmentId = -1;
     private long selectedCodeId = -1;
     private String codeName;
     private String codeTitle;
     private long selectedICDVersionId = -1;
-    private String versionName;
 
+    private String versionName;
     private String dateDiagnosis;
     private String note;
     private String status = "ACTIVE";
-    private AppointmentWrapper appointmentWrapper = new AppointmentWrapper();
     private long patientId;
 
     public ProblemWrapper() {
@@ -119,19 +116,19 @@ public class ProblemWrapper {
         this.codeTitle = codeTitle;
     }
 
-    public AppointmentWrapper getAppointmentWrapper() {
-        return appointmentWrapper;
-    }
-
-    public void setAppointmentWrapper(AppointmentWrapper appointmentWrapper) {
-        this.appointmentWrapper = appointmentWrapper;
-    }
-
     public long getPatientId() {
         return patientId;
     }
 
     public void setPatientId(long patientId) {
         this.patientId = patientId;
+    }
+
+    public void setAppointmentId(long appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public long getAppointmentId() {
+        return appointmentId;
     }
 }

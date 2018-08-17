@@ -54,8 +54,8 @@ public class ProblemService {
 
     private void populateProblem(ProblemWrapper problemWrapper, Problem problem) throws Exception {
         Appointment appointment = null;
-        if (problemWrapper.getAppointmentWrapper().getId() != null && problemWrapper.getAppointmentWrapper().getId() > 0) {
-            appointment = this.appointmentRepository.findOne(problemWrapper.getAppointmentWrapper().getId());
+        if (problemWrapper.getAppointmentId()  > 0) {
+            appointment = this.appointmentRepository.findOne(problemWrapper.getAppointmentId());
             if (appointment != null) {
                 problem.setAppointment(appointment);
             }
@@ -95,16 +95,10 @@ public class ProblemService {
             problemWrapper.setId(problem.getId());
         }
         if (problem.getAppointment() != null) {
-            problemWrapper.getAppointmentWrapper().setId(problem.getAppointment().getId());
-            if (problem.getAppointment().getSchdeulledDate() != null) {
-                problemWrapper.getAppointmentWrapper().setScheduleDate(problem.getAppointment().getSchdeulledDate() + "");
-            }
-            if (problem.getAppointment().getStartedOn() != null) {
-                problemWrapper.getAppointmentWrapper().setStartedOn(problem.getAppointment().getStartedOn().getTime());
-            }
+            problemWrapper.setAppointmentId(problem.getAppointment().getId());
         }
         if (problem.getPatient() != null && problem.getPatient().getId() != null && problem.getPatient().getId() > 0) {
-            Patient patient = this.patientRepository.findOne(problemWrapper.getPatientId());
+            Patient patient = this.patientRepository.findOne(problem.getPatient().getId());
             if (patient != null) {
                 problemWrapper.setPatientId(patient.getId());
             }

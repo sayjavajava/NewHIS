@@ -74,7 +74,7 @@ public class PatientHistoryAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
 
-            if (problemWrapper.getAppointmentWrapper().getId() <= 0) {
+            if (problemWrapper.getAppointmentId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("patient.problem.save.appointment.required"));
                 response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -99,6 +99,15 @@ public class PatientHistoryAPI {
                 logger.error("savePatientProblem API - Required code ?.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
+            if (problemWrapper.getDateDiagnosis() == null || problemWrapper.getDateDiagnosis().isEmpty()) {
+                response.setResponseMessage(messageBundle.getString("patient.problem.save.diagnosis.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("savePatientProblem API - Required version ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
             problemService.savePatientProblem(problemWrapper);
 
             response.setResponseMessage(messageBundle.getString("patient.problem.save.success"));
@@ -134,14 +143,14 @@ public class PatientHistoryAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
 
-            /*if (problemWrapper.getAppointmentWrapper().getId() == null || problemWrapper.getAppointmentWrapper().getId() <= 0) {
+            if (problemWrapper.getAppointmentId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("patient.problem.save.appointment.required"));
                 response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
                 logger.error("updatePatientProblem API - Required version ?.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }*/
+            }
 
             if (problemWrapper.getSelectedICDVersionId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("patient.problem.save.version.required"));
@@ -157,6 +166,14 @@ public class PatientHistoryAPI {
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
                 logger.error("updatePatientProblem API - Required code ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (problemWrapper.getDateDiagnosis() == null || problemWrapper.getDateDiagnosis().isEmpty()) {
+                response.setResponseMessage(messageBundle.getString("patient.problem.save.diagnosis.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatientProblem API - Required version ?.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
