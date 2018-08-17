@@ -33,7 +33,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
 public class HisApplication {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
 
-    @Autowired
+/*    @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -56,7 +56,7 @@ public class HisApplication {
     @Autowired
     private BranchDoctorRepository branchDoctorRepository;
     @Autowired
-    private RoomRepository roomRepository;
+    private RoomRepository roomRepository;*/
 
     public static void main(String[] args) {
         SpringApplication.run(HisApplication.class, args);
@@ -156,8 +156,8 @@ public class HisApplication {
             organizationRepository.saveAndFlush(organization);
         }
     }
-}
 */
+}
 /**
  * @author Irfan Nasim
  * @description To create WAR Packaging

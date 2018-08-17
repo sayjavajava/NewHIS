@@ -69,11 +69,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findByDoctorAndBranch(Doctor doctor,Branch branch);
 
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.patient.firstName,a.patient.lastName, a.notes, a.reason, a.color, a.status, a.type," +
-            " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
-            "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, ,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id) " +
-            "FROM Appointment a")
-    List<DashboardResponseWrapper> findAllAppointmentsByPatientAndDoctor();
 
     //String inTime, String patientName, String branch, String group, String scheduleAt, String doctor, String examRoom, String status, String cashierName, Long branchId, Long doctorId, Long roomId)
 }
