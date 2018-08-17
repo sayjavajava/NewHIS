@@ -34,6 +34,7 @@ import java.util.List;
 public class AppointmentWrapper {
 
     private Long id;
+    private String appointmentId;
     private String title;
     private String appointmentStartedOn;
     private String appointmentEndedOn;
@@ -95,13 +96,14 @@ public class AppointmentWrapper {
     java.util.Date, java.util.Date, java.util.Date, boolean, java.util.Collection,
     java.util.Date, java.util.Date, long, long, java.lang.String, long, java.lang.String*/
 
-    public AppointmentWrapper(Long id, String title, String notes, String reason, String color, AppointmentStatusTypeEnum status, String appointmentType, Integer duration,
+    public AppointmentWrapper(Long id,String appointmentId, String title, String notes, String reason, String color, AppointmentStatusTypeEnum status, String appointmentType, Integer duration,
                               Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
                               Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, Long patientId,
                               Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId
     ) {
         //Long patientId,Long branchId, String branchName, Long roomId,
         this.id = id;
+        this.appointmentId=appointmentId;
         this.title = title;
         this.appointmentConvertedTime = convertAppointmentTime(startedOn);
         this.appointmentEndedConvertedTime = convertAppointmentTime(startedOn) + duration;
@@ -151,6 +153,14 @@ public class AppointmentWrapper {
                 ", type='" + type + '\'' +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public String getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId = appointmentId;
     }
 
     public Date getDateOfBirth() {
