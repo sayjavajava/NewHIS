@@ -44,7 +44,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "a.patient.profile.firstName, a.patient.profile.lastName, a.branch.id, a.branch.name, a.room.id, a.room.examName) " +
             "FROM Appointment a WHERE a.deleted =FALSE ")
     List<AppointmentWrapper> findAllPaginatedAppointments(Pageable pageable);*/
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id, a.name, a.notes, a.reason, a.color, a.status, a.type," +
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes, a.reason, a.color, a.status, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id) " +
             "FROM Appointment a")
@@ -55,13 +55,13 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "FROM Appointment a")
     List<AppointmentWrapper> findAllByAppointmentId();
 
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id, a.name, a.notes, a.reason, a.color, a.status, a.type," +
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes, a.reason, a.color, a.status, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id) " +
             "FROM Appointment a WHERE a.doctor.id =?1 or a.branch.id =?2")
     List<AppointmentWrapper> findAllAppointmentsByDoctor(Long doctorId,Long branchId);
 
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id, a.name, a.notes, a.reason, a.color, a.status, a.type," +
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes, a.reason, a.color, a.status, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id) " +
             "FROM Appointment a WHERE a.patient.id =?1 ")
@@ -69,12 +69,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     List<Appointment> findByDoctorAndBranch(Doctor doctor,Branch branch);
 
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.patient.firstName,a.patient.lastName, a.notes, a.reason, a.color, a.status, a.type," +
-            " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
-            "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, ,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id) " +
+    @Query("SELECT NEW  com.sd.his.wrapper.response.DashboardResponseWrapper(a.id,a.patient.firstName,a.patient.lastName,a.schdeulledDate ,a.doctor.firstName,a.doctor.lastName,a.branch.name,a.reason,a.schdeulledDate,a.room.roomName, a.status, a.branch.id,a.doctor.id,a.room.id )" +
             "FROM Appointment a")
     List<DashboardResponseWrapper> findAllAppointmentsByPatientAndDoctor();
 
-    //String inTime, String patientName, String branch, String group, String scheduleAt, String doctor, String examRoom, String status, String cashierName, Long branchId, Long doctorId, Long roomId)
-}
+  //  DashboardResponseWrapper(Long appointmentId,String patientFirstName,String patientLastName,String inTime, String doctorFirstName,String doctorLastName, String branch, String group, String scheduleAt, String examRoom, String status, Long branchId, Long doctorId, Long roomId)
+
+    }
 

@@ -1,5 +1,10 @@
 package com.sd.his.wrapper.response;
 
+import com.sd.his.enums.AppointmentStatusTypeEnum;
+import com.sd.his.utill.HISCoreUtil;
+
+import java.util.Date;
+
 public class DashboardResponseWrapper {
     private String inTime;
     private String branch;
@@ -18,23 +23,24 @@ public class DashboardResponseWrapper {
     private String patientLastName;
 
 
-    public DashboardResponseWrapper(Long appointmentId,String patientFirstName,String patientLastName,String inTime, String doctorFirstName,String doctorLastName, String branch, String group, String scheduleAt, String doctor, String examRoom, String status, String cashierName, Long branchId, Long doctorId, Long roomId) {
-        this.inTime = inTime;
+    public DashboardResponseWrapper(Long appointmentId, String patientFirstName, String patientLastName, Date inTime, String doctorFirstName, String doctorLastName, String branch, String group, Date scheduleAt, String examRoom, AppointmentStatusTypeEnum status, Long branchId, Long doctorId, Long roomId) {
+        this.appointmentId=appointmentId;
+        this.inTime = HISCoreUtil.convertDateAndTimeToString(scheduleAt);
         this.patientFirstName =patientFirstName;
         this.patientLastName =patientLastName;
         this.appointmentId =appointmentId;
         this.branch = branch;
         this.group = group;
-        this.scheduleAt = scheduleAt;
+        this.scheduleAt = HISCoreUtil.convertDateAndTimeToString(scheduleAt);
         this.doctorFirstName = doctorFirstName;
         this.doctorLastName =doctorLastName;
-        this.examRoom = examRoom;
-        this.status = status;
-        this.cashierName = cashierName;
+        this.examRoom = examRoom;http:
+        this.status = status.name();
         this.branchId = branchId;
         this.doctorId = doctorId;
         this.roomId = roomId;
     }
+
 
     public String getDoctorFirstName() {
         return doctorFirstName;

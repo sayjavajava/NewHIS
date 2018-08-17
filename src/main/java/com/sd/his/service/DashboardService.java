@@ -19,6 +19,7 @@ private AppointmentRepository appointmentRepository;
 
 public List<DashboardResponseWrapper> getDoctorDashboard(){
    // appointmentRepository.findAllAppointments();
-    return  null;
+    List<DashboardResponseWrapper> list = appointmentRepository.findAllAppointmentsByPatientAndDoctor();
+    return  appointmentRepository.findAllAppointmentsByPatientAndDoctor();
 }
 }

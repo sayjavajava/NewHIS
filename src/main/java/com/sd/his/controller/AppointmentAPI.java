@@ -71,7 +71,7 @@ public class AppointmentAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllClinicalDepartments(HttpServletRequest request) {
+    public ResponseEntity<?> getAllAppointments(HttpServletRequest request) {
 
         logger.error("getAllAppointments API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
