@@ -1,13 +1,7 @@
 package com.sd.his.service;
 
-import com.sd.his.model.Appointment;
-import com.sd.his.model.ICDCode;
-import com.sd.his.model.ICDVersion;
-import com.sd.his.model.Problem;
-import com.sd.his.repository.AppointmentRepository;
-import com.sd.his.repository.ICDCodeRepository;
-import com.sd.his.repository.ICDVersionRepository;
-import com.sd.his.repository.ProblemRepository;
+import com.sd.his.model.*;
+import com.sd.his.repository.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.ProblemWrapper;
@@ -36,6 +30,8 @@ public class ProblemService {
     private ICDVersionRepository icdVersionRepository;
     @Autowired
     private AppointmentRepository appointmentRepository;
+    @Autowired
+    private PatientRepository patientRepository;
 
     public void savePatientProblem(ProblemWrapper problemWrapper) throws Exception {
         Problem problem = new Problem();
@@ -62,6 +58,12 @@ public class ProblemService {
             appointment = this.appointmentRepository.findOne(problemWrapper.getAppointmentWrapper().getId());
             if (appointment != null) {
                 problem.setAppointment(appointment);
+            }
+        }
+        if (problemWrapper.getPatientId() > 0) {
+            Patient patient = this.patientRepository.findOne(problemWrapper.getPatientId());
+            if (patient != null) {
+                problem.setPatient(patient);
             }
         }
         if (problemWrapper.getSelectedICDVersionId() > 0) {
@@ -101,6 +103,12 @@ public class ProblemService {
                 problemWrapper.getAppointmentWrapper().setStartedOn(problem.getAppointment().getStartedOn().getTime());
             }
         }
+        if (problem.getPatient() != null && problem.getPatient().getId() != null && problem.getPatient().getId() > 0) {
+            Patient patient = this.patientRepository.findOne(problemWrapper.getPatientId());
+            if (patient != null) {
+                problemWrapper.setPatientId(patient.getId());
+            }
+        }
         if (problem.getIcdVersion() != null) {
             ICDVersion icdVersion = this.icdVersionRepository.findOne(problem.getIcdVersion().getId());
             if (icdVersion != null) {
@@ -117,7 +125,7 @@ public class ProblemService {
         }
 
         if (problem.getDateDiagnosis() != null) {
-            problemWrapper.setDateDiagnosis(DateTimeUtil.getFormattedDateFromDate(problem.getDateDiagnosis(),HISConstants.DATE_FORMATE_THREE));
+            problemWrapper.setDateDiagnosis(DateTimeUtil.getFormattedDateFromDate(problem.getDateDiagnosis(), HISConstants.DATE_FORMATE_THREE));
         }
         if (problem.getStatus() != null) {
             problemWrapper.setStatus(problem.getStatus());

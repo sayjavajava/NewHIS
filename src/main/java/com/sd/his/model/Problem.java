@@ -58,6 +58,10 @@ public class Problem extends BaseEntity implements Serializable {
     @JoinColumn(name = "APPOINTMENT_ID")
     private Appointment appointment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PATIENT_ID")
+    private Patient patient;
+
     public ICDVersion getIcdVersion() {
         return icdVersion;
     }
@@ -104,5 +108,13 @@ public class Problem extends BaseEntity implements Serializable {
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 }

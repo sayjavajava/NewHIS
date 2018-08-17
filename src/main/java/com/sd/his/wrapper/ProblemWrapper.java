@@ -36,6 +36,7 @@ public class ProblemWrapper {
     private String note;
     private String status = "ACTIVE";
     private AppointmentWrapper appointmentWrapper = new AppointmentWrapper();
+    private long patientId;
 
     public ProblemWrapper() {
     }
@@ -124,5 +125,13 @@ public class ProblemWrapper {
 
     public void setAppointmentWrapper(AppointmentWrapper appointmentWrapper) {
         this.appointmentWrapper = appointmentWrapper;
+    }
+
+    public long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(long patientId) {
+        this.patientId = patientId;
     }
 }
