@@ -19,11 +19,12 @@ public class DashboardResponseWrapper {
     private Long doctorId;
     private Long roomId;
     private Long appointmentId;
+    private String apptNaturalId;
     private String patientFirstName;
     private String patientLastName;
 
 
-    public DashboardResponseWrapper(Long appointmentId, String patientFirstName, String patientLastName, Date inTime, String doctorFirstName, String doctorLastName, String branch, String group, Date scheduleAt, String examRoom, AppointmentStatusTypeEnum status, Long branchId, Long doctorId, Long roomId) {
+    public DashboardResponseWrapper(Long appointmentId,String apptNaturalId ,String patientFirstName, String patientLastName, Date inTime, String doctorFirstName, String doctorLastName, String branch, String group, Date scheduleAt, String examRoom, AppointmentStatusTypeEnum status, Long branchId, Long doctorId, Long roomId) {
         this.appointmentId=appointmentId;
         this.inTime = HISCoreUtil.convertDateAndTimeToString(scheduleAt);
         this.patientFirstName =patientFirstName;
@@ -39,6 +40,8 @@ public class DashboardResponseWrapper {
         this.branchId = branchId;
         this.doctorId = doctorId;
         this.roomId = roomId;
+        this.apptNaturalId =apptNaturalId;
+
     }
 
 
