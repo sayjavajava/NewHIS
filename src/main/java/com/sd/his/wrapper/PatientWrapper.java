@@ -86,7 +86,7 @@ public class PatientWrapper {
 
     }
 
-    /*public PatientWrapper(User user, Profile profile, Insurance insurance) {
+    public PatientWrapper(User user, Profile profile, Insurance insurance) {
         this.userId = user.getId();
         this.userName = user.getUsername();
         this.statusUser = user.isActive();
@@ -138,32 +138,8 @@ public class PatientWrapper {
         this.cardIssuedDate = insurance.getCardIssuedDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
         this.cardExpiryDate = insurance.getCardExpiryDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
         this.primaryInsuranceNotes = insurance.getPrimaryInsuranceNotes();
-        *//*this.photoFront = insurance.getPhotoFront();
-        this.photoBack = insurance.getPhotoBack();*//*
-    }*/
-
-    public List<AppointmentWrapper> getFutureAppointments() {
-        return futureAppointments;
-    }
-
-    public void setFutureAppointments(List<AppointmentWrapper> futureAppointments) {
-        this.futureAppointments = futureAppointments;
-    }
-
-    public List<AppointmentWrapper> getPastAppointments() {
-        return pastAppointments;
-    }
-
-    public void setPastAppointments(List<AppointmentWrapper> pastAppointments) {
-        this.pastAppointments = pastAppointments;
-    }
-
-    public Long getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Long patient) {
-        this.patient = patient;
+        this.photoFront = insurance.getPhotoFront();
+        this.photoBack = insurance.getPhotoBack();
     }
 
     public long getId() {
