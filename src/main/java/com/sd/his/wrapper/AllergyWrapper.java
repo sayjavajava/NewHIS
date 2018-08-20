@@ -1,0 +1,104 @@
+package com.sd.his.wrapper;
+
+import com.sd.his.model.Allergy;
+
+import java.util.Date;
+
+/**
+ * Created by jamal on 8/20/2018.
+ */
+public class AllergyWrapper extends BaseWrapper {
+
+    private String name;
+    private String allergyType;
+    private String reaction;
+    private String status;
+    private String note;
+    private long patientId;
+    private long appointmentId;
+
+    public AllergyWrapper() {
+    }
+    public AllergyWrapper(Allergy allergy) {
+        this.patientId = allergy.getPatient().getId();
+        this.appointmentId = allergy.getAppointment().getId();
+        this.setId(allergy.getId());
+        this.name = allergy.getName();
+        this.allergyType = allergy.getAllergyType();
+        this.reaction = allergy.getReaction();
+        this.status = allergy.getStatus();
+        this.note = allergy.getNote();
+    }
+    public AllergyWrapper(String name, String alergyType, String reaction, String status, String note) {
+        this.name = name;
+        this.allergyType = alergyType;
+        this.reaction = reaction;
+        this.status = status;
+        this.note = note;
+    }
+
+    public AllergyWrapper(Long id, Date createdOn, Date updatedOn, String name, String allergyType, String reaction, String status, String note) {
+        super(id, createdOn, updatedOn);
+        this.name = name;
+        this.allergyType = allergyType;
+        this.reaction = reaction;
+        this.status = status;
+        this.note = note;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAllergyType() {
+        return allergyType;
+    }
+
+    public void setAllergyType(String allergyType) {
+        this.allergyType = allergyType;
+    }
+
+    public String getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(String reaction) {
+        this.reaction = reaction;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(long patientId) {
+        this.patientId = patientId;
+    }
+
+    public long getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(long appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+}

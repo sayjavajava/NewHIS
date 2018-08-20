@@ -123,6 +123,10 @@ public class Appointment extends BaseEntity implements Serializable {
     @OneToMany(targetEntity = Problem.class, mappedBy = "appointment")
     private List<Problem> problems;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = Problem.class, mappedBy = "appointment")
+    private List<Allergy> allergies;
+
 
     public Patient getPatient() {
         return patient;
@@ -314,5 +318,13 @@ public class Appointment extends BaseEntity implements Serializable {
 
     public void setProblems(List<Problem> problems) {
         this.problems = problems;
+    }
+
+    public List<Allergy> getAllergies() {
+        return allergies;
+    }
+
+    public void setAllergies(List<Allergy> allergies) {
+        this.allergies = allergies;
     }
 }
