@@ -10,18 +10,23 @@ import java.util.Date;
 public class AllergyWrapper extends BaseWrapper {
 
     private String name;
-    private String allergyType;
+    private String allergyType = "-1";
     private String reaction;
-    private String status;
+    private String status = "ACTIVE";
     private String note;
     private long patientId;
-    private long appointmentId;
+    private long appointmentId = -1;
 
     public AllergyWrapper() {
     }
+
     public AllergyWrapper(Allergy allergy) {
-        this.patientId = allergy.getPatient().getId();
-        this.appointmentId = allergy.getAppointment().getId();
+        if (allergy.getPatient() != null) {
+            this.patientId = allergy.getPatient().getId();
+        }
+        if (allergy.getAppointment() != null){
+            this.appointmentId = allergy.getAppointment().getId();
+        }
         this.setId(allergy.getId());
         this.name = allergy.getName();
         this.allergyType = allergy.getAllergyType();
@@ -29,9 +34,10 @@ public class AllergyWrapper extends BaseWrapper {
         this.status = allergy.getStatus();
         this.note = allergy.getNote();
     }
-    public AllergyWrapper(String name, String alergyType, String reaction, String status, String note) {
+
+    public AllergyWrapper(String name, String allergyType, String reaction, String status, String note) {
         this.name = name;
-        this.allergyType = alergyType;
+        this.allergyType = allergyType;
         this.reaction = reaction;
         this.status = status;
         this.note = note;

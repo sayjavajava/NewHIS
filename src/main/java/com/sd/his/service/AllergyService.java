@@ -8,6 +8,7 @@ import com.sd.his.repository.AppointmentRepository;
 import com.sd.his.repository.PatientRepository;
 import com.sd.his.wrapper.AllergyWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +23,28 @@ import java.util.List;
 public class AllergyService {
 
     @Autowired
-    AllergyRepository allergyRepository;
+    private AllergyRepository allergyRepository;
     @Autowired
-    PatientRepository patientRepository;
+    private PatientRepository patientRepository;
+    @Autowired
     private AppointmentRepository appointmentRepository;
 
 
-    public void saveAllergy(AllergyWrapper allergyWrapper) {
+    public void saveAllergy(AllergyWrapper allergyWrapper) throws Exception {
         Allergy allergy = new Allergy(allergyWrapper);
         Patient patient = this.patientRepository.findOne(allergyWrapper.getPatientId());
         Appointment appointment = this.appointmentRepository.findOne(allergyWrapper.getAppointmentId());
 
-        allergy.setPatient(patient);
-        allergy.setAppointment(appointment);
-
+        if (patient != null) {
+            allergy.setPatient(patient);
+        } else {
+            throw new Exception("Patient not found");
+        }
+        if (appointment != null) {
+            allergy.setAppointment(appointment);
+        } else {
+            throw new Exception("Appoint not found");
+        }
         this.allergyRepository.save(allergy);
     }
 
@@ -51,7 +60,7 @@ public class AllergyService {
         this.allergyRepository.save(allergy);
     }
 
-    public void deleteAllergy(long allergyId) {
+    public void deleteAllergyById(long allergyId) {
         Allergy allergy = this.allergyRepository.findOne(allergyId);
         if (allergy != null) {
             this.allergyRepository.delete(allergy);
@@ -62,7 +71,8 @@ public class AllergyService {
         return this.allergyRepository.getAllergyById(allergyId);
     }
 
-    public List<AllergyWrapper> getPaginatedAllergies(Pageable pageable) {
+    public List<AllergyWrapper> getPaginatedAllergies(int page,int pageSize) {
+        Pageable pageable = new PageRequest(page, pageSize);
         return this.allergyRepository.getPaginatedAllergies(pageable);
     }
 
@@ -70,7 +80,7 @@ public class AllergyService {
         return this.allergyRepository.findAll().size();
     }
 
-    public List<AllergyWrapper> getAllAllergies(){
+    public List<AllergyWrapper> getAllAllergies() {
         return this.allergyRepository.getAllAllergies();
     }
 
