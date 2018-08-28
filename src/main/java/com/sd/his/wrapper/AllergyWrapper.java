@@ -1,6 +1,8 @@
 package com.sd.his.wrapper;
 
 import com.sd.his.model.Allergy;
+import com.sd.his.utill.DateTimeUtil;
+import com.sd.his.utill.HISConstants;
 
 import java.util.Date;
 
@@ -33,6 +35,7 @@ public class AllergyWrapper extends BaseWrapper {
         this.reaction = allergy.getReaction();
         this.status = allergy.getStatus();
         this.note = allergy.getNote();
+        this.setUpdatedOn(DateTimeUtil.getFormattedDateFromDate(allergy.getUpdatedOn(), HISConstants.DATE_FORMATE_TWO));
     }
 
     public AllergyWrapper(String name, String allergyType, String reaction, String status, String note) {
@@ -43,7 +46,7 @@ public class AllergyWrapper extends BaseWrapper {
         this.note = note;
     }
 
-    public AllergyWrapper(Long id, Date createdOn, Date updatedOn, String name, String allergyType, String reaction, String status, String note) {
+    public AllergyWrapper(Long id, String createdOn, String updatedOn, String name, String allergyType, String reaction, String status, String note) {
         super(id, createdOn, updatedOn);
         this.name = name;
         this.allergyType = allergyType;

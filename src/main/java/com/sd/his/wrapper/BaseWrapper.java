@@ -10,14 +10,14 @@ public class BaseWrapper {
 
     private Long id;
 
-    private Date createdOn;
+    private String createdOn;
 
-    private Date updatedOn;
+    private String updatedOn;
 
     public BaseWrapper() {
     }
 
-    public BaseWrapper(Long id, Date createdOn, Date updatedOn) {
+    public BaseWrapper(Long id, String createdOn, String updatedOn) {
         this.id = id;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
@@ -31,19 +31,19 @@ public class BaseWrapper {
         this.id = id;
     }
 
-    public Date getCreatedOn() {
+    public String getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
     }
 
-    public Date getUpdatedOn() {
+    public String getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(Date updatedOn) {
+    public void setUpdatedOn(String updatedOn) {
         this.updatedOn = updatedOn;
     }
 }

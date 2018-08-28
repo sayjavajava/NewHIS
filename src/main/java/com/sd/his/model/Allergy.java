@@ -72,7 +72,11 @@ public class Allergy extends BaseEntity implements Serializable {
     }
 
     public Allergy(Allergy allergy, AllergyWrapper allergyWrapper) {
-       this(allergyWrapper);
+        allergy.name = allergyWrapper.getName();
+        allergy.allergyType = allergyWrapper.getAllergyType();
+        allergy.reaction = allergyWrapper.getReaction();
+        allergy.status = allergyWrapper.getStatus();
+        allergy.note = allergyWrapper.getNote();
     }
 
     public String getName() {

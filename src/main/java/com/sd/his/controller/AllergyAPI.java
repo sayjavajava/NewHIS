@@ -173,7 +173,7 @@ public class AllergyAPI {
     }
 
 
-    /*@ApiOperation(httpMethod = "GET", value = "Patient",
+    @ApiOperation(httpMethod = "GET", value = "Patient",
             notes = "This method will return User on base of id",
             produces = "application/json", nickname = "Get Single User",
             response = GenericAPIResponse.class, protocols = "https")
@@ -184,29 +184,29 @@ public class AllergyAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public ResponseEntity<?> getProblemById(HttpServletRequest request, @RequestParam("allergyId") int id) {
+    public ResponseEntity<?> getAllergyById(HttpServletRequest request, @RequestParam("allergyId") int id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            ProblemWrapper problemWrapper = this.problemService.getProblemById(id);
-            if (HISCoreUtil.isValidObject(problemWrapper)) {
-                response.setResponseData(problemWrapper);
-                response.setResponseMessage(messageBundle.getString("patient.found"));
-                response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
+            AllergyWrapper allergyWrapper = this.allergyService.getAllergyById(id);
+            if (HISCoreUtil.isValidObject(allergyWrapper)) {
+                response.setResponseData(allergyWrapper);
+                response.setResponseMessage(messageBundle.getString("allergy.get.success"));
+                response.setResponseCode(ResponseEnum.ALLERGY_GET_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.info("getProblemById User Found successfully...");
+                logger.info("getAllergyById User Found successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
                 response.setResponseData(null);
-                response.setResponseMessage(messageBundle.getString("patient.search.not.found"));
-                response.setResponseCode(ResponseEnum.PATIENT_FETCHED_SUCCESS.getValue());
+                response.setResponseMessage(messageBundle.getString("already.deleted"));
+                response.setResponseCode(ResponseEnum.ALLERGY_GET_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                logger.info("getProblemById Not Found ...");
+                logger.info("getAllergyById Not Found ...");
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("getProblemById Exception", ex.fillInStackTrace());
+            logger.error("getAllergyById Exception", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -215,44 +215,117 @@ public class AllergyAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-*/
 
 
-    @ApiOperation(httpMethod = "DELETE", value = "Delete Patient Allergy",
-            notes = "This method will Delete the Patient Allergy",
-            produces = "application/json", nickname = "Delete Patient Allergy",
+    @ApiOperation(httpMethod = "POST", value = "Update Patient Allergy",
+            notes = "This method will Update the patient Allergy.",
+            produces = "application/json", nickname = "Update Patient Allergy",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Deleted Patient Allergy successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Update Patient Allergy successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateAllergy(HttpServletRequest request,
+                                           @RequestBody AllergyWrapper allergyWrapper) {
+        logger.info("updatePatientProblem API - initiated..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+
+            if (allergyWrapper.getAppointmentId() <= 0) {
+                response.setResponseMessage(messageBundle.getString("allergy.save.appointment.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updateAllergy API - Required version ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (allergyWrapper.getPatientId() <= 0) {
+                response.setResponseMessage(messageBundle.getString("allergy.save.patient.required"));
+                response.setResponseCode(ResponseEnum.ALLERGY_SAVE_PATIENT_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatientProblem API - Required patient id ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+
+            if (HISCoreUtil.isNull(allergyWrapper.getName())) {
+                response.setResponseMessage(messageBundle.getString("allergy.save.name.required"));
+                response.setResponseCode(ResponseEnum.ALLERGY_SAVE_NAME_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatientProblem API - Required Name of allergy ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (this.allergyService.updateAllergy(allergyWrapper)) {
+                response.setResponseMessage(messageBundle.getString("allergy.update.success"));
+                response.setResponseCode(ResponseEnum.ALLERGY_UPDATE_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.error("updateAllergy API - successfully saved.");
+            }else {
+                response.setResponseMessage(messageBundle.getString("already.deleted"));
+                response.setResponseCode(ResponseEnum.ALLERGY_UPDATE_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.error("updateAllergy API - successfully saved.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("updateAllergy exception.", e.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @ApiOperation(httpMethod = "DELETE", value = "Delete Patient Problem",
+            notes = "This method will Delete the Patient Problem",
+            produces = "application/json", nickname = "Delete Patient Problem",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Deleted Patient Problem successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/delete/{allergyId}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deletePatientAllergy(HttpServletRequest request,
-                                                  @PathVariable("allergyId") long allergyId) {
-        logger.info("deletePatientAllergy API - Called..");
+    public ResponseEntity<?> deleteAllergy(HttpServletRequest request,
+                                           @PathVariable("allergyId") long allergyId) {
+        logger.info("deleteAllergy API - Called..");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             if (allergyId <= 0) {
-                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseMessage(messageBundle.getString("allergy.delete.id.required"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
-                logger.error("deletePatientAllergy API - insufficient params.");
+                logger.error("deleteAllergy API - insufficient params.");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            this.allergyService.deleteAllergyById(allergyId);
-            response.setResponseMessage(messageBundle.getString("allergy.delete.success"));
-            response.setResponseCode(ResponseEnum.ALLERGY_DELETE_SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(null);
-            logger.info("deletePatientAllergy API - Deleted Successfully...");
-
+            if (this.allergyService.deleteAllergyById(allergyId)) {
+                response.setResponseMessage(messageBundle.getString("allergy.delete.success"));
+                response.setResponseCode(ResponseEnum.ALLERGY_DELETE_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(null);
+                logger.info("deleteAllergy API - Deleted Successfully...");
+            } else {
+                response.setResponseMessage(messageBundle.getString("already.deleted"));
+                response.setResponseCode(ResponseEnum.ALLERGY_DELETE_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(null);
+                logger.info("deleteAllergy API - Deleted Successfully...");
+            }
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("deletePatientAllergy API - deleted failed.", ex.fillInStackTrace());
+            logger.error("deleteAllergy API - deleted failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());

@@ -48,23 +48,29 @@ public class AllergyService {
         this.allergyRepository.save(allergy);
     }
 
-    public void updateAllergy(AllergyWrapper allergyWrapper) {
+    public boolean updateAllergy(AllergyWrapper allergyWrapper) {
         Allergy allergy = this.allergyRepository.findOne(allergyWrapper.getId());
-        new Allergy(allergy, allergyWrapper);
-        Patient patient = this.patientRepository.findOne(allergyWrapper.getPatientId());
-        Appointment appointment = this.appointmentRepository.findOne(allergyWrapper.getAppointmentId());
+        if (allergy != null){
+            new Allergy(allergy, allergyWrapper);
+            Patient patient = this.patientRepository.findOne(allergyWrapper.getPatientId());
+            Appointment appointment = this.appointmentRepository.findOne(allergyWrapper.getAppointmentId());
 
-        allergy.setPatient(patient);
-        allergy.setAppointment(appointment);
+            allergy.setPatient(patient);
+            allergy.setAppointment(appointment);
 
-        this.allergyRepository.save(allergy);
+            this.allergyRepository.save(allergy);
+            return true;
+        }
+        return false;
     }
 
-    public void deleteAllergyById(long allergyId) {
+    public boolean deleteAllergyById(long allergyId) {
         Allergy allergy = this.allergyRepository.findOne(allergyId);
         if (allergy != null) {
             this.allergyRepository.delete(allergy);
+            return true;
         }
+        return false;
     }
 
     public AllergyWrapper getAllergyById(long allergyId) {
