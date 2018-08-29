@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.enums.GenderTypeEnum;
 import com.sd.his.enums.MaritalStatusTypeEnum;
 import com.sd.his.enums.PatientStatusTypeEnum;
+import org.apache.http.util.NetUtils;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -141,6 +142,10 @@ public class Patient extends BaseEntity implements Serializable {
     @JsonIgnore
     @OneToMany(targetEntity = Allergy.class, mappedBy = "patient")
     private List<Allergy> allergies;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = Medication.class, mappedBy = "patient")
+    private List<Medication> medications;
 
     public List<Appointment> getAppointments() {
         return appointments;
