@@ -16,9 +16,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /*
  * @author    : Irfan Nasim
@@ -62,11 +64,13 @@ public class AppointmentService {
     @Autowired
     HISUtilService hisUtilService;
 
+
+
     public List<AppointmentWrapper> findAllPaginatedAppointments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-         // List<AppointmentWrapper> list= appointmentRepository.findAllPaginatedAppointments(pageable);
-      //   return appointmentRepository.findAllPaginatedAppointments(pageable);
-      return null;
+        // List<AppointmentWrapper> list= appointmentRepository.findAllPaginatedAppointments(pageable);
+        //   return appointmentRepository.findAllPaginatedAppointments(pageable);
+        return null;
     }
 
     public List<AppointmentWrapper> findAllAppointments() {
@@ -74,28 +78,48 @@ public class AppointmentService {
         return appointmentRepository.findAllAppointments();
 
     }
+    public AppointmentWrapper getSingleAppointment(long id){
+        return appointmentRepository.findAllAppointmentById(id);
+    }
 
     public Appointment findById(long id){
         return appointmentRepository.findOne(id);
+    }
+    public Appointment findByNaturalId(String id){
+        return appointmentRepository.findByAppointmentId(id);
     }
 
     public int countAllAppointments() {
         return appointmentRepository.findAll().size();
     }
+    @Transactional
     public Appointment saveAppointment(AppointmentWrapper appointmentWrapper){
         Appointment appointment =new Appointment();
+        Patient patient =null;
+        Optional<String> patientType  =  appointmentWrapper.getAppointmentType().stream()
+                .filter(x->x.equalsIgnoreCase("NewPatient")).findFirst();
+        if(patientType.isPresent()){
+            patient = new Patient();
+            patient.setEmail(appointmentWrapper.getEmail());
+            patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+            patient.setFirstName(appointmentWrapper.getNewPatient());
+            // patient.setLastName(appointmentWrapper.getNewPatient());
+            patient.setCellPhone(appointmentWrapper.getCellPhone());
+            patient.setDob(appointmentWrapper.getDateOfBirth());
+            patientRepository.save(patient);
+            appointment.setPatient(patient);
+        }
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
         // appointment.setRecurringDays(new Gson().toJson(appointmentWrapper.getSelectedRecurringDays()));
-         Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
-         appointment.setSchdeulledDate(scheduleDate);
-         Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
-         appointment.setStartedOn(date2);
-       //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
-         appointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
+        Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
+        appointment.setSchdeulledDate(scheduleDate);
+        Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
+        appointment.setStartedOn(date2);
+        //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
+        appointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
 
-      //   Date newDate = new Date(appointment.getSchdeulledDate().getTime() + appointment.getDuration());
-
-       // appointment.setEndedOn(newDate);
+        // Date newDate = new Date(appointment.getSchdeulledDate().getTime() + appointment.getDuration());
+        // appointment.setEndedOn(newDate);
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setNotes(appointmentWrapper.getNotes());
         appointment.setColor(appointmentWrapper.getColor());
@@ -103,7 +127,7 @@ public class AppointmentService {
         appointment.setDuration(appointmentWrapper.getDuration());
         appointment.setStatus(AppointmentStatusTypeEnum.valueOf(appointmentWrapper.getStatus()));
 
-     //   appointment.setEndedOn(appointmentWrapper.getStart() + appointmentWrapper.getDuration()*60*1000);
+        //   appointment.setEndedOn(appointmentWrapper.getStart() + appointmentWrapper.getDuration()*60*1000);
 
 
         appointment.setAppointmentId(hisUtilService.getPrefixId(ModuleEnum.APPOINTMENT));
@@ -121,7 +145,6 @@ public class AppointmentService {
         if(HISCoreUtil.isValidObject(room)){appointment.setRoom(room);}
         Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
         appointment.setDoctor(doctor);
-
         /*if(appointmentWrapper.getAppointmentType().contains(AppointmentTypeEnum.NEW_PATIENT.getValue())) {
             User user = new User();
             Profile profile = new Profile();
@@ -152,8 +175,11 @@ public class AppointmentService {
             appointment.setPatient(user);
             appointmentRepository.save(appointment);
         }*/
-        Patient patient = patientRepository.findOne(appointmentWrapper.getPatientId());
-        appointment.setPatient(patient);
+        if(appointmentWrapper.getPatientId() != null){
+            patient = patientRepository.findOne(appointmentWrapper.getPatientId());
+            appointment.setPatient(patient);}
+
+
         appointmentRepository.save(appointment);
         return appointment;
     }
@@ -180,18 +206,20 @@ public class AppointmentService {
         alreadyExistAppointment.setDoctor(doctor);
 
         Patient patient = patientRepository.findOne(1L);
-        alreadyExistAppointment.setPatient(patient);
+        if(appointmentWrapper.getPatientId() != null){
+            patient = patientRepository.findOne(appointmentWrapper.getPatientId());
+            alreadyExistAppointment.setPatient(patient);}
         appointmentRepository.save(alreadyExistAppointment);
         return alreadyExistAppointment;
     }
 
-   public List<AppointmentWrapper> getPageableSearchedAppointments(Long doctorId ,Long branchId) {
+    public List<AppointmentWrapper> getPageableSearchedAppointments(Long doctorId ,Long branchId) {
         //Pageable pageable = new PageRequest(offset, limit);
         List<AppointmentWrapper> test = appointmentRepository.findAllAppointmentsByDoctor(doctorId,branchId);
         return appointmentRepository.findAllAppointmentsByDoctor(doctorId,branchId);
     }
 
-     public int countSearchedAppointments(Long doctorId,Long branchId) {
+    public int countSearchedAppointments(Long doctorId,Long branchId) {
         Doctor doctor = doctorRepository.findOne(doctorId);
         Branch branch = branchRepository.findOne(branchId);
         return appointmentRepository.findByDoctorAndBranch(doctor,branch).size();
@@ -262,6 +290,15 @@ public class AppointmentService {
             return room;
         }
         return null;
+    }
+    public boolean changeStatus(String currentStatus,Appointment alreadyExistAppointment){
+        boolean statusChanged =false;
+        alreadyExistAppointment.setStatus(AppointmentStatusTypeEnum.valueOf(currentStatus));
+        Appointment appt = appointmentRepository.save(alreadyExistAppointment);
+        if(HISCoreUtil.isValidObject(appt)){
+            statusChanged =true;
+        }
+        return statusChanged;
     }
 
   /*  public void deleteAppointment(Appointment appointment) {

@@ -1,4 +1,5 @@
 package com.sd.his.wrapper;
+
 import com.sd.his.enums.AppointmentStatusTypeEnum;
 import com.sd.his.enums.AppointmentTypeEnum;
 import com.sd.his.utill.DateTimeUtil;
@@ -33,6 +34,7 @@ import java.util.List;
 public class AppointmentWrapper {
 
     private Long id;
+    private String appointmentId;
     private String title;
     private String appointmentStartedOn;
     private String appointmentEndedOn;
@@ -42,7 +44,7 @@ public class AppointmentWrapper {
     private String reason;
     private String color;
     private String colorHash;
-    private String  status;//AppointmentStatusTypeEnum
+    private String status;//AppointmentStatusTypeEnum
     private Integer duration; //minutes
     private Boolean followUpReminder;
     private String followUpReason;
@@ -74,17 +76,19 @@ public class AppointmentWrapper {
     private Long lastAppointmentOn;
     private Long branchId;
     private String scheduleDate;
-    private Date scheduleDateAndTime;
+    private String scheduleDateAndTime;
     private String docFirstName;
     private String docLastName;
     private int appointmentConvertedTime;
     private int appointmentEndedConvertedTime;
     private Date compareDate;
-
+    private String newPatient;
+    private Date dateOfBirth;
 
 
     public AppointmentWrapper() {
     }
+
     public AppointmentWrapper(Long id, String name, String notes) {
     }
    /* long, java.lang.String, java.lang.String, java.lang.String, java.lang.String,
@@ -92,38 +96,39 @@ public class AppointmentWrapper {
     java.util.Date, java.util.Date, java.util.Date, boolean, java.util.Collection,
     java.util.Date, java.util.Date, long, long, java.lang.String, long, java.lang.String*/
 
-    public AppointmentWrapper(Long id ,String title, String notes, String reason, String color, AppointmentStatusTypeEnum status, String appointmentType, Integer duration,
-                               Boolean followUpReminder, String followUpReasonReminder,Date scheduleDate ,Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
-                               Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn,String firstName,String lastName,Long patientId,
-                               Long branchId, String branchName,Long roomId,String roomName,String docFirstName,String docLastName,Long docId
-                              ){
+    public AppointmentWrapper(Long id,String appointmentId, String title, String notes, String reason, String color, AppointmentStatusTypeEnum status, String appointmentType, Integer duration,
+                              Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
+                              Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, Long patientId,
+                              Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId
+    ) {
         //Long patientId,Long branchId, String branchName, Long roomId,
         this.id = id;
+        this.appointmentId=appointmentId;
         this.title = title;
-        this.appointmentConvertedTime =convertAppointmentTime(startedOn);
-        this.appointmentEndedConvertedTime =convertAppointmentTime(startedOn) + duration ;
+        this.appointmentConvertedTime = convertAppointmentTime(startedOn);
+        this.appointmentEndedConvertedTime = convertAppointmentTime(startedOn) + duration;
         this.appointmentEndedOn = HISCoreUtil.convertTimeToString(endedOn);
-        this.scheduleDate =HISCoreUtil.convertDateToString(scheduleDate);
+        this.scheduleDate = HISCoreUtil.convertDateToString(scheduleDate);
         this.draggable = draggable;
-        this.patient = firstName + " " +lastName;
+        this.patient = firstName + " " + lastName;
         this.notes = notes;
         this.reason = reason;
         this.color = color;
-        this.docFirstName =docFirstName;
-        this.docLastName =docLastName;
+        this.docFirstName = docFirstName;
+        this.docLastName = docLastName;
         this.doctorId = docId;
         this.status = status.name();
         this.followUpReminder = followUpReminder;
-        this.duration =duration;
-        this.compareDate =scheduleDate;
+        this.duration = duration;
+        this.compareDate = scheduleDate;
         this.appointmentType = JSONUtil.convertJsonToList(appointmentType);
-    //    this.followUpReason = followUpReasonReminder;
+        //    this.followUpReason = followUpReasonReminder;
       /*  this.startedOn = startedOn;
         this.ended = endedOn;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;*/
-      //  this.recurring = recurring;
-     //   this.recurringDays = recurringDays;
+        //  this.recurring = recurring;
+        //   this.recurringDays = recurringDays;
         this.recurringPeriod = recurringPeriod;
        /* this.firstAppointmentOn = firstAppointmentOn;
         this.lastAppointmentOn = lastAppointmentOn;*/
@@ -132,8 +137,9 @@ public class AppointmentWrapper {
         this.patientLastName = patientLastName;
         this.branchId = branchId;
         this.roomId = roomId;
-        this.examName=roomName;
-        this.branchName =branchName;
+        this.examName = roomName;
+        this.branchName = branchName;
+        this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToString(scheduleDate);
     }
 
     @Override
@@ -147,6 +153,30 @@ public class AppointmentWrapper {
                 ", type='" + type + '\'' +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public String getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(String appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getNewPatient() {
+        return newPatient;
+    }
+
+    public void setNewPatient(String newPatient) {
+        this.newPatient = newPatient;
     }
 
     public Date getCompareDate() {
@@ -165,9 +195,10 @@ public class AppointmentWrapper {
         this.appointmentEndedConvertedTime = appointmentEndedConvertedTime;
     }
 
-    static int convertAppointmentTime(Date startedOn){
-       return DateTimeUtil.convertAppointmentTime(HISCoreUtil.convertTimeToString(startedOn));
+    static int convertAppointmentTime(Date startedOn) {
+        return DateTimeUtil.convertAppointmentTime(HISCoreUtil.convertTimeToString(startedOn));
     }
+
     public String getDocFirstName() {
         return docFirstName;
     }
@@ -200,11 +231,11 @@ public class AppointmentWrapper {
         this.docLastName = docLastName;
     }
 
-    public Date getScheduleDateAndTime() {
+    public String getScheduleDateAndTime() {
         return scheduleDateAndTime;
     }
 
-    public void setScheduleDateAndTime(Date scheduleDateAndTime) {
+    public void setScheduleDateAndTime(String scheduleDateAndTime) {
         this.scheduleDateAndTime = scheduleDateAndTime;
     }
 
@@ -287,7 +318,6 @@ public class AppointmentWrapper {
     public void setGender(String gender) {
         this.gender = gender;
     }
-
 
 
     public String getCellPhone() {
@@ -387,8 +417,6 @@ public class AppointmentWrapper {
     }
 
 
-
-
     public Boolean getFollowUpReminder() {
         return followUpReminder;
     }
@@ -444,6 +472,7 @@ public class AppointmentWrapper {
     public void setRecurringAppointment(boolean recurringAppointment) {
         this.recurringAppointment = recurringAppointment;
     }
+
     public Long getRecurringPeriod() {
         return recurringPeriod;
     }

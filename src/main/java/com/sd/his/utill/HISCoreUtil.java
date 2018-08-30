@@ -143,6 +143,20 @@ public class HISCoreUtil {
        return date;
    }
 
+    public static Date convertToDateWithOutSecond(String str) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(HISConstants.DATE_FORMATE_TWO);
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
 
     public static Date addTimetoDate(Date str , long duration) {
         Date date = null;
@@ -158,6 +172,14 @@ public class HISCoreUtil {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
             formatedDate = formatter.format(date);
             //date = formatter.parse(str);
+        }
+        return formatedDate;
+    }
+    public static String convertDateAndTimeToString(Date date) {
+        String formatedDate = null;
+        if(date != null){
+            SimpleDateFormat form = new SimpleDateFormat("dd MMMM yyyy : hh:mm:ss");
+            formatedDate= form.format(date);
         }
         return formatedDate;
     }

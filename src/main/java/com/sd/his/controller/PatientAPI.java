@@ -451,7 +451,7 @@ public class PatientAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllBranches(HttpServletRequest request) {
+    public ResponseEntity<?> getAllPatients(HttpServletRequest request) {
 
         logger.error("getAll Patients API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
@@ -462,7 +462,7 @@ public class PatientAPI {
 
         try {
             logger.error("getALL Patients API - Patients fetching from DB");
-            List<PatientWrapper> patientList = patientService.getAllPatientList();
+            List<PatientWrapper> patientList = patientService.getAllPatient();
             if (HISCoreUtil.isListEmpty(patientList)) {
                 response.setResponseMessage(messageBundle.getString("patient.not.found"));
                 response.setResponseCode(ResponseEnum.PATIENT_NOT_FOUND_ERROR.getValue());
@@ -488,6 +488,5 @@ public class PatientAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 }

@@ -1,5 +1,6 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sd.his.enums.AppointmentStatusTypeEnum;
 import com.sd.his.enums.AppointmentTypeEnum;
 import org.hibernate.annotations.NaturalId;
@@ -60,6 +61,10 @@ public class Appointment extends BaseEntity implements Serializable {
     @JoinColumn(name = "PATIENT_ID")
     private Patient patient;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "appointment")
+    private List<LabOrder> labOrders;
+
     @Column(name = "TYPE")
     private String type;
 
@@ -118,6 +123,14 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "LAST_APPOINTMENT_ON")
     private Date lastAppointmentOn;
 
+
+    public List<LabOrder> getLabOrders() {
+        return labOrders;
+    }
+
+    public void setLabOrders(List<LabOrder> labOrders) {
+        this.labOrders = labOrders;
+    }
 
     public Patient getPatient() {
         return patient;

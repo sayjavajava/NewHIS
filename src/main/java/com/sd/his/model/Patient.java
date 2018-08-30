@@ -134,6 +134,18 @@ public class Patient extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "patient")
     private List<Appointment> appointments;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "patient")
+    private List<LabOrder> labOrders;
+
+    public List<LabOrder> getLabOrders() {
+        return labOrders;
+    }
+
+    public void setLabOrders(List<LabOrder> labOrders) {
+        this.labOrders = labOrders;
+    }
+
     public List<Appointment> getAppointments() {
         return appointments;
     }

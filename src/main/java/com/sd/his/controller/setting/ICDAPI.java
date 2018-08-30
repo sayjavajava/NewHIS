@@ -1045,7 +1045,7 @@ public class ICDAPI {
                 for (ICDCodeWrapper codeWrapper:codes){
                     if (codeWrapper.getId() == associatedCodeWrapper.getId()) {
                         codeWrapper.setCheckedCode(true);
-                       descriptionCodeVersion = associatedCodeWrapper.getDescriptionCodeVersion();
+                        descriptionCodeVersion = associatedCodeWrapper.getDescriptionCodeVersion();
                         break;
                     }
                 }
@@ -1056,6 +1056,63 @@ public class ICDAPI {
             if (!HISCoreUtil.isListEmpty(codes)) {
                 map.put("code",codes);
                 map.put("des",descriptionCodeVersion);
+                response.setResponseMessage(messageBundle.getString("icd.associated.found"));
+                response.setResponseCode(ResponseEnum.ICD_ASSOCIATED_FOUND_SUCCESS.getValue());
+                response.setResponseData(map);
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Associated found  Successfully...");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("Delete ICDVersion failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "DELETE", value = "get associated ICDCV",
+            notes = "This method will return associated Status of   associate ICDCVs",
+            produces = "application/json", nickname = "Associated ICDCVs ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Get Associated ICDCVs successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/codes/associated", method = RequestMethod.GET)
+    public ResponseEntity<?> getAssociatedCodesByVersionId(HttpServletRequest request,
+                                               @RequestParam("versionId") long versionId) {
+        logger.info("getCodesByVersionId Api Called..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("icd.associated.not.found"));
+        response.setResponseCode(ResponseEnum.ICD_CODE_DELETE_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (versionId <= 0) {
+                response.setResponseMessage(messageBundle.getString("icd.version.required"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getCodesByVersionId API - insufficient params.");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            List<ICDCodeWrapper> associatedCodes = this.icdService.getAssociatedICDCVByVId(versionId);
+            Map<String, Object> map = new HashMap<>();
+
+            if (!HISCoreUtil.isListEmpty(associatedCodes)) {
+                map.put("code",associatedCodes);
                 response.setResponseMessage(messageBundle.getString("icd.associated.found"));
                 response.setResponseCode(ResponseEnum.ICD_ASSOCIATED_FOUND_SUCCESS.getValue());
                 response.setResponseData(map);

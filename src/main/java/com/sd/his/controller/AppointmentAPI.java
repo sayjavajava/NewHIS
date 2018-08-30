@@ -71,7 +71,7 @@ public class AppointmentAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllClinicalDepartments(HttpServletRequest request) {
+    public ResponseEntity<?> getAllAppointments(HttpServletRequest request) {
 
         logger.error("getAllAppointments API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
@@ -200,7 +200,7 @@ public class AppointmentAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/create", method = RequestMethod.POST,headers = "Accept=*/*")
     public ResponseEntity<?> createAppointment(HttpServletRequest request,
-                                          @RequestBody AppointmentWrapper appointmentWrapper) {
+                                               @RequestBody AppointmentWrapper appointmentWrapper) {
         logger.info("Create Appointment API called...");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -220,10 +220,10 @@ public class AppointmentAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }*/
 
-         Appointment savedAppointment = appointmentService.saveAppointment(appointmentWrapper);
+            Appointment savedAppointment = appointmentService.saveAppointment(appointmentWrapper);
 
-         if (HISCoreUtil.isValidObject(savedAppointment)) {
-               // response.setResponseData(savedAppointment);
+            if (HISCoreUtil.isValidObject(savedAppointment)) {
+                // response.setResponseData(savedAppointment);
                 response.setResponseMessage(messageBundle.getString("appointment.add.success"));
                 response.setResponseCode(ResponseEnum.APPT_SAVED_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -255,8 +255,8 @@ public class AppointmentAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateAppointment(HttpServletRequest request,
-                                          @PathVariable("id") long id,
-                                          @RequestBody AppointmentWrapper appointmentWrapper) {
+                                               @PathVariable("id") long id,
+                                               @RequestBody AppointmentWrapper appointmentWrapper) {
 
         logger.info("update Appointment API called...");
 
@@ -326,7 +326,7 @@ public class AppointmentAPI {
         try {
 
             List<AppointmentWrapper> appointments = appointmentService.getPageableSearchedAppointments(doctorId,branchId);
-          //  int countSearchedAppointments = appointmentService.countSearchedAppointments(doctorId,branchId);
+            //  int countSearchedAppointments = appointmentService.countSearchedAppointments(doctorId,branchId);
             if (HISCoreUtil.isListEmpty(appointments)) {
                 response.setResponseMessage(messageBundle.getString("appointment.search.not.found"));
                 response.setResponseCode(ResponseEnum.APPT_NOT_FOUND_ERROR.getValue());
@@ -355,7 +355,7 @@ public class AppointmentAPI {
     }
 
 
- /*   @ApiOperation(httpMethod = "GET", value = "Fetch Appointment",
+    @ApiOperation(httpMethod = "GET", value = "Fetch Appointment",
             notes = "This method will return Appointment on base of id",
             produces = "application/json", nickname = "Get Single Appointment",
             response = GenericAPIResponse.class, protocols = "https")
@@ -376,10 +376,10 @@ public class AppointmentAPI {
         response.setResponseData(null);
 
         try {
-            Appointment dbAppointment = this.appointmentService.findById(id);
+            AppointmentWrapper singleAppointment = this.appointmentService.getSingleAppointment(id);
 
-            if (HISCoreUtil.isValidObject(dbAppointment)) {
-                response.setResponseData(dbAppointment);
+            if (HISCoreUtil.isValidObject(singleAppointment)) {
+                response.setResponseData(singleAppointment);
                 response.setResponseCode(ResponseEnum.APPT_FOUND_SUCCESS.getValue());
                 response.setResponseMessage(messageBundle.getString("appointment.found"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -404,7 +404,7 @@ public class AppointmentAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @ApiOperation(httpMethod = "DELETE", value = "Delete Appointment ",
+   /* @ApiOperation(httpMethod = "DELETE", value = "Delete Appointment ",
             notes = "This method will Delete Appointment on base of id",
             produces = "application/json", nickname = "Appointment Delete ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -455,10 +455,10 @@ public class AppointmentAPI {
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
 
 
-*/
+
 
 
 
