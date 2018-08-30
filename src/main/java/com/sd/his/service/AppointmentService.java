@@ -78,6 +78,9 @@ public class AppointmentService {
         return appointmentRepository.findAllAppointments();
 
     }
+    public AppointmentWrapper getSingleAppointment(long id){
+        return appointmentRepository.findAllAppointmentById(id);
+    }
 
     public Appointment findById(long id){
         return appointmentRepository.findOne(id);

@@ -2,6 +2,7 @@ package com.sd.his.controller.Patient;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.LabOrder;
+import com.sd.his.repository.LabOrderProjection;
 import com.sd.his.service.PatientService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -88,7 +89,7 @@ public class LabOrderAPI {
     }
 
 
-/*    @ApiOperation(httpMethod = "GET", value = "Paginated LabOrders",
+   @ApiOperation(httpMethod = "GET", value = "Paginated LabOrders",
             notes = "This method will return Paginated LabOrders",
             produces = "application/json", nickname = "Get Paginated LabOrders ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -111,16 +112,16 @@ public class LabOrderAPI {
         response.setResponseData(null);
 
         try {
-            List<BranchResponseWrapper> branchWrappers = patientService.findAllBranches(page, pageSize);
-            int countBranch = branchService.totalBranches();
+            List<LabOrderProjection> branchWrappers = patientService.getAllLabOrders(page,pageSize);
+           /* int countOrders = patientService.totaLabOrders();
 
             if (!HISCoreUtil.isListEmpty(branchWrappers)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
 
-                if (countBranch > pageSize) {
-                    int remainder = countBranch % pageSize;
-                    int totalPages = countBranch / pageSize;
+                if (countOrders > pageSize) {
+                    int remainder = countOrders % pageSize;
+                    int totalPages = countOrders / pageSize;
                     if (remainder > 0) {
                         totalPages = totalPages + 1;
                     }
@@ -150,10 +151,17 @@ public class LabOrderAPI {
                 response.setResponseData(returnValues);
                 logger.info("getAllPaginatedBranch Fetched successfully...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+
+            }*/
+            response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
+            response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(branchWrappers);
+            logger.info("getAllPaginatedBranch Fetched successfully...");
             return new ResponseEntity<>(response, HttpStatus.OK);
+        //    return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("get all paginated Branches failed.", ex.fillInStackTrace());
+            logger.error("get all paginated countOrders failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -161,7 +169,7 @@ public class LabOrderAPI {
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }*/
+    }
 
 
 

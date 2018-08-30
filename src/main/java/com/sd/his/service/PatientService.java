@@ -372,6 +372,7 @@ public class  PatientService {
     public List<PatientWrapper> getAllPatient(){
         return   patientRepository.getAllByStatusTrue();
     }
+    //Lab Order work
     public LabOrderWrapper saveLabOrder(LabOrderWrapper labOrderWrapper){
         LabOrder labOrder = new LabOrder();
 
@@ -396,4 +397,13 @@ public class  PatientService {
         }
         return labOrderWrapper;
     }
+
+    public List<LabOrderProjection> getAllLabOrders(int offset,int limit){
+        Pageable pageable = new PageRequest(offset, limit);
+        List<LabOrderProjection> list = labOrderRepository.findAllProjectedBy(pageable);
+        list.stream().forEach(x->{System.out.println( "TEST: "+x.getId());});
+        return labOrderRepository.findAllProjectedBy(pageable);
+    }
+
+    public int totaLabOrders(){ return (int) labOrderRepository.count(); }
 }

@@ -33,10 +33,10 @@ import java.util.List;
          * All rights reserved.
          *
          */
-
+@Repository
 public interface LabOrderRepository extends JpaRepository<LabOrder, Long> {
 
-   // List<LabOrderProjection> findAll();
+    List<LabOrderProjection> findAllProjectedBy(Pageable pageable);
 }
 
 

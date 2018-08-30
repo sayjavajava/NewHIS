@@ -51,10 +51,12 @@ public class LabOrder extends BaseEntity implements Serializable {
     @Column(name = "DOCTOR_SIGNOFF")
     private Boolean doctorSignOff;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "PATIENT_ID")
     private Patient patient;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "APPOINTMENT_ID")
     private Appointment appointment;

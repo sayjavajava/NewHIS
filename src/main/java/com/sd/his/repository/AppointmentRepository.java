@@ -68,6 +68,13 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT NEW  com.sd.his.wrapper.response.DashboardResponseWrapper(a.id,a.appointmentId,a.patient.id,a.patient.firstName,a.patient.lastName,a.schdeulledDate ,a.doctor.firstName,a.doctor.lastName,a.branch.name,a.reason,a.schdeulledDate,a.room.roomName, a.status, a.branch.id,a.doctor.id,a.room.id )" +
             "FROM Appointment a")
     List<DashboardResponseWrapper> findAllAppointmentsByPatientAndDoctor();
+
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes, a.reason, a.color, a.status, a.type," +
+            " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
+            "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id) " +
+            "FROM Appointment a WHERE a.id =?1 ")
+    AppointmentWrapper findAllAppointmentById(Long apptId);
+
     Appointment findByAppointmentId(String id);
 
 }
