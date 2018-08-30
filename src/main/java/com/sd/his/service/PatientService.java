@@ -4,16 +4,13 @@ import com.sd.his.enums.GenderTypeEnum;
 import com.sd.his.enums.MaritalStatusTypeEnum;
 import com.sd.his.enums.ModuleEnum;
 import com.sd.his.enums.PatientStatusTypeEnum;
-import com.sd.his.model.Appointment;
-import com.sd.his.model.Doctor;
-import com.sd.his.model.Insurance;
-import com.sd.his.model.Patient;
-import com.sd.his.repository.AppointmentRepository;
-import com.sd.his.repository.DoctorRepository;
-import com.sd.his.repository.PatientRepository;
+import com.sd.his.model.*;
+import com.sd.his.repository.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
+import com.sd.his.wrapper.LabOrderWrapper;
 import com.sd.his.wrapper.PatientWrapper;
 import com.sd.his.wrapper.RaceWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +37,11 @@ public class  PatientService {
     private HISUtilService hisUtilService;
     @Autowired
     private AppointmentRepository appointmentRepository;
+    @Autowired
+    private LabOrderRepository labOrderRepository;
+    @Autowired
+    private LabTestRepository labTestRepository;
+
 
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
@@ -310,8 +309,8 @@ public class  PatientService {
         return patientWrapperList;*/
     }
     public List<PatientWrapper> getAllPatientList(){
-       List<Patient> patient =  patientRepository.findAll();
-       return this.getPatientWrapperList(patient);
+        List<Patient> patient =  patientRepository.findAll();
+        return this.getPatientWrapperList(patient);
 
     }
 
@@ -320,6 +319,8 @@ public class  PatientService {
         PatientWrapper patientWrapper = new PatientWrapper();
         this.populatePatientWrapper(patientWrapper, patient);
         patientWrapper.setSelectedDoctor(patient.getPrimaryDoctor().getId());
+        patientWrapper.setPrimaryDoctorFirstName(patient.getPrimaryDoctor().getFirstName());
+        patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
         this.populateRaces(patientWrapper, patient);
         this.populateAppointments(patientWrapper,patient);
         this.populateInsurance(patientWrapper, patient);
@@ -342,14 +343,7 @@ public class  PatientService {
         List<AppointmentWrapper> apptFutureWrapperList = new ArrayList<>();
         List<AppointmentWrapper> apptPastWrapperList = new ArrayList<>();
         List<AppointmentWrapper>  listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patient.getId());
-       /* for (AppointmentWrapper appointment  : listOfAppointments){
-            if(appointment.getCompareDate().toInstant().isAfter(ZonedDateTime.now().toInstant()))
-                apptFutureWrapperList.add(appointment);
-            else
-                apptPastWrapperList.add(appointment);
-        }*/
-       Map<Boolean,List<AppointmentWrapper>> listOfApp = listOfAppointments.stream()
-                .collect(Collectors.partitioningBy(x->x.getCompareDate().toInstant().isAfter(Instant.now())));
+        Map<Boolean,List<AppointmentWrapper>> listOfApp = listOfAppointments.stream().collect(Collectors.partitioningBy(x->x.getCompareDate().toInstant().isAfter(Instant.now())));
         patientWrapper.setFutureAppointments(listOfApp.get(true));
         patientWrapper.setPastAppointments(listOfApp.get(false));
     }
@@ -376,6 +370,30 @@ public class  PatientService {
     }
 
     public List<PatientWrapper> getAllPatient(){
-       return   patientRepository.getAllByStatusTrue();
+        return   patientRepository.getAllByStatusTrue();
+    }
+    public LabOrderWrapper saveLabOrder(LabOrderWrapper labOrderWrapper){
+        LabOrder labOrder = new LabOrder();
+
+        labOrder.setComments(labOrderWrapper.getComments());
+        labOrder.setStatus(labOrderWrapper.getOrderStatus());
+        labOrder.setDateTest(HISCoreUtil.convertToDate(labOrderWrapper.getOrderTestDate()));
+        Optional<Patient> patient = patientRepository.findById(labOrderWrapper.getPatientId());
+        patient.ifPresent(labOrder::setPatient);
+        Appointment appointment=appointmentRepository.findOne(labOrderWrapper.getAppointmentId());
+        labOrder.setAppointment(appointment);
+        List<com.sd.his.wrapper.LabTest> list  =  Arrays.stream(labOrderWrapper.getLabTest()).collect(Collectors.toList());
+        labOrderRepository.save(labOrder);
+        for(com.sd.his.wrapper.LabTest labOrder1 : list){
+            LabTest labTest = new LabTest();
+            labTest.setDescription(labOrder1.getDescription());
+            labTest.setNormalRange(labOrder1.getResultValue());
+            labTest.setUnits(labOrder1.getUnits());
+            labTest.setResultValue(labOrder1.getResultValue());
+            labTest.setLabOrder(labOrder);
+            labTest.setLoincCode(labOrder1.getLoincCode());
+            labTestRepository.save(labTest);
+        }
+        return labOrderWrapper;
     }
 }

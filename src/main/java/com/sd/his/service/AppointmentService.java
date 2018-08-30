@@ -68,9 +68,9 @@ public class AppointmentService {
 
     public List<AppointmentWrapper> findAllPaginatedAppointments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-         // List<AppointmentWrapper> list= appointmentRepository.findAllPaginatedAppointments(pageable);
-      //   return appointmentRepository.findAllPaginatedAppointments(pageable);
-      return null;
+        // List<AppointmentWrapper> list= appointmentRepository.findAllPaginatedAppointments(pageable);
+        //   return appointmentRepository.findAllPaginatedAppointments(pageable);
+        return null;
     }
 
     public List<AppointmentWrapper> findAllAppointments() {
@@ -82,6 +82,9 @@ public class AppointmentService {
     public Appointment findById(long id){
         return appointmentRepository.findOne(id);
     }
+    public Appointment findByNaturalId(String id){
+        return appointmentRepository.findByAppointmentId(id);
+    }
 
     public int countAllAppointments() {
         return appointmentRepository.findAll().size();
@@ -91,28 +94,28 @@ public class AppointmentService {
         Appointment appointment =new Appointment();
         Patient patient =null;
         Optional<String> patientType  =  appointmentWrapper.getAppointmentType().stream()
-                                         .filter(x->x.equalsIgnoreCase("NewPatient")).findFirst();
+                .filter(x->x.equalsIgnoreCase("NewPatient")).findFirst();
         if(patientType.isPresent()){
-         patient = new Patient();
-         patient.setEmail(appointmentWrapper.getEmail());
-         patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
-         patient.setFirstName(appointmentWrapper.getNewPatient());
-        // patient.setLastName(appointmentWrapper.getNewPatient());
-         patient.setCellPhone(appointmentWrapper.getCellPhone());
-         patient.setDob(appointmentWrapper.getDateOfBirth());
-         patientRepository.save(patient);
-         appointment.setPatient(patient);
+            patient = new Patient();
+            patient.setEmail(appointmentWrapper.getEmail());
+            patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+            patient.setFirstName(appointmentWrapper.getNewPatient());
+            // patient.setLastName(appointmentWrapper.getNewPatient());
+            patient.setCellPhone(appointmentWrapper.getCellPhone());
+            patient.setDob(appointmentWrapper.getDateOfBirth());
+            patientRepository.save(patient);
+            appointment.setPatient(patient);
         }
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
         // appointment.setRecurringDays(new Gson().toJson(appointmentWrapper.getSelectedRecurringDays()));
-         Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
-         appointment.setSchdeulledDate(scheduleDate);
-         Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
-         appointment.setStartedOn(date2);
-       //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
-         appointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
+        Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
+        appointment.setSchdeulledDate(scheduleDate);
+        Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
+        appointment.setStartedOn(date2);
+        //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
+        appointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
 
-         // Date newDate = new Date(appointment.getSchdeulledDate().getTime() + appointment.getDuration());
+        // Date newDate = new Date(appointment.getSchdeulledDate().getTime() + appointment.getDuration());
         // appointment.setEndedOn(newDate);
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setNotes(appointmentWrapper.getNotes());
@@ -121,7 +124,7 @@ public class AppointmentService {
         appointment.setDuration(appointmentWrapper.getDuration());
         appointment.setStatus(AppointmentStatusTypeEnum.valueOf(appointmentWrapper.getStatus()));
 
-     //   appointment.setEndedOn(appointmentWrapper.getStart() + appointmentWrapper.getDuration()*60*1000);
+        //   appointment.setEndedOn(appointmentWrapper.getStart() + appointmentWrapper.getDuration()*60*1000);
 
 
         appointment.setAppointmentId(hisUtilService.getPrefixId(ModuleEnum.APPOINTMENT));
@@ -207,13 +210,13 @@ public class AppointmentService {
         return alreadyExistAppointment;
     }
 
-   public List<AppointmentWrapper> getPageableSearchedAppointments(Long doctorId ,Long branchId) {
+    public List<AppointmentWrapper> getPageableSearchedAppointments(Long doctorId ,Long branchId) {
         //Pageable pageable = new PageRequest(offset, limit);
         List<AppointmentWrapper> test = appointmentRepository.findAllAppointmentsByDoctor(doctorId,branchId);
         return appointmentRepository.findAllAppointmentsByDoctor(doctorId,branchId);
     }
 
-     public int countSearchedAppointments(Long doctorId,Long branchId) {
+    public int countSearchedAppointments(Long doctorId,Long branchId) {
         Doctor doctor = doctorRepository.findOne(doctorId);
         Branch branch = branchRepository.findOne(branchId);
         return appointmentRepository.findByDoctorAndBranch(doctor,branch).size();
@@ -284,6 +287,15 @@ public class AppointmentService {
             return room;
         }
         return null;
+    }
+    public boolean changeStatus(String currentStatus,Appointment alreadyExistAppointment){
+        boolean statusChanged =false;
+        alreadyExistAppointment.setStatus(AppointmentStatusTypeEnum.valueOf(currentStatus));
+        Appointment appt = appointmentRepository.save(alreadyExistAppointment);
+        if(HISCoreUtil.isValidObject(appt)){
+            statusChanged =true;
+        }
+        return statusChanged;
     }
 
   /*  public void deleteAppointment(Appointment appointment) {

@@ -66,7 +66,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByDoctorAndBranch(Doctor doctor, Branch branch);
 
     @Query("SELECT NEW  com.sd.his.wrapper.response.DashboardResponseWrapper(a.id,a.appointmentId,a.patient.id,a.patient.firstName,a.patient.lastName,a.schdeulledDate ,a.doctor.firstName,a.doctor.lastName,a.branch.name,a.reason,a.schdeulledDate,a.room.roomName, a.status, a.branch.id,a.doctor.id,a.room.id )" +
-            "FROM Appointment a")              
+            "FROM Appointment a")
     List<DashboardResponseWrapper> findAllAppointmentsByPatientAndDoctor();
     Appointment findByAppointmentId(String id);
 
