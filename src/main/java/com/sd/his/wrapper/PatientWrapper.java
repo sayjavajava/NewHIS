@@ -20,6 +20,8 @@ public class PatientWrapper {
     private long id;         //pk of patient
     private Long patient;
     private long selectedDoctor = -1;
+    private String primaryDoctorFirstName;
+    private String primaryDoctorLastName;
     private String titlePrefix = "-1";
     private String firstName = "";
     private String middleName = "";
@@ -142,6 +144,21 @@ public class PatientWrapper {
         this.photoBack = insurance.getPhotoBack();*//*
     }*/
 
+    public String getPrimaryDoctorFirstName() {
+        return primaryDoctorFirstName;
+    }
+
+    public void setPrimaryDoctorFirstName(String primaryDoctorFirstName) {
+        this.primaryDoctorFirstName = primaryDoctorFirstName;
+    }
+
+    public String getPrimaryDoctorLastName() {
+        return primaryDoctorLastName;
+    }
+
+    public void setPrimaryDoctorLastName(String primaryDoctorLastName) {
+        this.primaryDoctorLastName = primaryDoctorLastName;
+    }
     public List<AppointmentWrapper> getFutureAppointments() {
         return futureAppointments;
     }

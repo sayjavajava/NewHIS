@@ -82,6 +82,9 @@ public class AppointmentService {
     public Appointment findById(long id){
         return appointmentRepository.findOne(id);
     }
+    public Appointment findByNaturalId(String id){
+        return appointmentRepository.findByAppointmentId(id);
+    }
 
     public int countAllAppointments() {
         return appointmentRepository.findAll().size();
@@ -284,6 +287,15 @@ public class AppointmentService {
             return room;
         }
         return null;
+    }
+    public boolean changeStatus(String currentStatus,Appointment alreadyExistAppointment){
+        boolean statusChanged =false;
+        alreadyExistAppointment.setStatus(AppointmentStatusTypeEnum.valueOf(currentStatus));
+        Appointment appt = appointmentRepository.save(alreadyExistAppointment);
+        if(HISCoreUtil.isValidObject(appt)){
+            statusChanged =true;
+        }
+        return statusChanged;
     }
 
   /*  public void deleteAppointment(Appointment appointment) {
