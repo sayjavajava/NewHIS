@@ -36,6 +36,6 @@ import java.util.List;
 
 public interface LabOrderRepository extends JpaRepository<LabOrder, Long> {
 
-    List<LabOrderProjection> findAll();
+   // List<LabOrderProjection> findAll();
 }
 
