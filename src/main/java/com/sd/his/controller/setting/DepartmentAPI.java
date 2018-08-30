@@ -89,6 +89,7 @@ public class DepartmentAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
+
             response.setResponseMessage(messageBundle.getString("cli.dpts.fetch.success"));
             response.setResponseCode(ResponseEnum.CLI_DPT_FETCH_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());

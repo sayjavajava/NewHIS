@@ -22,10 +22,9 @@ public class DashboardResponseWrapper {
     private String apptNaturalId;
     private String patientFirstName;
     private String patientLastName;
-    private Long patientId;
 
 
-    public DashboardResponseWrapper(Long appointmentId,String apptNaturalId,Long patientId ,String patientFirstName, String patientLastName, Date inTime, String doctorFirstName, String doctorLastName, String branch, String group, Date scheduleAt, String examRoom, AppointmentStatusTypeEnum status, Long branchId, Long doctorId, Long roomId) {
+    public DashboardResponseWrapper(Long appointmentId,String apptNaturalId ,String patientFirstName, String patientLastName, Date inTime, String doctorFirstName, String doctorLastName, String branch, String group, Date scheduleAt, String examRoom, AppointmentStatusTypeEnum status, Long branchId, Long doctorId, Long roomId) {
         this.appointmentId=appointmentId;
         this.inTime = HISCoreUtil.convertDateAndTimeToString(scheduleAt);
         this.patientFirstName =patientFirstName;
@@ -42,25 +41,9 @@ public class DashboardResponseWrapper {
         this.doctorId = doctorId;
         this.roomId = roomId;
         this.apptNaturalId =apptNaturalId;
-        this.patientId=patientId;
 
     }
 
-    public Long getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(Long patientId) {
-        this.patientId = patientId;
-    }
-
-    public String getApptNaturalId() {
-        return apptNaturalId;
-    }
-
-    public void setApptNaturalId(String apptNaturalId) {
-        this.apptNaturalId = apptNaturalId;
-    }
 
     public String getDoctorFirstName() {
         return doctorFirstName;

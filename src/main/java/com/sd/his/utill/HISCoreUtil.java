@@ -143,6 +143,20 @@ public class HISCoreUtil {
        return date;
    }
 
+    public static Date convertToDateWithOutSecond(String str) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(HISConstants.DATE_FORMATE_TWO);
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
 
     public static Date addTimetoDate(Date str , long duration) {
         Date date = null;

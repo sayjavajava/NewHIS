@@ -33,7 +33,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
 public class HisApplication {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
 
-    @Autowired
+/*    @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -56,7 +56,7 @@ public class HisApplication {
     @Autowired
     private BranchDoctorRepository branchDoctorRepository;
     @Autowired
-    private RoomRepository roomRepository;
+    private RoomRepository roomRepository;*/
 
     public static void main(String[] args) {
         SpringApplication.run(HisApplication.class, args);
@@ -104,11 +104,11 @@ public class HisApplication {
             permissionRepository.save(permissions);
 
             List<Role> roles = new ArrayList<>();
-    roles.add(new Role(UserTypeEnum.ADMIN.name(), "admin role", true));
-    roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
-    roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
-    roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "receptionist role", true));
-    roles.add(new Role(UserTypeEnum.CASHIER.name(), "cashier role", true));
+            roles.add(new Role(UserTypeEnum.ADMIN.name(), "admin role", true));
+            roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
+            roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
+            roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "receptionist role", true));
+            roles.add(new Role(UserTypeEnum.CASHIER.name(), "cashier role", true));
             roleRepository.save(roles);
 
             List<RolePermission> rolePermissions = new ArrayList<>();
@@ -120,12 +120,12 @@ public class HisApplication {
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-            User admin = new User("admin", UserTypeEnum.ADMIN, encoder.encode("admin"), true);
-            User doctorU = new User("doctor", UserTypeEnum.DOCTOR, encoder.encode("doctor"), true);
+            User admin = new User("admin", UserTypeEnum.ADMIN.name(), encoder.encode("admin"), true);
+            User doctorU = new User("doctor", UserTypeEnum.DOCTOR.name(), encoder.encode("doctor"), true);
 
-            User nurse = new User("nurse", UserTypeEnum.NURSE, encoder.encode("nurse"), true);
-            User receptionist = new User("receptionist", UserTypeEnum.RECEPTIONIST, encoder.encode("receptionist"), true);
-            User cashier = new User("cashier", UserTypeEnum.CASHIER, encoder.encode("cashier"), true);
+            User nurse = new User("nurse", UserTypeEnum.NURSE.name(), encoder.encode("nurse"), true);
+            User receptionist = new User("receptionist", UserTypeEnum.RECEPTIONIST.name(), encoder.encode("receptionist"), true);
+            User cashier = new User("cashier", UserTypeEnum.CASHIER.name(), encoder.encode("cashier"), true);
 
             userRepository.save(Arrays.asList(admin, doctorU,nurse,receptionist,cashier));
 
@@ -156,8 +156,8 @@ public class HisApplication {
             organizationRepository.saveAndFlush(organization);
         }
     }
-}
 */
+}
 /**
  * @author Irfan Nasim
  * @description To create WAR Packaging
@@ -176,4 +176,4 @@ public class HisApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(HisApplication.class);
     }*/
-}
+

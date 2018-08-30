@@ -61,10 +61,6 @@ public class Appointment extends BaseEntity implements Serializable {
     @JoinColumn(name = "PATIENT_ID")
     private Patient patient;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "appointment")
-    private List<LabOrder> labOrders;
-
     @Column(name = "TYPE")
     private String type;
 
@@ -123,14 +119,18 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "LAST_APPOINTMENT_ON")
     private Date lastAppointmentOn;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = Problem.class, mappedBy = "appointment")
+    private List<Problem> problems;
 
-    public List<LabOrder> getLabOrders() {
-        return labOrders;
-    }
+    @JsonIgnore
+    @OneToMany(targetEntity = Problem.class, mappedBy = "appointment")
+    private List<Allergy> allergies;
 
-    public void setLabOrders(List<LabOrder> labOrders) {
-        this.labOrders = labOrders;
-    }
+    @JsonIgnore
+    @OneToMany(targetEntity = Medication.class, mappedBy = "appointment")
+    private List<Medication> medications;
+
 
     public Patient getPatient() {
         return patient;
@@ -314,5 +314,21 @@ public class Appointment extends BaseEntity implements Serializable {
 
     public void setLastAppointmentOn(Date lastAppointmentOn) {
         this.lastAppointmentOn = lastAppointmentOn;
+    }
+
+    public List<Problem> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(List<Problem> problems) {
+        this.problems = problems;
+    }
+
+    public List<Allergy> getAllergies() {
+        return allergies;
+    }
+
+    public void setAllergies(List<Allergy> allergies) {
+        this.allergies = allergies;
     }
 }

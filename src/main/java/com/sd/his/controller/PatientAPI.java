@@ -489,7 +489,4 @@ public class PatientAPI {
         }
     }
 
-
-
-
 }

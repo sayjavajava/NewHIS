@@ -244,11 +244,7 @@ public class ICDService {
 
     public List<ICDCodeWrapper> getAssociatedICDCVByVId(long versionId) {
         if (versionId > 0) {
-//            List<ICDCodeVersion> dbList = codeVersionRepository.findAllByVersion_id(versionId);
-//            if (dbList != null && dbList.size() > 0) {
-                ///here we only want associated by version id
-                return codeVersionRepository.findAllByVersion_id(versionId);///APIUtil.buildAssociatedICDCodesWrapper(dbList);
-//            }
+            return codeVersionRepository.findAllByVersion_id(versionId);
         }
         return null;
     }

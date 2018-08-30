@@ -2,9 +2,9 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
 
 /*
  * @author    : Tahir Mehmood
@@ -29,80 +29,11 @@ import java.util.Date;
  *
  */
 @Entity
-@Table(name = "LABTEST")
+@Table(name = "DOCUMENT")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LabTest extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "LOINC_CODE")
-    private String loincCode;
 
-    @Column(name = "DESCRIPTION")
-    private String description;
-
-    @Column(name = "RESULT_VALUE")
-    private String resultValue;
-
-    @Column(name = "UNITS")
-    private String units;
-
-    @Column(name = "NORMAL_RANGE")
-    private String normalRange;
-
-    @ManyToOne
-    @JoinColumn(name = "LABORDER_ID")
-    private LabOrder labOrder;
-
-
-    public LabTest() {
-    }
-
-    public String getLoincCode() {
-        return loincCode;
-    }
-
-    public void setLoincCode(String loincCode) {
-        this.loincCode = loincCode;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getResultValue() {
-        return resultValue;
-    }
-
-    public void setResultValue(String resultValue) {
-        this.resultValue = resultValue;
-    }
-
-    public String getUnits() {
-        return units;
-    }
-
-    public void setUnits(String units) {
-        this.units = units;
-    }
-
-    public String getNormalRange() {
-        return normalRange;
-    }
-
-    public void setNormalRange(String normalRange) {
-        this.normalRange = normalRange;
-    }
-
-    public LabOrder getLabOrder() {
-        return labOrder;
-    }
-
-    public void setLabOrder(LabOrder labOrder) {
-        this.labOrder = labOrder;
-    }
 }

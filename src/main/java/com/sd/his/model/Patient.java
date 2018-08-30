@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.enums.GenderTypeEnum;
 import com.sd.his.enums.MaritalStatusTypeEnum;
 import com.sd.his.enums.PatientStatusTypeEnum;
+import org.apache.http.util.NetUtils;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -135,16 +136,16 @@ public class Patient extends BaseEntity implements Serializable {
     private List<Appointment> appointments;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "patient")
-    private List<LabOrder> labOrders;
+    @OneToMany(targetEntity = Problem.class, mappedBy = "patient")
+    private List<Problem> problems;
 
-    public List<LabOrder> getLabOrders() {
-        return labOrders;
-    }
+    @JsonIgnore
+    @OneToMany(targetEntity = Allergy.class, mappedBy = "patient")
+    private List<Allergy> allergies;
 
-    public void setLabOrders(List<LabOrder> labOrders) {
-        this.labOrders = labOrders;
-    }
+    @JsonIgnore
+    @OneToMany(targetEntity = Medication.class, mappedBy = "patient")
+    private List<Medication> medications;
 
     public List<Appointment> getAppointments() {
         return appointments;
@@ -424,5 +425,21 @@ public class Patient extends BaseEntity implements Serializable {
 
     public void setPrimaryDoctor(Doctor primaryDoctor) {
         this.primaryDoctor = primaryDoctor;
+    }
+
+    public List<Problem> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(List<Problem> problems) {
+        this.problems = problems;
+    }
+
+    public List<Allergy> getAllergies() {
+        return allergies;
+    }
+
+    public void setAllergies(List<Allergy> allergies) {
+        this.allergies = allergies;
     }
 }

@@ -1,9 +1,10 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.enums.StatusEnum;
+import com.sd.his.wrapper.AllergyWrapper;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /*
@@ -29,11 +30,112 @@ import java.io.Serializable;
  *
  */
 @Entity
-@Table(name = "DOCUMENT")
+@Table(name = "ALLERGY")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Allergy extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Column(name = "NAME")
+    private String name;
 
+    @Column(name = "ALERGY_TYPE")
+    private String allergyType;
+
+    @Column(name = "REACTION")
+    private String reaction;
+
+    @Column(name = "STATUS")
+    private String status;
+
+    @Column(name = "NOTE")
+    private String note;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PATIENT_ID")
+    private Patient patient;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APPOINTMENT_ID")
+    private Appointment appointment;
+
+
+    public Allergy() {
+    }
+
+    public Allergy(AllergyWrapper allergyWrapper) {
+        this.name = allergyWrapper.getName();
+        this.allergyType = allergyWrapper.getAllergyType();
+        this.reaction = allergyWrapper.getReaction();
+        this.status = allergyWrapper.getStatus();
+        this.note = allergyWrapper.getNote();
+    }
+
+    public Allergy(Allergy allergy, AllergyWrapper allergyWrapper) {
+        allergy.name = allergyWrapper.getName();
+        allergy.allergyType = allergyWrapper.getAllergyType();
+        allergy.reaction = allergyWrapper.getReaction();
+        allergy.status = allergyWrapper.getStatus();
+        allergy.note = allergyWrapper.getNote();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(String reaction) {
+        this.reaction = reaction;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getAllergyType() {
+        return allergyType;
+    }
+
+    public void setAlergyType(String allergyType) {
+        this.allergyType = allergyType;
+    }
+
+    public void setAllergyType(String allergyType) {
+        this.allergyType = allergyType;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
 }

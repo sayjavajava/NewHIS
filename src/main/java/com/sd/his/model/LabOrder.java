@@ -1,12 +1,10 @@
 package com.sd.his.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 /*
  * @author    : Tahir Mehmood
@@ -31,94 +29,11 @@ import java.util.List;
  *
  */
 @Entity
-@Table(name = "LABORDER")
+@Table(name = "DOCUMENT")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LabOrder extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-   //add some data
-    @Column(name = "STATUS")
-    private String status;
 
-    @Column(name = "COMMENTS")
-    private String comments;
-
-    @Temporal(TemporalType.TIME)
-    @Column(name = "DATE_TEST")
-    private Date dateTest;
-
-    @Column(name = "DOCTOR_SIGNOFF")
-    private Boolean doctorSignOff;
-
-    @ManyToOne
-    @JoinColumn(name = "PATIENT_ID")
-    private Patient patient;
-
-    @ManyToOne
-    @JoinColumn(name = "APPOINTMENT_ID")
-    private Appointment appointment;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "labOrder")
-    private List<LabTest> labTests;
-
-    public LabOrder() {
-    }
-
-    public List<LabTest> getLabTests() {
-        return labTests;
-    }
-
-    public void setLabTests(List<LabTest> labTests) {
-        this.labTests = labTests;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public Date getDateTest() {
-        return dateTest;
-    }
-
-    public void setDateTest(Date dateTest) {
-        this.dateTest = dateTest;
-    }
-
-    public Boolean getDoctorSignOff() {
-        return doctorSignOff;
-    }
-
-    public void setDoctorSignOff(Boolean doctorSignOff) {
-        this.doctorSignOff = doctorSignOff;
-    }
-
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-    public Appointment getAppointment() {
-        return appointment;
-    }
-
-    public void setAppointment(Appointment appointment) {
-        this.appointment = appointment;
-    }
 }
