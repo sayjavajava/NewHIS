@@ -112,41 +112,27 @@ public class HISCoreUtil {
     }
 
     public static String convertTimeToString(Date time) {
-         String formatedDate = null;
-        if(time != null){
-        SimpleDateFormat form = new SimpleDateFormat("hh:mm:ss");
-        formatedDate= form.format(time);
-      }
-      return formatedDate;
-    }
-
-    public static String convertDateToString(Date date) {
         String formatedDate = null;
-        if(date != null){
-            SimpleDateFormat form = new SimpleDateFormat("dd MMMM yyyy");
-            formatedDate= form.format(date);
+        if (time != null) {
+            SimpleDateFormat form = new SimpleDateFormat("hh:mm:ss");
+            formatedDate = form.format(time);
         }
         return formatedDate;
     }
 
-   public static Date convertToDate(String str) {
-       Date date = null;
-        if (str != null) {
-           SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-           try {
-               date = formatter.parse(str);
-           } catch (ParseException e) {
-               e.printStackTrace();
-           }
+    public static String convertDateToString(Date date) {
+        String formatedDate = null;
+        if (date != null) {
+            SimpleDateFormat form = new SimpleDateFormat("dd MMMM yyyy");
+            formatedDate = form.format(date);
+        }
+        return formatedDate;
+    }
 
-       }
-       return date;
-   }
-
-    public static Date convertToDateWithOutSecond(String str) {
+    public static Date convertToDate(String str) {
         Date date = null;
         if (str != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat(HISConstants.DATE_FORMATE_TWO);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
             try {
                 date = formatter.parse(str);
             } catch (ParseException e) {
@@ -157,12 +143,26 @@ public class HISCoreUtil {
         return date;
     }
 
+    public static Date convertToDateWithTime(String strDate, String formateDate) {
+        Date date = null;
+        if (strDate != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(formateDate);///*"yyyy-MM-dd'T'HH:mm"*/
+            try {
+                date = formatter.parse(strDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-    public static Date addTimetoDate(Date str , long duration) {
+        }
+        return date;
+    }
+
+
+    public static Date addTimetoDate(Date str, long duration) {
         Date date = null;
         if (str != null) {
-            date = Date.from(str.toInstant().plusSeconds(duration*60));
-            }
+            date = Date.from(str.toInstant().plusSeconds(duration * 60));
+        }
         return date;
     }
 
@@ -175,11 +175,12 @@ public class HISCoreUtil {
         }
         return formatedDate;
     }
+
     public static String convertDateAndTimeToString(Date date) {
         String formatedDate = null;
-        if(date != null){
+        if (date != null) {
             SimpleDateFormat form = new SimpleDateFormat("dd MMMM yyyy : hh:mm:ss");
-            formatedDate= form.format(date);
+            formatedDate = form.format(date);
         }
         return formatedDate;
     }
