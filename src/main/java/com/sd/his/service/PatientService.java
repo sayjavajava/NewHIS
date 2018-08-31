@@ -400,8 +400,6 @@ public class  PatientService {
 
     public List<LabOrderProjection> getAllLabOrders(int offset,int limit){
         Pageable pageable = new PageRequest(offset, limit);
-        List<LabOrderProjection> list = labOrderRepository.findAllProjectedBy(pageable);
-        list.stream().forEach(x->{System.out.println( "TEST: "+x.getId());});
         return labOrderRepository.findAllProjectedBy(pageable);
     }
 

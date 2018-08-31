@@ -112,10 +112,10 @@ public class LabOrderAPI {
         response.setResponseData(null);
 
         try {
-            List<LabOrderProjection> branchWrappers = patientService.getAllLabOrders(page,pageSize);
-           /* int countOrders = patientService.totaLabOrders();
+            List<LabOrderProjection> labordersdata = patientService.getAllLabOrders(page,pageSize);
+            int countOrders = patientService.totaLabOrders();
 
-            if (!HISCoreUtil.isListEmpty(branchWrappers)) {
+            if (!HISCoreUtil.isListEmpty(labordersdata)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
 
@@ -143,23 +143,18 @@ public class LabOrderAPI {
                 returnValues.put("prePage", prePage);
                 returnValues.put("currPage", currPage);
                 returnValues.put("pages", pages);
-                returnValues.put("data", branchWrappers);
+                returnValues.put("data", labordersdata);
 
                 response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
                 response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(returnValues);
-                logger.info("getAllPaginatedBranch Fetched successfully...");
+                logger.info("getAllPaginatedLabOrders Fetched successfully...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
-            }*/
-            response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
-            response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(branchWrappers);
-            logger.info("getAllPaginatedBranch Fetched successfully...");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        //    return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+           return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("get all paginated countOrders failed.", ex.fillInStackTrace());
             response.setResponseData("");
