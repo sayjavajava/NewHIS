@@ -1,4 +1,4 @@
-package com.sd.his.controller;
+package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.service.PatientService;
@@ -37,7 +37,7 @@ import java.util.stream.IntStream;
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
- * @Package   : com.sd.his.controller.PatientHistoryAPI
+ * @Package   : com.sd.his.controller.patient.PatientHistoryAPI
  * @FileName  : PatientHistoryAPI
  *
  * Copyright ©

@@ -1,5 +1,6 @@
-package com.sd.his.controller;
+package com.sd.his.controller.patient;
 
+import com.sd.his.controller.AppointmentAPI;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.service.AllergyService;
 import com.sd.his.utill.HISCoreUtil;
