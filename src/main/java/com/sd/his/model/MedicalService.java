@@ -39,6 +39,9 @@ public class MedicalService extends BaseEntity implements Serializable {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "CODE")
+    private String code;
+
     @Column(name = "COST")
     private Double cost;
 
@@ -74,6 +77,7 @@ public class MedicalService extends BaseEntity implements Serializable {
 
     public MedicalService(MedicalServiceWrapper createRequest) {
         this.name = createRequest.getName();
+        this.code = createRequest.getCode();
         this.cost = createRequest.getCost();
         this.fee = createRequest.getFee();
         this.duration = createRequest.getDuration();
@@ -84,6 +88,7 @@ public class MedicalService extends BaseEntity implements Serializable {
 
     public MedicalService(MedicalService medicalService, MedicalServiceWrapper createRequest) {
         medicalService.setName(createRequest.getName());
+        medicalService.setCode(createRequest.getCode());
         medicalService.setCost(createRequest.getCost());
         medicalService.setFee(createRequest.getFee());
         medicalService.setDuration(createRequest.getDuration());
@@ -172,5 +177,11 @@ public class MedicalService extends BaseEntity implements Serializable {
         this.branchMedicalServices = branchMedicalServices;
     }
 
+    public String getCode() {
+        return code;
+    }
 
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

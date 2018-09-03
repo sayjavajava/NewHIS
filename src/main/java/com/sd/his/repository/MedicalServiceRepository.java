@@ -48,8 +48,13 @@ public interface MedicalServiceRepository extends JpaRepository<MedicalService, 
 
     @Query("SELECT DISTINCT  new com.sd.his.wrapper.MedicalServiceWrapper(ms) " +
             "FROM MedicalService ms JOIN ms.departmentMedicalServices cdms JOIN cdms.department d JOIN ms.branchMedicalServices bms join bms.branch b JOIN ms.tax t " +
-            "WHERE (ms.name LIKE  CONCAT('%',:serviceName,'%') OR b.id = :branchId OR d.id = :departmentId OR ms.fee = :serviceFee)")
+            "WHERE ms.name LIKE  CONCAT('%',:serviceName,'%') or " +
+            "ms.code LIKE  CONCAT('%',:searchCode,'%') OR " +
+            "b.id = :branchId OR " +
+            "d.id = :departmentId OR " +
+            "ms.fee = :serviceFee")
     List<MedicalServiceWrapper> findAllByParam(@Param("serviceName") String serviceName,
+                                               @Param("searchCode") String searchCode,
                                                @Param("branchId") Long branchId,
                                                @Param("departmentId") Long departmentId,
                                                @Param("serviceFee") Double serviceFee,
@@ -57,8 +62,13 @@ public interface MedicalServiceRepository extends JpaRepository<MedicalService, 
 
     @Query("SELECT DISTINCT  new com.sd.his.wrapper.MedicalServiceWrapper(ms) " +
             "FROM MedicalService ms JOIN ms.departmentMedicalServices cdms JOIN cdms.department d JOIN ms.branchMedicalServices bms join bms.branch b JOIN ms.tax t " +
-            "WHERE (ms.name LIKE  CONCAT('%',:serviceName,'%') OR b.id = :branchId OR d.id = :departmentId OR ms.fee = :serviceFee)")
+            "WHERE ms.name LIKE  CONCAT('%',:serviceName,'%') or " +
+            "ms.code LIKE  CONCAT('%',:searchCode,'%') OR " +
+            "b.id = :branchId OR " +
+            "d.id = :departmentId OR " +
+            "ms.fee = :serviceFee")
     List<MedicalServiceWrapper> countAllByParam(@Param("serviceName") String serviceName,
+                                                @Param("searchCode") String searchCode,
                                                 @Param("branchId") Long branchId,
                                                 @Param("departmentId") Long departmentId,
                                                 @Param("serviceFee") Double serviceFee);
