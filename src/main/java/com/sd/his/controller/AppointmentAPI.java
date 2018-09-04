@@ -355,7 +355,7 @@ public class AppointmentAPI {
     }
 
 
- /*   @ApiOperation(httpMethod = "GET", value = "Fetch Appointment",
+    @ApiOperation(httpMethod = "GET", value = "Fetch Appointment",
             notes = "This method will return Appointment on base of id",
             produces = "application/json", nickname = "Get Single Appointment",
             response = GenericAPIResponse.class, protocols = "https")
@@ -366,8 +366,7 @@ public class AppointmentAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAppointmentById(HttpServletRequest request,
-                                           @PathVariable("id") long id) {
+    public ResponseEntity<?> getAppointmentById(HttpServletRequest request,@PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("appointment.not-found"));
@@ -376,7 +375,7 @@ public class AppointmentAPI {
         response.setResponseData(null);
 
         try {
-            Appointment dbAppointment = this.appointmentService.findById(id);
+            AppointmentWrapper dbAppointment = this.appointmentService.getSingleAppointment(id);    // this.appointmentService.findById(id);
 
             if (HISCoreUtil.isValidObject(dbAppointment)) {
                 response.setResponseData(dbAppointment);
@@ -404,6 +403,7 @@ public class AppointmentAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    /*
     @ApiOperation(httpMethod = "DELETE", value = "Delete Appointment ",
             notes = "This method will Delete Appointment on base of id",
             produces = "application/json", nickname = "Appointment Delete ",

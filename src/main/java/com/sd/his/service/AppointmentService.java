@@ -83,6 +83,11 @@ public class AppointmentService {
         return appointmentRepository.findOne(id);
     }
 
+
+    public AppointmentWrapper getSingleAppointment(long id){
+        return appointmentRepository.findAllAppointmentById(id);
+    }
+
     public int countAllAppointments() {
         return appointmentRepository.findAll().size();
     }
