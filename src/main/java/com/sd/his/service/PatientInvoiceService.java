@@ -70,7 +70,7 @@ public class PatientInvoiceService {
             }else{
                 invItems =invoiceItemsRepository.findOne(pInvc.getId());
             }
-            invItems.setCode(invoice.getInvoiceId());
+            invItems.setCode(pInvc.getCode());
             invItems.setDescription(pInvc.getDescription());
             invItems.setDiscountRate(pInvc.getDiscountRate());
             invItems.setTaxRate(pInvc.getTaxRate());
