@@ -99,7 +99,7 @@ public class AppointmentWrapper {
     public AppointmentWrapper(Long id,String appointmentId, String title, String notes, String reason, String color, AppointmentStatusTypeEnum status, String appointmentType, Integer duration,
                               Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
                               Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, Long patientId,
-                              Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId
+                              Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId,Date followUpDate
     ) {
         //Long patientId,Long branchId, String branchName, Long roomId,
         this.id = id;
@@ -122,13 +122,7 @@ public class AppointmentWrapper {
         this.duration = duration;
         this.compareDate = scheduleDate;
         this.appointmentType = JSONUtil.convertJsonToList(appointmentType);
-        //    this.followUpReason = followUpReasonReminder;
-      /*  this.startedOn = startedOn;
-        this.ended = endedOn;
-        this.createdOn = createdOn;
-        this.updatedOn = updatedOn;*/
-        //  this.recurring = recurring;
-        //   this.recurringDays = recurringDays;
+        this.followUpReason=followUpReasonReminder;
         this.recurringPeriod = recurringPeriod;
        /* this.firstAppointmentOn = firstAppointmentOn;
         this.lastAppointmentOn = lastAppointmentOn;*/
@@ -140,7 +134,11 @@ public class AppointmentWrapper {
         this.examName = roomName;
         this.branchName = branchName;
         this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToString(scheduleDate);
+        this.followUpDate =HISCoreUtil.convertDateAndTimeToString(followUpDate);
     }
+
+
+    //overload for all appointments
 
     @Override
     public String toString() {
@@ -154,6 +152,7 @@ public class AppointmentWrapper {
                 ", duration=" + duration +
                 '}';
     }
+
 
     public String getAppointmentId() {
         return appointmentId;
