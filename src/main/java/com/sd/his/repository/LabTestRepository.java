@@ -5,6 +5,8 @@ import com.sd.his.model.LabTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /*
  * @author    : waqas kamran
  * @Date      : 17-Apr-18
@@ -29,6 +31,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface LabTestRepository extends JpaRepository<LabTest, Long> {
+
+    List<LabTest> findAllByLoincCodeIn(List<String> ids);
+    List<LabTest> findAllByLabOrderIn(List<LabOrder> ids);
+
 
 }
 

@@ -115,7 +115,7 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "FIRST_APPOINTMENT_ON")
     private Date firstAppointmentOn;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "FOLLOW_UP_DATE")
     private Date followUpDate;
 
