@@ -13,6 +13,7 @@ import com.sd.his.repository.DoctorRepository;
 import com.sd.his.repository.PatientRepository;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
 import com.sd.his.wrapper.PatientWrapper;
 import com.sd.his.wrapper.RaceWrapper;
@@ -194,7 +195,7 @@ public class  PatientService {
         /// now saving images against user id
 
         ///profile photo save
-        /*
+/*
         String url = null;
         if (patientWrapper.getProfileImg() != null) {
             url = userService.saveImage(patientWrapper.getProfileImg(),
@@ -224,6 +225,8 @@ public class  PatientService {
             this.patientRepository.save(patient);
             url = null;
         }
+
+
         ///profile photo save
 
         ///front photo save

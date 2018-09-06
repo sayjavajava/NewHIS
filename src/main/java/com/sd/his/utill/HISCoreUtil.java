@@ -129,6 +129,15 @@ public class HISCoreUtil {
         return formatedDate;
     }
 
+    public static String convertDateToString(Date date,String formate) {
+        String formatedDate = null;
+        if (date != null) {
+            SimpleDateFormat form = new SimpleDateFormat(formate);
+            formatedDate = form.format(date);
+        }
+        return formatedDate;
+    }
+
     public static Date convertToDate(String str) {
         Date date = null;
         if (str != null) {
