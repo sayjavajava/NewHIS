@@ -220,10 +220,10 @@ public class AppointmentAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }*/
 
-            Appointment savedAppointment = appointmentService.saveAppointment(appointmentWrapper);
+         Appointment savedAppointment = appointmentService.saveAppointment(appointmentWrapper);
 
-            if (HISCoreUtil.isValidObject(savedAppointment)) {
-                // response.setResponseData(savedAppointment);
+         if (HISCoreUtil.isValidObject(savedAppointment)) {
+               // response.setResponseData(savedAppointment);
                 response.setResponseMessage(messageBundle.getString("appointment.add.success"));
                 response.setResponseCode(ResponseEnum.APPT_SAVED_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -255,8 +255,8 @@ public class AppointmentAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateAppointment(HttpServletRequest request,
-                                               @PathVariable("id") long id,
-                                               @RequestBody AppointmentWrapper appointmentWrapper) {
+                                          @PathVariable("id") long id,
+                                          @RequestBody AppointmentWrapper appointmentWrapper) {
 
         logger.info("update Appointment API called...");
 
@@ -326,7 +326,7 @@ public class AppointmentAPI {
         try {
 
             List<AppointmentWrapper> appointments = appointmentService.getPageableSearchedAppointments(doctorId,branchId);
-            //  int countSearchedAppointments = appointmentService.countSearchedAppointments(doctorId,branchId);
+          //  int countSearchedAppointments = appointmentService.countSearchedAppointments(doctorId,branchId);
             if (HISCoreUtil.isListEmpty(appointments)) {
                 response.setResponseMessage(messageBundle.getString("appointment.search.not.found"));
                 response.setResponseCode(ResponseEnum.APPT_NOT_FOUND_ERROR.getValue());
@@ -376,10 +376,10 @@ public class AppointmentAPI {
         response.setResponseData(null);
 
         try {
-            AppointmentWrapper singleAppointment = this.appointmentService.getSingleAppointment(id);
+            Appointment dbAppointment = this.appointmentService.findById(id);
 
-            if (HISCoreUtil.isValidObject(singleAppointment)) {
-                response.setResponseData(singleAppointment);
+            if (HISCoreUtil.isValidObject(dbAppointment)) {
+                response.setResponseData(dbAppointment);
                 response.setResponseCode(ResponseEnum.APPT_FOUND_SUCCESS.getValue());
                 response.setResponseMessage(messageBundle.getString("appointment.found"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());

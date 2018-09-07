@@ -2,6 +2,7 @@ package com.sd.his.wrapper;
 
 import com.sd.his.model.Insurance;
 //import com.sd.his.model.Profile;
+import com.sd.his.model.SmokingStatus;
 import com.sd.his.model.User;
 //import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
@@ -74,6 +75,9 @@ public class PatientWrapper {
     ////////////Appointment
     List<AppointmentWrapper> futureAppointments;
     List<AppointmentWrapper> pastAppointments;
+
+    ////////////Smoking Status
+    private List<SmokingStatus> smokingStatuses;
 
     public PatientWrapper() {
     }
@@ -581,5 +585,13 @@ public class PatientWrapper {
 
     public String getPatientId() {
         return patientId;
+    }
+
+    public List<SmokingStatus> getSmokingStatus() {
+        return smokingStatuses;
+    }
+
+    public void setSmokingStatuses(List<SmokingStatus> smokingStatuses) {
+        this.smokingStatuses = smokingStatuses;
     }
 }

@@ -10,6 +10,11 @@ import com.sd.his.repository.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.AppointmentWrapper;
+import com.sd.his.wrapper.LabOrderWrapper;
+import com.sd.his.wrapper.PatientWrapper;
+import com.sd.his.wrapper.RaceWrapper;
+import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +48,8 @@ public class  PatientService {
     @Autowired
     private FamilyHistoryRepository familyHistoryRepository;
 
+    @Autowired
+    private SmokingStatusRepository smokingStatusRepository;
 
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
@@ -70,7 +77,7 @@ public class  PatientService {
         patientWrapper.setStatusUser(patient.getStatus().name().equalsIgnoreCase("ACTIVE"));
 
         //patientWrapper.setProfileStatus( patient.getStatus().name().equalsIgnoreCase("ACTIVE") );
-        patientWrapper.setDisableSMSTxt(patient.getDisableSMSText());
+        patientWrapper.setDisableSMSTxt(patient.getDisableSMSText()==null?false:patient.getDisableSMSText());
         patientWrapper.setPreferredCommunication(patient.getPreferredCommunication());
         patientWrapper.setReminderLanguage(patient.getReminderLanguage());
         patientWrapper.setStreetAddress(patient.getStreetAddress());
@@ -96,8 +103,8 @@ public class  PatientService {
         patient.setFirstName(patientWrapper.getFirstName());
         patient.setMiddleName(patientWrapper.getMiddleName());
         patient.setLastName(patientWrapper.getLastName());
-        patient.setForeignName(patient.getForeignName());
-        if (!patientWrapper.getDob().isEmpty())
+        patient.setForeignName(patientWrapper.getForeignName());
+        if(!patientWrapper.getDob().isEmpty())
             patient.setDob(DateTimeUtil.getDateFromString(patientWrapper.getDob(), HISConstants.DATE_FORMATE_ONE));
         patient.setHomePhone(patientWrapper.getHomePhone());
         patient.setCellPhone(patientWrapper.getCellPhone());
@@ -121,7 +128,7 @@ public class  PatientService {
         patient.setEmergencyContactPhone(patientWrapper.getEmergencyContactPhone());
         patient.setEmergencyContactRelation(patientWrapper.getEmergencyContactRelation());
         patient.setSignatureOnFile(patientWrapper.isSignatureOnFile());
-        if (patient.getId() == null)
+        if(patient.getId() == null)
             patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
     }
 
@@ -144,20 +151,20 @@ public class  PatientService {
         patientWrapper.setGroupNumber(patient.getInsurance().getGroupNumber());
         patientWrapper.setPlanName(patient.getInsurance().getPlanName());
         patientWrapper.setPlanType(patient.getInsurance().getPlanType());
-        if (patient.getInsurance().getCardIssuedDate() != null)
+        if ( patient.getInsurance().getCardIssuedDate()!=null )
             patientWrapper.setCardIssuedDate(patient.getInsurance().getCardIssuedDate().toString());
-        if (patient.getInsurance().getCardExpiryDate() != null)
+        if ( patient.getInsurance().getCardExpiryDate()!=null )
             patientWrapper.setCardExpiryDate(patient.getInsurance().getCardExpiryDate().toString());
         patientWrapper.setPrimaryInsuranceNotes(patientWrapper.getPrimaryInsuranceNotes());
     }
 
     public String savePatient(PatientWrapper patientWrapper) throws Exception {
         Patient patient = null;
-        if (patientWrapper.getId() > 0) {
+        if(patientWrapper.getId()>0){
             patient = patientRepository.findOne(patientWrapper.getId());
-            if (patient == null)
+            if(patient==null)
                 patient = new Patient();
-        } else {
+        }else{
             patient = new Patient();
         }
 
@@ -290,7 +297,7 @@ public class  PatientService {
 
     public boolean isEmailAlreadyExists(String email) {
         Patient patient = this.patientRepository.findAllByEmail(email);
-        return patient != null;
+        return patient!=null;
     }
 
     public int countAllPaginatedPatients() {
@@ -309,9 +316,8 @@ public class  PatientService {
         }
         return patientWrapperList;*/
     }
-
-    public List<PatientWrapper> getAllPatientList() {
-        List<Patient> patient = patientRepository.findAll();
+    public List<PatientWrapper> getAllPatientList(){
+        List<Patient> patient =  patientRepository.findAll();
         return this.getPatientWrapperList(patient);
 
     }
@@ -323,13 +329,18 @@ public class  PatientService {
         patientWrapper.setSelectedDoctor(patient.getPrimaryDoctor().getId());
         patientWrapper.setPrimaryDoctorFirstName(patient.getPrimaryDoctor().getFirstName());
         patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
+        patientWrapper.setSmokingStatuses(patient.getSmokingStatusList());
         this.populateRaces(patientWrapper, patient);
-        this.populateAppointments(patientWrapper, patient);
+        this.populateAppointments(patientWrapper,patient);
         this.populateInsurance(patientWrapper, patient);
         return patientWrapper;
     }
 
-    private void populateRaces(PatientWrapper patientWrapper, Patient patient) {
+    public Patient getPatientById(Long id) {
+        return patientRepository.findOne(id);
+    }
+
+    private void populateRaces(PatientWrapper patientWrapper, Patient patient){
         List<RaceWrapper> raceWrapperList = new ArrayList<>();
         RaceWrapper raceWrapper = null;
         for (String raceName : patient.getRaces()) {
@@ -341,11 +352,11 @@ public class  PatientService {
         patientWrapper.setRaces(raceWrapperList);
     }
 
-    private void populateAppointments(PatientWrapper patientWrapper, Patient patient) {
+    private void populateAppointments(PatientWrapper patientWrapper, Patient patient){
         List<AppointmentWrapper> apptFutureWrapperList = new ArrayList<>();
         List<AppointmentWrapper> apptPastWrapperList = new ArrayList<>();
-        List<AppointmentWrapper> listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patient.getId());
-        Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream().collect(Collectors.partitioningBy(x -> x.getCompareDate().toInstant().isAfter(Instant.now())));
+        List<AppointmentWrapper>  listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patient.getId());
+        Map<Boolean,List<AppointmentWrapper>> listOfApp = listOfAppointments.stream().collect(Collectors.partitioningBy(x->x.getCompareDate().toInstant().isAfter(Instant.now())));
         patientWrapper.setFutureAppointments(listOfApp.get(true));
         patientWrapper.setPastAppointments(listOfApp.get(false));
     }
@@ -360,19 +371,19 @@ public class  PatientService {
         return this.getPatientWrapperList(patientList);
     }
 
-    private List<PatientWrapper> getPatientWrapperList(List<Patient> patientList) {
+    private List<PatientWrapper> getPatientWrapperList(List<Patient> patientList){
         PatientWrapper patientWrapper = new PatientWrapper();
         List<PatientWrapper> patientWrapperList = new ArrayList<>();
-        for (Patient p : patientList) {
+        for (Patient p: patientList) {
             patientWrapper = new PatientWrapper();
-            this.populatePatientWrapper(patientWrapper, p);
+            this.populatePatientWrapper(patientWrapper, p );
             patientWrapperList.add(patientWrapper);
         }
         return patientWrapperList;
     }
 
-    public List<PatientWrapper> getAllPatient() {
-        return patientRepository.getAllByStatusTrue();
+    public List<PatientWrapper> getAllPatient(){
+        return   patientRepository.getAllByStatusTrue();
     }
 
     //Lab Order work
@@ -515,5 +526,27 @@ public class  PatientService {
         }
         return false;
 
+    }
+
+     public void populateSmokeStatus(SmokingStatusWrapper smokeStatusWrapper, SmokingStatus smokeStatus) throws ParseException {
+        if(!smokeStatusWrapper.getEndDate().isEmpty()){
+            smokeStatus.setEndDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getEndDate(), HISConstants.DATE_FORMATE_ONE));
+        }
+        if(!smokeStatusWrapper.getStartDate().isEmpty()){
+            smokeStatus.setStartDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getStartDate(), HISConstants.DATE_FORMATE_ONE));
+        }
+        if(!smokeStatusWrapper.getRecordedDate().isEmpty()){
+            smokeStatus.setRecordedDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getRecordedDate(), HISConstants.DATE_FORMATE_ONE));
+        }
+        smokeStatus.setSmokingStatus(smokeStatusWrapper.getSmokingStatus());
+    }
+
+    //smoke status
+    public void savePatientSmokeStatus(SmokingStatus smokingStatus){
+        smokingStatusRepository.save(smokingStatus);
+    }
+
+    public void deleteSmokeStatusById(Long smokingId){
+        smokingStatusRepository.delete(smokingId);
     }
 }

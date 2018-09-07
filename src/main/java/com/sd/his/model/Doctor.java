@@ -52,6 +52,10 @@ public class Doctor extends StaffProfile implements Serializable {
     @JoinColumn(name="USER_ID", unique= true)
     private User user;
 
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name="DEPARTMENT_ID", nullable = false)
+    private Department department;
+
     @JsonIgnore
     @OneToMany(targetEntity = DutyShift.class, mappedBy = "doctor" ,cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DutyShift> dutyShifts;
@@ -78,6 +82,10 @@ public class Doctor extends StaffProfile implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = DoctorMedicalService.class, mappedBy = "doctor", cascade = CascadeType.ALL)
+    private List<DoctorMedicalService> doctorMedicalServices;
 
     public Boolean getVacation() {
         return vacation;
@@ -165,5 +173,21 @@ public class Doctor extends StaffProfile implements Serializable {
 
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public List<DoctorMedicalService> getDoctorMedicalServices() {
+        return doctorMedicalServices;
+    }
+
+    public void setDoctorMedicalServices(List<DoctorMedicalService> doctorMedicalServices) {
+        this.doctorMedicalServices = doctorMedicalServices;
     }
 }

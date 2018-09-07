@@ -34,7 +34,9 @@ import java.util.List;
 public interface NurseWithDoctorRepository extends JpaRepository<NurseWithDoctor, Long> {
 
    void deleteAllByNurse(Nurse nurse);
+   void deleteAllByNurse_Id(Long nurseId);
    void deleteAllByDoctor(Doctor doctor);
+   void deleteAllByDoctor_Id(Long doctorId);
    @Query("select nwd.doctor from NurseWithDoctor nwd inner join nwd.nurse n where n.id=:id ")
    List<Doctor> findNurseWithDoctors(@Param("id") Long id);//id=>nurseId
 }

@@ -180,20 +180,22 @@ public class MedicalServicesService {
     }
 
     public List<MedicalServiceWrapper> searchMedicalServiceByParam(String serviceName,
+                                                                   String searchCode,
                                                                    Long branchId,
                                                                    Long departmentId,
                                                                    Double serviceFee,
                                                                    int pageNo,
                                                                    int pageSize) {
         Pageable pageable = new PageRequest(pageNo, pageSize);
-        return medicalServiceRepository.findAllByParam(serviceName, branchId, departmentId, serviceFee, pageable);
+        return medicalServiceRepository.findAllByParam(serviceName,searchCode,branchId, departmentId, serviceFee, pageable);
     }
 
     public int countSearchMedicalServiceByParam(String serviceName,
+                                                String searchCode,
                                                 Long branchId,
                                                 Long departmentId,
                                                 Double serviceFee) {
-        return medicalServiceRepository.countAllByParam(serviceName, branchId, departmentId, serviceFee).size();
+        return medicalServiceRepository.countAllByParam(serviceName, searchCode, branchId, departmentId, serviceFee).size();
     }
 
     public List<BranchResponseWrapper> getCheckedBranchesByMedicalServiceId(long msId) {

@@ -1,7 +1,12 @@
 package com.sd.his.wrapper;
 
 import com.sd.his.model.Medication;
+import com.sd.his.utill.DateTimeUtil;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
+
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * Created by jamal on 8/28/2018.
@@ -16,9 +21,19 @@ public class MedicationWrapper extends BaseWrapper {
     private String status;
     private long patientId;
     private long appointmentId = -1;
-    private String datePrescribed;
-    private String dateStartedTaking;
-    private String dateStoppedTaking;
+
+    private Date datePrescribedDate;
+    private String datePrescribedString;
+    private long datePrescribedLong;
+
+    private Date dateStartedTakingDate;
+    private String dateStartedTakingString;
+    private long dateStartedTakingLong;
+
+    private Date dateStoppedTakingDate;
+    private String dateStoppedTakingString;
+    private long dateStoppedTakingLong;
+
     private double dispenseQuantity;
     private String dispensePackage;
     private long numberRefill;
@@ -31,7 +46,7 @@ public class MedicationWrapper extends BaseWrapper {
     public MedicationWrapper() {
     }
 
-    public MedicationWrapper(Medication medication) {
+    public MedicationWrapper(Medication medication) throws ParseException {
 
         super(medication.getId(),
                 HISCoreUtil.convertDateAndTimeToString(medication.getCreatedOn()),
@@ -47,9 +62,13 @@ public class MedicationWrapper extends BaseWrapper {
         if (medication.getAppointment() != null) {
             this.appointmentId = medication.getAppointment().getId();
         }
-        this.datePrescribed = HISCoreUtil.convertDateAndTimeToString(medication.getDatePrescribed());
-        this.dateStartedTaking = HISCoreUtil.convertDateAndTimeToString(medication.getDateStartedTaking());
-        this.dateStoppedTaking = HISCoreUtil.convertDateAndTimeToString(medication.getDateStoppedTaking());
+
+        this.datePrescribedString = DateTimeUtil.getFormattedDateFromDate(medication.getDatePrescribed(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+
+        this.dateStartedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStartedTaking(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+
+        this.dateStoppedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStoppedTaking(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+
         this.dispenseQuantity = medication.getDispenseQuantity();
         this.dispensePackage = medication.getDispensePackage();
         this.numberRefill = medication.getNumberRefill();
@@ -116,28 +135,28 @@ public class MedicationWrapper extends BaseWrapper {
         this.appointmentId = appointmentId;
     }
 
-    public String getDatePrescribed() {
-        return datePrescribed;
+    public long getDatePrescribedLong() {
+        return datePrescribedLong;
     }
 
-    public void setDatePrescribed(String datePrescribed) {
-        this.datePrescribed = datePrescribed;
+    public void setDatePrescribedLong(long datePrescribedLong) {
+        this.datePrescribedLong = datePrescribedLong;
     }
 
-    public String getDateStartedTaking() {
-        return dateStartedTaking;
+    public long getDateStartedTakingLong() {
+        return dateStartedTakingLong;
     }
 
-    public void setDateStartedTaking(String dateStartedTaking) {
-        this.dateStartedTaking = dateStartedTaking;
+    public void setDateStartedTakingLong(long dateStartedTakingLong) {
+        this.dateStartedTakingLong = dateStartedTakingLong;
     }
 
-    public String getDateStoppedTaking() {
-        return dateStoppedTaking;
+    public long getDateStoppedTakingLong() {
+        return dateStoppedTakingLong;
     }
 
-    public void setDateStoppedTaking(String dateStoppedTaking) {
-        this.dateStoppedTaking = dateStoppedTaking;
+    public void setDateStoppedTakingLong(long dateStoppedTakingLong) {
+        this.dateStoppedTakingLong = dateStoppedTakingLong;
     }
 
     public double getDispenseQuantity() {
@@ -198,5 +217,53 @@ public class MedicationWrapper extends BaseWrapper {
 
     public String getStatus() {
         return status;
+    }
+
+    public Date getDatePrescribedDate() {
+        return datePrescribedDate;
+    }
+
+    public void setDatePrescribedDate(Date datePrescribedDate) {
+        this.datePrescribedDate = datePrescribedDate;
+    }
+
+    public Date getDateStartedTakingDate() {
+        return dateStartedTakingDate;
+    }
+
+    public void setDateStartedTakingDate(Date dateStartedTakingDate) {
+        this.dateStartedTakingDate = dateStartedTakingDate;
+    }
+
+    public Date getDateStoppedTakingDate() {
+        return dateStoppedTakingDate;
+    }
+
+    public void setDateStoppedTakingDate(Date dateStoppedTakingDate) {
+        this.dateStoppedTakingDate = dateStoppedTakingDate;
+    }
+
+    public String getDatePrescribedString() {
+        return datePrescribedString;
+    }
+
+    public void setDatePrescribedString(String datePrescribedString) {
+        this.datePrescribedString = datePrescribedString;
+    }
+
+    public String getDateStartedTakingString() {
+        return dateStartedTakingString;
+    }
+
+    public void setDateStartedTakingString(String dateStartedTakingString) {
+        this.dateStartedTakingString = dateStartedTakingString;
+    }
+
+    public String getDateStoppedTakingString() {
+        return dateStoppedTakingString;
+    }
+
+    public void setDateStoppedTakingString(String dateStoppedTakingString) {
+        this.dateStoppedTakingString = dateStoppedTakingString;
     }
 }

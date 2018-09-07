@@ -22,5 +22,5 @@ package com.sd.his.enums;
  * 
  */
 public enum ModuleEnum {
-    PROFILE, PATIENT, APPOINTMENT;
+    INVOICE,PROFILE, PATIENT, APPOINTMENT;
 }

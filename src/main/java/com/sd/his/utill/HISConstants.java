@@ -30,6 +30,7 @@ public class HISConstants {
     public static final String TIME_PATTERN = "h:mm a";
     public static final String TIME_FORMAT_PATTERN = "HH:mm";
     public final static String DATE_FORMATE_THREE = "yyyy-MM-dd";
+    public final static String DATE_FORMATE_YYY_MM_DD_T_HH_MM ="yyyy-MM-dd'T'HH:mm";
 
     public final static String S3_USER_DIRECTORY = "users";
     public final static String S3_USER_PROFILE_DIRECTORY = "profile";
@@ -46,5 +47,9 @@ public class HISConstants {
     public final static String S3_CORE_GRAPHICS_DIRECTORY = "graphics";
     public final static String S3_CORE_IMAGES_DIRECTORY = "images";
     public final static String S3_CORE_PROFILE_GRAPHIC_HOLDER_NAME = "user-yellow.png";
-
+    /*document of patient*/
+    public final static String S3_USER_DOCUMENT_DIRECTORY_PATH = "users/patient/history/documents/";
+    public final static String S3_USER_DOCUMENT_THUMBNAIL_GRAPHIC_NAME = "patient-document-thumbnail-image.jpg";
+    public final static String S3_USER_DOCUMENT_GRAPHIC_NAME = "patient-document-image.jpg";
+    /*document of patient*/
 }

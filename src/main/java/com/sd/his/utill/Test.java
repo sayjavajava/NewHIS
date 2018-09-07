@@ -2,7 +2,10 @@ package com.sd.his.utill;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.DateTimeException;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 
 /*
@@ -33,16 +36,16 @@ public class Test {
 
      System.out.println(new BCryptPasswordEncoder().encode("Password*1"));
 
-        Instant instant = Instant.parse( "2018-05-02T19:00:00.000Z");
-        System.out.println(instant);
+        LocalDateTime date = LocalDateTime.now();
 
-        System.out.println(instant.toEpochMilli());
-        System.out.println(instant.getEpochSecond());
-        System.out.println(instant.get(ChronoField.MILLI_OF_SECOND));
-
-       // long time= HISCoreUtil.convertDateToMilliSeconds(instant.toString());
-
-
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm a");
+            String dateText = date.format(formatter);
+            System.out.println(dateText);
+        } catch (DateTimeException exc) {
+            System.out.printf("%s can't be formatted!%n", date);
+            throw exc;
+        }
     }
 
 }

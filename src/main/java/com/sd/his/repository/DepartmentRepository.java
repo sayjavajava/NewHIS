@@ -51,4 +51,5 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             " FROM Department cd where cd.name =:name ")
     DepartmentWrapper findByNameAndActiveNotNull(@Param("name") String name);
 
+    List<Department> findAllByIdIn(List<Long> ids);
 }
