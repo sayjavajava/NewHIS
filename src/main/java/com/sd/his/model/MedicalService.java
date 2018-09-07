@@ -60,6 +60,7 @@ public class MedicalService extends BaseEntity implements Serializable {
     @Column(name = "STATUS")
     private Boolean status;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAX_ID")
     private Tax tax;
@@ -71,6 +72,10 @@ public class MedicalService extends BaseEntity implements Serializable {
     @JsonIgnore
     @OneToMany(targetEntity = BranchMedicalService.class, mappedBy = "medicalService",orphanRemoval = true)
     private List<BranchMedicalService> branchMedicalServices;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = DoctorMedicalService.class, mappedBy = "medicalService",orphanRemoval = true)
+    private List<DoctorMedicalService> doctorMedicalServices;
 
     public MedicalService() {
     }

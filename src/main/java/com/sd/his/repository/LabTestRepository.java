@@ -1,9 +1,8 @@
 package com.sd.his.repository;
 
-import com.sd.his.model.*;
+import com.sd.his.model.LabOrder;
+import com.sd.his.model.LabTest;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,13 +30,11 @@ import java.util.List;
  *
  */
 @Repository
-public interface NurseWithDoctorRepository extends JpaRepository<NurseWithDoctor, Long> {
+public interface LabTestRepository extends JpaRepository<LabTest, Long> {
 
-   void deleteAllByNurse(Nurse nurse);
-   void deleteAllByNurse_Id(Long nurseId);
-   void deleteAllByDoctor(Doctor doctor);
-   void deleteAllByDoctor_Id(Long doctorId);
-   @Query("select nwd.doctor from NurseWithDoctor nwd inner join nwd.nurse n where n.id=:id ")
-   List<Doctor> findNurseWithDoctors(@Param("id") Long id);//id=>nurseId
+    List<LabTest> findAllByLoincCodeIn(List<String> ids);
+    List<LabTest> findAllByLabOrderIn(List<LabOrder> ids);
+
+
 }
 

@@ -22,5 +22,5 @@ package com.sd.his.enums;
  * 
  */
 public enum DutyShiftEnum {
-    MORNING, EVENING, NIGHT;
+    SHIFT1, SHIFT2;
 }

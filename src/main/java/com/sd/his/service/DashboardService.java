@@ -12,14 +12,13 @@ import java.util.List;
 @Service
 public class DashboardService {
 
-@Autowired
-private PatientRepository patientRepository;
-@Autowired
-private AppointmentRepository appointmentRepository;
+    @Autowired
+    private PatientRepository patientRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
-public List<DashboardResponseWrapper> getDoctorDashboard(){
-   // appointmentRepository.findAllAppointments();
-    List<DashboardResponseWrapper> list = appointmentRepository.findAllAppointmentsByPatientAndDoctor();
-    return  appointmentRepository.findAllAppointmentsByPatientAndDoctor();
-}
+    public List<DashboardResponseWrapper> getDoctorDashboard(){
+        //List<DashboardResponseWrapper> list = appointmentRepository.findAllAppointmentsByPatientAndDoctor();
+        return  appointmentRepository.findAllAppointmentsByPatientAndDoctor();
+    }
 }

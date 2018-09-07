@@ -36,11 +36,11 @@ public class DashboardResponseWrapper {
         this.scheduleAt = HISCoreUtil.convertDateAndTimeToString(scheduleAt);
         this.doctorFirstName = doctorFirstName;
         this.doctorLastName =doctorLastName;
-        this.examRoom = examRoom;
+        this.examRoom = examRoom;http:
         this.status = status.name();
         this.branchId = branchId;
         this.doctorId = doctorId;
-        this.roomId = roomId;   
+        this.roomId = roomId;
         this.apptNaturalId =apptNaturalId;
         this.patientId=patientId;
 

@@ -1,10 +1,13 @@
 package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Patient;
+import com.sd.his.model.SmokingStatus;
 import com.sd.his.service.PatientService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.PatientWrapper;
+import com.sd.his.wrapper.SmokingStatusWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -230,7 +233,6 @@ public class PatientAPI {
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
-
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -259,37 +261,6 @@ public class PatientAPI {
                 logger.error("updatePatient API - Please select proper user, userId not available with request patientRequest.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-
-            /*if (HISCoreUtil.isNull(patientRequest.getEmail()) ||
-                    HISCoreUtil.isNull(patientRequest.getUserName()) ||
-                    patientRequest.getUserName() == "" ||
-                    patientRequest.getSelectedDoctor() <= 0 ||
-                    HISCoreUtil.isNull(patientRequest.getCellPhone())) {
-                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("updatePatient API - insufficient params.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-
-            if (patientService.isEmailAlreadyExistsAgainstUserId(patientRequest.getUserId(), patientRequest.getEmail())) {
-                response.setResponseMessage(messageBundle.getString("user.add.email.already-found.error"));
-                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("updatePatient API - user already found.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-            if (userService.isUserNameAlreadyExistsAgainstUserId(patientRequest.getUserId(), patientRequest.getUserName())) {
-                response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
-                response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("updatePatient API - user already found.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-            */
             patientService.savePatient(patientRequest);
             response.setResponseMessage(messageBundle.getString("patient.update.success"));
             response.setResponseCode(ResponseEnum.PATIENT_UPDATE_SUCCESS.getValue());
@@ -306,6 +277,95 @@ public class PatientAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @ApiOperation(httpMethod = "POST", value = "Add/Update Patient Smoke Status",
+            notes = "This method will Update the patient Smoke Status.",
+            produces = "application/json", nickname = "Update Smoke Status",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Add/Update Patient successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/smokeStatus/addUpdate", method = RequestMethod.POST)
+    public ResponseEntity<?> updateSmokeStatus(HttpServletRequest request,
+                                           @RequestBody SmokingStatusWrapper smokingStatusRequest) {
+        logger.info("updateSmokeStatus API - initiated.");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            if( smokingStatusRequest.getSmokingId()==null && smokingStatusRequest.getSmokingStatus()!=null && !smokingStatusRequest.getSmokingStatus().isEmpty()){
+                SmokingStatus smokeStatus = new SmokingStatus();
+                Patient patient = patientService.getPatientById(smokingStatusRequest.getPatientId() );
+                patientService.populateSmokeStatus(smokingStatusRequest, smokeStatus);
+                smokeStatus.setPatient(patient);
+                patientService.savePatientSmokeStatus(smokeStatus);
+                response.setResponseMessage(messageBundle.getString("smoke.status.update.success"));
+                response.setResponseCode(ResponseEnum.SMOKE_STATUS_SAVE_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(null);
+                logger.error("smokeStatus API - "+messageBundle.getString("smoke.status.update.success"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("updateSmokeStatus exception.", e.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "DELETE", value = "Delete Patient",
+            notes = "This method will Delete the Patient",
+            produces = "application/json", nickname = "Delete Patient ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Deleted Smoke Status successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/smokeStatus/delete/{smokingId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deletePatient(HttpServletRequest request,
+                                           @PathVariable("smokingId") Long smokingId) {
+        logger.info("deleteSmokingStatus API - Called..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("patient.delete.error"));
+        response.setResponseCode(ResponseEnum.PATIENT_DELETE_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (smokingId <= 0) {
+                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("deleteSmokingStatus API - insufficient params.");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            patientService.deleteSmokeStatusById(smokingId);
+            response.setResponseMessage(messageBundle.getString("smoke.status.delete.success"));
+            response.setResponseCode(ResponseEnum.SMOKE_STATUS_DELETE_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(null);
+            logger.info("deleteSmokingStatus API - Deleted Successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("deleteSmokingStatus API - deleted failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(httpMethod = "DELETE", value = "Delete Patient",

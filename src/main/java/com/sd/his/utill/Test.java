@@ -30,7 +30,7 @@ import java.time.temporal.ChronoField;
  * All rights reserved.
  * 
  */
-public class Test extends bike implements car {
+public class Test {
 
     public static void main(String ...args){
 
@@ -50,15 +50,3 @@ public class Test extends bike implements car {
 
 }
 
-interface car{
-//    default String test(){
-//        System.out.println("car");
-//        return null;
-//    }
-    String test();
-}
-abstract class bike{
-    public String test() {
-   return null;
-    }
-}
