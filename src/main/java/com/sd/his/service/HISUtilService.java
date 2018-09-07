@@ -31,12 +31,7 @@ public class HISUtilService {
     @Autowired
     private PrefixRepository prefixRepository;
 
-
-
     private final Logger logger = LoggerFactory.getLogger(HISUtilService.class);
-
-
-
     public String getPrefixId(ModuleEnum moduleName) {
         Prefix prefix= prefixRepository.findByModule(moduleName);
         String currentPrefix = prefix.getName()+ prefix.getCurrentValue();
