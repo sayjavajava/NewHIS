@@ -5,14 +5,12 @@ import com.sd.his.enums.MaritalStatusTypeEnum;
 import com.sd.his.enums.ModuleEnum;
 import com.sd.his.enums.PatientStatusTypeEnum;
 import com.sd.his.model.*;
+import com.sd.his.model.LabTest;
 import com.sd.his.repository.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.AppointmentWrapper;
-import com.sd.his.wrapper.LabOrderWrapper;
-import com.sd.his.wrapper.PatientWrapper;
-import com.sd.his.wrapper.RaceWrapper;
+import com.sd.his.wrapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +39,8 @@ public class  PatientService {
     private LabOrderRepository labOrderRepository;
     @Autowired
     private LabTestRepository labTestRepository;
-
+    @Autowired
+    private SmokingStatusRepository smokingStatusRepository;
 
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
@@ -69,7 +68,7 @@ public class  PatientService {
         patientWrapper.setStatusUser(patient.getStatus().name().equalsIgnoreCase("ACTIVE"));
 
         //patientWrapper.setProfileStatus( patient.getStatus().name().equalsIgnoreCase("ACTIVE") );
-        patientWrapper.setDisableSMSTxt(patient.getDisableSMSText());
+        patientWrapper.setDisableSMSTxt(patient.getDisableSMSText()==null?false:patient.getDisableSMSText());
         patientWrapper.setPreferredCommunication(patient.getPreferredCommunication());
         patientWrapper.setReminderLanguage(patient.getReminderLanguage());
         patientWrapper.setStreetAddress(patient.getStreetAddress());
@@ -95,7 +94,7 @@ public class  PatientService {
         patient.setFirstName(patientWrapper.getFirstName());
         patient.setMiddleName(patientWrapper.getMiddleName());
         patient.setLastName(patientWrapper.getLastName());
-        patient.setForeignName(patient.getForeignName());
+        patient.setForeignName(patientWrapper.getForeignName());
         if(!patientWrapper.getDob().isEmpty())
             patient.setDob(DateTimeUtil.getDateFromString(patientWrapper.getDob(), HISConstants.DATE_FORMATE_ONE));
         patient.setHomePhone(patientWrapper.getHomePhone());
@@ -321,10 +320,15 @@ public class  PatientService {
         patientWrapper.setSelectedDoctor(patient.getPrimaryDoctor().getId());
         patientWrapper.setPrimaryDoctorFirstName(patient.getPrimaryDoctor().getFirstName());
         patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
+        patientWrapper.setSmokingStatuses(patient.getSmokingStatusList());
         this.populateRaces(patientWrapper, patient);
         this.populateAppointments(patientWrapper,patient);
         this.populateInsurance(patientWrapper, patient);
         return patientWrapper;
+    }
+
+    public Patient getPatientById(Long id) {
+        return patientRepository.findOne(id);
     }
 
     private void populateRaces(PatientWrapper patientWrapper, Patient patient){
@@ -404,4 +408,26 @@ public class  PatientService {
     }
 
     public int totaLabOrders(){ return (int) labOrderRepository.count(); }
+
+    public void populateSmokeStatus(SmokingStatusWrapper smokeStatusWrapper, SmokingStatus smokeStatus) throws ParseException {
+        if(!smokeStatusWrapper.getEndDate().isEmpty()){
+            smokeStatus.setEndDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getEndDate(), HISConstants.DATE_FORMATE_ONE));
+        }
+        if(!smokeStatusWrapper.getStartDate().isEmpty()){
+            smokeStatus.setStartDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getStartDate(), HISConstants.DATE_FORMATE_ONE));
+        }
+        if(!smokeStatusWrapper.getRecordedDate().isEmpty()){
+            smokeStatus.setRecordedDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getRecordedDate(), HISConstants.DATE_FORMATE_ONE));
+        }
+        smokeStatus.setSmokingStatus(smokeStatusWrapper.getSmokingStatus());
+    }
+
+    //smoke status
+    public void savePatientSmokeStatus(SmokingStatus smokingStatus){
+        smokingStatusRepository.save(smokingStatus);
+    }
+
+    public void deleteSmokeStatusById(Long smokingId){
+        smokingStatusRepository.delete(smokingId);
+    }
 }

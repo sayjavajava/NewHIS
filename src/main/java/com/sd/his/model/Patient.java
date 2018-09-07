@@ -138,6 +138,10 @@ public class Patient extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "patient")
     private List<LabOrder> labOrders;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "patient")
+    private List<SmokingStatus> smokingStatusList;
+
     public List<LabOrder> getLabOrders() {
         return labOrders;
     }
@@ -424,5 +428,13 @@ public class Patient extends BaseEntity implements Serializable {
 
     public void setPrimaryDoctor(Doctor primaryDoctor) {
         this.primaryDoctor = primaryDoctor;
+    }
+
+    public List<SmokingStatus> getSmokingStatusList() {
+        return smokingStatusList;
+    }
+
+    public void setSmokingStatusList(List<SmokingStatus> smokingStatusList) {
+        this.smokingStatusList = smokingStatusList;
     }
 }
