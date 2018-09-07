@@ -118,17 +118,15 @@ public class AppointmentService {
         //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
         appointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
 
-        // Date newDate = new Date(appointment.getSchdeulledDate().getTime() + appointment.getDuration());
-        // appointment.setEndedOn(newDate);
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setNotes(appointmentWrapper.getNotes());
         appointment.setColor(appointmentWrapper.getColor());
         appointment.setType(new Gson().toJson(appointmentWrapper.getAppointmentType()));
         appointment.setDuration(appointmentWrapper.getDuration());
         appointment.setStatus(AppointmentStatusTypeEnum.valueOf(appointmentWrapper.getStatus()));
-
-        //   appointment.setEndedOn(appointmentWrapper.getStart() + appointmentWrapper.getDuration()*60*1000);
-
+        appointment.setFollowUpDate(HISCoreUtil.convertToDate(appointmentWrapper.getFollowUpDate()));
+        appointment.setFollowUpReasonReminder(appointmentWrapper.getFollowUpReason());
+        appointment.setFollowUpReminder(appointmentWrapper.getFollowUpReminder());
 
         appointment.setAppointmentId(hisUtilService.getPrefixId(ModuleEnum.APPOINTMENT));
       /*  appointment.setRecurring(appointmentWrapper.isRecurringAppointment());
@@ -284,6 +282,7 @@ public class AppointmentService {
             return appointment;
     }
 */
+    //getAllLabOrdersById
     public Room findExamRoomById(Long id) {
         if (id != null) {
             Room room = roomRepository.findOne(id);

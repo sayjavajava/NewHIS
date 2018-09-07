@@ -1,5 +1,6 @@
 package com.sd.his.repository;
 
+import com.sd.his.model.Appointment;
 import com.sd.his.model.LabOrder;
 import com.sd.his.model.LabTest;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,4 +17,5 @@ public interface LabOrderProjection {
     String getComments();
     Date getDateTest();
     List<LabTest> getLabTests();
+
 }

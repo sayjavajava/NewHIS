@@ -485,6 +485,7 @@ public class MedicalServiceAPI {
                                                           @PathVariable("page") int pageNo,
                                                           @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
                                                           @RequestParam(value = "serviceName") String serviceName,
+                                                          @RequestParam(value = "searchCode") String searchCode,
                                                           @RequestParam(value = "branchId") long branchId,
                                                           @RequestParam(value = "departmentId") long departId,
                                                           @RequestParam(value = "serviceFee") double serviceFee) {
@@ -500,12 +501,14 @@ public class MedicalServiceAPI {
 
             List<MedicalServiceWrapper> medS = this.medicalServicesService.searchMedicalServiceByParam(
                     (serviceName.length() > 0 ? serviceName : null),
+                    (searchCode.length() > 0 ? searchCode : null),
                     (branchId > 0 ? branchId : null),
                     (departId > 0 ? departId : null),
                     (serviceFee > 0 ? serviceFee : null),
                     pageNo, pageSize);
             int medServCount = this.medicalServicesService.countSearchMedicalServiceByParam(
                     (serviceName.length() > 0 ? serviceName : null),
+                    (searchCode.length() > 0 ? searchCode : null),
                     (branchId > 0 ? branchId : null),
                     (departId > 0 ? departId : null),
                     (serviceFee > 0 ? serviceFee : null));

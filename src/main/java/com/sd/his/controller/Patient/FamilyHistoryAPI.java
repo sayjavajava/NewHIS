@@ -1,12 +1,11 @@
 package com.sd.his.controller.Patient;
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.LabOrder;
-import com.sd.his.repository.LabOrderProjection;
+import com.sd.his.model.FamilyHistory;
 import com.sd.his.service.PatientService;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.FamilyHistoryWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
-import com.sd.his.wrapper.LabOrderWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -18,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,60 +24,51 @@ import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 @RestController
-@RequestMapping("/patient/laborder")
-public class LabOrderAPI {
+@RequestMapping("/patient/family")
+public class FamilyHistoryAPI {
 
     @Autowired
     private PatientService patientService;
 
-    private final Logger logger = LoggerFactory.getLogger(LabOrderAPI.class);
+    private final Logger logger = LoggerFactory.getLogger(FamilyHistoryAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
-    @ApiOperation(httpMethod = "POST", value = "Create LabOrder",
-            notes = "This method will Create Lab Order",
-            produces = "application/json", nickname = "Create LabOrder",
+    @ApiOperation(httpMethod = "POST", value = "Create FamilyHistory",
+            notes = "This method will Create Family History",
+            produces = "application/json", nickname = "Create FamilyHistory",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "LabOrder successfully created", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "FamilyHistory successfully created", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<?> createLabOrder(HttpServletRequest request,
-                                            @RequestBody LabOrderWrapper labOrderWrapper) {
-        logger.info("Create LabOrder API called...");
+    public ResponseEntity<?> createFamilyHistory(HttpServletRequest request,
+                                            @RequestBody FamilyHistoryWrapper familyHistoryWrapper) {
+        logger.info("Create FamilyHistory API called...");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("laborder.add.error"));
-        response.setResponseCode(ResponseEnum.LABORDER_ADD_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("family-history.add.error"));
+        response.setResponseCode(ResponseEnum.FAMILY_HISTORY_ADD_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
-            /*Branch alreadyExist = branchService.findByBranchName(branchRequestWrapper.getBranchName());
-            if (HISCoreUtil.isValidObject(alreadyExist)) {
-                response.setResponseMessage(messageBundle.getString("branch.add.already-found.error"));
-                response.setResponseCode(ResponseEnum.BRANCH_ALREADY_EXIST_ERROR.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("Branch already exist with the same name...");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }*/
-            LabOrderWrapper labOrder = patientService.saveLabOrder(labOrderWrapper);
-            if (HISCoreUtil.isValidObject(labOrder)) {
-                response.setResponseData(labOrder);
-                response.setResponseMessage(messageBundle.getString("laborder.add.success"));
-                response.setResponseCode(ResponseEnum.LABORDER_ADD_SUCCESS.getValue());
+            FamilyHistoryWrapper fmHistory = patientService.saveFamilyHistory(familyHistoryWrapper);
+            if (HISCoreUtil.isValidObject(fmHistory)) {
+                response.setResponseData(fmHistory);
+                response.setResponseMessage(messageBundle.getString("family-history.add.success"));
+                response.setResponseCode(ResponseEnum.FAMILY_HISTORY_ADD_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.info("LabOrder created successfully...");
+                logger.info("Family History created successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
 
         } catch (Exception ex) {
-            logger.error("LabOrder Creation Failed.", ex.fillInStackTrace());
+            logger.error("Family History Creation Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
@@ -89,33 +78,33 @@ public class LabOrderAPI {
     }
 
 
-   @ApiOperation(httpMethod = "GET", value = "Paginated LabOrders",
-            notes = "This method will return Paginated LabOrders",
-            produces = "application/json", nickname = "Get Paginated LabOrders ",
+   @ApiOperation(httpMethod = "GET", value = "Paginated FamilyHistory",
+            notes = "This method will return Paginated FamilyHistory",
+            produces = "application/json", nickname = "Get Paginated FamilyHistory ",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Paginated LabOrders fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Paginated FamilyHistory fetched successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllPaginatedLabOrder(HttpServletRequest request,
+    public ResponseEntity<?> getAllFamilyHistory(HttpServletRequest request,
                                                      @PathVariable("page") int page,
                                                      @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
-        logger.info("getAllLabOrders paginated..");
+        logger.info("getAllFamilyHistory paginated..");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("laborder.not.found"));
-        response.setResponseCode(ResponseEnum.LABORDER_NOT_FOUND.getValue());
+        response.setResponseMessage(messageBundle.getString("family-history.not.found"));
+        response.setResponseCode(ResponseEnum.FAMILY_HISTORY_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
-            List<LabOrderProjection> labordersdata = patientService.getAllLabOrders(page,pageSize);
-            int countOrders = patientService.totaLabOrders();
+            List<FamilyHistoryWrapper> fhistoryData = patientService.getAllFamilyHistory(page,pageSize);
+            int countOrders = patientService.familyHistoryCount();
 
-            if (!HISCoreUtil.isListEmpty(labordersdata)) {
+            if (!HISCoreUtil.isListEmpty(fhistoryData)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
 
@@ -143,20 +132,20 @@ public class LabOrderAPI {
                 returnValues.put("prePage", prePage);
                 returnValues.put("currPage", currPage);
                 returnValues.put("pages", pages);
-                returnValues.put("data", labordersdata);
+                returnValues.put("data", fhistoryData);
 
-                response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
-                response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());
+                response.setResponseMessage(messageBundle.getString("family-history.fetched.success"));
+                response.setResponseCode(ResponseEnum.FAMILY_HISTORY_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(returnValues);
-                logger.info("getAllPaginatedLabOrders Fetched successfully...");
+                logger.info("getAll FamilyHistory Fetched successfully...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
             }
 
            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("get all paginated countOrders failed.", ex.fillInStackTrace());
+            logger.error("get all paginated FamilyHistory failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -165,55 +154,55 @@ public class LabOrderAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    //get order
 
-    @ApiOperation(httpMethod = "PUT", value = "Update LaBOrder ",
-            notes = "This method will Update LabOrder",
-            produces = "application/json", nickname = "Update LabOrder",
+    //update Family History
+    @ApiOperation(httpMethod = "PUT", value = "Update Family History ",
+            notes = "This method will Update Family History",
+            produces = "application/json", nickname = "Update Family History",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "LabOrder successfully updated", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Family History successfully updated", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateLabOrder(HttpServletRequest request,
-                                          @PathVariable("id") long id,
-                                            @RequestBody LabOrderWrapper labOrderWrapper) {
+    public ResponseEntity<?> updateFamilyHistory(HttpServletRequest request,
+                                            @PathVariable("id") long id,
+                                            @RequestBody FamilyHistoryWrapper familyHistoryWrapper) {
 
-        logger.info("update LabOrder API called...");
+        logger.info("update Family History API called...");
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("laborder.update.error"));
-        response.setResponseCode(ResponseEnum.LABORDER_UPDATE_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("family-history.update.error"));
+        response.setResponseCode(ResponseEnum.FAMILY_HISTORY_UPDATE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
         try {
-            LabOrder alreadyExistLabOrder = patientService.findById(id);
-            if (HISCoreUtil.isValidObject(alreadyExistLabOrder)) {
-                logger.info("LabOrder founded...");
-                LabOrderWrapper labOrderUpdated = patientService.updateLabOrder(labOrderWrapper, alreadyExistLabOrder);
-                if (HISCoreUtil.isValidObject(labOrderUpdated)) {
-                    logger.info("LabOrder Updated...");
-                    response.setResponseData(labOrderUpdated);
-                    response.setResponseMessage(messageBundle.getString("laborder.update.success"));
-                    response.setResponseCode(ResponseEnum.LABORDER_UPDATE_SUCCESS.getValue());
+            FamilyHistory alreadyFamilyHistory = patientService.findFamilyHistoryById(id);
+            if (HISCoreUtil.isValidObject(alreadyFamilyHistory)) {
+                logger.info("Family History founded...");
+                FamilyHistoryWrapper fmUpdated = patientService.updateFamilyHistory(familyHistoryWrapper, alreadyFamilyHistory);
+                if (HISCoreUtil.isValidObject(fmUpdated)) {
+                    logger.info("Family History Updated...");
+                    response.setResponseData(fmUpdated);
+                    response.setResponseMessage(messageBundle.getString("family-history.update.success"));
+                    response.setResponseCode(ResponseEnum.FAMILY_HISTORY_UPDATE_SUCCESS.getValue());
                     response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                    logger.info("LabOrder  updated successfully...");
+                    logger.info("Family History updated successfully...");
 
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
-                logger.info("LabOrder not found...");
-                response.setResponseMessage(messageBundle.getString("laborder.not.found"));
-                response.setResponseCode(ResponseEnum.LABORDER_NOT_FOUND.getValue());
+                logger.info("Family History not found...");
+                response.setResponseMessage(messageBundle.getString("family-history.not.found"));
+                response.setResponseCode(ResponseEnum.FAMILY_HISTORY_NOT_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
-                logger.error("laborder not updated...");
+                logger.error("Family History not updated...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
         } catch (Exception ex) {
-            logger.error("Update LabOrder Failed.", ex.fillInStackTrace());
+            logger.error("Update Family History Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
@@ -222,83 +211,40 @@ public class LabOrderAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(httpMethod = "GET", value = "Fetch LabOrder",
-            notes = "This method will return LabOrder on base of id",
-            produces = "application/json", nickname = "Get Single Order",
+    @ApiOperation(httpMethod = "DELETE", value = "Delete Family History",
+            notes = "This method will Delete Family History on base of id",
+            produces = "application/json", nickname = "Delete Family History ",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "LabOrder found successfully", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getLabOrderById(HttpServletRequest request,
-                                           @PathVariable("id") long id) {
-
-        GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("laborder.not.found"));
-        response.setResponseCode(ResponseEnum.LABORDER_NOT_FOUND.getValue());
-        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-        response.setResponseData(null);
-
-        try {
-            LabOrderProjection dbLabOrder = this.patientService.getLabOrderById(id);
-
-            if (HISCoreUtil.isValidObject(dbLabOrder)) {
-                response.setResponseData(dbLabOrder);
-                response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());
-                response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.info("LabOrder Found successfully...");
-
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception ex) {
-            logger.error("LabOrder Not Found", ex.fillInStackTrace());
-            response.setResponseData("");
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    @ApiOperation(httpMethod = "DELETE", value = "Delete LasbOrder",
-            notes = "This method will Delete LabOrder on base of id",
-            produces = "application/json", nickname = "Delete LabOrder ",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "LabOrder Deleted successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Family History Deleted successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteLabOrder(HttpServletRequest request,
-                                          @PathVariable("id") long id) {
+    public ResponseEntity<?> deleteFamilyHistory(HttpServletRequest request,
+                                            @PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("laborder.delete.error"));
-        response.setResponseCode(ResponseEnum.LABORDER_DELETED_FAILED.getValue());
+        response.setResponseMessage(messageBundle.getString("family-history.delete.error"));
+        response.setResponseCode(ResponseEnum.FAMILY_HISTORY_DELETED_FAILED.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
         try {
-            Boolean LabOrder = patientService.deleteByLabOrder(id);
-                if(HISCoreUtil.isValidObject(LabOrder)){
-                    response.setResponseData(null);
-                    response.setResponseMessage(messageBundle.getString("laborder.delete.success"));
-                    response.setResponseCode(ResponseEnum.LABORDER_DELETED_SUCCESS.getValue());
-                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                    logger.info("LabOrder Deleted successfully...");
+            Boolean familyHistory = patientService.deleteFamilyHistory(id);
+            if(HISCoreUtil.isValidObject(familyHistory)){
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("family-history.delete.success"));
+                response.setResponseCode(ResponseEnum.FAMILY_HISTORY_DELETED_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Family History Deleted successfully...");
 
-                    return new ResponseEntity<>(response, HttpStatus.OK);}
+                return new ResponseEntity<>(response, HttpStatus.OK);}
 
-            }
+        }
 
-            catch (Exception ex) {
-            logger.error("Unable to delete LabOrder.", ex.fillInStackTrace());
+        catch (Exception ex) {
+            logger.error("Unable to delete Family History.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -309,35 +255,35 @@ public class LabOrderAPI {
         return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    //get by id
-    @ApiOperation(httpMethod = "GET", value = "Paginated LabOrders",
-            notes = "This method will return Paginated LabOrders",
-            produces = "application/json", nickname = "Get Paginated LabOrders ",
+    //get Family History by Patient
+    @ApiOperation(httpMethod = "GET", value = "Paginated FamilyHistory",
+            notes = "This method will return Paginated FamilyHistory",
+            produces = "application/json", nickname = "Get Paginated FamilyHistory ",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Paginated LabOrders fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Paginated FamilyHistory fetched successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/order/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllPaginatedOrdersByPatient(HttpServletRequest request,
-                                                     @PathVariable("page") int page,
-                                                     @RequestParam (value = "name", required = false) String patientId,
-                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
-        logger.info("getAllLabOrders paginated.." + patientId);
+    @RequestMapping(value = "history/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> getFamilyHistoryByPatient(HttpServletRequest request,
+                                                 @PathVariable("page") int page,
+                                                 @RequestParam("name")String name,
+                                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+        logger.info("getAllFamilyHistory paginated..");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("laborder.not.found"));
-        response.setResponseCode(ResponseEnum.LABORDER_NOT_FOUND.getValue());
+        response.setResponseMessage(messageBundle.getString("family-history.not.found"));
+        response.setResponseCode(ResponseEnum.FAMILY_HISTORY_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
-            List<LabOrderProjection> labordersdata = patientService.getAllLabOrdersByPatient(page,pageSize, Long.valueOf(patientId));
-            int countOrders = patientService.totaLabOrders();
+            List<FamilyHistoryWrapper> fhistoryData = patientService.getAllFamilyHistoryByPatient(page,pageSize,Long.valueOf(name));
+            int countOrders = patientService.familyHistoryCount();
 
-            if (!HISCoreUtil.isListEmpty(labordersdata)) {
+            if (!HISCoreUtil.isListEmpty(fhistoryData)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
 
@@ -365,20 +311,20 @@ public class LabOrderAPI {
                 returnValues.put("prePage", prePage);
                 returnValues.put("currPage", currPage);
                 returnValues.put("pages", pages);
-                returnValues.put("data", labordersdata);
+                returnValues.put("data", fhistoryData);
 
-                response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
-                response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());
+                response.setResponseMessage(messageBundle.getString("family-history.fetched.success"));
+                response.setResponseCode(ResponseEnum.FAMILY_HISTORY_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(returnValues);
-                logger.info("getAllPaginatedLabOrders Fetched successfully...");
+                logger.info("getAll FamilyHistory Fetched successfully...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
 
             }
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("get all paginated countOrders failed.", ex.fillInStackTrace());
+            logger.error("get all paginated FamilyHistory failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -387,5 +333,7 @@ public class LabOrderAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
 }

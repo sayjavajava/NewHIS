@@ -1,7 +1,6 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.MedicationWrapper;
@@ -105,9 +104,11 @@ public class Medication extends BaseEntity implements Serializable {
         this.sigNote = medicationWrapper.getSigNote();
         this.indication = medicationWrapper.getIndication();
         this.status = medicationWrapper.getStatus();
-        this.datePrescribed = HISCoreUtil.convertToDate(medicationWrapper.getDatePrescribed());
-        this.dateStartedTaking = HISCoreUtil.convertToDate(medicationWrapper.getDateStartedTaking());
-        this.dateStoppedTaking = HISCoreUtil.convertToDate(medicationWrapper.getDateStoppedTaking());
+
+        this.datePrescribed = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDatePrescribedString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        this.dateStartedTaking = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDateStartedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        this.dateStoppedTaking = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDateStoppedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+
         this.dispenseQuantity = medicationWrapper.getDispenseQuantity();
         this.dispensePackage = medicationWrapper.getDispensePackage();
         this.numberRefill = medicationWrapper.getNumberRefill();
@@ -123,9 +124,11 @@ public class Medication extends BaseEntity implements Serializable {
         medication.sigNote = medicationWrapper.getSigNote();
         medication.indication = medicationWrapper.getIndication();
         medication.status = medicationWrapper.getStatus();
-        medication.datePrescribed = HISCoreUtil.convertToDate(medicationWrapper.getDatePrescribed());
-        medication.dateStartedTaking = HISCoreUtil.convertToDate(medicationWrapper.getDateStartedTaking());
-        medication.dateStoppedTaking = HISCoreUtil.convertToDate(medicationWrapper.getDateStoppedTaking());
+
+        medication.datePrescribed = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDatePrescribedString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        medication.dateStartedTaking = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDateStartedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        medication.dateStoppedTaking = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDateStoppedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+
         medication.dispenseQuantity = medicationWrapper.getDispenseQuantity();
         medication.dispensePackage = medicationWrapper.getDispensePackage();
         medication.numberRefill = medicationWrapper.getNumberRefill();

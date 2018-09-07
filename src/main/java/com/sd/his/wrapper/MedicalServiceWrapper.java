@@ -31,6 +31,7 @@ import java.util.List;
 public class MedicalServiceWrapper {
     private long id;
     private String name;
+    private String code;
     private double fee;
     private double cost;
     private boolean status;
@@ -52,6 +53,7 @@ public class MedicalServiceWrapper {
     public MedicalServiceWrapper(MedicalServiceWrapper medicalServiceWrapper) {
         this.id = medicalServiceWrapper.getId();
         this.name = medicalServiceWrapper.getName();
+        this.code = medicalServiceWrapper.getCode();
         this.fee = medicalServiceWrapper.getFee();
         this.cost = medicalServiceWrapper.getCost();
         this.status = medicalServiceWrapper.isStatus();
@@ -68,6 +70,7 @@ public class MedicalServiceWrapper {
         }
         this.id = ms.getId();
         this.name = ms.getName();
+        this.code = ms.getCode();
         this.fee = ms.getFee();
         this.cost = ms.getCost();
         this.status = ms.getStatus();
@@ -85,6 +88,7 @@ public class MedicalServiceWrapper {
             this.tax = new TaxWrapper(ms.getTax());
         }
         this.id = ms.getId();
+        this.name = ms.getName();
         this.name = ms.getName();
         this.fee = ms.getFee();
         this.cost = ms.getCost();
@@ -211,5 +215,13 @@ public class MedicalServiceWrapper {
 
     public void setCheckedBranchCount(long checkedBranchCount) {
         this.checkedBranchCount = checkedBranchCount;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
