@@ -2,11 +2,9 @@ package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.service.DocumentService;
-import com.sd.his.service.UserService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DocumentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
-import com.sun.net.httpserver.HttpPrincipal;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -15,12 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
@@ -29,9 +25,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
-/**
- * Created by jamal on 9/3/2018.
- */
+
+
+
 @RestController
 @RequestMapping("/patient/document")
 public class DocumentAPI {
@@ -40,8 +36,7 @@ public class DocumentAPI {
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
     @Autowired
     private DocumentService documentService;
-    @Autowired
-    private UserService userService;
+
 
 
     @ApiOperation(httpMethod = "POST", value = "Save Document",
@@ -294,10 +289,11 @@ public class DocumentAPI {
                                                 @PathVariable("documentId") long documentId) {
         logger.info("deleteDocumentById API - Called..");
         GenericAPIResponse response = new GenericAPIResponse();
-        /*response.setResponseMessage(messageBundle.getString("document.delete.error"));
+response.setResponseMessage(messageBundle.getString("document.delete.error"));
         response.setResponseCode(ResponseEnum.PATIENT_DELETE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
-        response.setResponseData(null);*/
+        response.setResponseData(null);
+
 
         try {
             if (documentId <= 0) {

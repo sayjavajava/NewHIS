@@ -1,16 +1,18 @@
 package com.sd.his.service;
 
-import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.model.*;
-import com.sd.his.repository.*;
+import com.sd.his.repository.PermissionRepository;
+import com.sd.his.repository.RolePermissionRepository;
+import com.sd.his.repository.RoleRepository;
+import com.sd.his.repository.UserRepository;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.*;
+import com.sd.his.wrapper.PermissionWrapper;
+import com.sd.his.wrapper.RoleWrapper;
+import com.sd.his.wrapper.UserWrapper;
 import com.sd.his.wrapper.request.AssignAuthoritiesRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,18 +21,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service(value = "userService")
+@Service
 @Transactional
 public class UserService implements UserDetailsService {
-    @Autowired
-    private AWSService awsService;
+    /*@Autowired
+    private AWSService awsService;*/
     @Autowired
     private UserRepository userRepository;
 
@@ -43,7 +43,7 @@ public class UserService implements UserDetailsService {
     RolePermissionRepository rolePermissionRepository;
     @Autowired
     PermissionRepository permissionRepository;
-    @Autowired
+   /* @Autowired
     UserRoleRepository userRoleRepository;
     @Autowired
     DoctorRepository doctorRepository;
@@ -51,7 +51,7 @@ public class UserService implements UserDetailsService {
     PatientRepository patientRepository;
 
     @Autowired
-    private S3KeyGen s3KeyGen;
+    private S3KeyGen s3KeyGen;*/
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -663,7 +663,7 @@ public class UserService implements UserDetailsService {
         String imgURL = null;
 
 //        byte[] byteArr = Files.readAllBytes(path);
-        InputStream is = new ByteArrayInputStream(byteArary);
+       /* InputStream is = new ByteArrayInputStream(byteArary);
         boolean isSaved = false;
         isSaved = awsService.uploadImageByUserId(is,
                 directoryPath,
@@ -671,7 +671,7 @@ public class UserService implements UserDetailsService {
                 fullImgName);
         if (isSaved) {
             imgURL = this.s3KeyGen.getImagePublicURL(fullPathAndThumbNailGraphicName, false);
-        }
+        }*/
 
         return imgURL;
     }
