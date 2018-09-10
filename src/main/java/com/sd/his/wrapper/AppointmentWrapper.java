@@ -85,6 +85,8 @@ public class AppointmentWrapper {
     private String newPatient;
     private Date dateOfBirth;
 
+    private Double receivedAmount;
+
 
     public AppointmentWrapper() {
     }
@@ -138,7 +140,38 @@ public class AppointmentWrapper {
     }
 
 
-    //overload for all appointments
+
+    public AppointmentWrapper(Long id,String appointmentId, String title, AppointmentStatusTypeEnum status,Date scheduleDate, String firstName, String lastName, String docFirstName, String docLastName, Long patientId)
+    {
+        //Long patientId,Long branchId, String branchName, Long roomId,
+        this.id = id;
+        this.appointmentId=appointmentId;
+        this.title = title;
+        this.scheduleDate = HISCoreUtil.convertDateToString(scheduleDate);
+        this.draggable = draggable;
+        this.patient = firstName + " " + lastName;
+        this.notes = notes;
+        this.reason = reason;
+        this.color = color;
+        this.docFirstName = docFirstName;
+        this.docLastName = docLastName;
+
+        this.status = status.name();
+        this.followUpReminder = followUpReminder;
+        this.duration = duration;
+        this.compareDate = scheduleDate;
+
+        this.recurringPeriod = recurringPeriod;
+        this.patientId = patientId;
+        this.patientFirstName = patientFirstName;
+        this.patientLastName = patientLastName;
+        this.branchId = branchId;
+        this.roomId = roomId;
+
+        this.branchName = branchName;
+        this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToString(scheduleDate);
+    }
+
 
     @Override
     public String toString() {
@@ -566,5 +599,13 @@ public class AppointmentWrapper {
 
     public void setAge(String age) {
         this.age = age;
+    }
+
+    public Double getReceivedAmount() {
+        return receivedAmount;
+    }
+
+    public void setReceivedAmount(Double receivedAmount) {
+        this.receivedAmount = receivedAmount;
     }
 }
