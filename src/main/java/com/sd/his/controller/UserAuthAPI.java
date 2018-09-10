@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,7 +192,7 @@ public class UserAuthAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    /*
+
      @ApiOperation(httpMethod = "GET", value = "Admin LoggedIn",
             notes = "This method will return logged in User",
             produces = "application/json", nickname = "Logging In ",
@@ -239,7 +240,7 @@ public class UserAuthAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-*/
+
     @ApiOperation(httpMethod = "GET", value = "Admin Logged out ",
             notes = "This method will Log out the User",
             produces = "application/json", nickname = "Logging Out ",
