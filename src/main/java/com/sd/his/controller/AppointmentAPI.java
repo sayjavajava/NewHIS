@@ -376,10 +376,10 @@ public class AppointmentAPI {
         response.setResponseData(null);
 
         try {
-            Appointment dbAppointment = this.appointmentService.findById(id);
+            AppointmentWrapper singleAppointment = this.appointmentService.findAppointmentById(id);
 
-            if (HISCoreUtil.isValidObject(dbAppointment)) {
-                response.setResponseData(dbAppointment);
+            if (HISCoreUtil.isValidObject(singleAppointment)) {
+                response.setResponseData(singleAppointment);
                 response.setResponseCode(ResponseEnum.APPT_FOUND_SUCCESS.getValue());
                 response.setResponseMessage(messageBundle.getString("appointment.found"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());

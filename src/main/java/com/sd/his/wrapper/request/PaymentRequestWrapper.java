@@ -4,7 +4,7 @@ public class PaymentRequestWrapper {
 
 
     long id;
-    String invoiceId;
+    long invoiceId;
     Double paidAmount;
     Double invoiceAmount;
     String status;
@@ -20,11 +20,11 @@ public class PaymentRequestWrapper {
         this.id = id;
     }
 
-    public String getInvoiceId() {
+    public long getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(String invoiceId) {
+    public void setInvoiceId(long invoiceId) {
         this.invoiceId = invoiceId;
     }
 

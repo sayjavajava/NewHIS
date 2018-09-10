@@ -77,5 +77,17 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     Appointment findByAppointmentId(String id);
 
-}
+
+  //  DashboardResponseWrapper(Long appointmentId,String patientFirstName,String patientLastName,String inTime, String doctorFirstName,String doctorLastName, String branch, String group, String scheduleAt, String examRoom, String status, Long branchId, Long doctorId, Long roomId)
+
+
+
+
+    @Query("SELECT NEW com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.status, " +
+            " a.schdeulledDate,  " +
+            " a.patient.firstName,a.patient.lastName,a.doctor.firstName,a.doctor.lastName, a.patient.id) " +
+            "FROM Appointment a WHERE a.id =?1 ")
+    AppointmentWrapper findAppointmentById(Long apptId);
+
+    }
 
