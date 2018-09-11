@@ -4,10 +4,12 @@ import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.ProblemWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -54,7 +56,7 @@ public class ProblemService {
 
     private void populateProblem(ProblemWrapper problemWrapper, Problem problem) throws Exception {
         Appointment appointment = null;
-        if (problemWrapper.getAppointmentId()  > 0) {
+        if (problemWrapper.getAppointmentId() > 0) {
             appointment = this.appointmentRepository.findOne(problemWrapper.getAppointmentId());
             if (appointment != null) {
                 problem.setAppointment(appointment);
@@ -93,6 +95,12 @@ public class ProblemService {
     private void populateProblemWrapper(ProblemWrapper problemWrapper, Problem problem) throws ParseException {
         if (problem.getId() != null && problem.getId() > 0) {
             problemWrapper.setId(problem.getId());
+        }
+        if (problem.getCreatedOn() != null) {
+            problemWrapper.setCreatedOn(HISCoreUtil.convertDateToString(problem.getCreatedOn(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM));
+        }
+        if (problem.getUpdatedOn() != null) {
+            problemWrapper.setUpdatedOn(HISCoreUtil.convertDateToString(problem.getUpdatedOn(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM));
         }
         if (problem.getAppointment() != null) {
             problemWrapper.setAppointmentId(problem.getAppointment().getId());
@@ -156,5 +164,22 @@ public class ProblemService {
             return problemWrapper;
         }
         return null;
+    }
+
+    public List<ProblemWrapper> getProblemsByStatusAndPatientId(Pageable pageable, String status, Long selectedPatientId) throws ParseException {
+        List<ProblemWrapper> problemWrappers = new ArrayList<>();
+        List<Problem> problems = this.problemRepository.findAllByStatusAndPatient_id(pageable, status, selectedPatientId);
+        if (problems != null) {
+            for (Problem problem : problems) {
+                ProblemWrapper problemWrapper = new ProblemWrapper();
+                this.populateProblemWrapper(problemWrapper, problem);
+                problemWrappers.add(problemWrapper);
+            }
+        }
+        return problemWrappers;
+    }
+
+    public int countProblemsByStatusAndPatientId(String status, Long aLong) {
+        return this.problemRepository.countAllByStatusAndPatient_id(status, aLong);
     }
 }

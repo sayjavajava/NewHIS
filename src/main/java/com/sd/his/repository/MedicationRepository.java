@@ -24,4 +24,15 @@ public interface MedicationRepository extends JpaRepository<Medication, Long> {
 
     @Query("SELECT new com.sd.his.wrapper.MedicationWrapper(medication) FROM Medication medication where medication.id=:id")
     MedicationWrapper getMedicationById(@Param("id") long medicationId);
+
+
+    @Query("SELECT new com.sd.his.wrapper.MedicationWrapper(m) " +
+            "FROM Medication m " +
+            "WHERE m.patient.id=:patientId AND m.status=:status")
+    List<MedicationWrapper> getPaginatedMedicationsByStatusAndPatientId(Pageable pageable, @Param("status") String status, @Param("patientId") Long patientId);
+
+    @Query("SELECT new com.sd.his.wrapper.MedicationWrapper(m) " +
+            "FROM Medication m " +
+            "WHERE m.patient.id=:patientId AND m.status=:status")
+    List<MedicationWrapper> countPaginatedMedicationsByStatusAndPatientId(@Param("status") String status, @Param("patientId") Long patientId);
 }

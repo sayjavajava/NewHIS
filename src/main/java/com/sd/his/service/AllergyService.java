@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -91,4 +92,11 @@ public class AllergyService {
     }
 
 
+    public List<AllergyWrapper> getPaginatedAllergiesByStatusAndPatientId(Pageable pageable, String status, Long aLong) {
+        return this.allergyRepository.getAllAllergiesByStatusAndPatientId(pageable,status,aLong);
+    }
+
+    public int countPaginatedAllergiesByStatusAndPatientId(String status, Long aLong) {
+        return this.allergyRepository.countAllAllergiesByStatusAndPatientId(status,aLong).size();
+    }
 }
