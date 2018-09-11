@@ -17,7 +17,11 @@ import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
 import javax.transaction.Transactional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -122,7 +126,7 @@ public class AppointmentService {
         appointment.setStartedOn(date2);
         //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
         appointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
-
+        Date ended = HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration());
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setNotes(appointmentWrapper.getNotes());
         appointment.setColor(appointmentWrapper.getColor());
@@ -182,8 +186,12 @@ public class AppointmentService {
             patient = patientRepository.findOne(appointmentWrapper.getPatientId());
             appointment.setPatient(patient);}
 
-
+       //check date time exist already
+      if(!checkTimeAndDateAlreadyExist(scheduleDate,ended)){
         appointmentRepository.save(appointment);
+        }
+        else {appointment = null;}
+
         return appointment;
     }
 
@@ -303,6 +311,26 @@ public class AppointmentService {
             statusChanged =true;
         }
         return statusChanged;
+    }
+
+    private boolean checkTimeAndDateAlreadyExist(Date date1,Date date2)  {
+      boolean isExist =false;
+     /* Date date1 =new Date();
+
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+        Date date = null;
+        try {
+            date = simpleDateFormat.parse("2018-09-14");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println("dddd:" + date);*/
+       List<Appointment>  appointments =  appointmentRepository.findBySchdeulledDateBetween(date1,date2);
+       if(appointments.size() > 0)
+           isExist =true;
+           return isExist;
     }
 
   /*  public void deleteAppointment(Appointment appointment) {
