@@ -18,4 +18,7 @@ public interface ProblemRepository extends JpaRepository<Problem,Long> {
 
     Page<Problem> findAllByCreatedOnNotNull(Pageable page);
 
+    List<Problem> findAllByStatusAndPatient_id(Pageable page, String status,Long selectedPatientId);
+
+    int countAllByStatusAndPatient_id(String status, Long aLong);
 }

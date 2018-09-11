@@ -79,4 +79,11 @@ public class MedicationService {
     }
 
 
+    public List<MedicationWrapper> getPaginatedMedicationsByStatusAndPatientId(Pageable pageable, String status, Long aLong) {
+        return this.medicationRepository.getPaginatedMedicationsByStatusAndPatientId(pageable,status,aLong);
+    }
+
+    public int countPaginatedMedicationsByStatusAndPatientId( String status, Long aLong) {
+        return this.medicationRepository.countPaginatedMedicationsByStatusAndPatientId(status,aLong).size();
+    }
 }
