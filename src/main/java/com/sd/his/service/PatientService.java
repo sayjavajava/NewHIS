@@ -166,6 +166,7 @@ public class  PatientService {
                 patient = new Patient();
         }else{
             patient = new Patient();
+            patient.setAdvanceBalance(0.0);
         }
 
 
