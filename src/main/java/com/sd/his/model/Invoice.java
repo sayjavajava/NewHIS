@@ -32,6 +32,15 @@ public class Invoice extends BaseEntity implements Serializable
     @OneToMany(mappedBy = "invoice")
     private List<InvoiceItems> invoiceItems;
 
+    @OneToMany(mappedBy = "invoice")
+    private List<PatientInvoicePayment> patientInvoicePayments;
+
+    @Column(name = "PAID_AMOUNT")
+    private  Double paidAmount;
+
+    @Column(name = "INVOICE_AMOUNT")
+    private Double invoiceAmount;
+
 
     @Column(name = "STATUS")
     private String status;
@@ -68,11 +77,35 @@ public class Invoice extends BaseEntity implements Serializable
         this.invoiceItems = invoiceItems;
     }
 
+    public Double getPaidAmount() {
+        return paidAmount;
+    }
+
+    public void setPaidAmount(Double paidAmount) {
+        this.paidAmount = paidAmount;
+    }
+
+    public Double getInvoiceAmount() {
+        return invoiceAmount;
+    }
+
+    public void setInvoiceAmount(Double invoiceAmount) {
+        this.invoiceAmount = invoiceAmount;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<PatientInvoicePayment> getPatientInvoicePayments() {
+        return patientInvoicePayments;
+    }
+
+    public void setPatientInvoicePayments(List<PatientInvoicePayment> patientInvoicePayments) {
+        this.patientInvoicePayments = patientInvoicePayments;
     }
 }

@@ -1,15 +1,15 @@
 package com.sd.his.service;
 
+import com.sd.his.configuration.S3KeyGen;
+import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
-import com.sd.his.repository.PermissionRepository;
-import com.sd.his.repository.RolePermissionRepository;
-import com.sd.his.repository.RoleRepository;
-import com.sd.his.repository.UserRepository;
+import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.PermissionWrapper;
 import com.sd.his.wrapper.RoleWrapper;
 import com.sd.his.wrapper.UserWrapper;
 import com.sd.his.wrapper.request.AssignAuthoritiesRequestWrapper;
+import com.sd.his.wrapper.response.StaffResponseWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +43,17 @@ public class UserService implements UserDetailsService {
     RolePermissionRepository rolePermissionRepository;
     @Autowired
     PermissionRepository permissionRepository;
-   /* @Autowired
-    UserRoleRepository userRoleRepository;
     @Autowired
     DoctorRepository doctorRepository;
     @Autowired
-    PatientRepository patientRepository;
-
+    NurseRepository nurseRepository;
+    @Autowired
+    ReceptionistRepository receptionistRepository;
+    @Autowired
+    CashierRepository cashierRepository;
+    @Autowired
+    ManagerRepository managerRepository;
+    /*
     @Autowired
     private S3KeyGen s3KeyGen;*/
 
@@ -166,6 +170,31 @@ public class UserService implements UserDetailsService {
         List<PermissionWrapper> permissionWrappers = new ArrayList<>();
         List<RoleWrapper> roleWrappers = new ArrayList<>();
         //List<Permission> userPermissions = getIdenticalUserPermissions(dbUser);
+        StaffResponseWrapper staffResponseWrapper = null;
+        Manager manager = null;
+        switch( UserTypeEnum.valueOf(dbUser.getUserType()) ){
+            case DOCTOR:
+                staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(dbUser.getId());
+            break;
+            case CASHIER:
+                staffResponseWrapper = cashierRepository.findAllByIdAndStatusActive(dbUser.getId());
+            break;
+            case RECEPTIONIST:
+                 staffResponseWrapper = receptionistRepository.findAllByIdAndStatusActive(dbUser.getId());
+            break;
+            case MANAGER:
+                manager = managerRepository.findByUser(dbUser);
+            break;
+            case ADMIN:
+                manager = managerRepository.findByUser(dbUser);
+            break;
+        }
+        if(staffResponseWrapper!=null){
+            this.extractGeneralInfo(user, staffResponseWrapper);
+        }else{
+            this.extractGeneralInfo(user, manager);
+        }
+
 
         List<RolePermission> userRolePermission = getUserRolePermissions(dbUser);
         //Map<String, PermissionWrapper> permissionWrapperMap = new HashMap<>();
@@ -194,6 +223,23 @@ public class UserService implements UserDetailsService {
 
         return user;
     }
+
+    private void extractGeneralInfo(UserWrapper userWrapper, Object object){
+        StaffResponseWrapper staffResponseWrapper = null;
+        Manager manager = null;
+        if(object.getClass().equals(StaffResponseWrapper.class)) {
+            staffResponseWrapper = (StaffResponseWrapper)object;
+            userWrapper.setFirstName(staffResponseWrapper.getFirstName());
+            userWrapper.setLastName(staffResponseWrapper.getLastName());
+            userWrapper.setProfileImg(staffResponseWrapper.getProfileImg());
+        }else {
+            manager = (Manager) object;
+            userWrapper.setFirstName(manager.getFirstName());
+            userWrapper.setLastName(manager.getLastName());
+            userWrapper.setProfileImg(manager.getProfileImgURL());
+        }
+    }
+
     public List<Permission> getAllActivePermissions() {
         return permissionRepository.findAllByActiveTrue();
     }
