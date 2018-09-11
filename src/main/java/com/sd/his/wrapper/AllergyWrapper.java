@@ -35,6 +35,7 @@ public class AllergyWrapper extends BaseWrapper {
         this.reaction = allergy.getReaction();
         this.status = allergy.getStatus();
         this.note = allergy.getNote();
+        this.setCreatedOn(DateTimeUtil.getFormattedDateFromDate(allergy.getCreatedOn(), HISConstants.DATE_FORMATE_TWO));
         this.setUpdatedOn(DateTimeUtil.getFormattedDateFromDate(allergy.getUpdatedOn(), HISConstants.DATE_FORMATE_TWO));
     }
 

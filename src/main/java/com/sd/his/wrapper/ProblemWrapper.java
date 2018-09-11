@@ -1,5 +1,7 @@
 package com.sd.his.wrapper;
 
+import org.codehaus.jackson.map.Serializers;
+
 /**
  * Created by jamal on 8/13/2018.
  *
@@ -20,16 +22,17 @@ package com.sd.his.wrapper;
  * SolutionDots,
  * All rights reserved.
  */
-public class ProblemWrapper {
+public class ProblemWrapper extends BaseWrapper {
 
-    private Long id;
     private long appointmentId = -1;
+
     private long selectedCodeId = -1;
     private String codeName;
     private String codeTitle;
-    private long selectedICDVersionId = -1;
 
+    private long selectedICDVersionId = -1;
     private String versionName;
+
     private String dateDiagnosis;
     private String note;
     private String status = "ACTIVE";
@@ -37,15 +40,6 @@ public class ProblemWrapper {
 
     public ProblemWrapper() {
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
 
     public String getCodeName() {
         return codeName;
@@ -86,10 +80,6 @@ public class ProblemWrapper {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public long getSelectedCodeId() {
