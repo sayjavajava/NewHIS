@@ -52,7 +52,7 @@ public class Doctor extends StaffProfile implements Serializable {
     @JoinColumn(name="USER_ID", unique= true)
     private User user;
 
-    @OneToOne(orphanRemoval = true)
+    @OneToOne
     @JoinColumn(name="DEPARTMENT_ID", nullable = false)
     private Department department;
 

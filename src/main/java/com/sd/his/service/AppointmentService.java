@@ -1,10 +1,7 @@
 package com.sd.his.service;
 
 import com.google.gson.Gson;
-import com.sd.his.enums.AppointmentStatusTypeEnum;
-import com.sd.his.enums.AppointmentTypeEnum;
-import com.sd.his.enums.ModuleEnum;
-import com.sd.his.enums.UserTypeEnum;
+import com.sd.his.enums.*;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
@@ -111,7 +108,12 @@ public class AppointmentService {
             patient = new Patient();
             patient.setEmail(appointmentWrapper.getEmail());
             patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
-            patient.setFirstName(appointmentWrapper.getNewPatient());
+            patient.setFirstName(appointmentWrapper.getPatientFirstName());
+            patient.setGender(GenderTypeEnum.MALE);
+            patient.setMaritalStatus(MaritalStatusTypeEnum.MARRIED);
+            patient.setStatus(PatientStatusTypeEnum.ACTIVE);
+            patient.setPrimaryDoctor(doctorRepository.findOne(1L));
+            patient.setLastName(appointmentWrapper.getPatientFirstName());
             // patient.setLastName(appointmentWrapper.getNewPatient());
             patient.setCellPhone(appointmentWrapper.getCellPhone());
             patient.setDob(appointmentWrapper.getDateOfBirth());

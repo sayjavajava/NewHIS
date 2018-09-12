@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -205,6 +206,7 @@ public class BranchService {
          return branchResponseWrapper;
      }
  */
+    @Transactional
     public Branch updateBranch(BranchRequestWrapper branchRequestWrapper, Branch branch) {
 
         branch.setName(branchRequestWrapper.getBranchName());
@@ -230,6 +232,9 @@ public class BranchService {
         branchRepository.save(branch);
 
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
+        /*if(!HISCoreUtil.isListEmpty(exRooms)){ // delete branches room for future
+             roomRepository.deleteAllByBranch(branch);
+        }*/
         for (ExamRooms ex : exRooms) {
             Room room = new Room();
             room.setAllowOnlineScheduling(ex.isAllowOnlineScheduling());
