@@ -115,6 +115,7 @@ public class AllergyAPI {
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getPaginatedAllergy(HttpServletRequest request,
                                                  @PathVariable("page") int page,
+                                                 @RequestParam("patientId") String patientId,
                                                  @RequestParam(value = "pageSize",
                                                          required = false, defaultValue = "10") int pageSize) {
 
@@ -123,8 +124,9 @@ public class AllergyAPI {
 
         try {
             logger.error("getPaginatedAllergy -  fetching from DB");
-            List<AllergyWrapper> allergyWrappers = this.allergyService.getPaginatedAllergies(page, pageSize);
-            int allergyWrappersCount = allergyService.countPaginatedAllergies();
+            Pageable pageable = new PageRequest(page, pageSize);
+            List<AllergyWrapper> allergyWrappers = this.allergyService.getPaginatedAllergies(pageable,Long.valueOf(patientId));
+            int count = allergyService.countPaginatedAllergies(Long.valueOf(patientId));
 
             logger.error("getPaginatedAllergy - fetched successfully");
 
@@ -132,9 +134,9 @@ public class AllergyAPI {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
 
-                if (allergyWrappersCount > pageSize) {
-                    int remainder = allergyWrappersCount % pageSize;
-                    int totalPages = allergyWrappersCount / pageSize;
+                if (count > pageSize) {
+                    int remainder = count % pageSize;
+                    int totalPages = count / pageSize;
                     if (remainder > 0) {
                         totalPages = totalPages + 1;
                     }
