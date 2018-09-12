@@ -16,8 +16,14 @@ import java.util.List;
 @Repository
 public interface MedicationRepository extends JpaRepository<Medication, Long> {
 
-    @Query("SELECT new com.sd.his.wrapper.MedicationWrapper(medication) FROM Medication medication")
-    List<MedicationWrapper> getPaginatedMedications(Pageable pageable);
+    @Query("SELECT new com.sd.his.wrapper.MedicationWrapper(medication) " +
+            "FROM Medication medication " +
+            "WHERE medication.patient.id=:patientId" +
+            " order by medication.createdOn desc ")
+    List<MedicationWrapper> getPaginatedMedications(Pageable pageable, @Param("patientId") Long patientId);
+
+    @Query("SELECT new com.sd.his.wrapper.MedicationWrapper(medication) FROM Medication medication WHERE medication.patient.id=:patientId")
+    List<MedicationWrapper> countPaginatedMedications(@Param("patientId") Long patientId);
 
     @Query("SELECT new com.sd.his.wrapper.MedicationWrapper(medication) FROM Medication medication")
     List<MedicationWrapper> getMedications();
@@ -28,7 +34,7 @@ public interface MedicationRepository extends JpaRepository<Medication, Long> {
 
     @Query("SELECT new com.sd.his.wrapper.MedicationWrapper(m) " +
             "FROM Medication m " +
-            "WHERE m.patient.id=:patientId AND m.status=:status")
+            "WHERE m.patient.id=:patientId AND m.status=:status order by m.createdOn desc ")
     List<MedicationWrapper> getPaginatedMedicationsByStatusAndPatientId(Pageable pageable, @Param("status") String status, @Param("patientId") Long patientId);
 
     @Query("SELECT new com.sd.his.wrapper.MedicationWrapper(m) " +

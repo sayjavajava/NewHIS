@@ -9,6 +9,7 @@ import com.sd.his.repository.PatientRepository;
 import com.sd.his.wrapper.MedicationWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -71,11 +72,11 @@ public class MedicationService {
         return this.medicationRepository.getMedicationById(medicationId);
     }
 
-    public List<MedicationWrapper> getPaginatedMedications(Pageable pageable) {
-        return this.medicationRepository.getPaginatedMedications(pageable);
+    public List<MedicationWrapper> getPaginatedMedications(Pageable pageable,Long patientId) {
+        return this.medicationRepository.getPaginatedMedications(pageable ,patientId);
     }
-    public int countPaginatedMedications() {
-        return this.medicationRepository.findAll().size();
+    public int countPaginatedMedications(Long patientId) {
+        return this.medicationRepository.countPaginatedMedications(patientId).size();
     }
 
 
