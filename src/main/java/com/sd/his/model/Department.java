@@ -65,6 +65,11 @@ public class Department extends BaseEntity implements Serializable {
         this.active = createRequest.isActive();
     }
 
+    public Department(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }

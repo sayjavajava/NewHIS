@@ -33,7 +33,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
 public class HisApplication {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
 
-/*    @Autowired
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -56,18 +56,19 @@ public class HisApplication {
     @Autowired
     private BranchDoctorRepository branchDoctorRepository;
     @Autowired
-    private RoomRepository roomRepository;*/
+    private RoomRepository roomRepository;
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(HisApplication.class, args);
     }
 
-    /*@EventListener
+    @EventListener
     @Transactional(rollbackOn = Throwable.class)
     public void onBootStartup(ApplicationContextEvent event) {
 
-
-        if(organizationRepository.findOne(1L) == null) {
+       if(organizationRepository.findOne(1L) == null) {
             Organization organization = new Organization("SolutionDots Hospital", 30L, "Asia/Karachi", 15L, "+96645484654", "+964547854", "+456498465", "https://solutiondots.com/", "General", "imran@solutiondots.net");
             organization.setBucketList(Arrays.asList(new S3Bucket("hisdev", "development bucket", "AKIAJGSNPR3WX7C3EVMA", "4enduKPgokQP43xA9B1Qc/Vrymtai9X9M6AMqfcD", "https://", "s3.amazonaws.com", true, true, organization)));
             List<Prefix> prefixes = new ArrayList<>();
@@ -87,10 +88,6 @@ public class HisApplication {
             permissions.add(new Permission("Invoices", "Invoices", "dashboard/invoice", true));
             permissions.add(new Permission("Medical Services", "Medical Services", "/dashboard/setting/medicalServices", true));
             permissions.add(new Permission("Open/Close Day", "Open/Close Day", "dashboard/ocDay", true));
-            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
-            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
-            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
-            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
             permissions.add(new Permission("Patient", "patient", "/dashboard/patient/manage", true));
             permissions.add(new Permission("Payments", "Payments", "/dashboard/payment", true));
             permissions.add(new Permission("Refunds", "Refunds", "/dashboard/refund", true));
@@ -104,7 +101,7 @@ public class HisApplication {
             permissionRepository.save(permissions);
 
             List<Role> roles = new ArrayList<>();
-            roles.add(new Role(UserTypeEnum.ADMIN.name(), "admin role", true));
+            roles.add(new Role(UserTypeEnum.MANAGER.name(), "manager role", true));
             roles.add(new Role(UserTypeEnum.DOCTOR.name(), "doctor role", true));
             roles.add(new Role(UserTypeEnum.NURSE.name(), "nurse role", true));
             roles.add(new Role(UserTypeEnum.RECEPTIONIST.name(), "receptionist role", true));
@@ -119,6 +116,10 @@ public class HisApplication {
             rolePermissionRepository.save(rolePermissions);
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+            Department department = new Department("Gynacology","Gynacology department for Birth Cases");
+            department.setActive(true);
+            departmentRepository.save(department);
 
             User admin = new User("admin", UserTypeEnum.ADMIN.name(), encoder.encode("admin"), true);
             User doctorU = new User("doctor", UserTypeEnum.DOCTOR.name(), encoder.encode("doctor"), true);
@@ -145,6 +146,13 @@ public class HisApplication {
             doctor.setGender(GenderTypeEnum.MALE.name());
             doctor.setProfileId("P-10002");
             doctor.setUser(doctorU);
+            doctor.setEmail("waqaskamran11@gmail.com");
+            doctor.setLastName("Waqas");
+            doctor.setHomePhone("00963007876332");
+            doctor.setCellPhone("00963007876332");
+            doctor.setAddress("Sadar cantt Lahore");
+            doctor.setCheckUpInterval(20L);
+            doctor.setDepartment(department);
             doctorRepository.save(doctor);
 
 
@@ -156,7 +164,6 @@ public class HisApplication {
             organizationRepository.saveAndFlush(organization);
         }
     }
-*/
 }
 /**
  * @author Irfan Nasim

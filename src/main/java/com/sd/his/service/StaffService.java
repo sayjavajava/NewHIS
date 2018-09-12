@@ -1007,7 +1007,7 @@ public class StaffService {
         if (userType.equalsIgnoreCase("DOCTOR")) {
             Doctor doctor = doctorRepository.findByUser(user);
             branchDoctorRepository.deleteAllByDoctor(doctor);
-        //    userRoleRepository.deleteAllByUser(user);
+            //    userRoleRepository.deleteAllByUser(user);
             dutyShiftRepository.deleteAllByDoctor(doctor);
             nurseWithDoctorRepository.deleteAllByDoctor(doctor);
             userRepository.delete(user);
