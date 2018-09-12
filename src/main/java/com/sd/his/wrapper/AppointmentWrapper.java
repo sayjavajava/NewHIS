@@ -86,6 +86,7 @@ public class AppointmentWrapper {
     private Date dateOfBirth;
 
     private Double receivedAmount;
+    private Double patientAdvanceDeposit;
 
 
     public AppointmentWrapper() {
@@ -607,5 +608,13 @@ public class AppointmentWrapper {
 
     public void setReceivedAmount(Double receivedAmount) {
         this.receivedAmount = receivedAmount;
+    }
+
+    public Double getPatientAdvanceDeposit() {
+        return patientAdvanceDeposit;
+    }
+
+    public void setPatientAdvanceDeposit(Double patientAdvanceDeposit) {
+        this.patientAdvanceDeposit = patientAdvanceDeposit;
     }
 }

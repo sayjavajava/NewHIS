@@ -57,9 +57,10 @@ public class PatientInvoiceService {
             invoice.setInvoiceId(hisUtilService.getPrefixId(ModuleEnum.INVOICE));
             invoice.setCreatedOn(new Date());
             invoice.setUpdatedOn(new Date());
+            invoice.setPaidAmount(0.0);
             invoice.setStatus(InvoiceStatusEnum.PENDING.toString());
 
-    //        patientInvoiceRepository.save(invoice);
+            patientInvoiceRepository.save(invoice);
         }
 
         List<Long> ids = createInvoiceRequest.stream().filter(x->x.getId()!=null).map(PatientInvoiceRequestWrapper::getId).collect(Collectors.toList());
@@ -115,15 +116,26 @@ public class PatientInvoiceService {
 
         if(invoice != null)
         {
-            double receivedAmount = invoice.getPaidAmount() + paymentRequest.getPaidAmount();
+            double advanceCredit= 0.00;
+            if(paymentRequest.getUseAdvancedBal()){
+                advanceCredit = paymentRequest.getPatientAdvanceDeposit();
+            }
+        //  double receivedAmount = (invoice.getPaidAmount()== null? 0.00 : invoice.getPaidAmount()) + paymentRequest.getPaidAmount();
+            double receivedAmount = (invoice.getPaidAmount()== null? 0.00 : invoice.getPaidAmount()) + paymentRequest.getPaidAmount() + advanceCredit;
 
             if(receivedAmount >= invoice.getInvoiceAmount())
             {
                 invoice.setStatus(InvoiceStatusEnum.CLOSE.toString());
-                double advanceDeposit = receivedAmount -invoice.getInvoiceAmount();
+                double advanceDeposit = receivedAmount - invoice.getInvoiceAmount();
 
                 Patient patient = patientRepository.findOne(invoice.getPatient().getId());
-                patient.setAdvanceBalance(patient.getAdvanceBalance() + advanceDeposit);
+        //        patient.setAdvanceBalance(patient.getAdvanceBalance()== null? 0.00 : (patient.getAdvanceBalance() + advanceDeposit));
+                patient.setAdvanceBalance(advanceDeposit);
+                patientRepository.save(patient);
+                receivedAmount = invoice.getInvoiceAmount();
+            }else if(paymentRequest.getUseAdvancedBal() && paymentRequest.getPatientAdvanceDeposit() > 0){
+                Patient patient = patientRepository.findOne(invoice.getPatient().getId());
+                patient.setAdvanceBalance(0.0);
                 patientRepository.save(patient);
             }
 
@@ -135,13 +147,16 @@ public class PatientInvoiceService {
             payment.setCreatedOn(new Date());
             payment.setUpdatedOn(new Date());
             payment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));
-            payment.setPaymentAmount(paymentRequest.getPaidAmount());
+
+    //      payment.setPaymentAmount(paymentRequest.getPaidAmount());
+            payment.setPaymentAmount((paymentRequest.getPaidAmount()+ advanceCredit));
             paymentRepository.save(payment);
 
             PatientInvoicePayment patientInvoicePayment = new PatientInvoicePayment();
             patientInvoicePayment.setCreatedOn(new Date());
             patientInvoicePayment.setUpdatedOn(new Date());
-            patientInvoicePayment.setPaymentAmount(paymentRequest.getPaidAmount());
+    //      patientInvoicePayment.setPaymentAmount(paymentRequest.getPaidAmount()>=invoice.getInvoiceAmount()? invoice.getInvoiceAmount() : paymentRequest.getPaidAmount());
+            patientInvoicePayment.setPaymentAmount((paymentRequest.getPaidAmount()+ advanceCredit) >= invoice.getInvoiceAmount()? invoice.getInvoiceAmount() : paymentRequest.getPaidAmount()+advanceCredit);
             patientInvoicePayment.setInvoice(invoice);
             patientInvoicePayment.setPayment(payment);
             patientInvoicePayment.setPatient(invoice.getPatient());

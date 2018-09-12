@@ -230,7 +230,14 @@ public class AppointmentAPI {
                 logger.info("Appointment created successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+            }else{
+             response.setResponseMessage(messageBundle.getString("appointment.already.exist"));
+             response.setResponseCode(ResponseEnum.APPT_ALREADY_EXISTS.getValue());
+             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+             logger.info("Appointment Already Exists...");
+
+             return new ResponseEntity<>(response, HttpStatus.OK);
+         }
 
         } catch (Exception ex) {
             logger.error("Appointment Creation Failed.", ex.fillInStackTrace());
@@ -239,7 +246,7 @@ public class AppointmentAPI {
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
+       // return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

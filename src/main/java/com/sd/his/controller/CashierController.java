@@ -103,6 +103,7 @@ public class CashierController {
             Invoice invoice = patientInvoiceService.getInvoiceById(id);
             AppointmentWrapper dbAppointment = this.appointmentService.findAppointmentById(invoice.getAppointment().getId());    // this.appointmentService.findById(id);
             dbAppointment.setReceivedAmount(invoice.getPaidAmount());
+            dbAppointment.setPatientAdvanceDeposit(invoice.getPatient().getAdvanceBalance());
 
             if (HISCoreUtil.isValidObject(dbAppointment)) {
                 response.setResponseData(dbAppointment);
@@ -151,7 +152,7 @@ public class CashierController {
 
         try
         {
-            if(paymentRequestWrapper.getPaidAmount()>0){
+            if(paymentRequestWrapper.getPaidAmount()>0 || (paymentRequestWrapper.getUseAdvancedBal() && paymentRequestWrapper.getPatientAdvanceDeposit() > 0)){
                 patientInvoiceService.savePayment(paymentRequestWrapper);
             }
 
