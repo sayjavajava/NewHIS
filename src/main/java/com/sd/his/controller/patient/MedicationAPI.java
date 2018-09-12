@@ -113,6 +113,7 @@ public class MedicationAPI {
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getPaginatedMedication(HttpServletRequest request,
                                                     @PathVariable("page") int page,
+                                                    @RequestParam("selectedPatientId") String selectedPatientId,
                                                     @RequestParam(value = "pageSize",
                                                             required = false, defaultValue = "10") int pageSize) {
 
@@ -122,8 +123,8 @@ public class MedicationAPI {
         try {
             logger.error("getPaginatedMedication -  fetching from DB");
             Pageable pageable = new PageRequest(page, pageSize);
-            List<MedicationWrapper> medicationWrappers = this.medicationService.getPaginatedMedications(pageable);
-            int medicationWrappersCount = this.medicationService.countPaginatedMedications();
+            List<MedicationWrapper> medicationWrappers = this.medicationService.getPaginatedMedications(pageable,Long.valueOf(selectedPatientId));
+            int medicationWrappersCount = this.medicationService.countPaginatedMedications(Long.valueOf(selectedPatientId));
 
             logger.error("getPaginatedMedication - fetched successfully");
 

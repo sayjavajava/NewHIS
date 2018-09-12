@@ -78,13 +78,12 @@ public class AllergyService {
         return this.allergyRepository.getAllergyById(allergyId);
     }
 
-    public List<AllergyWrapper> getPaginatedAllergies(int page,int pageSize) {
-        Pageable pageable = new PageRequest(page, pageSize);
-        return this.allergyRepository.getPaginatedAllergies(pageable);
+    public List<AllergyWrapper> getPaginatedAllergies(Pageable pageable,Long patientId) {
+        return this.allergyRepository.getPaginatedAllergies(pageable,patientId);
     }
 
-    public int countPaginatedAllergies() {
-        return this.allergyRepository.findAll().size();
+    public int countPaginatedAllergies(Long patientId) {
+        return this.allergyRepository.countAllByPatient_Id(patientId);
     }
 
     public List<AllergyWrapper> getAllAllergies() {
