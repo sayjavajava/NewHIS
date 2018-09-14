@@ -325,7 +325,7 @@ public class  PatientService {
         patientWrapper.setSelectedDoctor(patient.getPrimaryDoctor().getId());
         patientWrapper.setPrimaryDoctorFirstName(patient.getPrimaryDoctor().getFirstName());
         patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
-        patientWrapper.setSmokingStatuses(patient.getSmokingStatusList());
+        patientWrapper.setSmokingStatuses( patient.getSmokingStatusList()!=null ? patient.getSmokingStatusList() : null);
         this.populateRaces(patientWrapper, patient);
         this.populateAppointments(patientWrapper,patient);
         this.populateInsurance(patientWrapper, patient);
