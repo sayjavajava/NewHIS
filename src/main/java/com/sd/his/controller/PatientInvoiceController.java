@@ -130,21 +130,21 @@ public class PatientInvoiceController {
     public ResponseEntity<?> generateInvoiceOnCheckIn(HttpServletRequest request, @PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("appointment.not-found"));
-        response.setResponseCode(ResponseEnum.APPT_NOT_FOUND_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("invoice.status.not.found"));
+        response.setResponseCode(ResponseEnum.INVOICE_NOT_GENERATED.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
             patientInvoiceService.generateInvoiceOnCheckIn(id);
-            response.setResponseCode(ResponseEnum.APPT_FOUND_SUCCESS.getValue());
-            response.setResponseMessage(messageBundle.getString("appointment.found"));
+            response.setResponseCode(ResponseEnum.INVOICE_GENERATED_SUCCESS.getValue());
+            response.setResponseMessage(messageBundle.getString("invoice.status.found"));
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            logger.info("Appointment Found successfully...");
+            logger.info("Invoice generate successfully...");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("Appointment Not Found", ex.fillInStackTrace());
+            logger.error("Invoive Not Found", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());

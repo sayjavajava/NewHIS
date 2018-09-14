@@ -228,7 +228,7 @@ public class AppointmentService {
         if(appointmentWrapper.getPatientId() != null){
             patient = patientRepository.findOne(appointmentWrapper.getPatientId());
             alreadyExistAppointment.setPatient(patient);}
-        appointmentRepository.save(alreadyExistAppointment);
+            appointmentRepository.save(alreadyExistAppointment);
         return alreadyExistAppointment;
     }
 

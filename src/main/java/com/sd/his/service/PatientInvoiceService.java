@@ -201,7 +201,7 @@ public class PatientInvoiceService {
             double discountAmount = 0.00;
             double ivoiceTotal =0.00;
 
-            MedicalService medicalService =medicalServiceRepository.findOne(id); // TO DO  --- take id from appointment
+            MedicalService medicalService =medicalServiceRepository.findOne(appointment.getMedicalService().getId()); // TO DO  --- take id from appointment
             if(medicalService!=null){
                 InvoiceItems invItems = new InvoiceItems();
                 invItems.setCode(medicalService.getCode());
