@@ -104,6 +104,10 @@ public class Appointment extends BaseEntity implements Serializable {
     @JoinColumn(name = "DOCTOR_ID")
     private Doctor doctor;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEDICAL_SERVICE")
+    private MedicalService medicalService;
+
     @Column(name = "IS_RECURRING")
     private Boolean recurring;
 
@@ -123,6 +127,14 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "LAST_APPOINTMENT_ON")
     private Date lastAppointmentOn;
 
+
+    public MedicalService getMedicalService() {
+        return medicalService;
+    }
+
+    public void setMedicalService(MedicalService medicalService) {
+        this.medicalService = medicalService;
+    }
 
     public List<LabOrder> getLabOrders() {
         return labOrders;

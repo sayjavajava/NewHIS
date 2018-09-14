@@ -84,7 +84,8 @@ public class AppointmentWrapper {
     private Date compareDate;
     private String newPatient;
     private Date dateOfBirth;
-
+    private Long serviceId;
+    private String serviceName;
     private Double receivedAmount;
     private Double patientAdvanceDeposit;
 
@@ -102,7 +103,7 @@ public class AppointmentWrapper {
     public AppointmentWrapper(Long id,String appointmentId, String title, String notes, String reason, String color, AppointmentStatusTypeEnum status, String appointmentType, Integer duration,
                               Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
                               Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, Long patientId,
-                              Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId,Date followUpDate
+                              Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId,Date followUpDate,Long serviceId,String serviceName
     ) {
         //Long patientId,Long branchId, String branchName, Long roomId,
         this.id = id;
@@ -138,6 +139,8 @@ public class AppointmentWrapper {
         this.branchName = branchName;
         this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToString(scheduleDate);
         this.followUpDate =HISCoreUtil.convertDateAndTimeToString(followUpDate);
+        this.serviceId=serviceId;
+        this.serviceName=serviceName;
     }
 
 
@@ -187,6 +190,22 @@ public class AppointmentWrapper {
                 '}';
     }
 
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public Long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
+    }
 
     public String getAppointmentId() {
         return appointmentId;
