@@ -146,16 +146,18 @@ public class  PatientService {
     }
 
     private void populateInsurance(PatientWrapper patientWrapper, Patient patient) {
-        patientWrapper.setCompany(patient.getInsurance().getCompany());
-        patientWrapper.setInsuranceId(patient.getInsurance().getInsuranceID());
-        patientWrapper.setGroupNumber(patient.getInsurance().getGroupNumber());
-        patientWrapper.setPlanName(patient.getInsurance().getPlanName());
-        patientWrapper.setPlanType(patient.getInsurance().getPlanType());
-        if ( patient.getInsurance().getCardIssuedDate()!=null )
-            patientWrapper.setCardIssuedDate(patient.getInsurance().getCardIssuedDate().toString());
-        if ( patient.getInsurance().getCardExpiryDate()!=null )
-            patientWrapper.setCardExpiryDate(patient.getInsurance().getCardExpiryDate().toString());
-        patientWrapper.setPrimaryInsuranceNotes(patientWrapper.getPrimaryInsuranceNotes());
+        if(patient.getInsurance()!=null) {
+            patientWrapper.setCompany(patient.getInsurance().getCompany());
+            patientWrapper.setInsuranceId(patient.getInsurance().getInsuranceID());
+            patientWrapper.setGroupNumber(patient.getInsurance().getGroupNumber());
+            patientWrapper.setPlanName(patient.getInsurance().getPlanName());
+            patientWrapper.setPlanType(patient.getInsurance().getPlanType());
+            if (patient.getInsurance().getCardIssuedDate() != null)
+                patientWrapper.setCardIssuedDate(patient.getInsurance().getCardIssuedDate().toString());
+            if (patient.getInsurance().getCardExpiryDate() != null)
+                patientWrapper.setCardExpiryDate(patient.getInsurance().getCardExpiryDate().toString());
+            patientWrapper.setPrimaryInsuranceNotes(patientWrapper.getPrimaryInsuranceNotes());
+        }
     }
 
     public String savePatient(PatientWrapper patientWrapper) throws Exception {
