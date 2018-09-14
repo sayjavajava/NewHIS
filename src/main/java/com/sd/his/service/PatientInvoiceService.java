@@ -30,12 +30,15 @@ public class PatientInvoiceService {
     @Autowired
     HISUtilService hisUtilService;
     @Autowired
-    InvoiceItemsRepository invoiceItemsRepository;
+    private InvoiceItemsRepository invoiceItemsRepository;
 
     @Autowired
-    PaymentRepository paymentRepository;
+    private PaymentRepository paymentRepository;
     @Autowired
-    PatientInvoicePaymentRepository patientInvoicePaymentRepository;
+    private PatientInvoicePaymentRepository patientInvoicePaymentRepository;
+
+    @Autowired
+    private MedicalServiceRepository medicalServiceRepository;
 
 
     public Invoice getInvoiceById(Long id){
@@ -173,6 +176,55 @@ public class PatientInvoiceService {
 
     public List<InvoiceItemsResponseWrapper> getInvoiceItemsById(long id){
         return invoiceItemsRepository.findAllByInvoiceId(patientInvoiceRepository.findByAppointmentId(id)!=null ? patientInvoiceRepository.findByAppointmentId(id).getId() : null);
+    }
+
+
+    public void generateInvoiceOnCheckIn(long id)
+    {
+        Appointment appointment = appointmentRepository.findOne(id);
+        Invoice invoice = patientInvoiceRepository.findByAppointmentId(appointment.getId());
+        if(invoice == null)
+        {
+            invoice = new Invoice();
+            invoice.setAppointment(appointment);
+            invoice.setPatient(appointment.getPatient());
+            invoice.setInvoiceId(hisUtilService.getPrefixId(ModuleEnum.INVOICE));
+            invoice.setCreatedOn(new Date());
+            invoice.setUpdatedOn(new Date());
+            invoice.setPaidAmount(0.0);
+            invoice.setStatus(InvoiceStatusEnum.PENDING.toString());
+
+            patientInvoiceRepository.save(invoice);
+
+            double amount =0.00;
+            double taxAmount =0.00;
+            double discountAmount = 0.00;
+            double ivoiceTotal =0.00;
+
+            MedicalService medicalService =medicalServiceRepository.findOne(id); // TO DO  --- take id from appointment
+            if(medicalService!=null){
+                InvoiceItems invItems = new InvoiceItems();
+                invItems.setCode(medicalService.getCode());
+                invItems.setDescription(medicalService.getDescription());
+                invItems.setDiscountRate(0.0);
+                invItems.setTaxRate(medicalService.getTax().getRate());
+                invItems.setQuantity(1);  // TO DO
+                invItems.setServiceName(medicalService.getName());
+                invItems.setUnitFee(medicalService.getFee());
+                invItems.setCreatedOn(new Date());
+                invItems.setUpdatedOn(new Date());
+                invItems.setInvoice(invoice);
+                invoiceItemsRepository.save(invItems);
+
+                amount = invItems.getQuantity() * invItems.getUnitFee();
+                taxAmount = (invItems.getQuantity() * invItems.getUnitFee()) * invItems.getTaxRate()/100;
+                discountAmount =(invItems.getQuantity() * invItems.getUnitFee()) * invItems.getDiscountRate()/100;
+                ivoiceTotal += amount + taxAmount - discountAmount;
+
+                invoice.setInvoiceAmount(ivoiceTotal);
+                patientInvoiceRepository.save(invoice);
+            }
+        }
     }
 
     public List<InvoiceResponseWrapper> getAllInvoice(){
