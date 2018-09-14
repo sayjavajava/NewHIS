@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
+import java.util.Optional;
 
 /*
  * @author    : irfan nasim
@@ -33,20 +34,46 @@ import java.time.temporal.ChronoField;
 public class Test {
 
     public static void main(String ...args){
-
+     User user =new User("waqas","12312312");
      System.out.println(new BCryptPasswordEncoder().encode("Password*1"));
 
-        LocalDateTime date = LocalDateTime.now();
+     String val =Optional.ofNullable(user)
+             .flatMap(User::getAddress).flatMap(Address::getCountry)
+                      .map(Country::getIsCode).
+                       orElse("no");
+     System.out.println("value our:"+ val);
+    }
+}
+    class User{
 
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm a");
-            String dateText = date.format(formatter);
-            System.out.println(dateText);
-        } catch (DateTimeException exc) {
-            System.out.printf("%s can't be formatted!%n", date);
-            throw exc;
+    User(String name, String roll){
+
+    }
+     private Address address;
+
+        public Optional<Address> getAddress() {
+            return Optional.ofNullable(address);
         }
+
+    }
+    class Address{
+        private Country country;
+
+        public Optional<Country> getCountry() {
+            return Optional.ofNullable(country);
+        }
+
+    }
+    class Country{
+      private String isCode;
+
+        public String getIsCode() {
+            return isCode;
+        }
+
     }
 
-}
+
+
+
 
