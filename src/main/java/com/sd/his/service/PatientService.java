@@ -10,11 +10,6 @@ import com.sd.his.repository.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.AppointmentWrapper;
-import com.sd.his.wrapper.LabOrderWrapper;
-import com.sd.his.wrapper.PatientWrapper;
-import com.sd.his.wrapper.RaceWrapper;
-import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,9 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -168,6 +161,7 @@ public class  PatientService {
                 patient = new Patient();
         }else{
             patient = new Patient();
+            patient.setAdvanceBalance(0.0);
         }
 
 

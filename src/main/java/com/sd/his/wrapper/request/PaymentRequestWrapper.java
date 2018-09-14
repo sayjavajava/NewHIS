@@ -9,6 +9,9 @@ public class PaymentRequestWrapper {
     Double invoiceAmount;
     String status;
 
+    Boolean useAdvancedBal;
+    Double  patientAdvanceDeposit;
+
     public PaymentRequestWrapper() {
     }
 
@@ -50,5 +53,21 @@ public class PaymentRequestWrapper {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Boolean getUseAdvancedBal() {
+        return useAdvancedBal;
+    }
+
+    public void setUseAdvancedBal(Boolean useAdvancedBal) {
+        this.useAdvancedBal = useAdvancedBal;
+    }
+
+    public Double getPatientAdvanceDeposit() {
+        return patientAdvanceDeposit;
+    }
+
+    public void setPatientAdvanceDeposit(Double patientAdvanceDeposit) {
+        this.patientAdvanceDeposit = patientAdvanceDeposit;
     }
 }

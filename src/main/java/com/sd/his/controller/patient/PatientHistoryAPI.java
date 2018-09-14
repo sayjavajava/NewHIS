@@ -12,16 +12,19 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 /*
  * @author    : Muhammad Jamal
@@ -295,6 +298,7 @@ public class PatientHistoryAPI {
     @RequestMapping(value = "/problem/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getPaginatedProblem(HttpServletRequest request,
                                                  @PathVariable("page") int page,
+                                                 @RequestParam("patientId") String patientId,
                                                  @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
 
         logger.error("getPaginatedProblem API initiated");
@@ -302,18 +306,23 @@ public class PatientHistoryAPI {
 
         try {
             logger.error("getPaginatedProblem -  fetching from DB");
-            List<ProblemWrapper> patientProblems = this.problemService.findPaginatedProblem(page, pageSize);
-            int patientProblemCount = problemService.countPaginatedProblem();
+            Pageable pageable = new PageRequest(page, pageSize);
+            Page<ProblemWrapper> patientProblems = this.problemService.findPaginatedProblem(pageable, Long.valueOf(patientId));
+            List<ProblemWrapper> list = new ArrayList<>();
+            int count = ((int) (patientProblems.getTotalElements()));
 
             logger.error("getPaginatedProblem - fetched successfully");
 
-            if (!HISCoreUtil.isListEmpty(patientProblems)) {
+            if (patientProblems != null) {
+                for (ProblemWrapper problemWrapper : patientProblems) {
+                    list.add(new ProblemWrapper(problemWrapper));
+                }
                 Integer nextPage, prePage, currPage;
                 int[] pages;
 
-                if (patientProblemCount > pageSize) {
-                    int remainder = patientProblemCount % pageSize;
-                    int totalPages = patientProblemCount / pageSize;
+                if (count > pageSize) {
+                    int remainder = count % pageSize;
+                    int totalPages = count / pageSize;
                     if (remainder > 0) {
                         totalPages = totalPages + 1;
                     }
@@ -335,7 +344,7 @@ public class PatientHistoryAPI {
                 returnValues.put("prePage", prePage);
                 returnValues.put("currPage", currPage);
                 returnValues.put("pages", pages);
-                returnValues.put("data", patientProblems);
+                returnValues.put("data", list);
 
                 response.setResponseMessage(messageBundle.getString("patient.problem.fetch.success"));
                 response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_FETCHED_SUCCESS.getValue());
@@ -355,5 +364,84 @@ public class PatientHistoryAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiOperation(httpMethod = "GET", value = "GET Paginated Problems",
+            notes = "This method will return Paginated  Problems",
+            produces = "application/json", nickname = "GET Paginated  Problems",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated  Problems fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/problem/status/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> getPaginatedProblemByStatusAndPatientId(HttpServletRequest request,
+                                                                     @PathVariable("page") int page,
+                                                                     @RequestParam("status") String status,
+                                                                     @RequestParam("selectedPatientId") String selectedPatientId,
+                                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+
+        logger.error("getPaginatedProblemByStatus API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+
+        try {
+            logger.error("getPaginatedProblemByStatus -  fetching from DB");
+            Pageable pageable = new PageRequest(page, pageSize);
+            Page<ProblemWrapper> patientProblems = this.problemService.getProblemsByStatusAndPatientId(pageable, status, Long.valueOf(selectedPatientId));
+            List<ProblemWrapper> list = new ArrayList<>();
+            int count = ((int) (patientProblems.getTotalElements()));
+
+            logger.error("getPaginatedProblemByStatus - fetched successfully");
+
+            if (patientProblems != null) {
+                for (ProblemWrapper problemWrapper : patientProblems) {
+                    list.add(new ProblemWrapper(problemWrapper));
+                }
+
+                Integer nextPage, prePage, currPage;
+                int[] pages;
+
+                if (count > pageSize) {
+                    int remainder = count % pageSize;
+                    int totalPages = count / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = page;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);
+                returnValues.put("data", list);
+
+                response.setResponseMessage(messageBundle.getString("patient.problem.fetch.success"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_FETCHED_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+
+                logger.error("getPaginatedProblemByStatus API successfully executed.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            logger.error("getPaginatedProblemByStatus exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }

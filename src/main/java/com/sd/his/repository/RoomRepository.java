@@ -1,9 +1,12 @@
 package com.sd.his.repository;
 
+import com.sd.his.model.Branch;
 import com.sd.his.model.BranchDoctor;
 import com.sd.his.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /*
  * @author    : waqas kamran
@@ -30,6 +33,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-
+void deleteAllByBranch(Branch branchList);
 }
 

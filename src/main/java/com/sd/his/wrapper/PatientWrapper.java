@@ -77,7 +77,7 @@ public class PatientWrapper {
     List<AppointmentWrapper> pastAppointments;
 
     ////////////Smoking Status
-    private List<SmokingStatus> smokingStatuses;
+  //  private List<SmokingStatus> smokingStatuses;
 
     public PatientWrapper() {
     }
@@ -587,11 +587,11 @@ public class PatientWrapper {
         return patientId;
     }
 
-    public List<SmokingStatus> getSmokingStatus() {
+   /* public List<SmokingStatus> getSmokingStatus() {
         return smokingStatuses;
     }
 
     public void setSmokingStatuses(List<SmokingStatus> smokingStatuses) {
         this.smokingStatuses = smokingStatuses;
-    }
+    }*/
 }

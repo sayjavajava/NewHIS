@@ -1,5 +1,11 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
+import org.codehaus.jackson.map.Serializers;
+
+import java.util.Date;
+
 /**
  * Created by jamal on 8/13/2018.
  *
@@ -20,16 +26,16 @@ package com.sd.his.wrapper;
  * SolutionDots,
  * All rights reserved.
  */
-public class ProblemWrapper {
+public class ProblemWrapper extends BaseWrapper {
 
-    private Long id;
     private long appointmentId = -1;
+
     private long selectedCodeId = -1;
     private String codeName;
-    private String codeTitle;
-    private long selectedICDVersionId = -1;
 
+    private long selectedICDVersionId = -1;
     private String versionName;
+
     private String dateDiagnosis;
     private String note;
     private String status = "ACTIVE";
@@ -38,14 +44,40 @@ public class ProblemWrapper {
     public ProblemWrapper() {
     }
 
-    public Long getId() {
-        return id;
+    public ProblemWrapper(ProblemWrapper problemWrapper) {
+        super(problemWrapper.getId(),
+                problemWrapper.getCreatedOn(),
+                problemWrapper.getUpdatedOn());
+        this.appointmentId = problemWrapper.getAppointmentId();
+        this.selectedCodeId = problemWrapper.getSelectedCodeId();
+        this.codeName = problemWrapper.getCodeName();
+        this.selectedICDVersionId = problemWrapper.getSelectedICDVersionId();
+        this.versionName = problemWrapper.getVersionName();
+        this.dateDiagnosis = problemWrapper.getDateDiagnosis();
+        this.note = problemWrapper.getNote();
+        this.status = problemWrapper.getStatus();
+        this.patientId = problemWrapper.getPatientId();
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public ProblemWrapper(Long id, Date createdOn, Date updatedOn,
+                          long appointmentId,
+                          long selectedCodeId, String codeName,
+                          long selectedICDVersionId, String versionName,
+                          Date dateDiagnosis, String note, String status,
+                          long patientId) {
+        super(id,
+                HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM),
+                HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM));
+        this.appointmentId = appointmentId;
+        this.selectedCodeId = selectedCodeId;
+        this.codeName = codeName;
+        this.selectedICDVersionId = selectedICDVersionId;
+        this.versionName = versionName;
+        this.dateDiagnosis = HISCoreUtil.convertDateToString(dateDiagnosis, HISConstants.DATE_FORMATE_ONE);
+        this.note = note;
+        this.status = status;
+        this.patientId = patientId;
     }
-
 
     public String getCodeName() {
         return codeName;
@@ -88,10 +120,6 @@ public class ProblemWrapper {
         this.status = status;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public long getSelectedCodeId() {
         return selectedCodeId;
     }
@@ -106,14 +134,6 @@ public class ProblemWrapper {
 
     public void setSelectedICDVersionId(long selectedICDVersionId) {
         this.selectedICDVersionId = selectedICDVersionId;
-    }
-
-    public String getCodeTitle() {
-        return codeTitle;
-    }
-
-    public void setCodeTitle(String codeTitle) {
-        this.codeTitle = codeTitle;
     }
 
     public long getPatientId() {
@@ -131,4 +151,5 @@ public class ProblemWrapper {
     public long getAppointmentId() {
         return appointmentId;
     }
+
 }

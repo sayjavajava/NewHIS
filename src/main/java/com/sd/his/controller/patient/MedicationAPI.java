@@ -4,6 +4,7 @@ import com.sd.his.controller.AppointmentAPI;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.service.MedicationService;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.DocumentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.MedicationWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -112,6 +113,7 @@ public class MedicationAPI {
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getPaginatedMedication(HttpServletRequest request,
                                                     @PathVariable("page") int page,
+                                                    @RequestParam("selectedPatientId") String selectedPatientId,
                                                     @RequestParam(value = "pageSize",
                                                             required = false, defaultValue = "10") int pageSize) {
 
@@ -121,8 +123,8 @@ public class MedicationAPI {
         try {
             logger.error("getPaginatedMedication -  fetching from DB");
             Pageable pageable = new PageRequest(page, pageSize);
-            List<MedicationWrapper> medicationWrappers = this.medicationService.getPaginatedMedications(pageable);
-            int medicationWrappersCount = this.medicationService.countPaginatedMedications();
+            List<MedicationWrapper> medicationWrappers = this.medicationService.getPaginatedMedications(pageable,Long.valueOf(selectedPatientId));
+            int medicationWrappersCount = this.medicationService.countPaginatedMedications(Long.valueOf(selectedPatientId));
 
             logger.error("getPaginatedMedication - fetched successfully");
 
@@ -332,6 +334,81 @@ public class MedicationAPI {
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "GET Paginated Problems",
+            notes = "This method will return Paginated  Problems",
+            produces = "application/json", nickname = "GET Paginated  Problems",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated  Problems fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/status/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> getPaginatedMedicationsByStatusAndPatientId(HttpServletRequest request,
+                                                                     @PathVariable("page") int page,
+                                                                     @RequestParam("status") String status,
+                                                                     @RequestParam("selectedPatientId") String selectedPatientId,
+                                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+
+        logger.error("getPaginatedMedicationsByStatusAndPatientId API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+
+        try {
+            logger.error("getPaginatedMedicationsByStatusAndPatientId -  fetching from DB");
+            Pageable pageable = new PageRequest(page,pageSize);
+            List<MedicationWrapper> m = this.medicationService.getPaginatedMedicationsByStatusAndPatientId(pageable,status,Long.valueOf(selectedPatientId));
+            int count = medicationService.countPaginatedMedicationsByStatusAndPatientId(status,Long.valueOf(selectedPatientId));
+
+            logger.error("getPaginatedMedicationsByStatusAndPatientId - fetched successfully");
+
+            if (!HISCoreUtil.isListEmpty(m)) {
+                Integer nextPage, prePage, currPage;
+                int[] pages;
+
+                if (count > pageSize) {
+                    int remainder = count % pageSize;
+                    int totalPages = count / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = page;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);
+                returnValues.put("data", m);
+
+                response.setResponseMessage(messageBundle.getString("medication.paginated.success"));
+                response.setResponseCode(ResponseEnum.MEDICATION_PAGINATED_STATUS_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+
+                logger.error("getPaginatedMedicationsByStatusAndPatientId API successfully executed.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            logger.error("getPaginatedMedicationsByStatusAndPatientId exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

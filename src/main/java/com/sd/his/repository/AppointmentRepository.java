@@ -11,8 +11,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -63,8 +66,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "FROM Appointment a WHERE a.patient.id =?1 ")
     List<AppointmentWrapper> findAllAppointmentsByPatient(Long patientId);
 
-    List<Appointment> findByDoctorAndBranch(Doctor doctor, Branch branch);
-
     @Query("SELECT NEW  com.sd.his.wrapper.response.DashboardResponseWrapper(a.id,a.appointmentId,a.patient.id,a.patient.firstName,a.patient.lastName,a.schdeulledDate ,a.doctor.firstName,a.doctor.lastName,a.branch.name,a.reason,a.schdeulledDate,a.room.roomName, a.status, a.branch.id,a.doctor.id,a.room.id )" +
             "FROM Appointment a")
     List<DashboardResponseWrapper> findAllAppointmentsByPatientAndDoctor();
@@ -75,19 +76,17 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "FROM Appointment a WHERE a.id =?1 ")
     AppointmentWrapper findAllAppointmentById(Long apptId);
 
-    Appointment findByAppointmentId(String id);
-
-
-  //  DashboardResponseWrapper(Long appointmentId,String patientFirstName,String patientLastName,String inTime, String doctorFirstName,String doctorLastName, String branch, String group, String scheduleAt, String examRoom, String status, Long branchId, Long doctorId, Long roomId)
-
-
-
-
     @Query("SELECT NEW com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.status, " +
             " a.schdeulledDate,  " +
             " a.patient.firstName,a.patient.lastName,a.doctor.firstName,a.doctor.lastName, a.patient.id) " +
             "FROM Appointment a WHERE a.id =?1 ")
     AppointmentWrapper findAppointmentById(Long apptId);
+
+
+    //@Query("SELECT cd FROM Appointment cd WHERE cd.schdeulledDate LIKE  CONCAT('%',:date,'%') ")
+    List<Appointment>  findBySchdeulledDateBetween(Date date1,Date date2);
+    Appointment findByAppointmentId(String id);
+    List<Appointment> findByDoctorAndBranch(Doctor doctor, Branch branch);
 
     }
 
