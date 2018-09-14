@@ -1,9 +1,13 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sd.his.utill.DateTimeUtil;
+import com.sd.his.utill.HISConstants;
+import com.sd.his.wrapper.ProblemWrapper;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Date;
 
 /*
@@ -61,6 +65,34 @@ public class Problem extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PATIENT_ID")
     private Patient patient;
+
+    public Problem() {
+    }
+
+    public Problem(ProblemWrapper problemWrapper) throws ParseException {
+        if (problemWrapper.getDateDiagnosis() != null) {
+            this.dateDiagnosis = DateTimeUtil.getDateFromString(problemWrapper.getDateDiagnosis(), HISConstants.DATE_FORMATE_THREE);
+        }
+        if (problemWrapper.getStatus() != null) {
+            this.status = problemWrapper.getStatus();
+        }
+        if (problemWrapper.getNote() != null) {
+            this.note = problemWrapper.getNote();
+        }
+    }
+
+    public Problem(Problem problem, ProblemWrapper problemWrapper) throws ParseException {
+
+        if (problemWrapper.getDateDiagnosis() != null) {
+            problem.setDateDiagnosis(DateTimeUtil.getDateFromString(problemWrapper.getDateDiagnosis(), HISConstants.DATE_FORMATE_THREE));
+        }
+        if (problemWrapper.getStatus() != null) {
+            problem.setStatus(problemWrapper.getStatus());
+        }
+        if (problemWrapper.getNote() != null) {
+            this.setNote(problemWrapper.getNote());
+        }
+    }
 
     public ICDVersion getIcdVersion() {
         return icdVersion;

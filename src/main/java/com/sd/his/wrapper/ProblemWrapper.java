@@ -1,6 +1,10 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
 import org.codehaus.jackson.map.Serializers;
+
+import java.util.Date;
 
 /**
  * Created by jamal on 8/13/2018.
@@ -28,7 +32,6 @@ public class ProblemWrapper extends BaseWrapper {
 
     private long selectedCodeId = -1;
     private String codeName;
-    private String codeTitle;
 
     private long selectedICDVersionId = -1;
     private String versionName;
@@ -39,6 +42,41 @@ public class ProblemWrapper extends BaseWrapper {
     private long patientId;
 
     public ProblemWrapper() {
+    }
+
+    public ProblemWrapper(ProblemWrapper problemWrapper) {
+        super(problemWrapper.getId(),
+                problemWrapper.getCreatedOn(),
+                problemWrapper.getUpdatedOn());
+        this.appointmentId = problemWrapper.getAppointmentId();
+        this.selectedCodeId = problemWrapper.getSelectedCodeId();
+        this.codeName = problemWrapper.getCodeName();
+        this.selectedICDVersionId = problemWrapper.getSelectedICDVersionId();
+        this.versionName = problemWrapper.getVersionName();
+        this.dateDiagnosis = problemWrapper.getDateDiagnosis();
+        this.note = problemWrapper.getNote();
+        this.status = problemWrapper.getStatus();
+        this.patientId = problemWrapper.getPatientId();
+    }
+
+    public ProblemWrapper(Long id, Date createdOn, Date updatedOn,
+                          long appointmentId,
+                          long selectedCodeId, String codeName,
+                          long selectedICDVersionId, String versionName,
+                          Date dateDiagnosis, String note, String status,
+                          long patientId) {
+        super(id,
+                HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM),
+                HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM));
+        this.appointmentId = appointmentId;
+        this.selectedCodeId = selectedCodeId;
+        this.codeName = codeName;
+        this.selectedICDVersionId = selectedICDVersionId;
+        this.versionName = versionName;
+        this.dateDiagnosis = HISCoreUtil.convertDateToString(dateDiagnosis, HISConstants.DATE_FORMATE_ONE);
+        this.note = note;
+        this.status = status;
+        this.patientId = patientId;
     }
 
     public String getCodeName() {
@@ -98,14 +136,6 @@ public class ProblemWrapper extends BaseWrapper {
         this.selectedICDVersionId = selectedICDVersionId;
     }
 
-    public String getCodeTitle() {
-        return codeTitle;
-    }
-
-    public void setCodeTitle(String codeTitle) {
-        this.codeTitle = codeTitle;
-    }
-
     public long getPatientId() {
         return patientId;
     }
@@ -121,4 +151,5 @@ public class ProblemWrapper extends BaseWrapper {
     public long getAppointmentId() {
         return appointmentId;
     }
+
 }
