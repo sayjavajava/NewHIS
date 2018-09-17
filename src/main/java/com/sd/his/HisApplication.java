@@ -68,7 +68,7 @@ public class HisApplication {
     @Transactional(rollbackOn = Throwable.class)
     public void onBootStartup(ApplicationContextEvent event) {
 
-       if(organizationRepository.findOne(1L) == null) {
+        if (organizationRepository.findOne(1L) == null) {
             Organization organization = new Organization("SolutionDots Hospital", 30L, "Asia/Karachi", 15L, "+96645484654", "+964547854", "+456498465", "https://solutiondots.com/", "General", "imran@solutiondots.net");
             organization.setBucketList(Arrays.asList(new S3Bucket("hisdev", "development bucket", "AKIAJGSNPR3WX7C3EVMA", "4enduKPgokQP43xA9B1Qc/Vrymtai9X9M6AMqfcD", "https://", "s3.amazonaws.com", true, true, organization)));
             List<Prefix> prefixes = new ArrayList<>();
@@ -82,7 +82,7 @@ public class HisApplication {
             permissions.add(new Permission("Appointment", "Appointment", "/dashboard/appointment/manage", true));
             permissions.add(new Permission("Associate Code Version", "Associate Code Version", "/dashboard/setting/codeVersion", true));
             permissions.add(new Permission("Branch", "Branch", "/dashboard/setting/branch", true));
-            permissions.add(new Permission("Code", "Code", "/dashboard/setting/Code", true));
+            permissions.add(new Permission("Code", "Code", "/dashboard/setting/code", true));
             permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
             permissions.add(new Permission("Email Template", "Email Template", "/dashboard/setting/email-template", true));
             permissions.add(new Permission("Invoices", "Invoices", "dashboard/invoice", true));
@@ -109,7 +109,7 @@ public class HisApplication {
             roleRepository.save(roles);
 
             List<RolePermission> rolePermissions = new ArrayList<>();
-            for (Permission permission:permissions){
+            for (Permission permission : permissions) {
                 rolePermissions.add(new RolePermission(roles.get(0), permission, true, true, true));
             }
 
@@ -117,7 +117,7 @@ public class HisApplication {
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-            Department department = new Department("Gynacology","Gynacology department for Birth Cases");
+            Department department = new Department("IT", "Information Technology department for HIS");
             department.setActive(true);
             departmentRepository.save(department);
 
@@ -128,13 +128,15 @@ public class HisApplication {
             User receptionist = new User("receptionist", UserTypeEnum.RECEPTIONIST.name(), encoder.encode("receptionist"), true);
             User cashier = new User("cashier", UserTypeEnum.CASHIER.name(), encoder.encode("cashier"), true);
 
-            userRepository.save(Arrays.asList(admin, doctorU,nurse,receptionist,cashier));
+            userRepository.save(Arrays.asList(admin, doctorU, nurse, receptionist, cashier));
 
             userRoleRepository.save(Arrays.asList(new UserRole(admin, roles.get(0)), new UserRole(doctorU, roles.get(1))));
 
             Manager manager = new Manager();
             manager.setDob(new Date());
-            manager.setFirstName("admin");
+            manager.setFirstName("Manager");
+            manager.setMiddleName(" IT ");
+            manager.setLastName(" HIS ");
             manager.setGender(GenderTypeEnum.MALE.name());
             manager.setProfileId("P-10001");
             manager.setUser(admin);
@@ -146,20 +148,20 @@ public class HisApplication {
             doctor.setGender(GenderTypeEnum.MALE.name());
             doctor.setProfileId("P-10002");
             doctor.setUser(doctorU);
-            doctor.setEmail("waqaskamran11@gmail.com");
-            doctor.setLastName("Waqas");
+            doctor.setEmail("doctor@gmail.com");
+            doctor.setMiddleName("Doc");
+            doctor.setLastName("Doctor");
             doctor.setHomePhone("00963007876332");
             doctor.setCellPhone("00963007876332");
-            doctor.setAddress("Sadar cantt Lahore");
+            doctor.setAddress("Siddique Center Lahore");
             doctor.setCheckUpInterval(20L);
             doctor.setDepartment(department);
             doctorRepository.save(doctor);
 
 
-
             Branch primaryBranch = new Branch("DHA Branch", 1L, "DHA Branch", "DHA Branch", "Lahore", "Pakistan", "H Block", "+9245786468", "+9284657867", "Punjab", new Date(), new Date(), "TX0564512387", true, true, 1345464797, true, true, organization);
             branchRepository.save(primaryBranch);
-            roomRepository.save(new Room("Room1",primaryBranch,true,true));
+            roomRepository.save(new Room("Room1", primaryBranch, true, true));
             branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
             organizationRepository.saveAndFlush(organization);
         }
