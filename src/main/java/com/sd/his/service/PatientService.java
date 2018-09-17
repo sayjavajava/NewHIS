@@ -10,11 +10,6 @@ import com.sd.his.repository.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.AppointmentWrapper;
-import com.sd.his.wrapper.LabOrderWrapper;
-import com.sd.his.wrapper.PatientWrapper;
-import com.sd.his.wrapper.RaceWrapper;
-import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,9 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -146,16 +139,18 @@ public class  PatientService {
     }
 
     private void populateInsurance(PatientWrapper patientWrapper, Patient patient) {
-        patientWrapper.setCompany(patient.getInsurance()!=null?patient.getInsurance().getCompany():null);
-        patientWrapper.setInsuranceId(patient.getInsurance()!=null? patient.getInsurance().getInsuranceID():null);
-        patientWrapper.setGroupNumber(patient.getInsurance() !=null ?patient.getInsurance().getGroupNumber():null);
-        patientWrapper.setPlanName(patient.getInsurance()!=null?patient.getInsurance().getPlanName():null);
-        patientWrapper.setPlanType(patient.getInsurance()!=null?patient.getInsurance().getPlanType():null);
-       /* if (patient.getInsurance().getCardIssuedDate()!=null )
-            patientWrapper.setCardIssuedDate(patient.getInsurance().getCardIssuedDate().toString());
-        if ( patient.getInsurance().getCardExpiryDate()!=null )
-            patientWrapper.setCardExpiryDate(patient.getInsurance().getCardExpiryDate().toString());*/
-        patientWrapper.setPrimaryInsuranceNotes(patientWrapper.getPrimaryInsuranceNotes());
+        if(patient.getInsurance()!=null) {
+            patientWrapper.setCompany(patient.getInsurance().getCompany());
+            patientWrapper.setInsuranceId(patient.getInsurance().getInsuranceID());
+            patientWrapper.setGroupNumber(patient.getInsurance().getGroupNumber());
+            patientWrapper.setPlanName(patient.getInsurance().getPlanName());
+            patientWrapper.setPlanType(patient.getInsurance().getPlanType());
+            if (patient.getInsurance().getCardIssuedDate() != null)
+                patientWrapper.setCardIssuedDate(patient.getInsurance().getCardIssuedDate().toString());
+            if (patient.getInsurance().getCardExpiryDate() != null)
+                patientWrapper.setCardExpiryDate(patient.getInsurance().getCardExpiryDate().toString());
+            patientWrapper.setPrimaryInsuranceNotes(patientWrapper.getPrimaryInsuranceNotes());
+        }
     }
 
     public String savePatient(PatientWrapper patientWrapper) throws Exception {
@@ -330,7 +325,7 @@ public class  PatientService {
         patientWrapper.setSelectedDoctor(patient.getPrimaryDoctor().getId());
         patientWrapper.setPrimaryDoctorFirstName(patient.getPrimaryDoctor().getFirstName());
         patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
-        patientWrapper.setSmokingStatuses(patient.getSmokingStatusList());
+        patientWrapper.setSmokingStatuses( patient.getSmokingStatusList()!=null ? patient.getSmokingStatusList() : null);
         this.populateRaces(patientWrapper, patient);
         this.populateAppointments(patientWrapper,patient);
         this.populateInsurance(patientWrapper, patient);

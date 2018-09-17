@@ -33,7 +33,10 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
 public class HisApplication {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
 
-    @Autowired
+    public static void main(String[] args) {
+        SpringApplication.run(HisApplication.class, args);
+    }
+   /* @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -60,9 +63,7 @@ public class HisApplication {
     @Autowired
     private DepartmentRepository departmentRepository;
 
-    public static void main(String[] args) {
-        SpringApplication.run(HisApplication.class, args);
-    }
+
 
     @EventListener
     @Transactional(rollbackOn = Throwable.class)
@@ -165,7 +166,7 @@ public class HisApplication {
             branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
             organizationRepository.saveAndFlush(organization);
         }
-    }
+    }*/
 }
 /**
  * @author Irfan Nasim

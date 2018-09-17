@@ -66,6 +66,10 @@ public class MedicalService extends BaseEntity implements Serializable {
     private Tax tax;
 
     @JsonIgnore
+    @OneToMany(mappedBy = "medicalService")
+    private List<Appointment> appointment;
+
+    @JsonIgnore
     @OneToMany(targetEntity = DepartmentMedicalService.class, mappedBy = "medicalService",orphanRemoval = true)
     private List<DepartmentMedicalService> departmentMedicalServices;
 
@@ -100,6 +104,15 @@ public class MedicalService extends BaseEntity implements Serializable {
         medicalService.setDescription(createRequest.getDescription());
 //      medicalService.getImgURL() = createRequest.get
         medicalService.setStatus(createRequest.isStatus());
+    }
+
+
+    public List<Appointment> getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(List<Appointment> appointment) {
+        this.appointment = appointment;
     }
 
     public String getName() {

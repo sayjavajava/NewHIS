@@ -64,6 +64,8 @@ public class AppointmentService {
     PatientRepository patientRepository;
     @Autowired
     HISUtilService hisUtilService;
+    @Autowired
+    private MedicalServiceRepository medicalServiceRepository;
 
 
 
@@ -154,6 +156,8 @@ public class AppointmentService {
         if(HISCoreUtil.isValidObject(room)){appointment.setRoom(room);}
         Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
         appointment.setDoctor(doctor);
+        MedicalService medicalService = medicalServiceRepository.findOne(appointmentWrapper.getServiceId());
+        appointment.setMedicalService(medicalService);
         /*if(appointmentWrapper.getAppointmentType().contains(AppointmentTypeEnum.NEW_PATIENT.getValue())) {
             User user = new User();
             Profile profile = new Profile();
@@ -196,7 +200,7 @@ public class AppointmentService {
 
         return appointment;
     }
-
+   @Transactional
     public Appointment updateAppointment(AppointmentWrapper appointmentWrapper,Appointment alreadyExistAppointment){
 
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
@@ -217,12 +221,14 @@ public class AppointmentService {
         if(HISCoreUtil.isValidObject(room)){alreadyExistAppointment.setRoom(room);}
         Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
         alreadyExistAppointment.setDoctor(doctor);
+        MedicalService medicalService = medicalServiceRepository.findOne(appointmentWrapper.getServiceId());
+        alreadyExistAppointment.setMedicalService(medicalService);
 
-        Patient patient = patientRepository.findOne(1L);
+        Patient patient = null;
         if(appointmentWrapper.getPatientId() != null){
             patient = patientRepository.findOne(appointmentWrapper.getPatientId());
             alreadyExistAppointment.setPatient(patient);}
-        appointmentRepository.save(alreadyExistAppointment);
+            appointmentRepository.save(alreadyExistAppointment);
         return alreadyExistAppointment;
     }
 

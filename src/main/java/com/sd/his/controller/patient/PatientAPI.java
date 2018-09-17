@@ -1,4 +1,4 @@
-package com.sd.his.controller.patient;
+package com.sd.his.controller.Patient;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Patient;
