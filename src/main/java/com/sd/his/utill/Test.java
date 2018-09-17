@@ -7,7 +7,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
  * @author    : irfan nasim
@@ -42,6 +43,14 @@ public class Test {
                       .map(Country::getIsCode).
                        orElse("no");
      System.out.println("value our:"+ val);
+
+        List<Integer> list = Arrays.asList(1,2,3);
+        Iterator it = list.iterator();
+
+        while(it.hasNext()) {
+            it.remove();
+            list.remove("waqas");
+        }
     }
 }
     class User{

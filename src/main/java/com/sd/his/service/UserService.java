@@ -9,6 +9,7 @@ import com.sd.his.wrapper.PermissionWrapper;
 import com.sd.his.wrapper.RoleWrapper;
 import com.sd.his.wrapper.UserWrapper;
 import com.sd.his.wrapper.request.AssignAuthoritiesRequestWrapper;
+import com.sd.his.wrapper.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +34,8 @@ public class UserService implements UserDetailsService {
     private AWSService awsService;*/
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PermissionRepository permissionRepo;
-
     @Autowired
     RoleRepository roleRepository;
     @Autowired
@@ -53,6 +52,15 @@ public class UserService implements UserDetailsService {
     CashierRepository cashierRepository;
     @Autowired
     ManagerRepository managerRepository;
+    @Autowired
+    PatientRepository patientRepository;
+    @Autowired
+    AppointmentRepository appointmentRepository;
+    @Autowired
+    MedicalServiceRepository medicalServiceRepository;
+    @Autowired
+    ICDCodeRepository icdCodeRepository;
+
     /*
     @Autowired
     private S3KeyGen s3KeyGen;*/
@@ -647,22 +655,22 @@ public class UserService implements UserDetailsService {
 
         return userWrapper;
     }
-//
-//    public AdminDashboardDataResponseWrapper buildAdminDashboardData() {
-//        AdminDashboardDataResponseWrapper adminData = new AdminDashboardDataResponseWrapper();
-//
-//        //#TODO pass type from UserTypeEnum
-//        List<User> patients = userRepository.findAllByRoles_role_name("PATIENT");
-//        List<MedicalService> medicalServices = medicalServicesRepository.findAllByDeletedFalse();
-//        List<ICDCode> icdCodes = icdCodeRepository.findAllByDeletedFalse();
-//
-//        adminData.setPatientCount(patients.size());
-//        adminData.setAppointmentsCount(appointmentRepository.countAllByActiveTrue());
-//        adminData.setMedicalServicesCount(medicalServices.size());
-//        adminData.setIcdsCount(icdCodes.size());
-//
-//        return adminData;
-//    }
+
+    public AdminDashboardDataResponseWrapper buildAdminDashboardData() {
+        AdminDashboardDataResponseWrapper adminData = new AdminDashboardDataResponseWrapper();
+
+        //#TODO pass type from UserTypeEnum
+      //  List<User> patients = patientRepository.count();
+      //  List<MedicalService> medicalServices = medicalServicesRepository.findAllByDeletedFalse();
+      //  List<ICDCode> icdCodes = icdCodeRepository.findAllByDeletedFalse();
+
+        adminData.setPatientCount(patientRepository.count());
+        adminData.setAppointmentsCount(appointmentRepository.count());
+        adminData.setMedicalServicesCount(medicalServiceRepository.count());
+        adminData.setIcdsCount(icdCodeRepository.count());
+
+        return adminData;
+    }
 //
 //
 //    public List<PatientWrapper> findAllPaginatedUserByUserType(int offset, int limit, String userType) {
