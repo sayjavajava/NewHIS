@@ -8,6 +8,7 @@ import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.PatientWrapper;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
+import com.sd.his.wrapper.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -544,62 +546,61 @@ public class StaffAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiOperation(httpMethod = "GET", value = "SuperAdmin dashboard data",
+            notes = "This method will return super admin dashboard data",
+            produces = "application/json", nickname = "Dashboard Data",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "SuperAdmin Dashboard Data fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
+    public ResponseEntity<?> getAdminDashboardData(HttpServletRequest request, Principal principal) {
+        logger.info("Administrator Dashboard Data - getAdminDashboardData API initiated.");
+        String name = principal.getName();
 
-//    @ApiOperation(httpMethod = "GET", value = "SuperAdmin dashboard data",
-//            notes = "This method will return super admin dashboard data",
-//            produces = "application/json", nickname = "Dashboard Data",
-//            response = GenericAPIResponse.class, protocols = "https")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "SuperAdmin Dashboard Data fetched successfully.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-//            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-//    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
-//    public ResponseEntity<?> getAdminDashboardData(HttpServletRequest request, Principal principal) {
-//        logger.info("Administrator Dashboard Data - getAdminDashboardData API initiated.");
-//        String name = principal.getName();
-//
-//        GenericAPIResponse response = new GenericAPIResponse();
-//        response.setResponseMessage(messageBundle.getString("admin.dashboard.data.fetched.error"));
-//        response.setResponseCode(ResponseEnum.ADMIN_DASHBOARD_FETCHED_FAILED.getValue());
-//        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//        response.setResponseData(null);
-//
-//        try {
-//            if (HISCoreUtil.isValidObject(name)) {
-//                logger.info("Administrator Dashboard Data - fetching user from DB.");
-//                User user = userService.findByUserName(name);
-//                if (HISCoreUtil.isValidObject(user)) {
-//                    logger.info("Administrator Dashboard Data - user successfully fetched...");
-//                    AdminDashboardDataResponseWrapper adminData = userService.buildAdminDashboardData();
-//                    if (HISCoreUtil.isValidObject(adminData)) {
-//                        response.setResponseMessage(messageBundle.getString("admin.dashboard.data.fetched.success"));
-//                        response.setResponseCode(ResponseEnum.ADMIN_DASHBOARD_FETCHED_SUCCESS.getValue());
-//                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-//                        response.setResponseData(adminData);
-//
-//                        return new ResponseEntity<>(response, HttpStatus.OK);
-//                    } else {
-//                        response.setResponseMessage(messageBundle.getString("admin.dashboard.data.fetched.error"));
-//                        response.setResponseCode(ResponseEnum.ADMIN_DASHBOARD_FETCHED_FAILED.getValue());
-//                        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//                        response.setResponseData(adminData);
-//
-//                        return new ResponseEntity<>(response, HttpStatus.OK);
-//                    }
-//                }
-//            }
-//        } catch (Exception ex) {
-//            logger.error("Administrator Dashboard Data - getAdminDashboardData failed.", ex.fillInStackTrace());
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-//            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-//
-//            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("admin.dashboard.data.fetched.error"));
+        response.setResponseCode(ResponseEnum.ADMIN_DASHBOARD_FETCHED_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (HISCoreUtil.isValidObject(name)) {
+                logger.info("Administrator Dashboard Data - fetching user from DB.");
+                User user = userService.findByUserName(name);
+                if (HISCoreUtil.isValidObject(user)) {
+                    logger.info("Administrator Dashboard Data - user successfully fetched...");
+                    AdminDashboardDataResponseWrapper adminData = userService.buildAdminDashboardData();
+                    if (HISCoreUtil.isValidObject(adminData)) {
+                        response.setResponseMessage(messageBundle.getString("admin.dashboard.data.fetched.success"));
+                        response.setResponseCode(ResponseEnum.ADMIN_DASHBOARD_FETCHED_SUCCESS.getValue());
+                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                        response.setResponseData(adminData);
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    } else {
+                        response.setResponseMessage(messageBundle.getString("admin.dashboard.data.fetched.error"));
+                        response.setResponseCode(ResponseEnum.ADMIN_DASHBOARD_FETCHED_FAILED.getValue());
+                        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                        response.setResponseData(adminData);
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            logger.error("Administrator Dashboard Data - getAdminDashboardData failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 //
 //    @ApiOperation(httpMethod = "GET", value = "Upload Profile Image",
 //            notes = "This method will upload the profile image of any user.",
