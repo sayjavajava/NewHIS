@@ -41,7 +41,7 @@ public class DocumentService {
 
             this.documentRepository.save(document);
 
-            /*String url = null;
+            String url = null;
             if (documentWrapper.getImage() != null) {
                 url = userService.saveImage(documentWrapper.getImage(),
                         HISConstants.S3_USER_DOCUMENT_DIRECTORY_PATH,
@@ -68,9 +68,10 @@ public class DocumentService {
                     document.setUrl(url);
                     this.documentRepository.save(document);
                     url = null;
-                }*/
+                }
+            }
 
-//            }
+
             return "";
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -122,6 +123,8 @@ public class DocumentService {
                         url = null;
                     }
                 }
+
+
                 return "";
             }
             return "Document not found";
