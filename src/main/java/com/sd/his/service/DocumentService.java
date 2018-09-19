@@ -88,7 +88,7 @@ public class DocumentService {
                 if (patient != null) {
                     document.setPatient(patient);
                 } else {
-                    return "Patient not found";
+                    return "patient not found";
                 }
 
                 this.documentRepository.save(document);

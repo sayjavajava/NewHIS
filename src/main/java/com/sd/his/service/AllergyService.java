@@ -39,7 +39,7 @@ public class AllergyService {
         if (patient != null) {
             allergy.setPatient(patient);
         } else {
-            throw new Exception("Patient not found");
+            throw new Exception("patient not found");
         }
         if (appointment != null) {
             allergy.setAppointment(appointment);

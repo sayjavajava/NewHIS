@@ -1023,12 +1023,12 @@ public class StaffAPI {
 //        }
 //    }
 //
-//    @ApiOperation(httpMethod = "DELETE", value = "Delete Patient",
-//            notes = "This method will Delete the Patient",
-//            produces = "application/json", nickname = "Delete Patient ",
+//    @ApiOperation(httpMethod = "DELETE", value = "Delete patient",
+//            notes = "This method will Delete the patient",
+//            produces = "application/json", nickname = "Delete patient ",
 //            response = GenericAPIResponse.class, protocols = "https")
 //    @ApiResponses({
-//            @ApiResponse(code = 200, message = "Deleted Patient successfully", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 200, message = "Deleted patient successfully", response = GenericAPIResponse.class),
 //            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
 //            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
 //            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -1072,12 +1072,12 @@ public class StaffAPI {
 //        }
 //    }
 //
-//    @ApiOperation(httpMethod = "POST", value = "Save Patient",
+//    @ApiOperation(httpMethod = "POST", value = "Save patient",
 //            notes = "This method will save the patient.",
-//            produces = "application/json", nickname = "Save Patient",
+//            produces = "application/json", nickname = "Save patient",
 //            response = GenericAPIResponse.class, protocols = "https")
 //    @ApiResponses({
-//            @ApiResponse(code = 200, message = "Save Patient successfully ", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 200, message = "Save patient successfully ", response = GenericAPIResponse.class),
 //            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
 //            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
 //            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -1190,12 +1190,12 @@ public class StaffAPI {
 //        }
 //    }
 //
-//    @ApiOperation(httpMethod = "POST", value = "Update Patient",
+//    @ApiOperation(httpMethod = "POST", value = "Update patient",
 //            notes = "This method will Update the patient.",
-//            produces = "application/json", nickname = "Update Patient",
+//            produces = "application/json", nickname = "Update patient",
 //            response = GenericAPIResponse.class, protocols = "https")
 //    @ApiResponses({
-//            @ApiResponse(code = 200, message = "Update Patient successfully ", response = GenericAPIResponse.class),
+//            @ApiResponse(code = 200, message = "Update patient successfully ", response = GenericAPIResponse.class),
 //            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
 //            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
 //            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),

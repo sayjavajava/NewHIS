@@ -1,4 +1,4 @@
-package com.sd.his.controller.Patient;
+package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.service.PatientService;
@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
 
 /*
  * @author    : Muhammad Jamal
@@ -60,12 +57,12 @@ public class PatientHistoryAPI {
     private ProblemService problemService;
 
 
-    @ApiOperation(httpMethod = "POST", value = "Save Patient Problem",
+    @ApiOperation(httpMethod = "POST", value = "Save patient Problem",
             notes = "This method will save the patient Problem.",
-            produces = "application/json", nickname = "Save Patient Problem",
+            produces = "application/json", nickname = "Save patient Problem",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Save Patient Problem successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Save patient Problem successfully ", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -129,12 +126,12 @@ public class PatientHistoryAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(httpMethod = "POST", value = "Update Patient Problem",
+    @ApiOperation(httpMethod = "POST", value = "Update patient Problem",
             notes = "This method will Update the patient Problem.",
-            produces = "application/json", nickname = "Update Patient Problem",
+            produces = "application/json", nickname = "Update patient Problem",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Update Patient Problem successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Update patient Problem successfully ", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -198,12 +195,12 @@ public class PatientHistoryAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(httpMethod = "DELETE", value = "Delete Patient Problem",
-            notes = "This method will Delete the Patient Problem",
-            produces = "application/json", nickname = "Delete Patient Problem",
+    @ApiOperation(httpMethod = "DELETE", value = "Delete patient Problem",
+            notes = "This method will Delete the patient Problem",
+            produces = "application/json", nickname = "Delete patient Problem",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Deleted Patient Problem successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Deleted patient Problem successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -242,12 +239,12 @@ public class PatientHistoryAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "GET", value = "Patient",
+    @ApiOperation(httpMethod = "GET", value = "patient",
             notes = "This method will return User on base of id",
             produces = "application/json", nickname = "Get Single User",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Patient found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "patient found successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),

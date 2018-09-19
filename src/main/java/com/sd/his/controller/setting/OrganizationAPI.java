@@ -1,4 +1,4 @@
-package com.sd.his.controller.Setting;
+package com.sd.his.controller.setting;
 
         /*
          * @author    : waqas kamran

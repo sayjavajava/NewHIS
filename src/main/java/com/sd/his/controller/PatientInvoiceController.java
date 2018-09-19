@@ -30,9 +30,9 @@ public class PatientInvoiceController {
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
 
-    @ApiOperation(httpMethod = "POST", value = "Create Patient Invoice",
-            notes = "This method will Create  Patient Invoices",
-            produces = "application/json", nickname = " Patient Invoice",
+    @ApiOperation(httpMethod = "POST", value = "Create patient Invoice",
+            notes = "This method will Create  patient Invoices",
+            produces = "application/json", nickname = " patient Invoice",
             response = GenericAPIResponse.class, protocols = "https")
 
     @RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
@@ -70,9 +70,9 @@ public class PatientInvoiceController {
 
 
 
-    @ApiOperation(httpMethod = "GET", value = "Get Invoice Items By Patient Appointment Id",
-            notes = "This method will Get Invoice Items By Patient Appointment Id",
-            produces = "application/json", nickname = " Patient Invoice Items",
+    @ApiOperation(httpMethod = "GET", value = "Get Invoice Items By patient Appointment Id",
+            notes = "This method will Get Invoice Items By patient Appointment Id",
+            produces = "application/json", nickname = " patient Invoice Items",
             response = GenericAPIResponse.class, protocols = "https")
 
     @ApiResponses({
@@ -98,13 +98,13 @@ public class PatientInvoiceController {
             response.setResponseMessage(messageBundle.getString("user.add.success"));
             response.setResponseCode(InvoiceMessageEnum.SUCCESS.getValue());
             response.setResponseStatus(InvoiceMessageEnum.SUCCESS.getValue());
-            logger.info("Patient Invoioce data fetched successfully...");
+            logger.info("patient Invoioce data fetched successfully...");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception ex)
         {
-            logger.error("Patient Invoioce dat Failed.", ex.fillInStackTrace());
+            logger.error("patient Invoioce dat Failed.", ex.fillInStackTrace());
             response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
             response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));

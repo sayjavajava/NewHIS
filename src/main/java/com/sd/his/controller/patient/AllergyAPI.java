@@ -1,4 +1,4 @@
-package com.sd.his.controller.Patient;
+package com.sd.his.controller.patient;
 
 import com.sd.his.controller.AppointmentAPI;
 import com.sd.his.enums.ResponseEnum;
@@ -6,7 +6,6 @@ import com.sd.his.service.AllergyService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AllergyWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
-import com.sd.his.wrapper.ProblemWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -179,12 +178,12 @@ public class AllergyAPI {
     }
 
 
-    @ApiOperation(httpMethod = "GET", value = "Patient",
+    @ApiOperation(httpMethod = "GET", value = "patient",
             notes = "This method will return User on base of id",
             produces = "application/json", nickname = "Get Single User",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Patient found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "patient found successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -223,12 +222,12 @@ public class AllergyAPI {
     }
 
 
-    @ApiOperation(httpMethod = "POST", value = "Update Patient Allergy",
+    @ApiOperation(httpMethod = "POST", value = "Update patient Allergy",
             notes = "This method will Update the patient Allergy.",
-            produces = "application/json", nickname = "Update Patient Allergy",
+            produces = "application/json", nickname = "Update patient Allergy",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Update Patient Allergy successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Update patient Allergy successfully ", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -291,12 +290,12 @@ public class AllergyAPI {
     }
 
 
-    @ApiOperation(httpMethod = "DELETE", value = "Delete Patient Problem",
-            notes = "This method will Delete the Patient Problem",
-            produces = "application/json", nickname = "Delete Patient Problem",
+    @ApiOperation(httpMethod = "DELETE", value = "Delete patient Problem",
+            notes = "This method will Delete the patient Problem",
+            produces = "application/json", nickname = "Delete patient Problem",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Deleted Patient Problem successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Deleted patient Problem successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),

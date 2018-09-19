@@ -305,7 +305,7 @@ public class  PatientService {
         List<Patient> patientList = patientRepository.getAllPaginatedPatients(pageable);
         return this.getPatientWrapperList(patientList);
         /*List<PatientWrapper> patientWrapperList = new ArrayList<>();
-        for (Patient p: patientList) {
+        for (patient p: patientList) {
             patientWrapper = new PatientWrapper();
             this.populatePatientWrapper(patientWrapper, p );
             patientWrapperList.add(patientWrapper);

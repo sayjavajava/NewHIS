@@ -219,12 +219,12 @@ public class MedicationAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "POST", value = "Update Patient Mediation",
+    @ApiOperation(httpMethod = "POST", value = "Update patient Mediation",
             notes = "This method will Update the patient Mediation.",
-            produces = "application/json", nickname = "Update Patient Mediation",
+            produces = "application/json", nickname = "Update patient Mediation",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Update Patient Mediation successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Update patient Mediation successfully ", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
@@ -286,12 +286,12 @@ public class MedicationAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(httpMethod = "DELETE", value = "Delete Patient Medication",
-            notes = "This method will Delete the Patient Medication",
-            produces = "application/json", nickname = "Delete Patient Medication",
+    @ApiOperation(httpMethod = "DELETE", value = "Delete patient Medication",
+            notes = "This method will Delete the patient Medication",
+            produces = "application/json", nickname = "Delete patient Medication",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Deleted Patient Medication successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Deleted patient Medication successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),

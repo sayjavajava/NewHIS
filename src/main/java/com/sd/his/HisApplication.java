@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -28,7 +30,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
  * @description To create JAR Packaging
  * @since 05-Jun-2018
  */
-@SpringBootApplication
+/*@SpringBootApplication
 @EnableJpaAuditing
 public class HisApplication {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
@@ -36,7 +38,8 @@ public class HisApplication {
     public static void main(String[] args) {
         SpringApplication.run(HisApplication.class, args);
     }
-   /* @Autowired
+
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -64,8 +67,7 @@ public class HisApplication {
     private DepartmentRepository departmentRepository;
 
 
-
-    @EventListener
+    *//*@EventListener
     @Transactional(rollbackOn = Throwable.class)
     public void onBootStartup(ApplicationContextEvent event) {
 
@@ -89,7 +91,7 @@ public class HisApplication {
             permissions.add(new Permission("Invoices", "Invoices", "dashboard/invoice", true));
             permissions.add(new Permission("Medical Services", "Medical Services", "/dashboard/setting/medicalServices", true));
             permissions.add(new Permission("Open/Close Day", "Open/Close Day", "dashboard/ocDay", true));
-            permissions.add(new Permission("Patient", "patient", "/dashboard/patient/manage", true));
+            permissions.add(new Permission("patient", "patient", "/dashboard/patient/manage", true));
             permissions.add(new Permission("Payments", "Payments", "/dashboard/payment", true));
             permissions.add(new Permission("Refunds", "Refunds", "/dashboard/refund", true));
             permissions.add(new Permission("Reports", "Reports", "/dashboard/report", true));
@@ -166,24 +168,26 @@ public class HisApplication {
             branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
             organizationRepository.saveAndFlush(organization);
         }
-    }*/
-}
-/**
- * @author Irfan Nasim
- * @description To create WAR Packaging
- * @since 05-Jun-2018
- */
-/*@SpringBootApplication
-  @EnableJpaAuditing
-public class HisApplication extends SpringBootServletInitializer {
-    private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
-
-    public static void main(String[] args) {
-        SpringApplication.run(HisApplication.class, args);
     }
+}*/
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(HisApplication.class);
-    }*/
+    /**
+     * @author Irfan Nasim
+     * @description To create WAR Packaging
+     * @since 05-Jun-2018
+     */
+    @SpringBootApplication
+    @EnableJpaAuditing
+    public class HisApplication extends SpringBootServletInitializer {
+        private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
+
+        public static void main(String[] args) {
+            SpringApplication.run(HisApplication.class, args);
+        }
+
+        @Override
+        protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+            return application.sources(HisApplication.class);
+        }
+    }
 

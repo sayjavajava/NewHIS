@@ -1,4 +1,4 @@
-package com.sd.his.controller.Patient;
+package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.service.DocumentService;
@@ -64,7 +64,7 @@ public class DocumentAPI {
                     response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_PATIENT_REQUIRED.getValue());
                     response.setResponseMessage(messageBundle.getString("document.save.patient.required"));
                     response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                    logger.error("saveDocument API - Patient required");
+                    logger.error("saveDocument API - patient required");
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
 

@@ -134,8 +134,8 @@ public class CashierController {
 
 
 
-    @ApiOperation(httpMethod = "POST", value = "Save Payment against Patient Invoice",
-            notes = "This method will Save Payment against Patient Invoices",
+    @ApiOperation(httpMethod = "POST", value = "Save Payment against patient Invoice",
+            notes = "This method will Save Payment against patient Invoices",
             produces = "application/json", nickname = "Run Payment",
             response = GenericAPIResponse.class, protocols = "https")
 
