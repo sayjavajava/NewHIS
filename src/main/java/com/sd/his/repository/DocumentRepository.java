@@ -22,13 +22,18 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
     DocumentWrapper findDocumentById(@Param("id") long documentId);
 
     @Query("SELECT new com.sd.his.wrapper.DocumentWrapper(doc.id,doc.createdOn,doc.updatedOn,doc.name,doc.type,doc.description,doc.url,doc.patient.id) " +
-            "FROM com.sd.his.model.Document doc")
-    List<DocumentWrapper> getPaginatedDocuments(Pageable pageable);
+            "FROM com.sd.his.model.Document doc " +
+            "WHERE doc.patient.id=:patientId")
+    List<DocumentWrapper> getPaginatedDocuments(Pageable pageable, @Param("patientId") Long patientId);
 
 
-    @Query("SELECT CASE WHEN COUNT (doc) > 0 THEN true ELSE false END FROM com.sd.his.model.Document doc WHERE doc.name=:name")
-    boolean isNameExists(@Param("name") String nameDocument);
+    @Query("SELECT CASE WHEN COUNT (doc) > 0 THEN true ELSE false END " +
+            "FROM com.sd.his.model.Document doc " +
+            "WHERE doc.name=:name AND doc.patient.id=:patientId")
+    boolean isNameExists(@Param("name") String nameDocument, @Param("patientId") Long patientId);
 
-    @Query("SELECT CASE WHEN COUNT (doc) > 0 THEN true ELSE false END FROM com.sd.his.model.Document doc WHERE doc.name=:name AND doc.id <>:id")
-    boolean isNameExistsAgainstId(@Param("name") String nameDocument, @Param("id") Long id);
+    @Query("SELECT CASE WHEN COUNT (doc) > 0 THEN true ELSE false END " +
+            "FROM com.sd.his.model.Document doc " +
+            "WHERE doc.name=:name AND doc.id <>:id AND doc.patient.id=:patientId")
+    boolean isNameExistsAgainstId(@Param("name") String nameDocument, @Param("id") Long id, @Param("patientId") Long patientId);
 }

@@ -145,19 +145,19 @@ public class DocumentService {
         return this.documentRepository.findDocumentById(documentId);
     }
 
-    public List<DocumentWrapper> getPaginatedDocuments(Pageable pageable) {
-        return this.documentRepository.getPaginatedDocuments(pageable);
+    public List<DocumentWrapper> getPaginatedDocuments(Pageable pageable,Long patientId) {
+        return this.documentRepository.getPaginatedDocuments(pageable,patientId);
     }
 
     public int countPaginatedDocuments() {
         return this.documentRepository.findAll().size();
     }
 
-    public boolean isNameDocumentAvailable(String nameDocument) {
-        return this.documentRepository.isNameExists(nameDocument);
+    public boolean isNameDocumentAvailableByPatientId(String nameDocument,Long patientId) {
+        return this.documentRepository.isNameExists(nameDocument,patientId);
     }
 
-    public boolean isNameDocumentAvailableAgainstDocumentId(String nameDocument, Long documentId) {
-        return this.documentRepository.isNameExistsAgainstId(nameDocument, documentId);
+    public boolean isNameDocumentAvailableAgainstDocumentIdAndPatientId(String nameDocument, Long documentId, Long patientId) {
+        return this.documentRepository.isNameExistsAgainstId(nameDocument, documentId,patientId);
     }
 }
