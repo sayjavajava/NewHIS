@@ -30,7 +30,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
  * @description To create JAR Packaging
  * @since 05-Jun-2018
  */
-/*@SpringBootApplication
+@SpringBootApplication
 @EnableJpaAuditing
 public class HisApplication {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
@@ -67,7 +67,7 @@ public class HisApplication {
     private DepartmentRepository departmentRepository;
 
 
-    *//*@EventListener
+    @EventListener
     @Transactional(rollbackOn = Throwable.class)
     public void onBootStartup(ApplicationContextEvent event) {
 
@@ -169,14 +169,14 @@ public class HisApplication {
             organizationRepository.saveAndFlush(organization);
         }
     }
-}*/
+}
 
     /**
      * @author Irfan Nasim
      * @description To create WAR Packaging
      * @since 05-Jun-2018
      */
-    @SpringBootApplication
+/*    @SpringBootApplication
     @EnableJpaAuditing
     public class HisApplication extends SpringBootServletInitializer {
         private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
@@ -189,5 +189,5 @@ public class HisApplication {
         protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
             return application.sources(HisApplication.class);
         }
-    }
+    }*/
 
