@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /*
  * @author    : Irfan Nasim
@@ -77,7 +78,7 @@ public class AppointmentService {
     }
 
     public List<AppointmentWrapper> findAllAppointments() {
-        List<AppointmentWrapper> list = appointmentRepository.findAllAppointments();
+        List<AppointmentWrapper> list =appointmentRepository.findAllAppointments();
         return appointmentRepository.findAllAppointments();
 
     }
