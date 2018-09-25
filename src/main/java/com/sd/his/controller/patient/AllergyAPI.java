@@ -66,7 +66,7 @@ public class AllergyAPI {
             }
 
             if (allergyWrapper.getPatientId() <= 0) {
-                response.setResponseMessage(messageBundle.getString("allergy.save.patient.required"));
+                response.setResponseMessage(messageBundle.getString("allergy.patient.required"));
                 response.setResponseCode(ResponseEnum.ALLERGY_SAVE_PATIENT_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
@@ -123,8 +123,17 @@ public class AllergyAPI {
 
         try {
             logger.error("getPaginatedAllergy -  fetching from DB");
+            if (patientId.equals("0") || Long.valueOf(patientId) <= 0) {
+                response.setResponseMessage(messageBundle.getString("allergy.patient.required"));
+                response.setResponseCode(ResponseEnum.ALLERGY_SAVE_PATIENT_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getPaginatedAllergy API - Required patient id ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
             Pageable pageable = new PageRequest(page, pageSize);
-            List<AllergyWrapper> allergyWrappers = this.allergyService.getPaginatedAllergies(pageable,Long.valueOf(patientId));
+            List<AllergyWrapper> allergyWrappers = this.allergyService.getPaginatedAllergies(pageable, Long.valueOf(patientId));
             int count = allergyService.countPaginatedAllergies(Long.valueOf(patientId));
 
             logger.error("getPaginatedAllergy - fetched successfully");
@@ -249,7 +258,7 @@ public class AllergyAPI {
             }
 
             if (allergyWrapper.getPatientId() <= 0) {
-                response.setResponseMessage(messageBundle.getString("allergy.save.patient.required"));
+                response.setResponseMessage(messageBundle.getString("allergy.patient.required"));
                 response.setResponseCode(ResponseEnum.ALLERGY_SAVE_PATIENT_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
@@ -272,7 +281,7 @@ public class AllergyAPI {
                 response.setResponseCode(ResponseEnum.ALLERGY_UPDATE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.error("updateAllergy API - successfully saved.");
-            }else {
+            } else {
                 response.setResponseMessage(messageBundle.getString("already.deleted"));
                 response.setResponseCode(ResponseEnum.ALLERGY_UPDATE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -362,9 +371,9 @@ public class AllergyAPI {
 
         try {
             logger.error("getPaginatedAllergiesByStatusAndPatientId -  fetching from DB");
-            Pageable pageable = new PageRequest(page,pageSize);
-            List<AllergyWrapper> allergyWrappers = this.allergyService.getPaginatedAllergiesByStatusAndPatientId(pageable,status,Long.valueOf(selectedPatientId));
-            int count = allergyService.countPaginatedAllergiesByStatusAndPatientId(status,Long.valueOf(selectedPatientId));
+            Pageable pageable = new PageRequest(page, pageSize);
+            List<AllergyWrapper> allergyWrappers = this.allergyService.getPaginatedAllergiesByStatusAndPatientId(pageable, status, Long.valueOf(selectedPatientId));
+            int count = allergyService.countPaginatedAllergiesByStatusAndPatientId(status, Long.valueOf(selectedPatientId));
 
             logger.error("getPaginatedAllergiesByStatusAndPatientId - fetched successfully");
 

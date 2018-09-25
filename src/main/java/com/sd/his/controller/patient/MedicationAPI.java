@@ -4,7 +4,6 @@ import com.sd.his.controller.AppointmentAPI;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.service.MedicationService;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.DocumentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.MedicationWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -67,7 +66,7 @@ public class MedicationAPI {
             }
 
             if (medicationWrapper.getPatientId() <= 0) {
-                response.setResponseMessage(messageBundle.getString("medication.save.patient.required"));
+                response.setResponseMessage(messageBundle.getString("medication.patient.required"));
                 response.setResponseCode(ResponseEnum.MEDICATION_SAVE_PATIENT_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
@@ -111,22 +110,32 @@ public class MedicationAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> getPaginatedMedication(HttpServletRequest request,
-                                                    @PathVariable("page") int page,
-                                                    @RequestParam("selectedPatientId") String selectedPatientId,
-                                                    @RequestParam(value = "pageSize",
+    public ResponseEntity<?> getPaginatedMedicationByPatient(HttpServletRequest request,
+                                                             @PathVariable("page") int page,
+                                                             @RequestParam("selectedPatientId") String selectedPatientId,
+                                                             @RequestParam(value = "pageSize",
                                                             required = false, defaultValue = "10") int pageSize) {
 
-        logger.error("getPaginatedMedication API initiated");
+        logger.error("getPaginatedMedicationByPatient API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
 
         try {
-            logger.error("getPaginatedMedication -  fetching from DB");
+            logger.error("getPaginatedMedicationByPatient -  fetching from DB");
+
+            if (selectedPatientId == null || selectedPatientId.equals("0") || Long.valueOf(selectedPatientId) <= 0) {
+                response.setResponseCode(ResponseEnum.MEDICATION_SAVE_PATIENT_REQUIRED.getValue());
+                response.setResponseMessage(messageBundle.getString("medication.patient.required"));
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.error("getPaginatedMedicationByPatient API - patient required");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+
             Pageable pageable = new PageRequest(page, pageSize);
             List<MedicationWrapper> medicationWrappers = this.medicationService.getPaginatedMedications(pageable,Long.valueOf(selectedPatientId));
             int medicationWrappersCount = this.medicationService.countPaginatedMedications(Long.valueOf(selectedPatientId));
 
-            logger.error("getPaginatedMedication - fetched successfully");
+            logger.error("getPaginatedMedicationByPatient - fetched successfully");
 
             if (!HISCoreUtil.isListEmpty(medicationWrappers)) {
                 Integer nextPage, prePage, currPage;
@@ -163,11 +172,11 @@ public class MedicationAPI {
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(returnValues);
 
-                logger.error("getPaginatedMedication API successfully executed.");
+                logger.error("getPaginatedMedicationByPatient API successfully executed.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
         } catch (Exception ex) {
-            logger.error("getPaginatedMedication exception..", ex.fillInStackTrace());
+            logger.error("getPaginatedMedicationByPatient exception..", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
@@ -246,7 +255,7 @@ public class MedicationAPI {
             }
 
             if (medicationWrapper.getPatientId() <= 0) {
-                response.setResponseMessage(messageBundle.getString("medication.save.patient.required"));
+                response.setResponseMessage(messageBundle.getString("medication.patient.required"));
                 response.setResponseCode(ResponseEnum.MEDICATION_SAVE_PATIENT_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
