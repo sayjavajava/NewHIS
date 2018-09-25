@@ -989,8 +989,8 @@ public class ICDAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            response.setResponseMessage(messageBundle.getString("icd.code.version.delete.error"));
-            response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_DELETE_ERROR.getValue());
+            response.setResponseMessage(messageBundle.getString("icd.code.version.delete.already"));
+            response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_DELETE_ALREADY.getValue());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseData(null);
 

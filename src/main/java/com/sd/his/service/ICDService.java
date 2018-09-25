@@ -140,7 +140,11 @@ public class ICDService {
     @Transactional(rollbackOn = Throwable.class)
     public boolean deletedAssociateICDCV(long icdId) {
         if (icdId > 0) {
-            codeVersionRepository.delete(icdId);
+            ICDCodeVersion codeVersion = this.codeVersionRepository.findOne(icdId);
+            if (codeVersion == null){
+                return false;
+            }
+            codeVersionRepository.delete(codeVersion);
             return true;
         } else {
             return false;
