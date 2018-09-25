@@ -30,6 +30,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
  * @description To create JAR Packaging
  * @since 05-Jun-2018
  */
+/*
 @SpringBootApplication
 @EnableJpaAuditing
 public class HisApplication {
@@ -170,13 +171,14 @@ public class HisApplication {
         }
     }
 }
+*/
 
     /**
      * @author Irfan Nasim
      * @description To create WAR Packaging
      * @since 05-Jun-2018
      */
-/*    @SpringBootApplication
+    @SpringBootApplication
     @EnableJpaAuditing
     public class HisApplication extends SpringBootServletInitializer {
         private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
@@ -189,5 +191,5 @@ public class HisApplication {
         protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
             return application.sources(HisApplication.class);
         }
-    }*/
+    }
 
