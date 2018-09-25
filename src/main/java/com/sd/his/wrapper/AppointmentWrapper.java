@@ -90,6 +90,7 @@ public class AppointmentWrapper {
     private Double patientAdvanceDeposit;
 
 
+
     public AppointmentWrapper() {
     }
 

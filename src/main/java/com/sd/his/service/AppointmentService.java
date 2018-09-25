@@ -111,12 +111,13 @@ public class AppointmentService {
             patient = new Patient();
             patient.setEmail(appointmentWrapper.getEmail());
             patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
-            patient.setFirstName(appointmentWrapper.getPatientFirstName());
+            patient.setFirstName(appointmentWrapper.getNewPatient());
             patient.setGender(GenderTypeEnum.MALE);
             patient.setMaritalStatus(MaritalStatusTypeEnum.MARRIED);
             patient.setStatus(PatientStatusTypeEnum.ACTIVE);
             patient.setPrimaryDoctor(doctorRepository.findOne(1L));
-            patient.setLastName(appointmentWrapper.getPatientFirstName());
+            patient.setLastName(appointmentWrapper.getNewPatient());
+            patient.setMiddleName(appointmentWrapper.getNewPatient());
             // patient.setLastName(appointmentWrapper.getNewPatient());
             patient.setCellPhone(appointmentWrapper.getCellPhone());
             patient.setDob(appointmentWrapper.getDateOfBirth());
