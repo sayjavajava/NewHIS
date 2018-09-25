@@ -146,7 +146,7 @@ public class HisApplication {
             manager.setUser(admin);
             managerRepository.save(manager);
 
-            Doctor doctor = new Doctor();
+            Doctor doctor = new  Doctor();
             doctor.setDob(new Date());
             doctor.setFirstName("Doctor");
             doctor.setGender(GenderTypeEnum.MALE.name());

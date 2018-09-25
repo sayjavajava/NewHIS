@@ -8,7 +8,9 @@
     <version>0.0.1-SNAPSHOT</version>
     <!--<packaging>jar</packaging>-->
     <!--Enable when creating WAR Packaging-->
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
+
+
 
     <name>HIS</name>
     <description>Health information System</description>
