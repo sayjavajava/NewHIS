@@ -247,6 +247,7 @@ public class DocumentAPI {
                 response.setResponseMessage(messageBundle.getString("document.patient.required"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.error("updateDocument API - successfully saved.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
             if (documentWrapper.getId() <= 0) {
@@ -254,6 +255,7 @@ public class DocumentAPI {
                 response.setResponseMessage(messageBundle.getString("document.update.id.required"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.error("updateDocument API - successfully saved.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
             if (this.documentService.isNameDocumentAvailableAgainstDocumentIdAndPatientId(documentWrapper.getName(), documentWrapper.getId(), documentWrapper.getPatientId())) {
                 response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_NAME_DUBPLUCATE.getValue());

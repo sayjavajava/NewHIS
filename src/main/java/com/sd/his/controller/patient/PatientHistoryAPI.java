@@ -74,6 +74,15 @@ public class PatientHistoryAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
 
+            if (problemWrapper.getPatientId() <= 0) {
+                response.setResponseMessage(messageBundle.getString("patient.problem.patient.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_PATIENT_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("savePatientProblem API - Required patient id ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
             if (problemWrapper.getAppointmentId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("patient.problem.save.appointment.required"));
                 response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
@@ -142,6 +151,16 @@ public class PatientHistoryAPI {
         logger.info("updatePatientProblem API - initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
+
+
+            if (problemWrapper.getPatientId() <= 0) {
+                response.setResponseMessage(messageBundle.getString("patient.problem.patient.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_PATIENT_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("updatePatientProblem API - Required patient id ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
 
             if (problemWrapper.getAppointmentId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("patient.problem.save.appointment.required"));
@@ -303,6 +322,16 @@ public class PatientHistoryAPI {
 
         try {
             logger.error("getPaginatedProblem -  fetching from DB");
+
+            if (patientId.equals("0") || Long.valueOf(patientId) <= 0) {
+                response.setResponseMessage(messageBundle.getString("patient.problem.patient.required"));
+                response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_PATIENT_REQUIRED.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getPaginatedProblem API - Required patient id ?.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
             Pageable pageable = new PageRequest(page, pageSize);
             Page<ProblemWrapper> patientProblems = this.problemService.findPaginatedProblem(pageable, Long.valueOf(patientId));
             List<ProblemWrapper> list = new ArrayList<>();
