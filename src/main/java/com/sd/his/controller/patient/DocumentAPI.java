@@ -26,8 +26,6 @@ import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 
-
-
 @RestController
 @RequestMapping("/patient/document")
 public class DocumentAPI {
@@ -36,7 +34,6 @@ public class DocumentAPI {
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
     @Autowired
     private DocumentService documentService;
-
 
 
     @ApiOperation(httpMethod = "POST", value = "Save Document",
@@ -62,13 +59,13 @@ public class DocumentAPI {
                 }
                 if (documentWrapper.getPatientId() <= 0) {
                     response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_PATIENT_REQUIRED.getValue());
-                    response.setResponseMessage(messageBundle.getString("document.save.patient.required"));
+                    response.setResponseMessage(messageBundle.getString("document.patient.required"));
                     response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                     logger.error("saveDocument API - patient required");
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
 
-                if (this.documentService.isNameDocumentAvailable(documentWrapper.getName())) {
+                if (this.documentService.isNameDocumentAvailableByPatientId(documentWrapper.getName(), documentWrapper.getPatientId())) {
                     response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_NAME_DUBPLUCATE.getValue());
                     response.setResponseMessage(messageBundle.getString("document.save.name.duplicate"));
                     response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -115,6 +112,7 @@ public class DocumentAPI {
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getPaginatedDocumentation(HttpServletRequest request,
                                                        @PathVariable("page") int page,
+                                                       @RequestParam("patientId") String patientId,
                                                        @RequestParam(value = "pageSize",
                                                                required = false, defaultValue = "10") int pageSize) {
 
@@ -122,9 +120,17 @@ public class DocumentAPI {
         GenericAPIResponse response = new GenericAPIResponse();
 
         try {
+
             logger.error("getPaginatedDocumentation -  fetching from DB");
+            if (patientId == null || Long.valueOf(patientId) <= 0) {
+                response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_PATIENT_REQUIRED.getValue());
+                response.setResponseMessage(messageBundle.getString("document.patient.required"));
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.error("getPaginatedDocumentation API - patient required");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
             Pageable pageable = new PageRequest(page, pageSize);
-            List<DocumentWrapper> documentWrappers = this.documentService.getPaginatedDocuments(pageable);
+            List<DocumentWrapper> documentWrappers = this.documentService.getPaginatedDocuments(pageable, Long.valueOf(patientId));
             int documentWrappersCount = documentService.countPaginatedDocuments();
 
             logger.error("getPaginatedDocumentation - fetched successfully");
@@ -238,7 +244,7 @@ public class DocumentAPI {
         try {
             if (documentWrapper.getPatientId() <= 0) {
                 response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_PATIENT_REQUIRED.getValue());
-                response.setResponseMessage(messageBundle.getString("document.save.patient.required"));
+                response.setResponseMessage(messageBundle.getString("document.patient.required"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.error("updateDocument API - successfully saved.");
             }
@@ -249,7 +255,7 @@ public class DocumentAPI {
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.error("updateDocument API - successfully saved.");
             }
-            if (this.documentService.isNameDocumentAvailableAgainstDocumentId(documentWrapper.getName(), documentWrapper.getId())) {
+            if (this.documentService.isNameDocumentAvailableAgainstDocumentIdAndPatientId(documentWrapper.getName(), documentWrapper.getId(), documentWrapper.getPatientId())) {
                 response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_NAME_DUBPLUCATE.getValue());
                 response.setResponseMessage(messageBundle.getString("document.save.name.duplicate"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -289,7 +295,7 @@ public class DocumentAPI {
                                                 @PathVariable("documentId") long documentId) {
         logger.info("deleteDocumentById API - Called..");
         GenericAPIResponse response = new GenericAPIResponse();
-response.setResponseMessage(messageBundle.getString("document.delete.error"));
+        response.setResponseMessage(messageBundle.getString("document.delete.error"));
         response.setResponseCode(ResponseEnum.PATIENT_DELETE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);

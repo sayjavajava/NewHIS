@@ -87,7 +87,7 @@ public class HisApplication {
             permissions.add(new Permission("Associate Code Version", "Associate Code Version", "/dashboard/setting/codeVersion", true));
             permissions.add(new Permission("Branch", "Branch", "/dashboard/setting/branch", true));
             permissions.add(new Permission("Code", "Code", "/dashboard/setting/code", true));
-            permissions.add(new Permission("Department", "Department", "/dashboard/setting/Department", true));
+            permissions.add(new Permission("Department", "Department", "/dashboard/setting/department", true));
             permissions.add(new Permission("Email Template", "Email Template", "/dashboard/setting/email-template", true));
             permissions.add(new Permission("Invoices", "Invoices", "dashboard/invoice", true));
             permissions.add(new Permission("Medical Services", "Medical Services", "/dashboard/setting/medicalServices", true));
