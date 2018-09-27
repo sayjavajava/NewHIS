@@ -207,24 +207,24 @@ public class  PatientService {
         String url = null;
         if (patientWrapper.getProfileImg() != null) {
             url = userService.saveImage(patientWrapper.getProfileImg(),
-                    HISConstants.S3_USER_PROFILE_DIRECTORY_PATH,
+                    HISConstants.S3_USER_PATIENT_PROFILE_DIRECTORY_PATH,
                     patient.getId()
                             + "_"
                             + patient.getId()
                             + "_"
-                            + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME,
+                            + HISConstants.S3_USER_PROFILE_GRAPHIC_NAME,
                     patient.getId()
                             + "_"
                             + patient.getId()
                             + "_"
                             + HISConstants.S3_USER_PROFILE_GRAPHIC_NAME,
                     "/"
-                            + HISConstants.S3_USER_PROFILE_DIRECTORY_PATH
+                            + HISConstants.S3_USER_PATIENT_PROFILE_DIRECTORY_PATH
                             + patient.getId()
                             + "_"
                             + patient.getId()
                             + "_"
-                            + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME);
+                            + HISConstants.S3_USER_PROFILE_GRAPHIC_NAME);
         }
 
 

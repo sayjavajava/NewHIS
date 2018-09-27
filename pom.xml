@@ -6,7 +6,7 @@
     <groupId>com.sd.his</groupId>
     <artifactId>HIS</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <!--Enable when creating WAR Packaging-->
     <!--<packaging>war</packaging>-->
 
@@ -126,11 +126,11 @@
             <version>2.8.2</version>
         </dependency>
         <!--Enable when creating WAR Packaging-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
     </dependencies>
     <build>
         <plugins>

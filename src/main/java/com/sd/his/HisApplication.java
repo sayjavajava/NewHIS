@@ -32,7 +32,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
  */
 
 
-/*
+
 @SpringBootApplication
 @EnableJpaAuditing
 public class HisApplication {
@@ -172,7 +172,7 @@ public class HisApplication {
             organizationRepository.saveAndFlush(organization);
         }
     }
-}*/
+}
 
 
 
@@ -182,7 +182,7 @@ public class HisApplication {
  * @description To create WAR Packaging
  * @since 05-Jun-2018
  */
-@SpringBootApplication
+/*@SpringBootApplication
 @EnableJpaAuditing
 public class HisApplication extends SpringBootServletInitializer {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
@@ -195,6 +195,6 @@ public class HisApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(HisApplication.class);
     }
-}
+}*/
 
 
