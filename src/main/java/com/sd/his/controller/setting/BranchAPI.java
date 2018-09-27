@@ -319,6 +319,16 @@ public class BranchAPI {
             Branch alreadyExistBranch = branchService.findBranchById(id);
             if (HISCoreUtil.isValidObject(alreadyExistBranch)) {
                 logger.info("Branch founded...");
+
+                if (branchService.isBranchNameOrIdExistsAlready(branchRequestWrapper.getBranchName(),id)) {
+                    response.setResponseMessage(messageBundle.getString("branch.add.already-found.error"));
+                    response.setResponseCode(ResponseEnum.BRANCH_ALREADY_EXIST_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+                    logger.error("Branch already exist with the same name...");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+
                 Branch branchUpdated = branchService.updateBranch(branchRequestWrapper, alreadyExistBranch);
                 if (HISCoreUtil.isValidObject(branchUpdated)) {
                     logger.info("Branch Updated...");

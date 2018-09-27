@@ -72,6 +72,9 @@ public class PatientWrapper {
     private String primaryInsuranceNotes = "";
     private byte[] photoFront;
     private byte[] photoBack;
+    private String profileImgURL;
+    private String photoFrontURL;
+    private String photoBackURL;
     ////////////Appointment
     List<AppointmentWrapper> futureAppointments;
     List<AppointmentWrapper> pastAppointments;
@@ -147,6 +150,30 @@ public class PatientWrapper {
         *//*this.photoFront = insurance.getPhotoFront();
         this.photoBack = insurance.getPhotoBack();*//*
     }*/
+
+    public String getPhotoFrontURL() {
+        return photoFrontURL;
+    }
+
+    public void setPhotoFrontURL(String photoFrontURL) {
+        this.photoFrontURL = photoFrontURL;
+    }
+
+    public String getPhotoBackURL() {
+        return photoBackURL;
+    }
+
+    public void setPhotoBackURL(String photoBackURL) {
+        this.photoBackURL = photoBackURL;
+    }
+
+    public String getProfileImgURL() {
+        return profileImgURL;
+    }
+
+    public void setProfileImgURL(String profileImgURL) {
+        this.profileImgURL = profileImgURL;
+    }
 
     public String getPrimaryDoctorFirstName() {
         return primaryDoctorFirstName;

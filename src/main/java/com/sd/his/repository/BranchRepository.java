@@ -38,6 +38,8 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
 
     Branch findByName(String name);
 
+    Branch findByNameAndIdNot(String name,Long id);
+
     @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms,bb.firstName) FROM Branch b LEFT OUTER JOIN b.branchDoctors bu LEFT OUTER JOIN bu.doctor bb WHERE b.active = TRUE ")
     List<BranchResponseWrapper> findAllByActive(Pageable pageable);
 

@@ -299,6 +299,10 @@ public List<BranchResponseWrapper> searchByBranchNameAndDepartment(Long name, Lo
     }*/
     return branches;
 }
+    public boolean isBranchNameOrIdExistsAlready(String name, long brId) {
+        Branch test = branchRepository.findByNameAndIdNot(name,brId);
+        return branchRepository.findByNameAndIdNot(name,brId) == null ? false : true;
+    }
 
 
 public List<BranchResponseWrapper> getAllActiveBranches() {

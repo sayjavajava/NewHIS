@@ -79,7 +79,9 @@ public class  PatientService {
         patientWrapper.setState(patient.getState());
         patientWrapper.setFormattedAddress(patient.getFormattedAddress());
         patientWrapper.setEmergencyContactName(patient.getEmergencyContactName());
-
+        patientWrapper.setProfileImgURL(patient.getProfileImgURL());
+        patientWrapper.setPhotoFrontURL(patient.getInsurance() !=null ? patient.getInsurance().getPhotoFrontURL():null);
+        patientWrapper.setPhotoBackURL(patient.getInsurance() !=null ? patient.getInsurance().getPhotoBackURL():null);
         if (patient.getEmergencyContactPhone() != null)
             patientWrapper.setEmergencyContactPhone(patient.getEmergencyContactPhone());
         if (patient.getEmergencyContactRelation() != null)
@@ -131,6 +133,7 @@ public class  PatientService {
         insurance.setGroupNumber(patientWrapper.getGroupNumber());
         insurance.setPlanName(patientWrapper.getPlanName());
         insurance.setPlanType(patientWrapper.getPlanType());
+
         if (!patientWrapper.getCardIssuedDate().isEmpty())
             insurance.setCardIssuedDate(DateTimeUtil.getDateFromString(patientWrapper.getCardIssuedDate(), HISConstants.DATE_FORMATE_ONE));
         if (!patientWrapper.getCardExpiryDate().isEmpty())
@@ -168,6 +171,7 @@ public class  PatientService {
         this.populatePatient(patient, patientWrapper);
         Insurance insurance = new Insurance();
         this.populateInsurance(insurance, patientWrapper);
+        if(!HISCoreUtil.isNull(insurance.getCompany()))
         patient.setInsurance(insurance);
         Doctor doctor = doctorRepository.findOne(patientWrapper.getSelectedDoctor());
         patient.setPrimaryDoctor(doctor);
@@ -186,6 +190,7 @@ public class  PatientService {
         User patient = new User(patientWrapper, UserTypeEnum.PATIENT.toString());
         patient.setPrimaryDoctor(selectedDoctor);
 
+
         this.profileRepository.save(profile);
         this.insuranceRepository.save(insurance);
         patient.setProfile(profile);
@@ -193,30 +198,31 @@ public class  PatientService {
         this.userRepository.save(patient);
         userRole = new UserRole(patient, roleRepo.findByName(UserTypeEnum.PATIENT.getValue()));
         userRoleRepository.save(userRole);
+
 */
         /// now saving images against user id
 
         ///profile photo save
-        /*
+
         String url = null;
         if (patientWrapper.getProfileImg() != null) {
             url = userService.saveImage(patientWrapper.getProfileImg(),
                     HISConstants.S3_USER_PROFILE_DIRECTORY_PATH,
                     patient.getId()
                             + "_"
-                            + patient.getInsurance().getId()
+                            + patient.getId()
                             + "_"
                             + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME,
                     patient.getId()
                             + "_"
-                            + patient.getInsurance().getId()
+                            + patient.getId()
                             + "_"
                             + HISConstants.S3_USER_PROFILE_GRAPHIC_NAME,
                     "/"
                             + HISConstants.S3_USER_PROFILE_DIRECTORY_PATH
                             + patient.getId()
                             + "_"
-                            + patient.getInsurance().getId()
+                            + patient.getId()
                             + "_"
                             + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME);
         }
@@ -286,7 +292,7 @@ public class  PatientService {
             this.patientRepository.save(patient);
             url = null;
         }
-        */
+
         return patient.getId() + "";
 
     }

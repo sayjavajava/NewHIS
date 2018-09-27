@@ -22,6 +22,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,8 +33,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class UserService implements UserDetailsService {
-    /*@Autowired
-    private AWSService awsService;*/
+    @Autowired
+    private AWSService awsService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -60,10 +63,8 @@ public class UserService implements UserDetailsService {
     MedicalServiceRepository medicalServiceRepository;
     @Autowired
     ICDCodeRepository icdCodeRepository;
-
-    /*
     @Autowired
-    private S3KeyGen s3KeyGen;*/
+    private S3KeyGen s3KeyGen;
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -716,8 +717,8 @@ public class UserService implements UserDetailsService {
 
         String imgURL = null;
 
-//        byte[] byteArr = Files.readAllBytes(path);
-       /* InputStream is = new ByteArrayInputStream(byteArary);
+      // byte[] byteArr = Files.readAllBytes(path);
+        InputStream is = new ByteArrayInputStream(byteArary);
         boolean isSaved = false;
         isSaved = awsService.uploadImageByUserId(is,
                 directoryPath,
@@ -725,7 +726,7 @@ public class UserService implements UserDetailsService {
                 fullImgName);
         if (isSaved) {
             imgURL = this.s3KeyGen.getImagePublicURL(fullPathAndThumbNailGraphicName, false);
-        }*/
+        }
 
         return imgURL;
     }
