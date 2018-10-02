@@ -18,6 +18,10 @@ public class ICDCodeWrapper {
     private String description;
     private String descriptionCodeVersion;
     private ICDVersionWrapper iCDVersion;
+    /**
+     * means this object or ICD CODE has child record
+     */
+    private boolean hasChild;///associated;
 
     public ICDCodeWrapper() {
     }
@@ -31,6 +35,7 @@ public class ICDCodeWrapper {
         this.updatedOn = icd.getUpdatedOn().getTime();
         this.description = icd.getDescription();
     }
+
     public ICDCodeWrapper(ICDCodeVersion icdCodeVersion, ICDCode icd) {
         this.id = icd.getId();
         this.code = icd.getCode();
@@ -41,6 +46,7 @@ public class ICDCodeWrapper {
         this.description = icd.getDescription();
         this.descriptionCodeVersion = icdCodeVersion.getDescription();
     }
+
     public long getId() {
         return id;
     }
@@ -127,5 +133,13 @@ public class ICDCodeWrapper {
 
     public void setDescriptionCodeVersion(String descriptionCodeVersion) {
         this.descriptionCodeVersion = descriptionCodeVersion;
+    }
+
+    public boolean isHasChild() {
+        return hasChild;
+    }
+
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
     }
 }

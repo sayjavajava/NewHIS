@@ -529,6 +529,16 @@ public class ICDAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
+            if (this.icdService.isCodeAssociated(codeId)) {
+                response.setResponseMessage(messageBundle.getString("icd.code.delete.has.child"));
+                response.setResponseCode(ResponseEnum.ICD_CODE_HAS_CHILD.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("deleteICD API - ICD CODE has child record so record will not delete. First delete child record then you can delete it");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
             if (icdService.deletedICD(codeId)) {
                 response.setResponseMessage(messageBundle.getString("icd.delete.success"));
                 response.setResponseCode(ResponseEnum.ICD_CODE_DELETE_SUCCESS.getValue());
@@ -872,6 +882,16 @@ public class ICDAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
+            if (this.icdService.isVersionAssociated(iCDVersionId)) {
+                response.setResponseMessage(messageBundle.getString("icd.versions.delete.has.child"));
+                response.setResponseCode(ResponseEnum.ICD_VERSION_HAS_CHILD.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("deleteICDVersion API - ICD Version has child record so record will not  delete.");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
             if (icdService.deletedICDVersion(iCDVersionId)) {
                 response.setResponseMessage(messageBundle.getString("icd.version.delete.success"));
                 response.setResponseCode(ResponseEnum.ICD_VERSION_DELETE_SUCCESS.getValue());
@@ -1040,9 +1060,9 @@ public class ICDAPI {
             List<ICDCodeWrapper> codes = this.icdService.codes();
             List<ICDCodeWrapper> associatedCodes = this.icdService.getAssociatedICDCVByVId(versionId);//this.iCDService.getAssociatedICDCVByVId(versionId);
             String descriptionCodeVersion = "";
-            for (ICDCodeWrapper associatedCodeWrapper:associatedCodes){
+            for (ICDCodeWrapper associatedCodeWrapper : associatedCodes) {
 
-                for (ICDCodeWrapper codeWrapper:codes){
+                for (ICDCodeWrapper codeWrapper : codes) {
                     if (codeWrapper.getId() == associatedCodeWrapper.getId()) {
                         codeWrapper.setCheckedCode(true);
                         descriptionCodeVersion = associatedCodeWrapper.getDescriptionCodeVersion();
@@ -1054,8 +1074,8 @@ public class ICDAPI {
             Map<String, Object> map = new HashMap<>();
 
             if (!HISCoreUtil.isListEmpty(codes)) {
-                map.put("code",codes);
-                map.put("des",descriptionCodeVersion);
+                map.put("code", codes);
+                map.put("des", descriptionCodeVersion);
                 response.setResponseMessage(messageBundle.getString("icd.associated.found"));
                 response.setResponseCode(ResponseEnum.ICD_ASSOCIATED_FOUND_SUCCESS.getValue());
                 response.setResponseData(map);
@@ -1090,7 +1110,7 @@ public class ICDAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/codes/associated", method = RequestMethod.GET)
     public ResponseEntity<?> getAssociatedCodesByVersionId(HttpServletRequest request,
-                                               @RequestParam("versionId") long versionId) {
+                                                           @RequestParam("versionId") long versionId) {
         logger.info("getCodesByVersionId Api Called..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("icd.associated.not.found"));
@@ -1112,7 +1132,7 @@ public class ICDAPI {
             Map<String, Object> map = new HashMap<>();
 
             if (!HISCoreUtil.isListEmpty(associatedCodes)) {
-                map.put("code",associatedCodes);
+                map.put("code", associatedCodes);
                 response.setResponseMessage(messageBundle.getString("icd.associated.found"));
                 response.setResponseCode(ResponseEnum.ICD_ASSOCIATED_FOUND_SUCCESS.getValue());
                 response.setResponseData(map);

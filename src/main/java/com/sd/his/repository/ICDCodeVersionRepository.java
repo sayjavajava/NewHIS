@@ -35,4 +35,17 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
             "where codeVersion.version.name LIKE CONCAT('%',:name,'%') or codeVersion.icd.code LIKE CONCAT('%',:code,'%') ")
     List<ICDCodeVersionWrapper> findAllByVersion_NameContainingOrIcd_CodeContaining(@Param("name") String versionName, @Param("code") String code);
 
+    ICDCodeVersion findByIcd_id(long codeId);
+
+    @Query("SELECT CASE WHEN COUNT (codeVersion) > 0 THEN true ELSE false END " +
+            "FROM com.sd.his.model.ICDCodeVersion codeVersion " +
+            "WHERE codeVersion.icd.id =:id")
+    boolean isCodeAssociated(@Param("id") Long codeId);
+
+    @Query("SELECT CASE WHEN COUNT (codeVersion) > 0 THEN true ELSE false END " +
+            "FROM com.sd.his.model.ICDCodeVersion codeVersion " +
+            "WHERE codeVersion.version.id=:versionId")
+    boolean isVersionAssociated(@Param("versionId") Long versionId);
+
+
 }
