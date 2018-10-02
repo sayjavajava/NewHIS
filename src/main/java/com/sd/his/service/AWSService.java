@@ -88,6 +88,8 @@ public class AWSService {
             BufferedImage resizeImageJpg = resizeImage(bufferedImage, type);
             String[] s3ThumbnailKey = s3KeyGen.profileThumbnailGraphic(id);
             String[] s3Key = s3KeyGen.profileGraphic(id);
+             /*String[] s3ThumbnailKey = s3KeyGen.profileGraphic(id);
+            String[] s3Key = s3KeyGen.profileGraphic(id)*/;
             // Save the full image to S3
             awss3.imageToS3(
                     bufferedImage,

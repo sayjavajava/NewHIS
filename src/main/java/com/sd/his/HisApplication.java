@@ -33,6 +33,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;*/
 
 
 
+
 @SpringBootApplication
 @EnableJpaAuditing
 public class HisApplication {
@@ -173,6 +174,7 @@ public class HisApplication {
         }
     }
 }
+
 
 
 

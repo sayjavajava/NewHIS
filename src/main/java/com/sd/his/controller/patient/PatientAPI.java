@@ -1,8 +1,10 @@
 package com.sd.his.controller.patient;
 
+
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Patient;
 import com.sd.his.model.SmokingStatus;
+import com.sd.his.service.AWSService;
 import com.sd.his.service.PatientService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +61,8 @@ public class PatientAPI {
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
     @Autowired
     private PatientService patientService;
+    @Autowired
+    AWSService awsService;
 
     @ApiOperation(httpMethod = "POST", value = "Save patient",
             notes = "This method will save the patient.",
@@ -548,5 +555,81 @@ public class PatientAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @ApiOperation(httpMethod = "GET", value = "Upload Profile Image",
+            notes = "This method will upload the profile image of any user.",
+            produces = "application/json", nickname = "Upload Profile Image",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Profile image of user uploaded successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/uploadProfileImg/{id}", method = RequestMethod.POST,
+            headers = ("content-type=multipart/*"))
+    public ResponseEntity<?> uploadProfileImage(HttpServletRequest request,
+                                                @PathVariable("id") long id,
+                                                @RequestParam("file") MultipartFile file) {
+        logger.info("uploadProfileImage API called for user: " + id);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.error"));
+        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            Patient patient = patientService.findPatientByID(id);
+
+        //    if (HISCoreUtil.isValidObject(user)) {
+                if (HISCoreUtil.isValidObject(file)) {
+                    byte[] byteArr = new byte[0];
+                    try {
+                        byteArr = file.getBytes();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    InputStream is = new ByteArrayInputStream(byteArr);
+                    Boolean isSaved = awsService.uploadImage(is, id);
+                    if (isSaved) {
+                        String imgURL = awsService.getProfileImageUrl(id);
+                    //    user.getProfile().setProfileImgURL(imgURL);
+                        patient.setProfileImgURL(imgURL);
+                        patientService.savePatientUpadtedImage(patient);
+
+                        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.success"));
+                        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_SUCCESS.getValue());
+                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                   //     response.setResponseData(new ProfileImageUploadResponse(user));
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    } else {
+                        response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
+                        response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
+                        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                        response.setResponseData(null);
+
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    }
+                } else {
+                    response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
+                    response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+
+              //  }
+             //   userService.updateUser(user);
+            }
+        } catch (Exception ex) {
+            logger.error("Admin pr update failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 
 }
