@@ -139,7 +139,6 @@ public class AppointmentAPI {
             int patientCount = appointmentService.countAllAppointments();
 
             logger.error("getAllPaginatedAppointments - fetched successfully");
-
             if (!HISCoreUtil.isListEmpty(appointments)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
@@ -220,9 +219,9 @@ public class AppointmentAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }*/
 
-         Appointment savedAppointment = appointmentService.saveAppointment(appointmentWrapper);
+         String savedAppointment = appointmentService.saveAppointment(appointmentWrapper);
 
-         if (HISCoreUtil.isValidObject(savedAppointment)) {
+         if (savedAppointment.equalsIgnoreCase("success")) {
                // response.setResponseData(savedAppointment);
                 response.setResponseMessage(messageBundle.getString("appointment.add.success"));
                 response.setResponseCode(ResponseEnum.APPT_SAVED_SUCCESS.getValue());
@@ -230,14 +229,21 @@ public class AppointmentAPI {
                 logger.info("Appointment created successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else{
+            }else if (savedAppointment.equalsIgnoreCase("already")){
              response.setResponseMessage(messageBundle.getString("appointment.already.exist"));
              response.setResponseCode(ResponseEnum.APPT_ALREADY_EXISTS.getValue());
              response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
              logger.info("Appointment Already Exists...");
 
              return new ResponseEntity<>(response, HttpStatus.OK);
+         }else {
+             response.setResponseMessage(messageBundle.getString("appointment.add.error"));
+             response.setResponseCode(ResponseEnum.APPT_SAVED_ERROR.getValue());
+             response.setResponseStatus(ResponseEnum.ERROR.getValue());
+             response.setResponseData(null);
+             return new ResponseEntity<>(response, HttpStatus.OK);
          }
+
 
         } catch (Exception ex) {
             logger.error("Appointment Creation Failed.", ex.fillInStackTrace());
