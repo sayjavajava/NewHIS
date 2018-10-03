@@ -132,8 +132,8 @@ public class AppointmentWrapper {
        /* this.firstAppointmentOn = firstAppointmentOn;
         this.lastAppointmentOn = lastAppointmentOn;*/
         this.patientId = patientId;
-        this.patientFirstName = patientFirstName;
-        this.patientLastName = patientLastName;
+        this.patientFirstName = firstName;
+        this.patientLastName = lastName;
         this.branchId = branchId;
         this.roomId = roomId;
         this.examName = roomName;

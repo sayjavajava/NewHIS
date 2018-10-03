@@ -235,14 +235,14 @@ public class BranchService {
         /*if(!HISCoreUtil.isListEmpty(exRooms)){ // delete branches room for future
              roomRepository.deleteAllByBranch(branch);
         }*/
-        for (ExamRooms ex : exRooms) {
+        /*for (ExamRooms ex : exRooms) {
             Room room = new Room();
             room.setAllowOnlineScheduling(ex.isAllowOnlineScheduling());
             room.setRoomName(ex.getRoomName());
             room.setBranch(branch);
             room.setActive(true);
             roomRepository.save(room);
-        }
+        }*/
 
        /* Doctor doctor = doctorRepository.getOne(branchRequestWrapper.getPrimaryDoctor());
         BranchDoctor branchDoctor =branchDoctorRepository.findByBranch(branch);
@@ -284,12 +284,10 @@ public class BranchService {
 
 
 */
-public List<BranchResponseWrapper> searchByBranchNameAndDepartment(Long name, Long department, int offset, int limit) {
+public List<BranchResponseWrapper> searchByBranchNameAndDepartment(Long name, int offset, int limit) {
     Pageable pageable = new PageRequest(offset, limit);
     logger.info("searching branches");
     Branch branch1 =  branchRepository.findOne(name);
-    Department department1 = departmentRepository.findOne(department);
-
     List<BranchResponseWrapper> branches = branchRepository.findByNameAndBranchDepartments(branch1.getName(),pageable);
    /* List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueOrBranchDepartments_department_nameIgnoreCaseContaining(branch1.getName(), department1.getName(), pageable);
     List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();

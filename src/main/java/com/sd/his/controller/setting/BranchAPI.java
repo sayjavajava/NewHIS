@@ -465,8 +465,8 @@ public class BranchAPI {
     public ResponseEntity<?> searchPaginatedBranches(HttpServletRequest request,
                                                      @PathVariable("page") int page,
                                                      @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                                     @RequestParam(value = "branch") Long branchName,
-                                                     @RequestParam(value = "department") Long department) {
+                                                     @RequestParam(value = "branch") Long branchName){
+
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("branch.not.found"));
@@ -475,8 +475,7 @@ public class BranchAPI {
         response.setResponseData(null);
 
         try {
-            //
-            List<BranchResponseWrapper> branchWrappers = branchService.searchByBranchNameAndDepartment(branchName, department,page, pageSize);
+            List<BranchResponseWrapper> branchWrappers = branchService.searchByBranchNameAndDepartment(branchName,page, pageSize);
 
             int countBranch = branchService.totalBranches();
 

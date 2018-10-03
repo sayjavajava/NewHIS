@@ -100,25 +100,30 @@ public class AppointmentService {
         return appointmentRepository.findAll().size();
     }
     @Transactional
-    public Appointment saveAppointment(AppointmentWrapper appointmentWrapper){
+    public String saveAppointment(AppointmentWrapper appointmentWrapper){
         Appointment appointment =new Appointment();
+        String result ="success";
         Patient patient =null;
         Optional<String> patientType  =  appointmentWrapper.getAppointmentType().stream()
                 .filter(x->x.equalsIgnoreCase("NewPatient")).findFirst();
         if(patientType.isPresent()){
             patient = new Patient();
-            patient.setEmail(appointmentWrapper.getEmail());
+           // patient.setEmail(appointmentWrapper.getEmail());
             patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
             patient.setFirstName(appointmentWrapper.getNewPatient());
             patient.setGender(GenderTypeEnum.MALE);
             patient.setMaritalStatus(MaritalStatusTypeEnum.MARRIED);
             patient.setStatus(PatientStatusTypeEnum.ACTIVE);
+            if(appointmentWrapper.getDoctorId() !=null){
+                Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
+                appointment.setDoctor(doctor);
+            }else
             patient.setPrimaryDoctor(doctorRepository.findOne(1L));
             patient.setLastName(appointmentWrapper.getNewPatient());
             patient.setMiddleName(appointmentWrapper.getNewPatient());
             // patient.setLastName(appointmentWrapper.getNewPatient());
             patient.setCellPhone(appointmentWrapper.getCellPhone());
-            patient.setDob(appointmentWrapper.getDateOfBirth());
+          //  patient.setDob(appointmentWrapper.getDateOfBirth());
             patientRepository.save(patient);
             appointment.setPatient(patient);
         }
@@ -129,17 +134,18 @@ public class AppointmentService {
         Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
         appointment.setStartedOn(date2);
         //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
-        appointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
         Date ended = HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration());
+        appointment.setEndedOn(ended);
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setNotes(appointmentWrapper.getNotes());
         appointment.setColor(appointmentWrapper.getColor());
         appointment.setType(new Gson().toJson(appointmentWrapper.getAppointmentType()));
         appointment.setDuration(appointmentWrapper.getDuration());
         appointment.setStatus(AppointmentStatusTypeEnum.valueOf(appointmentWrapper.getStatus()));
+        if(appointmentWrapper.getFollowUpReminder() ==true){
         appointment.setFollowUpDate(HISCoreUtil.convertToDate(appointmentWrapper.getFollowUpDate()));
         appointment.setFollowUpReasonReminder(appointmentWrapper.getFollowUpReason());
-        appointment.setFollowUpReminder(appointmentWrapper.getFollowUpReminder());
+        appointment.setFollowUpReminder(appointmentWrapper.getFollowUpReminder());}
 
         appointment.setAppointmentId(hisUtilService.getPrefixId(ModuleEnum.APPOINTMENT));
       /*  appointment.setRecurring(appointmentWrapper.isRecurringAppointment());
@@ -196,19 +202,23 @@ public class AppointmentService {
       if(!checkTimeAndDateAlreadyExist(scheduleDate,ended)){
         appointmentRepository.save(appointment);
         }
-        else {appointment = null;}
+        else {result = "already";}
 
-        return appointment;
+        return result;
     }
    @Transactional
     public Appointment updateAppointment(AppointmentWrapper appointmentWrapper,Appointment alreadyExistAppointment){
 
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
-        // appointment.setRecurringDays(new Gson().toJson(appointmentWrapper.getSelectedRecurringDays()));
 
-        Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
+       Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
+       alreadyExistAppointment.setSchdeulledDate(scheduleDate);
+       Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
+       alreadyExistAppointment.setStartedOn(date2);
+       alreadyExistAppointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
+      /*  Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
         alreadyExistAppointment.setSchdeulledDate(scheduleDate);
-        alreadyExistAppointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));
+        alreadyExistAppointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));*/
         alreadyExistAppointment.setReason(appointmentWrapper.getReason());
         alreadyExistAppointment.setNotes(appointmentWrapper.getNotes());
         alreadyExistAppointment.setColor(appointmentWrapper.getColor());
