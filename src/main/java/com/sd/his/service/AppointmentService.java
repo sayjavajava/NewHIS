@@ -78,9 +78,7 @@ public class AppointmentService {
     }
 
     public List<AppointmentWrapper> findAllAppointments() {
-        List<AppointmentWrapper> list =appointmentRepository.findAllAppointments();
-        return appointmentRepository.findAllAppointments();
-
+       return appointmentRepository.findAllAppointments();
     }
     public AppointmentWrapper getSingleAppointment(long id){
         return appointmentRepository.findAllAppointmentById(id);

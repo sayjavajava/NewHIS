@@ -568,9 +568,11 @@ public class StaffService {
                 doctor.setStatus(ProfileStatusTypeEnum.ACTIVE);
                 doctor.setVacationFrom(HISCoreUtil.convertToDate(createRequest.getDateFrom()));
                 doctor.setVacationTO(HISCoreUtil.convertToDate(createRequest.getDateTo()));
-                List<String> daysList = Arrays.asList(createRequest.getSelectedWorkingDays());
-               /*if(!HISCoreUtil.isListEmpty(daysList)){
-                    doctor.setWorkingDays(daysList); }*/
+                //doctor working days
+                List<String> daysList = new LinkedList<String>( Arrays.asList(createRequest.getSelectedWorkingDays()) );
+               if(!HISCoreUtil.isListEmpty(daysList)){
+                    doctor.setWorkingDays(daysList);
+               }
 
                 //doctor department portion
                 Department selectedDocDept = null;
