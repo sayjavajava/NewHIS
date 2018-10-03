@@ -54,7 +54,7 @@ public class Department extends BaseEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(targetEntity = DepartmentMedicalService.class, mappedBy = "department")
-    private List<DepartmentMedicalService> departments;
+    private List<DepartmentMedicalService> departmentMedicalServices;
 
     public Department() {
     }
@@ -100,5 +100,13 @@ public class Department extends BaseEntity implements Serializable {
 
     public void setBranchDepartments(List<BranchDepartment> branchDepartments) {
         this.branchDepartments = branchDepartments;
+    }
+
+    public List<DepartmentMedicalService> getDepartmentMedicalServices() {
+        return departmentMedicalServices;
+    }
+
+    public void setDepartmentMedicalServices(List<DepartmentMedicalService> departmentMedicalServices) {
+        this.departmentMedicalServices = departmentMedicalServices;
     }
 }

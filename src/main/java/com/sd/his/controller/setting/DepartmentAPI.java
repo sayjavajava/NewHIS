@@ -207,6 +207,26 @@ public class DepartmentAPI {
         try {
             logger.error("deleteClinicalDepartment - dpt fetching from DB for existence");
 
+            if (dptId <= 0) {
+                response.setResponseMessage(messageBundle.getString("cli.dpts.delete.id"));
+                response.setResponseCode(ResponseEnum.CLI_DPT_DELETE_DEPART_ID.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
+                response.setResponseData(null);
+
+                logger.error("deleteClinicalDepartment - Please provide proper department id.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (this.departmentService.hasChild(dptId)) {
+                response.setResponseMessage(messageBundle.getString("cli.dpts.delete.has.child"));
+                response.setResponseCode(ResponseEnum.CLI_DPT_DELETE_HAS_CHILD.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
+                response.setResponseData(null);
+
+                logger.error("deleteClinicalDepartment - department has child record so you cannot delete it. First , delete its child record then you can delete it");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
             departmentService.deleteDepartment(dptId);
             response.setResponseMessage(messageBundle.getString("cli.dpts.delete.success"));
             response.setResponseCode(ResponseEnum.CLI_DPT_DELETE_SUCCESS.getValue());

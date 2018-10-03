@@ -31,6 +31,11 @@ public class DepartmentWrapper {
     String description;
     boolean active;
     private boolean checkedDepartment;
+    /***
+     * if true ,this object has child record
+     * if false, this object has no child record
+     * ***/
+    private boolean hasChild;
 
     public DepartmentWrapper() {
     }
@@ -47,6 +52,12 @@ public class DepartmentWrapper {
         this.name = dpt.getName();
         this.description = dpt.getDescription();
         this.active = dpt.getActive() == null ? false : dpt.getActive();
+        if (dpt.getDepartmentMedicalServices() != null && dpt.getDepartmentMedicalServices().size() > 0) {
+            this.hasChild = true;
+        } else {
+            this.hasChild = false;
+        }
+
     }
 
     public long getId() {
@@ -87,5 +98,13 @@ public class DepartmentWrapper {
 
     public void setCheckedDepartment(boolean checkedDepartment) {
         this.checkedDepartment = checkedDepartment;
+    }
+
+    public boolean isHasChild() {
+        return hasChild;
+    }
+
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
     }
 }
