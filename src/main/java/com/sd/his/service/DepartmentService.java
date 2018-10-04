@@ -114,4 +114,13 @@ public class DepartmentService {
     public DepartmentWrapper findDepartmentByName(String name) {
         return departmentRepository.findByNameAndActiveNotNull(name);
     }
+
+
+    public boolean hasChild(long dptId) {
+        Department department = this.departmentRepository.findOne(dptId);
+        if (department != null && department.getDepartmentMedicalServices() != null && department.getDepartmentMedicalServices().size() > 0) {
+            return true;
+        }
+        return false;
+    }
 }

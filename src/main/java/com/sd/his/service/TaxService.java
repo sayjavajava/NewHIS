@@ -101,4 +101,12 @@ public class TaxService {
     public int countSearchByTaxByName(String searchTaxName) {
         return taxRepository.findAllByNameContaining(searchTaxName).size();
     }
+
+    public boolean hasChild(long taxId) {
+        Tax tax = this.taxRepository.findOne(taxId);
+        if (tax != null && tax.getMedicalServices() != null && tax.getMedicalServices().size() > 0) {
+            return true;
+        }
+        return false;
+    }
 }

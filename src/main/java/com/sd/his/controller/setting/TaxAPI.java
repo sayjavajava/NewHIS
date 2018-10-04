@@ -199,7 +199,7 @@ public class TaxAPI {
                                               @RequestParam("taxId") long taxId) {
         logger.info("deleteServiceTax API - Called..");
         GenericAPIResponse response = new GenericAPIResponse();
-       try {
+        try {
             if (taxId <= 0) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
@@ -209,16 +209,16 @@ public class TaxAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            /*Tax dbTax = taxService.findTaxById(taxId);
-            if (!HISCoreUtil.isValidObject(dbTax)) {
-                response.setResponseMessage(messageBundle.getString("service.tax.not.found.error"));
-                response.setResponseCode(ResponseEnum.SERVICE_TAX_NOT_FOUND_ERROR.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+
+            if (taxService.hasChild(taxId)) {
+                response.setResponseMessage(messageBundle.getString("service.tax.delete.has.child"));
+                response.setResponseCode(ResponseEnum.SERVICE_TAX_DELETE_HAS_CHILD.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
                 response.setResponseData(null);
-                logger.info("deleteServiceTax API - tax not found...");
+                logger.info("deleteServiceTax API - tax has child record. First delete its child record then you can delete it.");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }*/
+            }
 
             taxService.deleteTax(taxId);
             response.setResponseMessage(messageBundle.getString("service.tax.delete.success"));
