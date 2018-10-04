@@ -1,4 +1,4 @@
-package com.sd.his.controller.patient;
+package com.sd.his.controller.Patient;
 
 
 import com.sd.his.enums.ResponseEnum;
@@ -303,7 +303,8 @@ public class PatientAPI {
         logger.info("updateSmokeStatus API - initiated.");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            if( smokingStatusRequest.getSmokingId()==null && smokingStatusRequest.getSmokingStatus()!=null && !smokingStatusRequest.getSmokingStatus().isEmpty()){
+            if( smokingStatusRequest.getSmokingId()==null && smokingStatusRequest.getSmokingStatus()!=null && !smokingStatusRequest.getSmokingStatus().isEmpty()
+                    && smokingStatusRequest.getStartDate()!=null && smokingStatusRequest.getRecordedDate()!=null ){
                 SmokingStatus smokeStatus = new SmokingStatus();
                 Patient patient = patientService.getPatientById(smokingStatusRequest.getPatientId() );
                 patientService.populateSmokeStatus(smokingStatusRequest, smokeStatus);
@@ -314,6 +315,11 @@ public class PatientAPI {
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(null);
                 logger.error("smokeStatus API - "+messageBundle.getString("smoke.status.update.success"));
+            }else {
+                response.setResponseMessage(messageBundle.getString("smoke.status.param.error"));
+                //response.setResponseCode(ResponseEnum.SMOKE_STATUS_FIELD_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
             }
 
         } catch (Exception e) {
