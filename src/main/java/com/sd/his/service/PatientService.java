@@ -539,13 +539,13 @@ public class  PatientService {
 
      public void populateSmokeStatus(SmokingStatusWrapper smokeStatusWrapper, SmokingStatus smokeStatus) throws ParseException {
         if(!smokeStatusWrapper.getEndDate().isEmpty()){
-            smokeStatus.setEndDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getEndDate(), HISConstants.DATE_FORMATE_ONE));
+            smokeStatus.setEndDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getEndDate(), HISConstants.DATE_FORMATE_THREE));
         }
         if(!smokeStatusWrapper.getStartDate().isEmpty()){
-            smokeStatus.setStartDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getStartDate(), HISConstants.DATE_FORMATE_ONE));
+            smokeStatus.setStartDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getStartDate(), HISConstants.DATE_FORMATE_THREE));
         }
         if(!smokeStatusWrapper.getRecordedDate().isEmpty()){
-            smokeStatus.setRecordedDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getRecordedDate(), HISConstants.DATE_FORMATE_ONE));
+            smokeStatus.setRecordedDate(DateTimeUtil.getDateFromString(smokeStatusWrapper.getRecordedDate(), HISConstants.DATE_FORMATE_THREE));
         }
         smokeStatus.setSmokingStatus(smokeStatusWrapper.getSmokingStatus());
     }

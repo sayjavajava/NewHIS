@@ -116,6 +116,36 @@ public class PatientInvoiceController {
 
 
 
+    @ApiOperation(httpMethod = "GET", value = "Get patient Invoices Balance",
+            notes = "This method will Get patient Invoices Balance",
+            produces = "application/json", nickname = " patient Invoice",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/getPatientInvBal/{patientId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getPatientInvoicesBalance(@PathVariable ("patientId") Long patientId) {
+        long date = System.currentTimeMillis();
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("invoice.balance.error"));
+        response.setResponseCode(InvoiceMessageEnum.ERROR.getValue());
+        response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+            response.setResponseData( patientInvoiceService.getPatientInvoicesBalance(patientId) );
+            response.setResponseMessage(messageBundle.getString("invoice.balance.found"));
+            response.setResponseCode(InvoiceMessageEnum.SUCCESS.getValue());
+            response.setResponseStatus(InvoiceMessageEnum.SUCCESS.getValue());
+            logger.info("Patient Invoices Balance fetched successfully...");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex) {
+            logger.error("Patient Invoices Balance fetching Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
+            response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        //     return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @ApiOperation(httpMethod = "GET", value = "Generate Invoice On CheckIn",
             notes = "This method will Generate Invoice On CheckIn against appointId",
             produces = "application/json", nickname = "Generate Invoice On CheckIn",
@@ -153,5 +183,4 @@ public class PatientInvoiceController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
