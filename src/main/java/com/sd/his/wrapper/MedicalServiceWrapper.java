@@ -46,6 +46,7 @@ public class MedicalServiceWrapper {
     private List<DepartmentWrapper> departments;
     private List<DepartmentWrapper> checkedDepartments;
     private List<TaxWrapper> taxes;
+    private boolean hasChild;
 
     public MedicalServiceWrapper() {
     }
@@ -78,6 +79,12 @@ public class MedicalServiceWrapper {
         this.duration = ms.getDuration();
         this.checkedBranchCount = ms.getBranchMedicalServices() == null ? 0 : ms.getBranchMedicalServices().size();
         this.checkedDepartmentCount = ms.getDepartmentMedicalServices() == null ? 0 : ms.getDepartmentMedicalServices().size();
+
+        if (ms.getDoctorMedicalServices() != null && ms.getDoctorMedicalServices().size() > 0 ||
+                ms.getAppointment() != null && ms.getAppointment().size() > 0) {
+            this.hasChild = true;
+        }
+
     }
 
     public MedicalServiceWrapper(MedicalService ms, String search) {
@@ -95,6 +102,10 @@ public class MedicalServiceWrapper {
         this.status = ms.getStatus();
         this.description = ms.getDescription();
         this.duration = ms.getDuration();
+        if (ms.getDoctorMedicalServices() != null && ms.getDoctorMedicalServices().size() > 0 ||
+                ms.getAppointment() != null && ms.getAppointment().size() > 0) {
+            this.hasChild = true;
+        }
     }
 
     public long getId() {
@@ -223,5 +234,13 @@ public class MedicalServiceWrapper {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public boolean isHasChild() {
+        return hasChild;
+    }
+
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
     }
 }

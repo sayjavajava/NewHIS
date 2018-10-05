@@ -43,6 +43,7 @@ public interface MedicalServiceRepository extends JpaRepository<MedicalService, 
     List<MedicalService> findAllByCreatedOnNotNull(Pageable pageable);
 
     MedicalService findByName(String name);
+
     MedicalService findByIdNotAndName(long id, String title);
 
 
@@ -72,15 +73,13 @@ public interface MedicalServiceRepository extends JpaRepository<MedicalService, 
                                                 @Param("branchId") Long branchId,
                                                 @Param("departmentId") Long departmentId,
                                                 @Param("serviceFee") Double serviceFee);
-//    void deleteById(long id);
-    List<MedicalService> findAllByStatusTrue();
+
 
     @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms WHERE ms.status=:status")
     List<MedicalServiceWrapper> findAllMedicalServiceWrappers(@Param("status") Boolean status);
 
     List<MedicalService> findAllByIdIn(List<Long> ids);
-    List<MedicalServiceWrapper> findAllMedicalServiceWrappersByStatus(@Param("status") Boolean status);
 
-    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms")
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms where ms.status=true")
     List<MedicalServiceWrapper> findAllMedicalServiceWrappers();
 }
