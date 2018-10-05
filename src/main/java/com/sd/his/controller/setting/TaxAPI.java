@@ -1,7 +1,9 @@
 package com.sd.his.controller.setting;
 
+import com.amazonaws.util.DateUtils;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Tax;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.TaxWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.service.TaxService;
@@ -18,10 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /*
@@ -269,6 +268,19 @@ public class TaxAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
+            Date fromDate = HISCoreUtil.convertToDateWithTime(taxWrapper.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+            Date toDate = HISCoreUtil.convertToDateWithTime(taxWrapper.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+
+            if (fromDate.after(toDate)) {
+                response.setResponseMessage(messageBundle.getString("service.tax.from.date"));
+                response.setResponseCode(ResponseEnum.SERVICE_TAX_FROM_DATE.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
+                response.setResponseData(null);
+
+                logger.error("saveTax API - Tax FROM DATE should be less than or equal to 'TO DATE'.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
             if (taxService.isAlreadyExist(taxWrapper)) {
                 response.setResponseMessage(messageBundle.getString("service.tax.already.exist"));
                 response.setResponseCode(ResponseEnum.SERVICE_TAX_ALREADY_EXIST_ERROR.getValue());
@@ -322,6 +334,18 @@ public class TaxAPI {
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
                 logger.error("updateTax API - insufficient params.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            Date fromDate = HISCoreUtil.convertToDateWithTime(updateRequest.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+            Date toDate = HISCoreUtil.convertToDateWithTime(updateRequest.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+
+            if (fromDate.after(toDate)) {
+                response.setResponseMessage(messageBundle.getString("service.tax.update.from.date"));
+                response.setResponseCode(ResponseEnum.SERVICE_TAX_FROM_DATE.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
+                response.setResponseData(null);
+
+                logger.error("updateTax API - Tax FROM DATE should be less than or equal to 'TO DATE'.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
