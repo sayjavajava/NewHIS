@@ -616,7 +616,7 @@ public class UserService implements UserDetailsService {
 //            userResponseWrapper.setDutyShift(userDutyShift.getDutyShift());
 //            userResponseWrapper.setVacation(vacation);
 //            List<ClinicalDepartment> clinicalDepartmentList = new ArrayList<>();
-//            for (DepartmentUser departmentUser : user.getDepartments()) {
+//            for (DepartmentUser departmentUser : user.getDepartmentsActive()) {
 //                clinicalDepartmentList.add(departmentUser.getClinicalDepartment());
 //                userResponseWrapper.setClinicalDepartments(clinicalDepartmentList);
 //            }
@@ -625,7 +625,7 @@ public class UserService implements UserDetailsService {
 //        if (userType.equalsIgnoreCase("nurse")) {
 //            List<ClinicalDepartment> nurseDepartList = new ArrayList<>();
 //            List<DutyWithDoctor> nurseDutyWithDoctorsList = new ArrayList<>();
-//            for (DepartmentUser nurseDeptUser : user.getDepartments()) {
+//            for (DepartmentUser nurseDeptUser : user.getDepartmentsActive()) {
 //                nurseDepartList.add(nurseDeptUser.getClinicalDepartment());
 //                userResponseWrapper.setClinicalDepartments(nurseDepartList);
 //            }

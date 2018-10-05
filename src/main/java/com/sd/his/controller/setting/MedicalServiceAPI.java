@@ -136,89 +136,6 @@ public class MedicalServiceAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(httpMethod = "GET", value = "all Branches by Medical Service id only selected",
-            notes = "This method will return Branches by Medical Service Id, only selected",
-            produces = "application/json", nickname = "Paginated CMedical Services",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "all Branches by Medical Service id only selected fetched successfully.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/departments/{msId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getDepartmentsByMedicalServiceId(HttpServletRequest request,
-                                                              @PathVariable("msId") long msId) {
-
-        logger.error("getDepartmentsByMedicalServiceId API initiated");
-        GenericAPIResponse response = new GenericAPIResponse();
-        try {
-            logger.error("getAllMedicalServices -  fetching from DB");
-            List<DepartmentWrapper> mss = medicalServicesService.getCheckedDepartsByMedicalServiceId(msId);
-
-            if (mss.size()>0){
-                logger.info("getDepartmentsByMedicalServiceId -  fetched successfully" + mss.size());
-                response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
-                response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            }
-            response.setResponseData(mss);
-
-            logger.info("getAllMedicalServices API successfully executed.");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (Exception ex) {
-            logger.error("getDepartmentsByMedicalServiceId exception..", ex.fillInStackTrace());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-    @ApiOperation(httpMethod = "GET", value = "all Branches by Medical Service id only selected",
-            notes = "This method will return Branches by Medical Service Id, only selected",
-            produces = "application/json", nickname = "Paginated CMedical Services",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "all Branches by Medical Service id only selected fetched successfully.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/branches/{msId}", method = RequestMethod.GET)
-    public ResponseEntity<?> getCheckedBranchesByMedicalServiceId(HttpServletRequest request,
-                                                              @PathVariable("msId") long msId) {
-
-        logger.info("getCheckedBranchesByMedicalServiceId API initiated");
-        GenericAPIResponse response = new GenericAPIResponse();
-        try {
-            logger.error("getCheckedBranchesByMedicalServiceId - fetching from DB");
-            List<BranchResponseWrapper> checkedBranches = medicalServicesService.getCheckedBranchesByMedicalServiceId(msId);
-
-            if (checkedBranches.size()>0){
-
-                logger.info("getCheckedBranchesByMedicalServiceId - Medical Services fetched successfully" + checkedBranches.size());
-                response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
-                response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            }
-            response.setResponseData(checkedBranches);
-
-            logger.info("getCheckedBranchesByMedicalServiceId API successfully executed.");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (Exception ex) {
-            logger.error("getCheckedBranchesByMedicalServiceId exception..", ex.fillInStackTrace());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
     @ApiOperation(httpMethod = "GET", value = "Paginated Medical Services",
             notes = "This method will return Paginated Medical Services",
             produces = "application/json", nickname = "Paginated CMedical Services",
@@ -256,6 +173,90 @@ public class MedicalServiceAPI {
         }
 
     }
+
+    @ApiOperation(httpMethod = "GET", value = "all Branches by Medical Service id only selected",
+            notes = "This method will return Branches by Medical Service Id, only selected",
+            produces = "application/json", nickname = "Paginated CMedical Services",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "all Branches by Medical Service id only selected fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/departments/{msId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getDepartmentsByMedicalServiceId(HttpServletRequest request,
+                                                              @PathVariable("msId") long msId) {
+
+        logger.error("getDepartmentsByMedicalServiceId API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            logger.error("getAllMedicalServices -  fetching from DB");
+            List<DepartmentWrapper> mss = medicalServicesService.getCheckedDepartsByMedicalServiceId(msId);
+
+            if (mss.size() > 0) {
+                logger.info("getDepartmentsByMedicalServiceId -  fetched successfully" + mss.size());
+                response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
+                response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            }
+            response.setResponseData(mss);
+
+            logger.info("getAllMedicalServices API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getDepartmentsByMedicalServiceId exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "all Branches by Medical Service id only selected",
+            notes = "This method will return Branches by Medical Service Id, only selected",
+            produces = "application/json", nickname = "Paginated CMedical Services",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "all Branches by Medical Service id only selected fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/branches/{msId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getCheckedBranchesByMedicalServiceId(HttpServletRequest request,
+                                                                  @PathVariable("msId") long msId) {
+
+        logger.info("getCheckedBranchesByMedicalServiceId API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            logger.error("getCheckedBranchesByMedicalServiceId - fetching from DB");
+            List<BranchResponseWrapper> checkedBranches = medicalServicesService.getCheckedBranchesByMedicalServiceId(msId);
+
+            if (checkedBranches.size() > 0) {
+
+                logger.info("getCheckedBranchesByMedicalServiceId - Medical Services fetched successfully" + checkedBranches.size());
+                response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
+                response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            }
+            response.setResponseData(checkedBranches);
+
+            logger.info("getCheckedBranchesByMedicalServiceId API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getCheckedBranchesByMedicalServiceId exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
 
 
     @ApiOperation(httpMethod = "GET", value = "Department Medical Services",
@@ -325,7 +326,7 @@ public class MedicalServiceAPI {
             logger.error("getMedicalServiceById - Medical Service fetching from DB");
             MedicalServiceWrapper mss = medicalServicesService.findMedicalServicesDetailsById(id);
             mss.setDepartments(new ArrayList<>());
-            mss.getDepartments().addAll(this.departmentService.getDepartments());
+            mss.getDepartments().addAll(this.departmentService.getDepartmentsActive());
             /***/
             for (DepartmentWrapper d : mss.getDepartments()) {
                 for (DepartmentWrapper checked : mss.getCheckedDepartments()) {
@@ -376,10 +377,6 @@ public class MedicalServiceAPI {
     public ResponseEntity<?> saveMedicalService(HttpServletRequest request,
                                                 @RequestBody MedicalServiceWrapper createRequest) {
         logger.info("saveMedicalService API initiated..");
-        for (DepartmentWrapper s : createRequest.getDepartments()) {
-            if (s.isCheckedDepartment())
-                System.out.println(s.isCheckedDepartment());
-        }
         GenericAPIResponse response = new GenericAPIResponse();
 
         try {

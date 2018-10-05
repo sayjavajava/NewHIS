@@ -66,7 +66,7 @@ public class DepartmentAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> departments(HttpServletRequest request) {
+    public ResponseEntity<?> departmentsActive(HttpServletRequest request) {
 
         logger.error("getAllClinicalDepartments API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
@@ -77,7 +77,7 @@ public class DepartmentAPI {
 
         try {
             logger.error("getAllClinicalDepartments - dpts fetching from DB");
-            List<DepartmentWrapper> dpts = departmentService.getDepartments();
+            List<DepartmentWrapper> dpts = departmentService.getDepartmentsActive();
             logger.error("getAllClinicalDepartments - dpts fetched successfully");
 
             if (HISCoreUtil.isListEmpty(dpts)) {
@@ -130,8 +130,8 @@ public class DepartmentAPI {
 
         try {
             logger.error("getPaginatedAllClinicalDepartments - dpts fetching from DB");
-            List<DepartmentWrapper> dpts = departmentService.getAllActiveClinicalDepartment(page, pageSize);
-            int dptsCount = departmentService.countAllClinicalDepartments();
+            List<DepartmentWrapper> dpts = departmentService.getPaginatedAllDepartments(page, pageSize);
+            int dptsCount = departmentService.countPaginatedAllDepartments();
 
             logger.error("getPaginatedAllClinicalDepartments - dpts fetched successfully");
 

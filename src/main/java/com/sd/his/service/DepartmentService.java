@@ -44,18 +44,21 @@ public class DepartmentService {
 
     private final Logger logger = LoggerFactory.getLogger(DepartmentService.class);
 
-    public List<DepartmentWrapper> getDepartments() {
+    public List<DepartmentWrapper> getDepartmentsActive() {
         List<Department> dpts = departmentRepository.findAll();
         List<DepartmentWrapper> dptsWrappers = new ArrayList<>();
 
         for (Department cd : dpts) {
-            DepartmentWrapper dpt = new DepartmentWrapper(cd);
-            dptsWrappers.add(dpt);
+            if (cd.getActive()) {
+                DepartmentWrapper dpt = new DepartmentWrapper(cd);
+                dptsWrappers.add(dpt);
+            }
         }
         return dptsWrappers;
     }
 
-    public List<DepartmentWrapper> getAllActiveClinicalDepartment(int offset, int limit) {
+
+    public List<DepartmentWrapper> getPaginatedAllDepartments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
         List<Department> dpts = departmentRepository.findAllByOrderByNameAsc(pageable);
         List<DepartmentWrapper> dptsWrappers = new ArrayList<>();
@@ -68,7 +71,7 @@ public class DepartmentService {
         return dptsWrappers;
     }
 
-    public int countAllClinicalDepartments() {
+    public int countPaginatedAllDepartments() {
         return departmentRepository.findAll().size();
     }
 

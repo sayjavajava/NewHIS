@@ -202,4 +202,12 @@ public class MedicalService extends BaseEntity implements Serializable {
     public void setCode(String code) {
         this.code = code;
     }
+
+    public List<DoctorMedicalService> getDoctorMedicalServices() {
+        return doctorMedicalServices;
+    }
+
+    public void setDoctorMedicalServices(List<DoctorMedicalService> doctorMedicalServices) {
+        this.doctorMedicalServices = doctorMedicalServices;
+    }
 }
