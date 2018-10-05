@@ -257,6 +257,44 @@ public class MedicalServiceAPI {
 
     }
 
+
+    @ApiOperation(httpMethod = "GET", value = "Department Medical Services",
+            notes = "This method will return Paginated Medical Services",
+            produces = "application/json", nickname = "Paginated CMedical Services",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Department Medical Services fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/getDeptMedicalService/{deptId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getDeptMedicalService(@PathVariable("deptId") Long deptId) {
+
+        logger.error("getDeptMedicalService API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            logger.error("getDeptMedicalService - Department Medical Services fetching from DB");
+            List<MedicalServiceWrapper> deptMedicalSrvc = medicalServicesService.getMedicalServicesByDeptId(deptId);
+            logger.info("getDeptMedicalService - Department Medical Services fetched successfully" + deptMedicalSrvc.size());
+            response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
+            response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(deptMedicalSrvc);
+
+            logger.error("getDeptMedicalService API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getDeptMedicalService exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
     @ApiOperation(httpMethod = "GET", value = "Get Medical Service By Id",
             notes = "This method will return Paginated Medical Services",
             produces = "application/json", nickname = "Medical Service by Id",
