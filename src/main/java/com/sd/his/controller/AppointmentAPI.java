@@ -7,6 +7,7 @@ import com.sd.his.service.UserService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.response.MedicalServicesDoctorWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -197,7 +198,7 @@ public class AppointmentAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/create", method = RequestMethod.POST,headers = "Accept=*/*")
+    @RequestMapping(value = "/create", method = RequestMethod.POST, headers = "Accept=*/*")
     public ResponseEntity<?> createAppointment(HttpServletRequest request,
                                                @RequestBody AppointmentWrapper appointmentWrapper) {
         logger.info("Create Appointment API called...");
@@ -219,30 +220,30 @@ public class AppointmentAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }*/
 
-         String savedAppointment = appointmentService.saveAppointment(appointmentWrapper);
+            String savedAppointment = appointmentService.saveAppointment(appointmentWrapper);
 
-         if (savedAppointment.equalsIgnoreCase("success")) {
-               // response.setResponseData(savedAppointment);
+            if (savedAppointment.equalsIgnoreCase("success")) {
+                // response.setResponseData(savedAppointment);
                 response.setResponseMessage(messageBundle.getString("appointment.add.success"));
                 response.setResponseCode(ResponseEnum.APPT_SAVED_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.info("Appointment created successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else if (savedAppointment.equalsIgnoreCase("already")){
-             response.setResponseMessage(messageBundle.getString("appointment.already.exist"));
-             response.setResponseCode(ResponseEnum.APPT_ALREADY_EXISTS.getValue());
-             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-             logger.info("Appointment Already Exists...");
+            } else if (savedAppointment.equalsIgnoreCase("already")) {
+                response.setResponseMessage(messageBundle.getString("appointment.already.exist"));
+                response.setResponseCode(ResponseEnum.APPT_ALREADY_EXISTS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Appointment Already Exists...");
 
-             return new ResponseEntity<>(response, HttpStatus.OK);
-         }else {
-             response.setResponseMessage(messageBundle.getString("appointment.add.error"));
-             response.setResponseCode(ResponseEnum.APPT_SAVED_ERROR.getValue());
-             response.setResponseStatus(ResponseEnum.ERROR.getValue());
-             response.setResponseData(null);
-             return new ResponseEntity<>(response, HttpStatus.OK);
-         }
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.setResponseMessage(messageBundle.getString("appointment.add.error"));
+                response.setResponseCode(ResponseEnum.APPT_SAVED_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
 
 
         } catch (Exception ex) {
@@ -252,7 +253,7 @@ public class AppointmentAPI {
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-       // return new ResponseEntity<>(response, HttpStatus.OK);
+        // return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
@@ -268,8 +269,8 @@ public class AppointmentAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateAppointment(HttpServletRequest request,
-                                          @PathVariable("id") long id,
-                                          @RequestBody AppointmentWrapper appointmentWrapper) {
+                                               @PathVariable("id") long id,
+                                               @RequestBody AppointmentWrapper appointmentWrapper) {
 
         logger.info("update Appointment API called...");
 
@@ -283,14 +284,21 @@ public class AppointmentAPI {
             Appointment alreadyExistAppointment = appointmentService.findById(id);
             if (HISCoreUtil.isValidObject(alreadyExistAppointment)) {
                 logger.info("Appointment founded...");
-                Appointment appointmentUpdated = appointmentService.updateAppointment(appointmentWrapper, alreadyExistAppointment);
-                if (HISCoreUtil.isValidObject(appointmentUpdated)) {
+                String savedAppointment = appointmentService.updateAppointment(appointmentWrapper, alreadyExistAppointment);
+                if (savedAppointment.equalsIgnoreCase("success")) {
                     logger.info("Appointment Updated...");
                     response.setResponseData(null);
                     response.setResponseMessage(messageBundle.getString("appointment.update.success"));
                     response.setResponseCode(ResponseEnum.APPT_UPDATE_SUCCESS.getValue());
                     response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                     logger.info("Appointment updated successfully...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else if (savedAppointment.equalsIgnoreCase("already")) {
+                    response.setResponseMessage(messageBundle.getString("appointment.already.exist"));
+                    response.setResponseCode(ResponseEnum.APPT_ALREADY_EXISTS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("Appointment Already Exists...");
 
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
@@ -338,8 +346,8 @@ public class AppointmentAPI {
 
         try {
 
-            List<AppointmentWrapper> appointments = appointmentService.getPageableSearchedAppointments(doctorId,branchId);
-          //  int countSearchedAppointments = appointmentService.countSearchedAppointments(doctorId,branchId);
+            List<AppointmentWrapper> appointments = appointmentService.getPageableSearchedAppointments(doctorId, branchId);
+            //  int countSearchedAppointments = appointmentService.countSearchedAppointments(doctorId,branchId);
             if (HISCoreUtil.isListEmpty(appointments)) {
                 response.setResponseMessage(messageBundle.getString("appointment.search.not.found"));
                 response.setResponseCode(ResponseEnum.APPT_NOT_FOUND_ERROR.getValue());
@@ -380,7 +388,7 @@ public class AppointmentAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getAppointmentById(HttpServletRequest request,
-                                           @PathVariable("id") long id) {
+                                                @PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("appointment.not-found"));
@@ -471,8 +479,43 @@ public class AppointmentAPI {
     }*/
 
 
+    @ApiOperation(httpMethod = "GET", value = "Doctor Medical Services",
+            notes = "This method will return Paginated Medical Services",
+            produces = "application/json", nickname = "Paginated CMedical Services",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = " Doctors's  Medical Services for appointment fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/doctor/services", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllMedicalServicesWithDoctors(HttpServletRequest request) {
 
+        logger.error("getAllMedicalServices against doctors for appointment API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            logger.error("getAllMedicalServices - Medical Services fetching from DB");
+            List<MedicalServicesDoctorWrapper> mss = appointmentService.getMedicalServicesAgainstDoctors();
 
+            logger.info("getAllMedicalServices - Medical Services fetched successfully" + mss.size());
+            response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
+            response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(mss);
+
+            logger.error("getAllMedicalServices API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getAllMedicalServices exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 
 
 }

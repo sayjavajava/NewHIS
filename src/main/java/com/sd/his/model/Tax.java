@@ -68,6 +68,13 @@ public class Tax extends BaseEntity implements Serializable {
     public Tax() {
     }
 
+    public Tax(String name, String description,Date fromDate,Date toDate) {
+        this.name = name;
+        this.description = description;
+        this.fromDate =fromDate;
+        this.toDate=toDate;
+    }
+
     public Tax(TaxWrapper taxRequest) throws ParseException {
         this.name = taxRequest.getName();
         this.description = taxRequest.getDescription();

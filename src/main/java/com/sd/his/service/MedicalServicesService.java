@@ -70,12 +70,15 @@ public class MedicalServicesService {
     }
 
     public List<MedicalServiceWrapper> findAllMedicalServices() {
-
         return medicalServiceRepository.findAllMedicalServiceWrappers();
     }
 
     public int countAllMedicalServices() {
         return medicalServiceRepository.findAll().size();
+    }
+
+    public List<MedicalServiceWrapper> getMedicalServicesByDeptId(Long deptId){
+        return medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
     }
 
     public MedicalService findByTitleAndDeletedFalse(String name) {

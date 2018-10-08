@@ -17,9 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /*
  * @author    : waqas kamran
@@ -137,7 +135,7 @@ public class BranchService {
 
     public List<BranchResponseWrapper> findAllBranches(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-       //  List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActive(pageable);
+         List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActive(pageable);
         return branchRepository.findAllByActive(pageable);
     }
 
@@ -306,6 +304,10 @@ public List<BranchResponseWrapper> searchByBranchNameAndDepartment(Long name, in
 public List<BranchResponseWrapper> getAllActiveBranches() {
     return branchRepository.findAllByActiveTrue();
 }
+
+    public Set<BranchResponseWrapper> getAllActiveBranchesWithDoctors() {
+        return new HashSet<BranchResponseWrapper>(branchRepository.findByBranchAndBranchDoctors());
+    }
     private String generateEmail(String domain, int length) {
         return RandomStringUtils.random(length, "abcdefghijklmnopqrstuvwxyz") + "@" + domain;
     }

@@ -82,4 +82,10 @@ public interface MedicalServiceRepository extends JpaRepository<MedicalService, 
 
     @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms where ms.status=true")
     List<MedicalServiceWrapper> findAllMedicalServiceWrappers();
+
+    /*@Query("SELECT NEW com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms INNER JOIN ms.departmentMedicalServices dms where ms.")
+    List<MedicalServiceWrapper> findAllByDepartmentId(@Param("deptId") Long deptId);*/
+
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms inner join ms.departmentMedicalServices dms where dms.department.id=:deptId")
+    List<MedicalServiceWrapper> findMedicalServicesByDepartmentId(@Param("deptId") Long deptId);
 }

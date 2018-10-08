@@ -18,6 +18,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -69,6 +71,16 @@ public class HisApplication {
     private RoomRepository roomRepository;
     @Autowired
     private DepartmentRepository departmentRepository;
+    @Autowired
+    private TaxRepository taxRepository;
+    @Autowired
+    private MedicalServiceRepository medicalServiceRepository;
+    @Autowired
+    private DoctorMedicalServiceRepository doctorMedicalServiceRepository;
+
+
+
+
 
 
     @EventListener
@@ -149,6 +161,15 @@ public class HisApplication {
             manager.setUser(admin);
             managerRepository.save(manager);
 
+            Tax tax = new Tax("taxABC","tax applied", new Date(),new Date());
+            tax.setActive(true);
+            taxRepository.save(tax);
+            MedicalService medicalService = new MedicalService("Sugar Test","test",300d,200d,tax);
+            medicalService.setStatus(true);
+            medicalServiceRepository.save(medicalService);
+
+
+
             Doctor doctor = new Doctor();
             doctor.setDob(new Date());
             doctor.setFirstName("Doctor");
@@ -163,7 +184,10 @@ public class HisApplication {
             doctor.setAddress("Siddique Center Lahore");
             doctor.setCheckUpInterval(20L);
             doctor.setDepartment(department);
+            DoctorMedicalService dms = new DoctorMedicalService(doctor,medicalService);
+            doctor.setDoctorMedicalServices(Arrays.asList(dms));
             doctorRepository.save(doctor);
+            doctorMedicalServiceRepository.save(dms);
 
 
             Branch primaryBranch = new Branch("DHA Branch", 1L, "DHA Branch", "DHA Branch", "Lahore", "Pakistan", "H Block", "+9245786468", "+9284657867", "Punjab", new Date(), new Date(), "TX0564512387", true, true, 1345464797, true, true, organization);
@@ -171,6 +195,7 @@ public class HisApplication {
             roomRepository.save(new Room("Room1", primaryBranch, true, true));
             branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
             organizationRepository.saveAndFlush(organization);
+
         }
     }
 }

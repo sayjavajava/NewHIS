@@ -63,6 +63,7 @@ public class BranchResponseWrapper {
     Doctor doctor;
     String firstName;
     String lastName;
+    Long doctorId;
     boolean checkedBranch;
 
     public BranchResponseWrapper(Branch branch) {
@@ -91,16 +92,17 @@ public class BranchResponseWrapper {
     public BranchResponseWrapper(){}
 
 
-  /*  public BranchResponseWrapper(Long id, String name, String country, String city, Long rooms, String username) {
-        this.id = id;
-        this.city = city;
-        this.name = name;
-        this.country = country;
-        this.rooms = rooms;
-        this.primaryDoctor = username;
+    public BranchResponseWrapper(Branch branch, Long drId, String drFirstName,String drLastName) {
+       this.branchName=branch.getName();
+       this.id=branch.getId();
+       this.firstName = drFirstName;
+       this.lastName =drLastName;
+       this.doctorId =drId;
+        this.examRooms = branch.getRooms().stream().filter(x->x.getRoomName() !=null)
+                .map(x-> new Room(x.getId(),x.getRoomName(),x.getAllowOnlineScheduling()))
+                .collect(Collectors.toList());
 
-    }*/
-
+    }
     public BranchResponseWrapper(long id, String name, String country, String city, Long rooms, String firstName) {
         this.id = id;
         this.city = city;
@@ -111,6 +113,15 @@ public class BranchResponseWrapper {
         //this.doctor =doctor;
 
 
+    }
+
+
+    public Long getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(Long doctorId) {
+        this.doctorId = doctorId;
     }
 
     public boolean isCheckedBranch() {

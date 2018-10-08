@@ -84,6 +84,15 @@ public class MedicalService extends BaseEntity implements Serializable {
     public MedicalService() {
     }
 
+    public MedicalService(String name, String code, double cost,double fee,   Tax tax) {
+        this.name = name;
+        this.code = code;
+        this.cost = cost;
+        this.tax = tax;
+        this.fee =fee;
+        this.cost =cost;
+    }
+
     public MedicalService(MedicalServiceWrapper createRequest) {
         this.name = createRequest.getName();
         this.code = createRequest.getCode();
@@ -105,6 +114,7 @@ public class MedicalService extends BaseEntity implements Serializable {
 //      medicalService.getImgURL() = createRequest.get
         medicalService.setStatus(createRequest.isStatus());
     }
+
 
 
     public List<Appointment> getAppointment() {
