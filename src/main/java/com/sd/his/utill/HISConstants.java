@@ -30,6 +30,7 @@ public class HISConstants {
     public static final String TIME_PATTERN = "h:mm a";
     public static final String TIME_FORMAT_PATTERN = "HH:mm";
     public final static String DATE_FORMATE_THREE = "yyyy-MM-dd";
+    public final static String DATE_FORMATE_YYY_MM_dd = "yyyy-MM-dd";
     public final static String DATE_FORMATE_YYY_MM_DD_T_HH_MM ="yyyy-MM-dd'T'HH:mm";
 
     public final static String S3_USER_DIRECTORY = "users";

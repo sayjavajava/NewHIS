@@ -1,7 +1,9 @@
 package com.sd.his.controller.setting;
 
+import com.amazonaws.util.DateUtils;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Tax;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.TaxWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.service.TaxService;
@@ -18,10 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /*
@@ -199,7 +198,7 @@ public class TaxAPI {
                                               @RequestParam("taxId") long taxId) {
         logger.info("deleteServiceTax API - Called..");
         GenericAPIResponse response = new GenericAPIResponse();
-       try {
+        try {
             if (taxId <= 0) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
@@ -209,16 +208,16 @@ public class TaxAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            /*Tax dbTax = taxService.findTaxById(taxId);
-            if (!HISCoreUtil.isValidObject(dbTax)) {
-                response.setResponseMessage(messageBundle.getString("service.tax.not.found.error"));
-                response.setResponseCode(ResponseEnum.SERVICE_TAX_NOT_FOUND_ERROR.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+
+            if (taxService.hasChild(taxId)) {
+                response.setResponseMessage(messageBundle.getString("service.tax.delete.has.child"));
+                response.setResponseCode(ResponseEnum.SERVICE_TAX_DELETE_HAS_CHILD.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
                 response.setResponseData(null);
-                logger.info("deleteServiceTax API - tax not found...");
+                logger.info("deleteServiceTax API - tax has child record. First delete its child record then you can delete it.");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }*/
+            }
 
             taxService.deleteTax(taxId);
             response.setResponseMessage(messageBundle.getString("service.tax.delete.success"));
@@ -266,6 +265,19 @@ public class TaxAPI {
                 response.setResponseData(null);
 
                 logger.error("saveTax API - insufficient params.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            Date fromDate = HISCoreUtil.convertToDateWithTime(taxWrapper.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+            Date toDate = HISCoreUtil.convertToDateWithTime(taxWrapper.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+
+            if (fromDate.after(toDate)) {
+                response.setResponseMessage(messageBundle.getString("service.tax.from.date"));
+                response.setResponseCode(ResponseEnum.SERVICE_TAX_FROM_DATE.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
+                response.setResponseData(null);
+
+                logger.error("saveTax API - Tax FROM DATE should be less than or equal to 'TO DATE'.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
@@ -322,6 +334,18 @@ public class TaxAPI {
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
                 logger.error("updateTax API - insufficient params.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            Date fromDate = HISCoreUtil.convertToDateWithTime(updateRequest.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+            Date toDate = HISCoreUtil.convertToDateWithTime(updateRequest.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+
+            if (fromDate.after(toDate)) {
+                response.setResponseMessage(messageBundle.getString("service.tax.update.from.date"));
+                response.setResponseCode(ResponseEnum.SERVICE_TAX_FROM_DATE.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
+                response.setResponseData(null);
+
+                logger.error("updateTax API - Tax FROM DATE should be less than or equal to 'TO DATE'.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 

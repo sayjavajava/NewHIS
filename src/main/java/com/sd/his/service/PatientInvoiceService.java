@@ -230,4 +230,8 @@ public class PatientInvoiceService {
     public List<InvoiceResponseWrapper> getAllInvoice(){
         return patientInvoiceRepository.findAllInvoices();
     }
+
+    public InvoiceResponseWrapper getPatientInvoicesBalance(Long patientId){
+        return patientInvoiceRepository.getPatientInvoicesBalance(patientId);
+    }
 }

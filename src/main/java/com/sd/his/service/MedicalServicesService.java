@@ -77,6 +77,10 @@ public class MedicalServicesService {
         return medicalServiceRepository.findAll().size();
     }
 
+    public List<MedicalServiceWrapper> getMedicalServicesByDeptId(Long deptId){
+        return medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
+    }
+
     public MedicalService findByTitleAndDeletedFalse(String name) {
         return medicalServiceRepository.findByName(name);
     }

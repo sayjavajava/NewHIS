@@ -11,6 +11,10 @@ public class ICDVersionWrapper {
     private long updatedOn;
     private long createdOn;
     private boolean deleted;
+    /**
+     * means this object or ICD VERSION has child record
+     */
+    private boolean hasChild;///associated;
 
     public ICDVersionWrapper() {
     }
@@ -80,6 +84,11 @@ public class ICDVersionWrapper {
         this.title = title;
     }
 
+    public boolean isHasChild() {
+        return hasChild;
+    }
 
-
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
+    }
 }

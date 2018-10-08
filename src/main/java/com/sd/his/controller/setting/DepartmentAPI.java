@@ -66,7 +66,7 @@ public class DepartmentAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> departments(HttpServletRequest request) {
+    public ResponseEntity<?> departmentsActive(HttpServletRequest request) {
 
         logger.error("getAllClinicalDepartments API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
@@ -77,7 +77,7 @@ public class DepartmentAPI {
 
         try {
             logger.error("getAllClinicalDepartments - dpts fetching from DB");
-            List<DepartmentWrapper> dpts = departmentService.getDepartments();
+            List<DepartmentWrapper> dpts = departmentService.getDepartmentsActive();
             logger.error("getAllClinicalDepartments - dpts fetched successfully");
 
             if (HISCoreUtil.isListEmpty(dpts)) {
@@ -130,8 +130,8 @@ public class DepartmentAPI {
 
         try {
             logger.error("getPaginatedAllClinicalDepartments - dpts fetching from DB");
-            List<DepartmentWrapper> dpts = departmentService.getAllActiveClinicalDepartment(page, pageSize);
-            int dptsCount = departmentService.countAllClinicalDepartments();
+            List<DepartmentWrapper> dpts = departmentService.getPaginatedAllDepartments(page, pageSize);
+            int dptsCount = departmentService.countPaginatedAllDepartments();
 
             logger.error("getPaginatedAllClinicalDepartments - dpts fetched successfully");
 
@@ -206,6 +206,26 @@ public class DepartmentAPI {
 
         try {
             logger.error("deleteClinicalDepartment - dpt fetching from DB for existence");
+
+            if (dptId <= 0) {
+                response.setResponseMessage(messageBundle.getString("cli.dpts.delete.id"));
+                response.setResponseCode(ResponseEnum.CLI_DPT_DELETE_DEPART_ID.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
+                response.setResponseData(null);
+
+                logger.error("deleteClinicalDepartment - Please provide proper department id.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (this.departmentService.hasChild(dptId)) {
+                response.setResponseMessage(messageBundle.getString("cli.dpts.delete.has.child"));
+                response.setResponseCode(ResponseEnum.CLI_DPT_DELETE_HAS_CHILD.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
+                response.setResponseData(null);
+
+                logger.error("deleteClinicalDepartment - department has child record so you cannot delete it. First , delete its child record then you can delete it");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
 
             departmentService.deleteDepartment(dptId);
             response.setResponseMessage(messageBundle.getString("cli.dpts.delete.success"));

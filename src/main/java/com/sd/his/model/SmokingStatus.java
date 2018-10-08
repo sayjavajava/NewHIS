@@ -24,7 +24,7 @@ public class SmokingStatus extends BaseEntity {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "PATIENT_ID")
+    @JoinColumn(name = "PATIENT_ID", nullable = false)
     private Patient patient;
 
     public String getSmokingStatus() {

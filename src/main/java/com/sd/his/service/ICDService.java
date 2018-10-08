@@ -72,7 +72,16 @@ public class ICDService {
 
     public List<ICDCodeWrapper> findCodes(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        return codeRepository.findAllByCreatedOnNotNull(pageable);
+        List<ICDCodeWrapper> list = codeRepository.findAllByCreatedOnNotNull(pageable);
+
+        if (list != null) {
+            for (ICDCodeWrapper codeWrapper : list) {
+                if (this.codeVersionRepository.isCodeAssociated(codeWrapper.getId())) {
+                    codeWrapper.setHasChild(true);
+                }
+            }
+        }
+        return list;
     }
 
     public int countCodes() {
@@ -81,7 +90,15 @@ public class ICDService {
 
     public List<ICDVersionWrapper> findVersions(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        return versionRepository.findAllByCreatedOnNotNull(pageable);
+        List<ICDVersionWrapper> list = versionRepository.findAllByCreatedOnNotNull(pageable);
+        if (list != null) {
+            for (ICDVersionWrapper versionWrapper : list) {
+                if (this.codeVersionRepository.isVersionAssociated(versionWrapper.getId())) {
+                    versionWrapper.setHasChild(true);
+                }
+            }
+        }
+        return list;
     }
 
     public int countVersion() {
@@ -90,7 +107,15 @@ public class ICDService {
 
     public List<ICDCodeWrapper> searchCodes(String code, int offset, int limit) {
         Pageable page = new PageRequest(offset, limit);
-        return codeRepository.findAllByCodeContaining(code, page);
+        List<ICDCodeWrapper> list = codeRepository.findAllByCodeContaining(code, page);
+        if (list != null) {
+            for (ICDCodeWrapper codeWrapper : list) {
+                if (this.codeVersionRepository.isCodeAssociated(codeWrapper.getId())) {
+                    codeWrapper.setHasChild(true);
+                }
+            }
+        }
+        return list;
     }
 
     public int countSearchCodes(String code) {
@@ -108,7 +133,16 @@ public class ICDService {
 
     public List<ICDVersionWrapper> searchByVersion(String name, int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        return versionRepository.findAllByNameContaining(name, pageable);
+
+        List<ICDVersionWrapper> list = versionRepository.findAllByNameContaining(name, pageable);
+        if (list != null) {
+            for (ICDVersionWrapper versionWrapper : list) {
+                if (this.codeVersionRepository.isCodeAssociated(versionWrapper.getId())) {
+                    versionWrapper.setHasChild(true);
+                }
+            }
+        }
+        return list;
     }
 
     public int countSearchByVersion(String name) {
@@ -141,7 +175,7 @@ public class ICDService {
     public boolean deletedAssociateICDCV(long icdId) {
         if (icdId > 0) {
             ICDCodeVersion codeVersion = this.codeVersionRepository.findOne(icdId);
-            if (codeVersion == null){
+            if (codeVersion == null) {
                 return false;
             }
             codeVersionRepository.delete(codeVersion);
@@ -251,5 +285,13 @@ public class ICDService {
             return codeVersionRepository.findAllByVersion_id(versionId);
         }
         return null;
+    }
+
+    public boolean isCodeAssociated(long codeId) {
+        return this.codeVersionRepository.isCodeAssociated(codeId);
+    }
+
+    public boolean isVersionAssociated(long versionId) {
+        return this.codeVersionRepository.isVersionAssociated(versionId);
     }
 }

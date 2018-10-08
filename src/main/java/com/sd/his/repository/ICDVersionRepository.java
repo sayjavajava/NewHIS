@@ -13,17 +13,21 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface ICDVersionRepository extends JpaRepository<ICDVersion,Long> {
+public interface ICDVersionRepository extends JpaRepository<ICDVersion, Long> {
 
     ICDVersion findByName(String iCDVersionName);
 
     @Query("SELECT new com.sd.his.wrapper.ICDVersionWrapper(version) FROM com.sd.his.model.ICDVersion version ")
     List<ICDVersionWrapper> findAllByCreatedOnNotNull(Pageable pageable);
-    @Query("SELECT new com.sd.his.wrapper.ICDVersionWrapper(version) FROM com.sd.his.model.ICDVersion version ")
+
+    @Query("SELECT new com.sd.his.wrapper.ICDVersionWrapper(version) " +
+            "FROM com.sd.his.model.ICDVersion version " +
+            "WHERE version.status=true")
     List<ICDVersionWrapper> findAllByCreatedOnNotNull();
 
     @Query("SELECT new com.sd.his.wrapper.ICDVersionWrapper(version) FROM com.sd.his.model.ICDVersion  version where version.name LIKE CONCAT('%',:name,'%') ")
     List<ICDVersionWrapper> findAllByNameContaining(@Param("name") String name, Pageable pageable);
+
     @Query("SELECT new com.sd.his.wrapper.ICDVersionWrapper(version) FROM com.sd.his.model.ICDVersion  version where version.name LIKE CONCAT('%',:name,'%') ")
     List<ICDVersionWrapper> findAllByNameContaining(@Param("name") String name);
 
