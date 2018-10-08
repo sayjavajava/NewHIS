@@ -255,15 +255,15 @@ public class BranchAPI {
             Branch dbBranch = this.branchService.findBranchById(id);
 
             if (HISCoreUtil.isValidObject(dbBranch)) {
-               Branch branch = branchService.deleteBranch(dbBranch);
+                Branch branch = branchService.deleteBranch(dbBranch);
                 if(HISCoreUtil.isValidObject(branch)){
-                response.setResponseData(null);
-                response.setResponseMessage(messageBundle.getString("branch.delete.success"));
-                response.setResponseCode(ResponseEnum.BRANCH_DELETED_SUCCESS.getValue());
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.info("Branch Deleted successfully...");
+                    response.setResponseData(null);
+                    response.setResponseMessage(messageBundle.getString("branch.delete.success"));
+                    response.setResponseCode(ResponseEnum.BRANCH_DELETED_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("Branch Deleted successfully...");
 
-                return new ResponseEntity<>(response, HttpStatus.OK);}
+                    return new ResponseEntity<>(response, HttpStatus.OK);}
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("branch.not.found"));
                 response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
@@ -355,7 +355,7 @@ public class BranchAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-  @ApiOperation(httpMethod = "GET", value = "Fetch Branch",
+    @ApiOperation(httpMethod = "GET", value = "Fetch Branch",
             notes = "This method will return Branch on base of id",
             produces = "application/json", nickname = "Get Single Branch",
             response = GenericAPIResponse.class, protocols = "https")
@@ -405,49 +405,49 @@ public class BranchAPI {
         }
     }
 
-  /*  @ApiOperation(httpMethod = "GET", value = "Branches Name",
-            notes = "This method will return  Branches name",
-            produces = "application/json", nickname = "Get all Branches",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = " Branches name fetched successfully", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/name", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllBranchesName(HttpServletRequest request) {
-        logger.info("getAllBranch Name..");
+    /*  @ApiOperation(httpMethod = "GET", value = "Branches Name",
+              notes = "This method will return  Branches name",
+              produces = "application/json", nickname = "Get all Branches",
+              response = GenericAPIResponse.class, protocols = "https")
+      @ApiResponses({
+              @ApiResponse(code = 200, message = " Branches name fetched successfully", response = GenericAPIResponse.class),
+              @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+              @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+              @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+              @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+      @RequestMapping(value = "/name", method = RequestMethod.GET)
+      public ResponseEntity<?> getAllBranchesName(HttpServletRequest request) {
+          logger.info("getAllBranch Name..");
 
-        GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("branch.not.found"));
-        response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
-        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-        response.setResponseData(null);
+          GenericAPIResponse response = new GenericAPIResponse();
+          response.setResponseMessage(messageBundle.getString("branch.not.found"));
+          response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+          response.setResponseStatus(ResponseEnum.ERROR.getValue());
+          response.setResponseData(null);
 
-        try {
-            List<String> branchesName = branchService.findAllBranchName();
-            if (!HISCoreUtil.isListEmpty(branchesName)) {
+          try {
+              List<String> branchesName = branchService.findAllBranchName();
+              if (!HISCoreUtil.isListEmpty(branchesName)) {
 
-                response.setResponseMessage(messageBundle.getString("branch.fetched.success"));
-                response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                response.setResponseData(branchesName);
-                logger.info("All Branches Fetched successfully...");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception ex) {
-            logger.error("get all Branches failed.", ex.fillInStackTrace());
-            response.setResponseData("");
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+                  response.setResponseMessage(messageBundle.getString("branch.fetched.success"));
+                  response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
+                  response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                  response.setResponseData(branchesName);
+                  logger.info("All Branches Fetched successfully...");
+                  return new ResponseEntity<>(response, HttpStatus.OK);
+              }
+              return new ResponseEntity<>(response, HttpStatus.OK);
+          } catch (Exception ex) {
+              logger.error("get all Branches failed.", ex.fillInStackTrace());
+              response.setResponseData("");
+              response.setResponseStatus(ResponseEnum.ERROR.getValue());
+              response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+              response.setResponseMessage(messageBundle.getString("exception.occurs"));
 
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-*/
+              return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+          }
+      }
+  */
     @ApiOperation(httpMethod = "GET", value = "Search Branch",
             notes = "This method will return Branch on base of search",
             produces = "application/json", nickname = "Search Branch",

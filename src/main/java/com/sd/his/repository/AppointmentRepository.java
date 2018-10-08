@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -83,10 +84,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     AppointmentWrapper findAppointmentById(Long apptId);
 
 
-    //@Query("SELECT cd FROM Appointment cd WHERE cd.schdeulledDate LIKE  CONCAT('%',:date,'%') ")
-    List<Appointment>  findBySchdeulledDateBetween(Date date1,Date date2);
+/*    @Query("SELECT apt from Appointment apt where apt.schdeulledDate between  apt.schdeulledDate =?1 AND apt.endedOn=?2")*/
+    /*List<Appointment>  findBySchdeulledDateEqualsAndStartedOnBetweenEndedOn( Timestamp date1,Timestamp date2);*/
+
+    @Query("select count(apt) from Appointment  apt where DATE(apt.schdeulledDate) = DATE_FORMAT(:date, '%Y-%m-%d') and ( :end between apt.startedOn  and apt.endedOn OR :start  between apt.startedOn  and apt.endedOn ) and apt.doctor.id =:doctorId " )
+    int findAppointmentClash(@Param("date") Date date,@Param("start") Date start,@Param("end") Date end,@Param("doctorId") Long doctorId);
+
     Appointment findByAppointmentId(String id);
     List<Appointment> findByDoctorAndBranch(Doctor doctor, Branch branch);
 
-    }
+}
 

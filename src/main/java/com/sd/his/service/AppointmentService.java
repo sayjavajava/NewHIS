@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -203,7 +204,7 @@ public class AppointmentService {
         }
 
         //check date time exist already
-        if (!checkTimeAndDateAlreadyExist(scheduleDate, ended,appointmentWrapper.getDoctorId())) {
+        if (!checkTimeAndDateAlreadyExist(scheduleDate,date2 ,ended,appointmentWrapper.getDoctorId())) {
             appointmentRepository.save(appointment);
         } else {
             result = "already";
@@ -248,7 +249,7 @@ public class AppointmentService {
             patient = patientRepository.findOne(appointmentWrapper.getPatientId());
             alreadyExistAppointment.setPatient(patient);
         }
-        if (!checkTimeAndDateAlreadyExist(scheduleDate, ended,appointmentWrapper.getDoctorId())) {
+        if (!checkTimeAndDateAlreadyExist(scheduleDate,  date2,ended,appointmentWrapper.getDoctorId())) {
              appointmentRepository.save(alreadyExistAppointment);
 
         } else {
@@ -349,27 +350,18 @@ public class AppointmentService {
         return statusChanged;
     }
 
-    private boolean checkTimeAndDateAlreadyExist(Date date1, Date date2,Long drId) {
+    private boolean checkTimeAndDateAlreadyExist(Date date1,Date startedOn, Date endedOn,Long drId) {
         boolean isExist = false;
-     /* Date date1 =new Date();
-
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-        Date date = null;
-        try {
-            date = simpleDateFormat.parse("2018-09-14");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        System.out.println("dddd:" + date);*/
-        List<Appointment> appointments = appointmentRepository.findBySchdeulledDateBetween(date1, date2);
-        if (appointments.size() > 0 ) {
+        int appointments = appointmentRepository.findAppointmentClash(date1,startedOn ,endedOn,drId);
+      /*  if (appointments.size() > 0 ) {
             boolean drExist =  this.checkDoctor(appointments,drId);
             if(drExist)
             isExist = true;
-        }
-        return isExist;
+        }*/
+
+        if(appointments > 0)
+            isExist =true;
+         return isExist;
     }
 
     private boolean checkDoctor(List<Appointment> appointments, Long id) {

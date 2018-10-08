@@ -135,7 +135,7 @@ public class BranchService {
 
     public List<BranchResponseWrapper> findAllBranches(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-         List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActive(pageable);
+        List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActive(pageable);
         return branchRepository.findAllByActive(pageable);
     }
 
@@ -145,49 +145,49 @@ public class BranchService {
 
     public BranchResponseWrapper getById(Long id) {
         return branchRepository.findAllById(id);
-        }
-        public  Branch findBranchById(Long id){
-        return  branchRepository.findOne(id);
-        }
-
-  public Branch deleteBranch(Branch branch) {
-      //  branch.setDeleted(true);
-      if(branch.getBranchCashiers().size() >0 || branch.getBranchDoctors().size() >0 || branch.getBranchDepartments().size() > 0
-              || branch.getBranchNurses().size() > 0 || branch.getBranchReceptionists().size() > 0){
-          return null;
-      }
-      branchRepository.delete(branch);
-      return  branch;
-      }
-      /*public Boolean checkBranchExist(Branch branch){
-
-          branch.getBranchCashiers().;
-          if (userType.equalsIgnoreCase(UserTypeEnum.DOCTOR.name())) {
-              Doctor doctor = doctorRepository.findByUser(user);
-              BranchDoctor branchDoctor =branchDoctorRepository.findByDoctorAndPrimaryBranchTrue(doctor);
-              if(HISCoreUtil.isValidObject(branchDoctor))
-              return true;
-            }
-          if (userType.equalsIgnoreCase(UserTypeEnum.NURSE.name())) {
-              Nurse nurse = nurseRepository.findByUser(user);
-              BranchNurse branchCheck =branchNurseRepository.findByNurseAndPrimaryBranchTrue(nurse);
-              if(HISCoreUtil.isValidObject(branchCheck))
-                  return true;
-          }
-          if (userType.equalsIgnoreCase(UserTypeEnum.CASHIER.name())) {
-              Cashier cashier = cashierRepository.findByUser(user);
-              BranchCashier branchCheck =branchCashierRepository.findByCashierAndPrimaryBranchTrue(cashier);
-              if(HISCoreUtil.isValidObject(branchCheck))
-                  return true;
-          }
-          if (userType.equalsIgnoreCase(UserTypeEnum.RECEPTIONIST.name())) {
-              Receptionist receptionist = receptionistRepository.findByUser(user);
-              BranchReceptionist branchCheck = branchReceptionistRepository.findByReceptionistAndPrimaryBranchTrue(receptionist);
-              if(HISCoreUtil.isValidObject(branchCheck))
-                  return true;
-          }
-          return false;
     }
+    public  Branch findBranchById(Long id){
+        return  branchRepository.findOne(id);
+    }
+
+    public Branch deleteBranch(Branch branch) {
+        //  branch.setDeleted(true);
+        if(branch.getBranchCashiers().size() >0 || branch.getBranchDoctors().size() >0 || branch.getBranchDepartments().size() > 0
+                || branch.getBranchNurses().size() > 0 || branch.getBranchReceptionists().size() > 0){
+            return null;
+        }
+        branchRepository.delete(branch);
+        return  branch;
+    }
+    /*public Boolean checkBranchExist(Branch branch){
+
+        branch.getBranchCashiers().;
+        if (userType.equalsIgnoreCase(UserTypeEnum.DOCTOR.name())) {
+            Doctor doctor = doctorRepository.findByUser(user);
+            BranchDoctor branchDoctor =branchDoctorRepository.findByDoctorAndPrimaryBranchTrue(doctor);
+            if(HISCoreUtil.isValidObject(branchDoctor))
+            return true;
+          }
+        if (userType.equalsIgnoreCase(UserTypeEnum.NURSE.name())) {
+            Nurse nurse = nurseRepository.findByUser(user);
+            BranchNurse branchCheck =branchNurseRepository.findByNurseAndPrimaryBranchTrue(nurse);
+            if(HISCoreUtil.isValidObject(branchCheck))
+                return true;
+        }
+        if (userType.equalsIgnoreCase(UserTypeEnum.CASHIER.name())) {
+            Cashier cashier = cashierRepository.findByUser(user);
+            BranchCashier branchCheck =branchCashierRepository.findByCashierAndPrimaryBranchTrue(cashier);
+            if(HISCoreUtil.isValidObject(branchCheck))
+                return true;
+        }
+        if (userType.equalsIgnoreCase(UserTypeEnum.RECEPTIONIST.name())) {
+            Receptionist receptionist = receptionistRepository.findByUser(user);
+            BranchReceptionist branchCheck = branchReceptionistRepository.findByReceptionistAndPrimaryBranchTrue(receptionist);
+            if(HISCoreUtil.isValidObject(branchCheck))
+                return true;
+        }
+        return false;
+  }
 */
     /*   public BranchResponseWrapper findByID(long id) {
          Branch branch = branchRepository.findByIdAndDeletedFalse(id);
@@ -212,7 +212,7 @@ public class BranchService {
         branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setCity(branchRequestWrapper.getCity());
-    //    branch.setSystemBranch(false);
+        //    branch.setSystemBranch(false);
         branch.setState(branchRequestWrapper.getState());
         branch.setZipCode(branchRequestWrapper.getZipCode());
         branch.setOfficePhone(branchRequestWrapper.getOfficePhone());
@@ -253,57 +253,57 @@ public class BranchService {
 
     }
 
-/*
-    public List<String> findAllBranchName() {
-        List<Branch> allBranches = branchRepository.findAllByActiveTrueAndDeletedFalse();
-        List<String> branchNames = allBranches.stream()
-                .filter(x -> x.getName() != null)
-                .map(x -> x.getName())
-                .collect(Collectors.toList());
+    /*
+        public List<String> findAllBranchName() {
+            List<Branch> allBranches = branchRepository.findAllByActiveTrueAndDeletedFalse();
+            List<String> branchNames = allBranches.stream()
+                    .filter(x -> x.getName() != null)
+                    .map(x -> x.getName())
+                    .collect(Collectors.toList());
 
-        return branchNames;
+            return branchNames;
 
-    }
-
-    public List<BranchResponseWrapper> searchByBranchNameAndDepartment(String name, String department, int offset, int limit) {
-        Pageable pageable = new PageRequest(offset, limit);
-        logger.info("branch name" + department);
-
-        List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalseOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(name, department, pageable);
-
-        List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();
-        for (Branch branch : allBranches) {
-
-            BranchResponseWrapper brw = new BranchResponseWrapper(branch.getId(), branch.getName(), branch.getCountry(), branch.getCity(), branch.getNoOfRooms());
-            branchResponseWrapper.add(brw);
         }
-        return branchResponseWrapper;
-    }
+
+        public List<BranchResponseWrapper> searchByBranchNameAndDepartment(String name, String department, int offset, int limit) {
+            Pageable pageable = new PageRequest(offset, limit);
+            logger.info("branch name" + department);
+
+            List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueAndDeletedFalseOrClinicalDepartments_clinicalDpt_nameIgnoreCaseContaining(name, department, pageable);
+
+            List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();
+            for (Branch branch : allBranches) {
+
+                BranchResponseWrapper brw = new BranchResponseWrapper(branch.getId(), branch.getName(), branch.getCountry(), branch.getCity(), branch.getNoOfRooms());
+                branchResponseWrapper.add(brw);
+            }
+            return branchResponseWrapper;
+        }
 
 
-*/
-public List<BranchResponseWrapper> searchByBranchNameAndDepartment(Long name, int offset, int limit) {
-    Pageable pageable = new PageRequest(offset, limit);
-    logger.info("searching branches");
-    Branch branch1 =  branchRepository.findOne(name);
-    List<BranchResponseWrapper> branches = branchRepository.findByNameAndBranchDepartments(branch1.getName(),pageable);
+    */
+    public List<BranchResponseWrapper> searchByBranchNameAndDepartment(Long name, int offset, int limit) {
+        Pageable pageable = new PageRequest(offset, limit);
+        logger.info("searching branches");
+        Branch branch1 =  branchRepository.findOne(name);
+        List<BranchResponseWrapper> branches = branchRepository.findByNameAndBranchDepartments(branch1.getName(),pageable);
    /* List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueOrBranchDepartments_department_nameIgnoreCaseContaining(branch1.getName(), department1.getName(), pageable);
     List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();
     for (Branch branch : allBranches) {
         BranchResponseWrapper brw = new BranchResponseWrapper(branch.getId(), branch.getName(), branch.getCountry(), branch.getCity(), branch.getNoOfRooms());
         branchResponseWrapper.add(brw);
     }*/
-    return branches;
-}
+        return branches;
+    }
     public boolean isBranchNameOrIdExistsAlready(String name, long brId) {
         Branch test = branchRepository.findByNameAndIdNot(name,brId);
         return branchRepository.findByNameAndIdNot(name,brId) == null ? false : true;
     }
 
 
-public List<BranchResponseWrapper> getAllActiveBranches() {
-    return branchRepository.findAllByActiveTrue();
-}
+    public List<BranchResponseWrapper> getAllActiveBranches() {
+        return branchRepository.findAllByActiveTrue();
+    }
 
     public Set<BranchResponseWrapper> getAllActiveBranchesWithDoctors() {
         return new HashSet<BranchResponseWrapper>(branchRepository.findByBranchAndBranchDoctors());
