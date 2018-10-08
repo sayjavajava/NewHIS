@@ -61,10 +61,10 @@ public class PatientWrapper {
     private boolean profileStatus = true;
 
     ///////////////// INSURANCE
-    private String insuranceId;
+    private long insuranceId;// primary key , i m 100 percent source
     private String company = "";
-    private String insuranceIdNumber = "";
-    private String groupNumber = "";
+    private String insuranceIdNumber = "";// normal field
+    private String groupNumber = "";// normal field
     private String planName = "";
     private String planType = "";
     private String cardIssuedDate = "";
@@ -140,7 +140,7 @@ public class PatientWrapper {
 
         this.insuranceId = insurance.getId();
         this.company = insurance.getCompany();
-        this.insuranceIdNumber = insurance.getInsuranceID();
+        this.insuranceIdNumber = insurance.getInsuranceIDNumber();
         this.groupNumber = insurance.getGroupNumber();
         this.planName = insurance.getPlanName();
         this.planType = insurance.getPlanType();
@@ -222,11 +222,11 @@ public class PatientWrapper {
         this.id = id;
     }
 
-    public String getInsuranceId() {
+    public long getInsuranceId() {
         return insuranceId;
     }
 
-    public void setInsuranceId(String insuranceId) {
+    public void setInsuranceId(long insuranceId) {
         this.insuranceId = insuranceId;
     }
 
