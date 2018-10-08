@@ -91,15 +91,15 @@ public class AppointmentWrapper {
 
 
 
+
+
+
+
     public AppointmentWrapper() {
     }
 
     public AppointmentWrapper(Long id, String name, String notes) {
     }
-   /* long, java.lang.String, java.lang.String, java.lang.String, java.lang.String,
-   com.sd.his.enums.AppointmentStatusTypeEnum, java.lang.String, int, boolean, java.lang.String, java.util.Date,
-    java.util.Date, java.util.Date, java.util.Date, boolean, java.util.Collection,
-    java.util.Date, java.util.Date, long, long, java.lang.String, long, java.lang.String*/
 
     public AppointmentWrapper(Long id,String appointmentId, String title, String notes, String reason, String color, AppointmentStatusTypeEnum status, String appointmentType, Integer duration,
                               Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
@@ -138,7 +138,7 @@ public class AppointmentWrapper {
         this.roomId = roomId;
         this.examName = roomName;
         this.branchName = branchName;
-        this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToString(scheduleDate);
+        this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
         this.followUpDate =HISCoreUtil.convertDateAndTimeToString(followUpDate);
         this.serviceId=serviceId;
         this.serviceName=serviceName;
@@ -178,6 +178,7 @@ public class AppointmentWrapper {
     }
 
 
+
     @Override
     public String toString() {
         return "AppointmentWrapper{" +
@@ -190,6 +191,7 @@ public class AppointmentWrapper {
                 ", duration=" + duration +
                 '}';
     }
+
 
 
     public String getServiceName() {

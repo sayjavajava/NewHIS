@@ -70,7 +70,6 @@ public class MedicalServicesService {
     }
 
     public List<MedicalServiceWrapper> findAllMedicalServices() {
-
         return medicalServiceRepository.findAllMedicalServiceWrappers();
     }
 

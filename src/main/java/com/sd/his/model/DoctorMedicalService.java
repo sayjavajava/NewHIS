@@ -17,6 +17,14 @@ public class DoctorMedicalService extends BaseEntity implements Serializable{
     @JoinColumn(name = "MEDICAL_SERVICE_ID")
     private MedicalService medicalService;
 
+    public DoctorMedicalService(Doctor doctor, MedicalService medicalService) {
+        this.doctor = doctor;
+        this.medicalService = medicalService;
+    }
+
+    public DoctorMedicalService() {
+    }
+
     public Doctor getDoctor() {
         return doctor;
     }

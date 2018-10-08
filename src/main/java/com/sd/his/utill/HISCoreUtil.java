@@ -193,6 +193,14 @@ public class HISCoreUtil {
         }
         return formatedDate;
     }
+    public static String convertDateAndTimeToStringWithPMAndAM(Date date) {
+        String formatedDate = null;
+        if (date != null) {
+            SimpleDateFormat form = new SimpleDateFormat("dd MMMM yyyy : hh:mm:ss aa");
+            formatedDate = form.format(date);
+        }
+        return formatedDate;
+    }
 
 
 }

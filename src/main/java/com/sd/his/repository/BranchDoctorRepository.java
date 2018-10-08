@@ -41,5 +41,6 @@ public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long
      void deleteAllByDoctor(Doctor doctor);
      @Query("select b from BranchDoctor bd inner join bd.branch b where bd.doctor.id=:id")
      List<Branch> getDoctorBranches(@Param("id") Long id);//id=>doctor pk id
+     //List<Branch> findDistinctByBranch();
 }
 
