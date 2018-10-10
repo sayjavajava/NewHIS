@@ -122,13 +122,28 @@ public class ICDService {
         return codeRepository.findAllByCodeContaining(code).size();
     }
 
-    public List<ICDCodeVersionWrapper> searchCodeVersionByVersionName(int offset, int limit, String versionName, String code) {
-        Pageable pageable = new PageRequest(offset, limit);
-        return this.codeVersionRepository.findAllByVersion_NameContainingOrIcd_CodeContaining(versionName, code, pageable);
+    public List<ICDCodeVersionWrapper> searchCodeVersionByCodeAndVersionName(Pageable pageable, String versionName, String code) {
+        return this.codeVersionRepository.findAllCodeVersionByVersion_NameAndIcd_Code(versionName, code, pageable);
     }
 
-    public int countSearchCodeVersionByVersionName(String versionName, String code) {
-        return codeVersionRepository.findAllByVersion_NameContainingOrIcd_CodeContaining(versionName, code).size();
+    public int countSearchCodeVersionByCodeAndVersionName(String versionName, String code) {
+        return this.codeVersionRepository.countFindAllCodeVersionByVersion_NameAndIcd_Code(versionName, code).size();
+    }
+
+    public List<ICDCodeVersionWrapper> searchCodeVersionByVersionName(Pageable pageable, String versionName) {
+        return this.codeVersionRepository.findAllCodeVersionByVersion_Name(versionName, pageable);
+    }
+
+    public int countSearchCodeVersionByVersionName(String versionName) {
+        return codeVersionRepository.countFindAllCodeVersionByVersion_Name(versionName).size();
+    }
+
+    public List<ICDCodeVersionWrapper> searchCodeVersionByCode(Pageable pageable, String code) {
+        return this.codeVersionRepository.findAllCodeVersionByIcd_Code(code, pageable);
+    }
+
+    public int countSearchCodeVersionByCode(String code) {
+        return codeVersionRepository.countFindAllCodeVersionByIcd_Code(code).size();
     }
 
     public List<ICDVersionWrapper> searchByVersion(String name, int offset, int limit) {
