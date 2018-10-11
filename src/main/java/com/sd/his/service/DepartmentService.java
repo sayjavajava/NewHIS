@@ -124,6 +124,9 @@ public class DepartmentService {
         if (department != null && department.getDepartmentMedicalServices() != null && department.getDepartmentMedicalServices().size() > 0) {
             return true;
         }
+        if (department != null && department.getBranchDepartments() != null && department.getBranchDepartments().size() > 0) {
+            return true;
+        }
         return false;
     }
 }
