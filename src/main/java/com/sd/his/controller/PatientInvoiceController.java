@@ -4,6 +4,7 @@ import com.sd.his.enums.InvoiceMessageEnum;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.service.PatientInvoiceService;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.request.GenerateInvoiceRequestWrapper;
 import com.sd.his.wrapper.request.PatientInvoiceRequestWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -36,7 +37,7 @@ public class PatientInvoiceController {
             response = GenericAPIResponse.class, protocols = "https")
 
     @RequestMapping(value = "/saveInvoice", method = RequestMethod.POST)
-    public ResponseEntity<?> saveInvoice(HttpServletRequest request, @RequestBody ArrayList<PatientInvoiceRequestWrapper> createInvoiceRequest) {
+    public ResponseEntity<?> saveInvoice(HttpServletRequest request, @RequestBody GenerateInvoiceRequestWrapper createInvoiceRequest) {
 
         long date = System.currentTimeMillis();
 
@@ -67,8 +68,6 @@ public class PatientInvoiceController {
         }
    //     return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
 
     @ApiOperation(httpMethod = "GET", value = "Get Invoice Items By patient Appointment Id",
             notes = "This method will Get Invoice Items By patient Appointment Id",
@@ -111,10 +110,6 @@ public class PatientInvoiceController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
-
 
     @ApiOperation(httpMethod = "GET", value = "Get patient Invoices Balance",
             notes = "This method will Get patient Invoices Balance",
