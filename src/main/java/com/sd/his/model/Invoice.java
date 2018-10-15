@@ -45,6 +45,9 @@ public class Invoice extends BaseEntity implements Serializable
     @Column(name = "STATUS")
     private String status;
 
+    @Column(name = "COMPLETED")
+    private Boolean completed;
+
     public String getInvoiceId() {
         return invoiceId;
     }
@@ -107,5 +110,13 @@ public class Invoice extends BaseEntity implements Serializable
 
     public void setPatientInvoicePayments(List<PatientInvoicePayment> patientInvoicePayments) {
         this.patientInvoicePayments = patientInvoicePayments;
+    }
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
     }
 }

@@ -4,6 +4,7 @@ import com.sd.his.enums.InvoiceStatusEnum;
 import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
+import com.sd.his.wrapper.request.GenerateInvoiceRequestWrapper;
 import com.sd.his.wrapper.request.PatientInvoiceRequestWrapper;
 import com.sd.his.wrapper.request.PaymentRequestWrapper;
 import com.sd.his.wrapper.response.InvoiceItemsResponseWrapper;
@@ -46,17 +47,18 @@ public class PatientInvoiceService {
     }
 
     @Transactional
-    public void saveInvoice(ArrayList<PatientInvoiceRequestWrapper> createInvoiceRequest)
+    public void saveInvoice(GenerateInvoiceRequestWrapper createInvoiceRequest)
     {
-        Appointment appointment =appointmentRepository.findOne(Long.parseLong(createInvoiceRequest.get(0).getAppointmentId()));
+        Appointment appointment =appointmentRepository.findOne(Long.parseLong(createInvoiceRequest.getInvoiceRequestWrapper().get(0).getAppointmentId()));
 
         Invoice invoice = patientInvoiceRepository.findByAppointmentId(appointment.getId());
+        invoice.setCompleted(createInvoiceRequest.getCompleted());
 
         if(invoice == null)
         {
             invoice = new Invoice();
             invoice.setAppointment(appointment);
-            invoice.setPatient(patientRepository.findOne(Long.parseLong(createInvoiceRequest.get(0).getPatientId())));
+            invoice.setPatient(patientRepository.findOne(Long.parseLong(createInvoiceRequest.getInvoiceRequestWrapper().get(0).getPatientId())));
             invoice.setInvoiceId(hisUtilService.getPrefixId(ModuleEnum.INVOICE));
             invoice.setCreatedOn(new Date());
             invoice.setUpdatedOn(new Date());
@@ -66,7 +68,7 @@ public class PatientInvoiceService {
             patientInvoiceRepository.save(invoice);
         }
 
-        List<Long> ids = createInvoiceRequest.stream().filter(x->x.getId()!=null).map(PatientInvoiceRequestWrapper::getId).collect(Collectors.toList());
+        List<Long> ids = createInvoiceRequest.getInvoiceRequestWrapper().stream().filter(x->x.getId()!=null).map(PatientInvoiceRequestWrapper::getId).collect(Collectors.toList());
     //    invoiceItemsRepository.deleteInvoiceItem(ids);
 
         if(ids.size()>0){
@@ -78,7 +80,7 @@ public class PatientInvoiceService {
         double taxAmount =0.00;
         double discountAmount = 0.00;
         double ivoiceTotal =0.00;
-        for(PatientInvoiceRequestWrapper pInvc : createInvoiceRequest)
+        for(PatientInvoiceRequestWrapper pInvc : createInvoiceRequest.getInvoiceRequestWrapper())
         {
             InvoiceItems invItems ;
             if(pInvc.getId()==null){
@@ -193,6 +195,7 @@ public class PatientInvoiceService {
             invoice.setUpdatedOn(new Date());
             invoice.setPaidAmount(0.0);
             invoice.setStatus(InvoiceStatusEnum.PENDING.toString());
+            invoice.setCompleted(false);
 
             patientInvoiceRepository.save(invoice);
 

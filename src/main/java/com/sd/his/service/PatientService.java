@@ -139,9 +139,9 @@ public class PatientService {
         insurance.setPlanType(patientWrapper.getPlanType());
 
         if (!patientWrapper.getCardIssuedDate().isEmpty())
-            insurance.setCardIssuedDate(DateTimeUtil.getDateFromString(patientWrapper.getCardIssuedDate(), HISConstants.DATE_FORMATE_ONE));
+            insurance.setCardIssuedDate(DateTimeUtil.getDateFromString(patientWrapper.getCardIssuedDate(), HISConstants.DATE_FORMATE_YYY_MM_dd));
         if (!patientWrapper.getCardExpiryDate().isEmpty())
-            insurance.setCardExpiryDate(DateTimeUtil.getDateFromString(patientWrapper.getCardExpiryDate(), HISConstants.DATE_FORMATE_ONE));
+            insurance.setCardExpiryDate(DateTimeUtil.getDateFromString(patientWrapper.getCardExpiryDate(), HISConstants.DATE_FORMATE_YYY_MM_dd));
         insurance.setPrimaryInsuranceNotes(patientWrapper.getPrimaryInsuranceNotes());
     }
 

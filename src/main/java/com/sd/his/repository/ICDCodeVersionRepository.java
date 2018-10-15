@@ -26,14 +26,29 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
 
     List<Long> deleteAllByVersion_id(long id);
 
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.version.name LIKE concat('%',:n,'%') AND cv.icd.code LIKE concat('%',:c,'%') ")
+    List<ICDCodeVersionWrapper> findAllCodeVersionByVersion_NameAndIcd_Code(@Param("n") String versionName, @Param("c") String code, Pageable pageable);
 
-    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(codeVersion,codeVersion.icd,codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion " +
-            "where codeVersion.version.name LIKE CONCAT('%',:name,'%') or codeVersion.icd.code LIKE CONCAT('%',:code,'%') ")
-    List<ICDCodeVersionWrapper> findAllByVersion_NameContainingOrIcd_CodeContaining(@Param("name") String versionName, @Param("code") String code, Pageable pageable);
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.version.name LIKE concat('%',:n,'%') AND cv.icd.code LIKE concat('%',:c,'%') ")
+    List<ICDCodeVersionWrapper> countFindAllCodeVersionByVersion_NameAndIcd_Code(@Param("n") String versionName, @Param("c") String code);
 
-    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(codeVersion,codeVersion.icd,codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion " +
-            "where codeVersion.version.name LIKE CONCAT('%',:name,'%') or codeVersion.icd.code LIKE CONCAT('%',:code,'%') ")
-    List<ICDCodeVersionWrapper> findAllByVersion_NameContainingOrIcd_CodeContaining(@Param("name") String versionName, @Param("code") String code);
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.version.name LIKE concat('%',:n,'%') ")
+    List<ICDCodeVersionWrapper> findAllCodeVersionByVersion_Name(@Param("n") String versionName, Pageable pageable);
+
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.version.name LIKE concat('%',:n,'%') ")
+    List<ICDCodeVersionWrapper> countFindAllCodeVersionByVersion_Name(@Param("n") String versionName);
+
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.icd.code LIKE concat('%',:c,'%') ")
+    List<ICDCodeVersionWrapper> findAllCodeVersionByIcd_Code(@Param("c") String code, Pageable pageable);
+
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.icd.code LIKE concat('%',:c,'%') ")
+    List<ICDCodeVersionWrapper> countFindAllCodeVersionByIcd_Code(@Param("c") String code);
 
     ICDCodeVersion findByIcd_id(long codeId);
 

@@ -17,6 +17,8 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -1187,8 +1189,26 @@ public class ICDAPI {
         response.setResponseData(null);
 
         try {
-            List<ICDCodeVersionWrapper> searchedCodeVersions = icdService.searchCodeVersionByVersionName(page, pageSize, versionName, searchCode);
-            int icdCount = icdService.countSearchCodeVersionByVersionName(versionName, searchCode);
+
+            List<ICDCodeVersionWrapper> searchedCodeVersions = new ArrayList<>();
+            int icdCount = 0;
+            Pageable pageable = new PageRequest(page, pageSize);
+            if (!versionName.isEmpty() && !searchCode.isEmpty()) {
+                searchedCodeVersions = icdService.searchCodeVersionByCodeAndVersionName(pageable, versionName, searchCode);
+                icdCount = icdService.countSearchCodeVersionByCodeAndVersionName(versionName, searchCode);
+            } else if (!versionName.isEmpty()) {
+                searchedCodeVersions = icdService.searchCodeVersionByVersionName(pageable, versionName);
+                icdCount = icdService.countSearchCodeVersionByVersionName(versionName);
+            } else if (!searchCode.isEmpty()) {
+                searchedCodeVersions = icdService.searchCodeVersionByCode(pageable, searchCode);
+                icdCount = icdService.countSearchCodeVersionByCode(searchCode);
+            } else {
+                searchedCodeVersions = icdService.codeVersions(page, pageSize);
+                icdCount = icdService.countCodeVersions();
+            }
+
+
+//            int icdCount = icdService.countCodeVersionByCodeAndVersionName(versionName, searchCode);
 
             if (!HISCoreUtil.isListEmpty(searchedCodeVersions)) {
                 logger.info("search Code Version By VersionName fetched from DB successfully...");
