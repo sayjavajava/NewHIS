@@ -61,7 +61,7 @@ public class PatientWrapper {
     private boolean profileStatus = true;
 
     ///////////////// INSURANCE
-    private long insuranceId;// primary key , i m 100 percent source
+    private Long insuranceId;// primary key , i m 100 percent source
     private String company = "";
     private String insuranceIdNumber = "";// normal field
     private String groupNumber = "";// normal field
@@ -222,11 +222,11 @@ public class PatientWrapper {
         this.id = id;
     }
 
-    public long getInsuranceId() {
+    public Long getInsuranceId() {
         return insuranceId;
     }
 
-    public void setInsuranceId(long insuranceId) {
+    public void setInsuranceId(Long insuranceId) {
         this.insuranceId = insuranceId;
     }
 

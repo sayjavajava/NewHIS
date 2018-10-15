@@ -9,23 +9,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class InsuranceService {
-
     @Autowired
     private InsuranceRepository insuranceRepository;
-
-
-
-
-
-
-
-
-
 
     public InsuranceRepository getInsuranceRepository() {
         return insuranceRepository;
     }
-
     public void setInsuranceRepository(InsuranceRepository insuranceRepository) {
         this.insuranceRepository = insuranceRepository;
     }
