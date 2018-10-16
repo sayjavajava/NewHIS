@@ -207,7 +207,7 @@ public class PatientService {
 
         this.populatePatient(patient, patientWrapper);
         Insurance insurance = null;
-        if (patientWrapper.getInsuranceId() > 0) {
+        if (patientWrapper.getInsuranceId()!=null && patientWrapper.getInsuranceId() > 0) {
             insurance = this.insuranceService.getInsuranceRepository().findOne(patientWrapper.getInsuranceId());
             if (insurance == null) {
                 insurance = new Insurance();
@@ -352,6 +352,10 @@ public class PatientService {
 
     public void savePatientUpadtedImage(Patient patient) {
         patientRepository.save(patient);
+    }
+
+    public void saveUpdatePatientInsuranceImage(Insurance insurance) {
+        this.insuranceService.getInsuranceRepository().save(insurance);
     }
 
     public boolean isEmailAlreadyExists(String email) {
