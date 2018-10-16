@@ -74,7 +74,7 @@ public class PatientAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping( value = "/save", method = RequestMethod.POST  )//, consumes = "multipart/form-data"
+    @RequestMapping(value = "/save", method = RequestMethod.POST)//, consumes = "multipart/form-data"
     public ResponseEntity<?> savePatient(HttpServletRequest request,
                                          @RequestPart("patientRequest") PatientWrapper patientWrapper,
                                          @RequestPart(name = "profileImg", required = false) MultipartFile profileImg,
@@ -83,11 +83,11 @@ public class PatientAPI {
         logger.info("savePatient API - initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            if(profileImg != null) patientWrapper.setProfileImg(profileImg.getBytes());
-            if(photoFront != null) patientWrapper.setPhotoFront(photoFront.getBytes());
-            if(photoBack != null) patientWrapper.setPhotoBack(photoBack.getBytes());
+            if (profileImg != null) patientWrapper.setProfileImg(profileImg.getBytes());
+            if (photoFront != null) patientWrapper.setPhotoFront(photoFront.getBytes());
+            if (photoBack != null) patientWrapper.setPhotoBack(photoBack.getBytes());
 
-            if (patientWrapper.getEmail()!=null && !patientWrapper.getEmail().isEmpty() && patientService.isEmailAlreadyExists(patientWrapper.getEmail())) {
+            if (patientWrapper.getEmail() != null && !patientWrapper.getEmail().isEmpty() && patientService.isEmailAlreadyExists(patientWrapper.getEmail())) {
                 response.setResponseMessage(messageBundle.getString("user.add.email.already-found.error"));
                 response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -133,8 +133,8 @@ public class PatientAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllPaginatedPatients(HttpServletRequest request,
-                                                           @PathVariable("page") int page,
-                                                           @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+                                                     @PathVariable("page") int page,
+                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
 
         logger.error("getAllPaginatedPatients API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
@@ -299,14 +299,14 @@ public class PatientAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/smokeStatus/addUpdate", method = RequestMethod.POST)
     public ResponseEntity<?> updateSmokeStatus(HttpServletRequest request,
-                                           @RequestBody SmokingStatusWrapper smokingStatusRequest) {
+                                               @RequestBody SmokingStatusWrapper smokingStatusRequest) {
         logger.info("updateSmokeStatus API - initiated.");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            if( smokingStatusRequest.getSmokingId()==null && smokingStatusRequest.getSmokingStatus()!=null && !smokingStatusRequest.getSmokingStatus().isEmpty()
-                    && smokingStatusRequest.getStartDate()!=null && smokingStatusRequest.getRecordedDate()!=null ){
+            if (smokingStatusRequest.getSmokingId() == null && smokingStatusRequest.getSmokingStatus() != null && !smokingStatusRequest.getSmokingStatus().isEmpty()
+                    && smokingStatusRequest.getStartDate() != null && smokingStatusRequest.getRecordedDate() != null) {
                 SmokingStatus smokeStatus = new SmokingStatus();
-                Patient patient = patientService.getPatientById(smokingStatusRequest.getPatientId() );
+                Patient patient = patientService.getPatientById(smokingStatusRequest.getPatientId());
                 patientService.populateSmokeStatus(smokingStatusRequest, smokeStatus);
                 smokeStatus.setPatient(patient);
                 patientService.savePatientSmokeStatus(smokeStatus);
@@ -314,8 +314,8 @@ public class PatientAPI {
                 response.setResponseCode(ResponseEnum.SMOKE_STATUS_SAVE_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(null);
-                logger.error("smokeStatus API - "+messageBundle.getString("smoke.status.update.success"));
-            }else {
+                logger.error("smokeStatus API - " + messageBundle.getString("smoke.status.update.success"));
+            } else {
                 response.setResponseMessage(messageBundle.getString("smoke.status.param.error"));
                 //response.setResponseCode(ResponseEnum.SMOKE_STATUS_FIELD_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -411,13 +411,29 @@ public class PatientAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            patientService.deletePatientById(patientId);
-            response.setResponseMessage(messageBundle.getString("patient.delete.success"));
-            response.setResponseCode(ResponseEnum.PATIENT_DELETE_SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(null);
-            logger.info("deleteServiceTax API - Deleted Successfully...");
+            if (this.patientService.patientHasChild(patientId)) {
+                response.setResponseMessage(messageBundle.getString("patient.delete.has.child"));
+                response.setResponseCode(ResponseEnum.PATIENT_DELETE_CHILD.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("deletePatient API - Patient has child record so you cannot delete it so first delete its child record then you can delete it.");
 
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (patientService.deletePatientById(patientId)) {
+                response.setResponseMessage(messageBundle.getString("patient.delete.success"));
+                response.setResponseCode(ResponseEnum.PATIENT_DELETE_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(null);
+                logger.info("deleteServiceTax API - Deleted Successfully...");
+            } else {
+                response.setResponseMessage(messageBundle.getString("patient.delete.already"));
+                response.setResponseCode(ResponseEnum.PATIENT_DELETE_ALREADY.getValue());
+                response.setResponseStatus(ResponseEnum.WARN.getValue());
+                response.setResponseData(null);
+                logger.info("deleteServiceTax API - Patient already deleted by other user before your click.");
+            }
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("deletePatient API - deleted failed.", ex.fillInStackTrace());
@@ -432,9 +448,9 @@ public class PatientAPI {
 
 
     @ApiOperation(httpMethod = "GET", value = "Paginated Patients Search",
-        notes = "This method will return Paginated Patients Search",
-        produces = "application/json", nickname = "Paginated Patients Search",
-        response = GenericAPIResponse.class, protocols = "https")
+            notes = "This method will return Paginated Patients Search",
+            produces = "application/json", nickname = "Paginated Patients Search",
+            response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Paginated Patients Search fetched successfully.", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
@@ -443,11 +459,11 @@ public class PatientAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/search{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getSearchAllPaginatedPatients(HttpServletRequest request,
-                                                                 @PathVariable("page") int page,
-                                                                 @RequestParam(value = "pageSize",
-                                                                         required = false,
-                                                                         defaultValue = "10") int pageSize,
-                                                                 @RequestParam(value = "searchString") String searchString) { //searchString may contain patient name or cell number
+                                                           @PathVariable("page") int page,
+                                                           @RequestParam(value = "pageSize",
+                                                                   required = false,
+                                                                   defaultValue = "10") int pageSize,
+                                                           @RequestParam(value = "searchString") String searchString) { //searchString may contain patient name or cell number
 
         logger.error("getSearchAllPaginatedPatients API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
@@ -587,44 +603,44 @@ public class PatientAPI {
         try {
             Patient patient = patientService.findPatientByID(id);
 
-        //    if (HISCoreUtil.isValidObject(user)) {
-                if (HISCoreUtil.isValidObject(file)) {
-                    byte[] byteArr = new byte[0];
-                    try {
-                        byteArr = file.getBytes();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    InputStream is = new ByteArrayInputStream(byteArr);
-                    Boolean isSaved = awsService.uploadImage(is, id);
-                    if (isSaved) {
-                        String imgURL = awsService.getProfileImageUrl(id);
+            //    if (HISCoreUtil.isValidObject(user)) {
+            if (HISCoreUtil.isValidObject(file)) {
+                byte[] byteArr = new byte[0];
+                try {
+                    byteArr = file.getBytes();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                InputStream is = new ByteArrayInputStream(byteArr);
+                Boolean isSaved = awsService.uploadImage(is, id);
+                if (isSaved) {
+                    String imgURL = awsService.getProfileImageUrl(id);
                     //    user.getProfile().setProfileImgURL(imgURL);
-                        patient.setProfileImgURL(imgURL);
-                        patientService.savePatientUpadtedImage(patient);
+                    patient.setProfileImgURL(imgURL);
+                    patientService.savePatientUpadtedImage(patient);
 
-                        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.success"));
-                        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_SUCCESS.getValue());
-                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                   //     response.setResponseData(new ProfileImageUploadResponse(user));
+                    response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.success"));
+                    response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    //     response.setResponseData(new ProfileImageUploadResponse(user));
 
-                        return new ResponseEntity<>(response, HttpStatus.OK);
-                    } else {
-                        response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
-                        response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
-                        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                        response.setResponseData(null);
-
-                        return new ResponseEntity<>(response, HttpStatus.OK);
-                    }
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 } else {
                     response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
                     response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
                     response.setResponseStatus(ResponseEnum.ERROR.getValue());
                     response.setResponseData(null);
 
-              //  }
-             //   userService.updateUser(user);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            } else {
+                response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
+                response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                //  }
+                //   userService.updateUser(user);
             }
         } catch (Exception ex) {
             logger.error("Admin pr update failed.", ex.fillInStackTrace());
@@ -635,7 +651,6 @@ public class PatientAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 
 }

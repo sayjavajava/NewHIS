@@ -35,8 +35,8 @@ public class Insurance extends BaseEntity implements Serializable {
     @Column(name = "COMPANY")
     private String company;
 
-    @Column(name = "INSURANCE_ID")
-    private String insuranceIDNumber;//this is not primary key
+    @Column(name = "INSURANCE_ID_NUMBER")// old INSURANCE_ID Replace it by INSURANCE_ID_NUMBER
+    private String insuranceIDNumber;//this is not primary key, THIS IS NORMAL FIELD
 
     @Column(name = "GROUP_NUMBER")
     private String groupNumber;
