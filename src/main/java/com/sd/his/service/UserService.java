@@ -250,7 +250,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<Permission> getAllActivePermissions() {
-        return permissionRepository.findAllByActiveTrue();
+        return permissionRepository.findAllByActiveTrueOrderBySortOrderAsc();
     }
 
     public Permission getPermissionByName(String name) {
