@@ -507,4 +507,20 @@ public class Patient extends BaseEntity implements Serializable {
     public void setPatientInvoicePayments(List<PatientInvoicePayment> patientInvoicePayments) {
         this.patientInvoicePayments = patientInvoicePayments;
     }
+
+    public List<Invoice> getInvoices() {
+        return invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    public List<Medication> getMedications() {
+        return medications;
+    }
+
+    public void setMedications(List<Medication> medications) {
+        this.medications = medications;
+    }
 }

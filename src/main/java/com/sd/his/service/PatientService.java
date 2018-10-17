@@ -90,6 +90,37 @@ public class PatientService {
         if (patient.getSignatureOnFile() != null)
             patientWrapper.setSignatureOnFile(patient.getSignatureOnFile());
         patientWrapper.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+
+
+        if (patient.getAppointments() != null && patient.getAppointments().size() > 0) {
+            patientWrapper.setHasChild(true);
+        }
+        /*if (patient.getAllergies() != null && patient.getAllergies().size() > 0) {
+            patientWrapper.setHasChild(true);
+        }
+        if (patient.getFamilyHistory() != null && patient.getFamilyHistory().size() > 0) {
+            patientWrapper.setHasChild(true);
+        }
+        if (patient.getInvoices() != null && patient.getInvoices().size() > 0) {
+            patientWrapper.setHasChild(true);
+        }
+        if (patient.getProblems() != null && patient.getProblems().size() > 0) {
+            patientWrapper.setHasChild(true);
+        }
+        if (patient.getMedications() != null && patient.getMedications().size() > 0) {
+            patientWrapper.setHasChild(true);
+        }
+        if (patient.getLabOrders() != null && patient.getLabOrders().size() > 0) {
+            patientWrapper.setHasChild(true);
+        }
+        if (patient.getPatientInvoicePayments() != null && patient.getPatientInvoicePayments().size() > 0) {
+            patientWrapper.setHasChild(true);
+        }
+        if (patient.getSmokingStatusList() != null && patient.getSmokingStatusList().size() > 0) {
+            patientWrapper.setHasChild(true);
+        }*/
+
+
     }
 
     //Request Populate
@@ -394,8 +425,13 @@ public class PatientService {
         patientWrapper.setPastAppointments(listOfApp.get(false));
     }
 
-    public void deletePatientById(long patientId) {
-        patientRepository.delete(patientId);
+    public boolean deletePatientById(long patientId) {
+        Patient patient = this.patientRepository.findOne(patientId);
+        if (patient != null){
+            patientRepository.delete(patientId);
+            return true;
+        }
+        return false;
     }
 
     public List<PatientWrapper> searchAllPaginatedPatient(int offset, int limit, String searchString) {//searchString may contain patient name or cell number
@@ -585,5 +621,13 @@ public class PatientService {
 
     public void deleteSmokeStatusById(Long smokingId) {
         smokingStatusRepository.delete(smokingId);
+    }
+
+    public boolean patientHasChild(long patientId) {
+        Patient patient = this.patientRepository.findOne(patientId);
+        if (patient != null && patient.getAppointments() != null && patient.getAppointments().size() > 0){
+            return true;
+        }
+            return false;
     }
 }

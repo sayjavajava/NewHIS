@@ -662,8 +662,8 @@ public class UserService implements UserDetailsService {
 
         //#TODO pass type from UserTypeEnum
       //  List<User> patients = patientRepository.count();
-      //  List<MedicalService> medicalServices = medicalServicesRepository.findAllByDeletedFalse();
-      //  List<ICDCode> icdCodes = icdCodeRepository.findAllByDeletedFalse();
+      //  List<MedicalService> medicalServices = medicalServicesRepository.findAllByCreatedOnNotNull();
+      //  List<ICDCode> icdCodes = icdCodeRepository.findAllByCreatedOnNotNull();
 
         adminData.setPatientCount(patientRepository.count());
         adminData.setAppointmentsCount(appointmentRepository.count());
