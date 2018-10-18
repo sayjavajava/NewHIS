@@ -764,6 +764,7 @@ public class StaffService {
                 userRepository.save(alreadyExistsUser);
                 nurse.setEmail(createRequest.getEmail());
                 nurse.setHomePhone(createRequest.getHomePhone());
+                nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 nurse.setCellPhone(createRequest.getCellPhone());
                 nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 nurse.setLastName(createRequest.getLastName());
@@ -773,7 +774,7 @@ public class StaffService {
                 nurseRepository.save(nurse);
 
                 //nurse department portion
-                List<Department> selectedDept = departmentRepository.findAllByIdIn( Arrays.asList(createRequest.getSelectedDepartment()) );
+                List<Department> selectedDept = departmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
                 List<NurseDepartment> nurseDepartmentList = new ArrayList<>();
                 if (!HISCoreUtil.isListEmpty(selectedDept)) {
                     nurseDepartmentRepository.deleteAllByNurse_Id(nurse.getId());
@@ -816,7 +817,7 @@ public class StaffService {
 
                 List<Doctor> doctorList = doctorRepository.findAllByIdIn(Arrays.asList(createRequest.getDutyWithDoctors()));
                 List<NurseWithDoctor> dutyWithDoctorsData = new ArrayList<>();
-                if( !HISCoreUtil.isListEmpty(doctorList) ) {
+                if (!HISCoreUtil.isListEmpty(doctorList)) {
                     nurseWithDoctorRepository.deleteAllByNurse_Id(nurse.getId());
                     for (Doctor docUser : doctorList) {
                         NurseWithDoctor dutyWithDoctor1 = new NurseWithDoctor();
@@ -826,7 +827,6 @@ public class StaffService {
                     }
                 }
                 nurseWithDoctorRepository.save(dutyWithDoctorsData);
-                //nurseWithDoctorRepository
 
                 break;
 
