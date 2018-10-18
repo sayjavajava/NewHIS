@@ -26,7 +26,7 @@ public class EmailConfigurationController {
     @Autowired
     EmailConfigurationService emailConfigurationService;
 
-    private final Logger logger = LoggerFactory.getLogger(StaffAPI.class);
+    private final Logger logger = LoggerFactory.getLogger(EmailConfigurationController.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @ApiOperation(httpMethod = "POST", value = "Save SMTP Email Configuration",
@@ -106,13 +106,13 @@ public class EmailConfigurationController {
             response.setResponseMessage(messageBundle.getString("email.configuration.fetched.success"));
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            logger.info("All Invoice List data fetch successfully");
+            logger.info("All Email List data fetch successfully");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception ex)
         {
-            logger.error("All Invoice List data  not fetched successfully/ Failed.", ex.fillInStackTrace());
+            logger.error("All Email List data  not fetched successfully/ Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("email.configuration.fetch.error"));
