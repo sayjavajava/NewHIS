@@ -39,9 +39,8 @@ public class Prefix extends BaseEntity implements Serializable {
     @Column(name = "PREFIX")
     private String name;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "MODULE")
-    private ModuleEnum module;
+    private String module;
 
     @Column(name = "START_VALUE")
     private Long startValue;
@@ -55,12 +54,20 @@ public class Prefix extends BaseEntity implements Serializable {
 
     public Prefix() {}
 
-    public Prefix(String name, ModuleEnum module, Long startValue, Long currentValue, Organization organization) {
+    public Prefix(String name, String module, Long startValue, Long currentValue, Organization organization) {
         this.name = name;
         this.module = module;
         this.startValue = startValue;
         this.currentValue = currentValue;
         this.organization = organization;
+    }
+
+    public Prefix(Prefix prefix) {
+        this.setId(prefix.getId());
+        this.name = prefix.getName();
+        this.module = prefix.module;
+        this.startValue = prefix.getStartValue();
+        this.currentValue = prefix.getCurrentValue();
     }
 
     public String getName() {
@@ -93,5 +100,13 @@ public class Prefix extends BaseEntity implements Serializable {
 
     public void setOrganization(Organization organization) {
         this.organization = organization;
+    }
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
     }
 }
