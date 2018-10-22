@@ -3,13 +3,15 @@ package com.sd.his.wrapper;
 import com.sd.his.model.ICDCode;
 import com.sd.his.model.ICDCodeVersion;
 
+import java.util.List;
+
 
 public class ICDCodeWrapper {
 
 
     private long id;
     private String code;
-    private String title;
+    private String problem;//problem replaced by problem
     private boolean status;
     private boolean deleted;
     private long updatedOn;
@@ -22,6 +24,10 @@ public class ICDCodeWrapper {
      * means this object or ICD CODE has child record
      */
     private boolean hasChild;///associated;
+    private List<ICDVersionWrapper> selectedVersions;
+    private String checkedVersionCount;
+    private boolean versionCountUnique;
+
 
     public ICDCodeWrapper() {
     }
@@ -29,17 +35,31 @@ public class ICDCodeWrapper {
     public ICDCodeWrapper(ICDCode icd) {
         this.id = icd.getId();
         this.code = icd.getCode();
-        this.title = icd.getTitle();
+        this.problem = icd.getProblem();
         this.status = icd.getStatus();
         this.createdOn = icd.getCreatedOn().getTime();
         this.updatedOn = icd.getUpdatedOn().getTime();
         this.description = icd.getDescription();
+
+        if (icd.getIcdCodes() != null) {
+            long versionCount = icd.getIcdCodes().size();
+            this.hasChild = versionCount > 0 ? true : false;
+            if (versionCount == 1) {
+                this.checkedVersionCount = icd.getIcdCodes().get(0).getVersion().getName() + "";
+                this.versionCountUnique = true;
+            } else if (versionCount > 1) {
+                this.checkedVersionCount = versionCount + "";
+            }
+        }
+        if (icd.getProblems() != null && icd.getProblems().size() > 0) {
+            this.hasChild = true;
+        }
     }
 
     public ICDCodeWrapper(ICDCodeVersion icdCodeVersion, ICDCode icd) {
         this.id = icd.getId();
         this.code = icd.getCode();
-        this.title = icd.getTitle();
+        this.problem = icd.getProblem();
         this.status = icd.getStatus();
         this.createdOn = icd.getCreatedOn().getTime();
         this.updatedOn = icd.getUpdatedOn().getTime();
@@ -63,12 +83,12 @@ public class ICDCodeWrapper {
         this.code = code;
     }
 
-    public String getTitle() {
-        return title;
+    public String getProblem() {
+        return problem;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setProblem(String problem) {
+        this.problem = problem;
     }
 
     public boolean isStatus() {
@@ -141,5 +161,37 @@ public class ICDCodeWrapper {
 
     public void setHasChild(boolean hasChild) {
         this.hasChild = hasChild;
+    }
+
+    public ICDVersionWrapper getiCDVersion() {
+        return iCDVersion;
+    }
+
+    public void setiCDVersion(ICDVersionWrapper iCDVersion) {
+        this.iCDVersion = iCDVersion;
+    }
+
+    public List<ICDVersionWrapper> getSelectedVersions() {
+        return selectedVersions;
+    }
+
+    public void setSelectedVersions(List<ICDVersionWrapper> selectedVersions) {
+        this.selectedVersions = selectedVersions;
+    }
+
+    public String getCheckedVersionCount() {
+        return checkedVersionCount;
+    }
+
+    public void setCheckedVersionCount(String checkedVersionCount) {
+        this.checkedVersionCount = checkedVersionCount;
+    }
+
+    public boolean isVersionCountUnique() {
+        return versionCountUnique;
+    }
+
+    public void setVersionCountUnique(boolean versionCountUnique) {
+        this.versionCountUnique = versionCountUnique;
     }
 }

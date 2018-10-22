@@ -1,5 +1,8 @@
 package com.sd.his.wrapper;
 
+
+import java.util.List;
+
 /*
  * @author    : Qari Jamal
  * @Date      : 26-Apr-18
@@ -27,10 +30,11 @@ public class ICDCodeCreateRequest {
     long id;
     boolean status;
     String code;
-    String title;
+    String problem;//title replaced by problem
     long updatedOn;
     long createdOn;
     String description;
+    List<ICDVersionWrapper> selectedVersions;
 
 
 
@@ -77,12 +81,12 @@ public class ICDCodeCreateRequest {
         this.code = code;
     }
 
-    public String getTitle() {
-        return title;
+    public String getProblem() {
+        return problem;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setProblem(String problem) {
+        this.problem = problem;
     }
 
     public String getDescription() {
@@ -93,5 +97,11 @@ public class ICDCodeCreateRequest {
         this.description = description;
     }
 
+    public List<ICDVersionWrapper> getSelectedVersions() {
+        return selectedVersions;
+    }
 
+    public void setSelectedVersions(List<ICDVersionWrapper> selectedVersions) {
+        this.selectedVersions = selectedVersions;
+    }
 }

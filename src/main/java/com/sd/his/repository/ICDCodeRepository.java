@@ -14,12 +14,15 @@ import java.util.List;
 public interface ICDCodeRepository extends JpaRepository<ICDCode, Long> {
 
 
-    @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(code) from com.sd.his.model.ICDCode code")
+    //    @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(code) from com.sd.his.model.ICDCode code")
+    @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(code) " +
+            "from ICDCode code where code.status=true ")
     List<ICDCodeWrapper> findAllByCreatedOnNotNull(Pageable pageable);
 
     @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(code) from com.sd.his.model.ICDCode code " +
             "where code.status=true ")
     List<ICDCodeWrapper> findAllByCreatedOnNotNull();
+
 
     @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(code) from com.sd.his.model.ICDCode code where code.code LIKE CONCAT('%',:code,'%')")
     List<ICDCodeWrapper> findAllByCodeContaining(@Param("code") String code, Pageable pageable);
