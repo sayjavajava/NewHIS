@@ -3,6 +3,7 @@ package com.sd.his.repository;
 import com.sd.his.model.ICDCodeVersion;
 import com.sd.his.wrapper.ICDCodeVersionWrapper;
 import com.sd.his.wrapper.ICDCodeWrapper;
+import com.sd.his.wrapper.ICDVersionWrapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,6 +24,9 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
 
     @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(codeVersion,codeVersion.icd) FROM com.sd.his.model.ICDCodeVersion codeVersion where codeVersion.version.id=:id")
     List<ICDCodeWrapper> findAllByVersion_id(@Param("id") long iCDCVsById);
+
+    @Query("SELECT new com.sd.his.wrapper.ICDVersionWrapper(codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion where codeVersion.icd.id=:id")
+    List<ICDVersionWrapper> findAllVersionsByCode_id(@Param("id") Long iCDVsByCodeId);
 
     List<Long> deleteAllByVersion_id(long id);
 
@@ -62,5 +66,6 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
             "WHERE codeVersion.version.id=:versionId")
     boolean isVersionAssociated(@Param("versionId") Long versionId);
 
+    List<Long> deleteAllByIcd_id(long id);
 
 }
