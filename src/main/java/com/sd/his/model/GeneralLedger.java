@@ -28,6 +28,10 @@ public class GeneralLedger  extends BaseEntity implements Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "BALANCE_TYPE")
+    private String balanceType;
+
+
     public GeneralLedger() {
     }
 
@@ -80,4 +84,13 @@ public class GeneralLedger  extends BaseEntity implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getBalanceType() {
+        return balanceType;
+    }
+
+    public void setBalanceType(String balanceType) {
+        this.balanceType = balanceType;
+    }
+
 }
