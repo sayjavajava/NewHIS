@@ -33,6 +33,13 @@ public class Permission extends BaseEntity implements Serializable {
     @Column(name = "SORT_ORDER")
     private Integer sortOrder;
 
+    @Column(name = "PERMISSION_FOR_IND")
+    private char permissionForInd;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "permission")
+    private List<UserPermission> userPermissionList;
+
     public Permission() {}
 
     public Permission(String name, String description, String url, Boolean active) {
@@ -96,5 +103,21 @@ public class Permission extends BaseEntity implements Serializable {
 
     public void setSortOrder(Integer sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public char getPermissionForInd() {
+        return permissionForInd;
+    }
+
+    public void setPermissionForInd(char permissionForInd) {
+        this.permissionForInd = permissionForInd;
+    }
+
+    public List<UserPermission> getUserPermissionList() {
+        return userPermissionList;
+    }
+
+    public void setUserPermissionList(List<UserPermission> userPermissionList) {
+        this.userPermissionList = userPermissionList;
     }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long>, PagingAndSortingRepository<User, Long> {
     User findById(Long id);
     List<User> findAllByActiveTrue(Pageable pageable);
+    List<User> findAllByActiveTrue();
     User findByUsernameAndActiveTrue(String name);
     List<User> findAllByUserRoles_role_name(String role);
     List<User> findAllByUserRoles_role_nameAndActiveTrue(String role);
