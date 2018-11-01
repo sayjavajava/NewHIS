@@ -40,6 +40,8 @@ public class MedicalServiceWrapper {
     private TaxWrapper tax;
     private long checkedDepartmentCount;
     private long checkedBranchCount;
+    private long value;
+    private String label;
 
     private List<BranchResponseWrapper> branches;//checkedBranch
     private List<BranchResponseWrapper> checkedBranches;
@@ -62,6 +64,12 @@ public class MedicalServiceWrapper {
         this.duration = medicalServiceWrapper.getDuration();
     }
 
+    public MedicalServiceWrapper(long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
     public MedicalServiceWrapper(MedicalService ms) {
         if (ms.getTax() == null) {
             this.tax = new TaxWrapper();
@@ -70,6 +78,8 @@ public class MedicalServiceWrapper {
             this.tax = new TaxWrapper(ms.getTax());
         }
         this.id = ms.getId();
+        this.label= ms.getName();
+        this.value = ms.getId();
         this.name = ms.getName();
         this.code = ms.getCode();
         this.fee = ms.getFee();
@@ -106,6 +116,22 @@ public class MedicalServiceWrapper {
                 ms.getAppointment() != null && ms.getAppointment().size() > 0) {
             this.hasChild = true;
         }
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public long getId() {

@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 /*
- * @author    : Irfan Nasim
+ * @author    : Waqas Kamran
  * @Date      : 8-Jun-18
  * @version   : ver. 1.0.0
  *
@@ -333,9 +333,9 @@ public class AppointmentAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity<?> searchClinicalDepartment(HttpServletRequest request,
-                                                      @RequestParam(value = "doctorId") Long doctorId,
-                                                      @RequestParam(value = "branchId") Long branchId) {
+    public ResponseEntity<?> searchByDoctorAndBranch(HttpServletRequest request,
+                                                     @RequestParam(value = "doctorId") Long doctorId,
+                                                     @RequestParam(value = "branchId") Long branchId) {
 
         logger.error("Search Appointment API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
@@ -366,6 +366,100 @@ public class AppointmentAPI {
             logger.info("searchAppointments - Appointments fetched successfully.");
             return new ResponseEntity<>(response, HttpStatus.OK);
 
+        } catch (Exception ex) {
+            logger.error("search Appointments exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "Search Appointment",
+            notes = "This method will Search Appointment",
+            produces = "application/json", nickname = "Search Appointment",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Search Appointment successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/patient/appointments/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> searchByPatient(HttpServletRequest request,
+                                             @PathVariable("page") int page,
+                                             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                             @RequestParam(value = "patientName") String patientName) {
+
+        logger.error("Search Appointment API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("appointment.fetch.error"));
+        response.setResponseCode(ResponseEnum.APPT_FETCHED_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+
+            List<AppointmentWrapper> appointments = appointmentService.searchAppointmentByPatients(patientName, page, pageSize);
+            //uncoment for pagination
+           /* int countSearchedAppointments = appointmentService.countSearchedAppointmentsByPatient(patientName);
+            logger.error("getAllPaginatedAppointments - fetched successfully");
+            if (!HISCoreUtil.isListEmpty(appointments)) {
+                Integer nextPage, prePage, currPage;
+                int[] pages;
+
+                if (countSearchedAppointments > pageSize) {
+                    int remainder = countSearchedAppointments % pageSize;
+                    int totalPages = countSearchedAppointments / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = page;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
+
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);
+                returnValues.put("data", appointments);
+
+                response.setResponseMessage(messageBundle.getString("appointment.fetched.success"));
+                response.setResponseCode(ResponseEnum.APPT_FETCHED_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(appointments);
+                logger.info("searched Appointment Fetched successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);*/
+            if (HISCoreUtil.isListEmpty(appointments)) {
+                response.setResponseMessage(messageBundle.getString("appointment.search.not.found"));
+                response.setResponseCode(ResponseEnum.APPT_NOT_FOUND_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.info("searchAppointment - Appointment not found.");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+
+            response.setResponseMessage(messageBundle.getString("appointment.fetched.success"));
+            response.setResponseCode(ResponseEnum.APPT_FETCHED_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(appointments);
+            logger.info("searchAppointments - Appointments fetched successfully.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("search Appointments exception..", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -498,7 +592,6 @@ public class AppointmentAPI {
             logger.error("getAllMedicalServices - Medical Services fetching from DB");
             List<MedicalServicesDoctorWrapper> mss = appointmentService.getMedicalServicesAgainstDoctors();
 
-            logger.info("getAllMedicalServices - Medical Services fetched successfully" + mss.size());
             response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
             response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());

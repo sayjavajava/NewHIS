@@ -62,6 +62,9 @@ public class StaffResponseWrapper{
     String status;
     String profileImg;
     Long id;
+    String naturalId;
+    long value;
+    String label;
 
     Long docDepartmentId;
     List<Department> nurseDepartmentList;
@@ -100,7 +103,22 @@ public class StaffResponseWrapper{
        // this.visitBranches=branchCashiers;
 
     }
+    //constructor for generarl list
+    public StaffResponseWrapper(Long uid, String pId, String userType, String email, String userName, String firstName, String lastName, String homePhone, String cellPhone, Long id) {
+        this.uid = uid;
+        this.naturalId = pId;
+        this.userType = userType;
+        this.email = email;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.homePhone = homePhone;
+        this.cellPhone = cellPhone;
+        this.id = id;
+        this.label=firstName ;
+        this.value=id ;
 
+    }
 
     //constructor for doctor
     public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
@@ -132,7 +150,6 @@ public class StaffResponseWrapper{
         this.docDepartmentId = doctor.getDepartment().getId();
     }
 
-    //constructor for nurse
     public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
                                 String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
                                 Date expiryDate,Boolean managePatientRecords,Boolean managePatientInvoices
@@ -244,6 +261,30 @@ public class StaffResponseWrapper{
             this.profileImg = receptionist.getProfileImgURL();
             this.status = receptionist.getStatus().name();
         }
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getNaturalId() {
+        return naturalId;
+    }
+
+    public void setNaturalId(String naturalId) {
+        this.naturalId = naturalId;
     }
 
     public Boolean getManagePatientRecords() {

@@ -66,6 +66,9 @@ public class Branch extends BaseEntity implements Serializable {
     @Column(name = "STATE")
     private String state;
 
+    @Column(name = "FLOW")
+    private String flow;
+
     @Temporal(TemporalType.TIME)
     @Column(name = "OFFICE_START_TIME")
     private Date officeStartTime;
@@ -125,8 +128,6 @@ public class Branch extends BaseEntity implements Serializable {
     @OneToMany(targetEntity = BranchDepartment.class, mappedBy = "branch")
     private List<BranchDepartment> branchDepartments;
 
-
-
     @JsonIgnore
     @OneToMany(mappedBy = "branch")
     private List<Appointment> appointments;
@@ -154,6 +155,14 @@ public class Branch extends BaseEntity implements Serializable {
         this.allowOnlineSchedule = allowOnlineSchedule;
         this.showBranchInfoOnline = showBranchInfoOnline;
         this.organization = organization;
+    }
+
+    public String getFlow() {
+        return flow;
+    }
+
+    public void setFlow(String flow) {
+        this.flow = flow;
     }
 
     public String getName() {

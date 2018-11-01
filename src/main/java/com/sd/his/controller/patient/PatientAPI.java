@@ -317,7 +317,8 @@ public class PatientAPI {
             if (smokingStatusRequest.getSmokingId() == null && smokingStatusRequest.getSmokingStatus() != null && !smokingStatusRequest.getSmokingStatus().isEmpty()
                     && smokingStatusRequest.getStartDate() != null && smokingStatusRequest.getRecordedDate() != null) {
                 SmokingStatus smokeStatus = new SmokingStatus();
-                Patient patient = patientService.getPatientById(smokingStatusRequest.getPatientId());
+                Patient patient = patientService.getPatientByIdForHistory(smokingStatusRequest.getPatientId());
+
                 patientService.populateSmokeStatus(smokingStatusRequest, smokeStatus);
                 smokeStatus.setPatient(patient);
                 patientService.savePatientSmokeStatus(smokeStatus);
@@ -641,31 +642,31 @@ public class PatientAPI {
                     if ( HISCoreUtil.isValidObject(imgURL) ) {
                         //String imgURL = awsService.getProfileImageUrl(id);
                     //    user.getProfile().setProfileImgURL(imgURL);
-                        patient.setProfileImgURL(imgURL);
-                        patientService.savePatientUpadtedImage(patient);
+                    patient.setProfileImgURL(imgURL);
+                    patientService.savePatientUpadtedImage(patient);
 
-                        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.success"));
-                        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_SUCCESS.getValue());
-                        response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                   //     response.setResponseData(new ProfileImageUploadResponse(user));
+                    response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.success"));
+                    response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    //     response.setResponseData(new ProfileImageUploadResponse(user));
 
-                        return new ResponseEntity<>(response, HttpStatus.OK);
-                    } else {
-                        response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
-                        response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
-                        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                        response.setResponseData(null);
-
-                        return new ResponseEntity<>(response, HttpStatus.OK);
-                    }
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 } else {
                     response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
                     response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
                     response.setResponseStatus(ResponseEnum.ERROR.getValue());
                     response.setResponseData(null);
 
-              //  }
-             //   userService.updateUser(user);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            } else {
+                response.setResponseMessage(messageBundle.getString("user.profile.invalid.media"));
+                response.setResponseCode(ResponseEnum.USER_PROFILE_INVALID_FILE_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                //  }
+                //   userService.updateUser(user);
             }
         } catch (Exception ex) {
             logger.error("Patient profile image update failed.", ex.fillInStackTrace());

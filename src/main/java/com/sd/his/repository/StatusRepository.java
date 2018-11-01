@@ -1,14 +1,20 @@
 package com.sd.his.repository;
 
-import com.sd.his.model.Branch;
-import com.sd.his.model.BranchDoctor;
-import com.sd.his.model.Doctor;
+
+import com.sd.his.model.Cashier;
+import com.sd.his.model.Status;
+import com.sd.his.model.User;
+import com.sd.his.wrapper.StatusWrapper;
+import com.sd.his.wrapper.response.StaffResponseWrapper;
+import com.sd.his.wrapper.response.StaffWrapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 
 /*
  * @author    : waqas kamran
@@ -33,15 +39,11 @@ import java.util.List;
  *
  */
 @Repository
-public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long> {
-
-     BranchDoctor findByBranch(Branch branch);
-     BranchDoctor findByDoctorAndPrimaryBranchTrue(Doctor doctor);
-     void deleteAllByDoctorAndPrimaryBranchFalse(Doctor doctor);
-     void deleteAllByDoctor(Doctor doctor);
-     @Query("select b from BranchDoctor bd inner join bd.branch b where bd.doctor.id=:id")
-     List<Branch> getDoctorBranches(@Param("id") Long id);//id=>doctor pk id
-     @Query("select b from BranchDoctor bd inner join bd.doctor b where bd.branch.id=:id")
-     List<Doctor> getBranchesDoctors(@Param("id") Long id);
+public interface StatusRepository extends JpaRepository<Status, Long> {
+    List<Status> findBy(Pageable pageable);
+    int countByStatusTrue();
+    Status findByName(String name);
+    Status findByNameAndIdNot(String name ,Long id);//Long id, String name, String abbreviation, boolean active, String colorHash
+    @Query("SELECT new com.sd.his.wrapper.StatusWrapper(st.id,st.name, st.abbreviation,st.status,st.hashColor) FROM Status st WHERE st.status = TRUE and st.name LIKE CONCAT('%',:name,'%')")
+    List<StatusWrapper> findByNameAndStatusTrue(@Param("name")String name , Pageable pageable);
 }
-

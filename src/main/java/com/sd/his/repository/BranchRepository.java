@@ -46,6 +46,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     @Query("SELECT  new com.sd.his.wrapper.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms,bb.firstName) FROM Branch b LEFT OUTER JOIN b.branchDoctors bu LEFT OUTER JOIN bu.doctor bb WHERE b.active=TRUE ")
     List<BranchResponseWrapper> findAllByActive(Pageable pageable);
 
+
 /*    @Query("select br.id,br.name,br.country,br.city,br.noOfRooms,group_concat(d.firstName) from Branch  br left join br.branchDoctors bd left join bd.doctor d where br.active=true group by br.id,br.name,br.country,br.city,br.noOfRooms order by br.name",nativeQuery=true)*/
     /* @Query(value = "select dr.first_name,dr.id,b.`name`,b.no_of_rooms,b.city,b.country,GROUP_CONCAT(dr.first_name) from branch b LEFT OUTER JOIN branch_doctor bd ON b.id=bd.branch_id LEFT OUTER JOIN doctor dr ON bd.doctor_id=dr.id group by b.`name`,b.no_of_rooms,b.city,b.country ",nativeQuery = true)
      List<BranchResponseWrapper> findAllActiveBranches();*/
@@ -65,6 +66,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     List<BranchResponseWrapper> findByBranchAndBranchDoctors();
 
     //  List<Branch> findByNameIgnoreCaseContainingAndActiveTrueOrBranchDepartments_department_nameIgnoreCaseContaining(String name, String department, Pageable pageable);
+
 
 
 

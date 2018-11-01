@@ -1,6 +1,10 @@
 package com.sd.his.service;
 
+import com.sd.his.model.Branch;
+import com.sd.his.model.BranchDepartment;
 import com.sd.his.model.Department;
+import com.sd.his.repository.BranchDepartmentRepository;
+import com.sd.his.repository.BranchRepository;
 import com.sd.his.repository.DepartmentRepository;
 import com.sd.his.wrapper.DepartmentWrapper;
 import org.slf4j.Logger;
@@ -41,6 +45,11 @@ public class DepartmentService {
 
     @Autowired
     private DepartmentRepository departmentRepository;
+    @Autowired
+    private BranchRepository branchRepository;
+    @Autowired
+    private BranchDepartmentRepository branchDepartmentRepository;
+
 
     private final Logger logger = LoggerFactory.getLogger(DepartmentService.class);
 
@@ -51,6 +60,10 @@ public class DepartmentService {
         for (Department cd : dpts) {
             if (cd.getActive()) {
                 DepartmentWrapper dpt = new DepartmentWrapper(cd);
+                for(BranchDepartment cdd :cd.getBranchDepartments()){
+                    dpt.setBranchDepartmentId(cdd.getId());
+                    dpt.setBranchId(cdd.getBranch().getId());
+                }
                 dptsWrappers.add(dpt);
             }
         }
@@ -64,10 +77,14 @@ public class DepartmentService {
         List<DepartmentWrapper> dptsWrappers = new ArrayList<>();
 
         for (Department cd : dpts) {
-            //#TODO need to set branch id
             DepartmentWrapper dpt = new DepartmentWrapper(cd);
+            for(BranchDepartment cdd :cd.getBranchDepartments()){
+                dpt.setBranchDepartmentId(cdd.getId());
+                dpt.setBranchId(cdd.getBranch().getId());
+            }
             dptsWrappers.add(dpt);
         }
+
         return dptsWrappers;
     }
 
@@ -101,17 +118,34 @@ public class DepartmentService {
     @Transactional(rollbackOn = Throwable.class)
     public Department saveDepartment(DepartmentWrapper createRequest) {
         Department dpt = new Department(createRequest);
-        return departmentRepository.save(dpt);
+        long branchId = createRequest.getBranchId();
+        Branch branch = branchRepository.findOne(branchId);
+        BranchDepartment branchDepartment = new BranchDepartment();
+        Department department = departmentRepository.save(dpt);
+        branchDepartment.setBranch(branch);
+        branchDepartment.setDepartment(dpt);
+        branchDepartmentRepository.save(branchDepartment);
+
+        return department ;
     }
 
     @Transactional(rollbackOn = Throwable.class)
     public Department updateDepartment(DepartmentWrapper updateRequest) {
         Department dpt = departmentRepository.findOne(updateRequest.getId());
+        BranchDepartment branchDepartment =null;
         dpt.setName(updateRequest.getName());
         dpt.setDescription(updateRequest.getDescription());
         dpt.setActive(updateRequest.isActive());
 
-        return departmentRepository.save(dpt);
+        long branchId = updateRequest.getBranchId();
+        Branch branch = branchRepository.findOne(branchId);
+        if(updateRequest.getBranchDepartmentId() != 0)
+        branchDepartment = branchDepartmentRepository.findOne(updateRequest.getBranchDepartmentId());
+        Department department = departmentRepository.save(dpt);
+      //  branchDepartment.setBranch(branch);
+        branchDepartment.setDepartment(dpt);
+        branchDepartmentRepository.save(branchDepartment);
+        return department;
     }
 
     public DepartmentWrapper findDepartmentByName(String name) {

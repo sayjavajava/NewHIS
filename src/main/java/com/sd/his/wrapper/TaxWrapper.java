@@ -15,6 +15,9 @@ public class TaxWrapper {
     private String fromDate;
     private String toDate;
     private boolean active;
+    private long value;
+    private String label;
+
     /**
      * if child record found then true
      * it not then false
@@ -33,10 +36,28 @@ public class TaxWrapper {
         this.fromDate = DateTimeUtil.getFormattedDateFromDate(tax.getFromDate(), HISConstants.DATE_FORMATE_THREE);
         this.toDate = DateTimeUtil.getFormattedDateFromDate(tax.getToDate(), HISConstants.DATE_FORMATE_THREE);
         this.active = tax.getActive();
+        this.value = tax.getId();
+        this.label = tax.getName();
         if (tax.getMedicalServices() != null && tax.getMedicalServices().size() > 0) {
             this.hasChild = true;
         }
 
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
     }
 
     public Long getId() {

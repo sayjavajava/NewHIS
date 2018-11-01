@@ -1,6 +1,9 @@
 package com.sd.his.utill;
 
 
+import com.sd.his.model.Branch;
+import com.sd.his.wrapper.response.BranchResponseWrapper;
+
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -13,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
         /*
          * @author    : irfan
@@ -202,5 +206,8 @@ public class HISCoreUtil {
         return formatedDate;
     }
 
+    public static Predicate<BranchResponseWrapper> isExist(long id) {
+        return p->(p.getId() ==id);
+    }
 
 }

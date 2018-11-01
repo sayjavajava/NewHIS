@@ -153,7 +153,7 @@ public class MedicalServiceAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             logger.error("getAllMedicalServices - Medical Services fetching from DB");
-            List<MedicalServiceWrapper> mss = medicalServicesService.findAllMedicalServices();
+            List<MedicalServiceWrapper> mss = medicalServicesService.getAllMedicalServicesForAppointment();
 
             logger.info("getAllMedicalServices - Medical Services fetched successfully" + mss.size());
             response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
@@ -256,9 +256,6 @@ public class MedicalServiceAPI {
         }
 
     }
-
-
-
     @ApiOperation(httpMethod = "GET", value = "Department Medical Services",
             notes = "This method will return Paginated Medical Services",
             produces = "application/json", nickname = "Paginated CMedical Services",

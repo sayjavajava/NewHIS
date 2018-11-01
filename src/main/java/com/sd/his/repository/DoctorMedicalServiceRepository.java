@@ -16,8 +16,8 @@ public interface DoctorMedicalServiceRepository extends JpaRepository<DoctorMedi
     List<MedicalService> getDoctorMedicalServices(@Param("id") Long id);
 
    // (Long dmsId, Long drId, String docFirstName, String docLastName, Long msId, String msName, String msDescription )
-    @Query("SELECT NEW  com.sd.his.wrapper.response.MedicalServicesDoctorWrapper(dms.id ,dr.id ,dr.firstName,dr.lastName,ms.id,ms.name,ms.description)FROM DoctorMedicalService dms inner JOIN dms.doctor dr inner join  dms.medicalService ms  ")
-    List<MedicalServicesDoctorWrapper> findAllByDoctorAndDoctor();
+    @Query("SELECT NEW  com.sd.his.wrapper.response.MedicalServicesDoctorWrapper(dms.id ,dr.id ,dr.firstName,dr.lastName,ms.id,ms.name,ms.description,ms.duration)FROM DoctorMedicalService dms inner JOIN dms.doctor dr inner join  dms.medicalService ms where ms.status=TRUE ")
+    List<MedicalServicesDoctorWrapper> findAllByDoctorAndServices();
 
     void deleteDoctorMedicalServiceByDoctor_Id(Long doctorId);
 }

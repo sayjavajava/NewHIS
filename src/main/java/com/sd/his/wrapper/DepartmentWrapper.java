@@ -2,6 +2,8 @@ package com.sd.his.wrapper;
 
 import com.sd.his.model.Department;
 
+import java.util.Optional;
+
 /*
  * @author    : Arif Heer
  * @Date      : 4/10/2018
@@ -31,6 +33,11 @@ public class DepartmentWrapper {
     String description;
     boolean active;
     private boolean checkedDepartment;
+    long value;
+    String label;
+    String branch;
+    long branchId;
+    long branchDepartmentId;
     /***
      * if true ,this object has child record
      * if false, this object has no child record
@@ -51,6 +58,9 @@ public class DepartmentWrapper {
         this.id = dpt.getId();
         this.name = dpt.getName();
         this.description = dpt.getDescription();
+        this.label =dpt.getName();
+        this.value =dpt.getId();
+    //    this.branchDepartmentId =dpt.getBranchDepartments().stream().mapToLong(x->x.getId()).findFirst().getAsLong();
         this.active = dpt.getActive() == null ? false : dpt.getActive();
         if (dpt.getDepartmentMedicalServices() != null && dpt.getDepartmentMedicalServices().size() > 0) {
             this.hasChild = true;
@@ -58,6 +68,46 @@ public class DepartmentWrapper {
             this.hasChild = false;
         }
 
+    }
+
+    public long getBranchDepartmentId() {
+        return branchDepartmentId;
+    }
+
+    public void setBranchDepartmentId(long branchDepartmentId) {
+        this.branchDepartmentId = branchDepartmentId;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public long getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(long branchId) {
+        this.branchId = branchId;
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public long getId() {

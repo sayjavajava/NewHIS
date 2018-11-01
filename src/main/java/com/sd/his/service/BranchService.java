@@ -17,7 +17,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /*
  * @author    : waqas kamran
@@ -106,6 +113,7 @@ public class BranchService {
         branch.setShowBranchInfoOnline(branchRequestWrapper.isShowBranchOnline());
         branch.setFax(branchRequestWrapper.getFax());
         branch.setAddress(branchRequestWrapper.getAddress());
+        branch.setFlow(branchRequestWrapper.getFlow());
         Organization organization = organizationRepository.findOne(1L);
         branch.setOrganization(organization);
         branchRepository.save(branch);
@@ -134,11 +142,29 @@ public class BranchService {
     }
 
     public List<BranchResponseWrapper> findAllBranches(int offset, int limit) {
-        Pageable pageable = new PageRequest(offset, limit);
-        List<BranchResponseWrapper> branchResponseWrapper = branchRepository.findAllByActive(pageable);
-        return branchRepository.findAllByActive(pageable);
+        Pageable pageable = new PageRequest(offset, limit);;
+        List<BranchResponseWrapper> list =  branchRepository.findAllByActive(pageable);
+        List<BranchResponseWrapper> uniqueBranches = new ArrayList<>();
+        int index=0;//to do for list
+        StringBuilder sb = new StringBuilder();
+        for(BranchResponseWrapper branchResponseWrapper :list){
+
+          Optional<BranchResponseWrapper> exist =  uniqueBranches.stream().filter(x->x.getId() == branchResponseWrapper.getId()).findAny();
+           if(exist.isPresent()){
+            /*BranchResponseWrapper branchResponseWrapper1  = uniqueBranches.stream().filter(x->x.getFirstName() ==exist.get().getFirstName()).findAny().orElse(null);
+              if(branchResponseWrapper1 !=null){
+               String s = branchResponseWrapper1.getFirstName()+","+ sb.append(exist.get().getFirstName());
+                branchResponseWrapper1.setFirstName(s);
+              }*/
+               continue;}
+            uniqueBranches.add(branchResponseWrapper);
+        }
+        return uniqueBranches;
     }
 
+    public List<Doctor> getDoctorsWithBranch(long branchId) {
+        return branchDoctorRepository.getBranchesDoctors(branchId);
+    }
     public int totalBranches() {
         return ((int) branchRepository.count());
     }
@@ -212,6 +238,7 @@ public class BranchService {
         branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setCity(branchRequestWrapper.getCity());
+        branch.setFlow(branchRequestWrapper.getFlow());
         //    branch.setSystemBranch(false);
         branch.setState(branchRequestWrapper.getState());
         branch.setZipCode(branchRequestWrapper.getZipCode());
@@ -287,16 +314,9 @@ public class BranchService {
         logger.info("searching branches");
         Branch branch1 =  branchRepository.findOne(name);
         List<BranchResponseWrapper> branches = branchRepository.findByNameAndBranchDepartments(branch1.getName(),pageable);
-   /* List<Branch> allBranches = branchRepository.findByNameIgnoreCaseContainingAndActiveTrueOrBranchDepartments_department_nameIgnoreCaseContaining(branch1.getName(), department1.getName(), pageable);
-    List<BranchResponseWrapper> branchResponseWrapper = new ArrayList<>();
-    for (Branch branch : allBranches) {
-        BranchResponseWrapper brw = new BranchResponseWrapper(branch.getId(), branch.getName(), branch.getCountry(), branch.getCity(), branch.getNoOfRooms());
-        branchResponseWrapper.add(brw);
-    }*/
         return branches;
     }
     public boolean isBranchNameOrIdExistsAlready(String name, long brId) {
-        Branch test = branchRepository.findByNameAndIdNot(name,brId);
         return branchRepository.findByNameAndIdNot(name,brId) == null ? false : true;
     }
 

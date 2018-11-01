@@ -4,6 +4,7 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.GeneralLedger;
 import com.sd.his.service.GeneralLedgerService;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.request.AccountConfigRequestWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,4 +93,163 @@ public class ChartOfAccountController {
 
 
 
+
+
+    @ApiOperation(httpMethod = "POST", value = "Save account Configuration",
+            notes = "This method will save account Configuration",
+            produces = "application/json", nickname = "Save account Configuration",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/updateAssetsConfig", method = RequestMethod.POST)
+    public ResponseEntity<?> updateAssetsConfig(@RequestBody AccountConfigRequestWrapper accountConfigRequest) {
+
+        logger.error("Save Account Configuration API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try
+        {
+            generalLedgerService.saveAssetsConfiguration(accountConfigRequest);
+            response.setResponseData(generalLedgerService.getAll());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Account Configuration save successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Account Configuration Save Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @ApiOperation(httpMethod = "POST", value = "Save account Configuration",
+            notes = "This method will save account Configuration",
+            produces = "application/json", nickname = "Save account Configuration",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/updateLiabilityConfig", method = RequestMethod.POST)
+    public ResponseEntity<?> updateLiabilityConfig(@RequestBody AccountConfigRequestWrapper accountConfigRequest) {
+
+        logger.error("Save Account Configuration API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try
+        {
+            generalLedgerService.saveLiabilityConfiguration(accountConfigRequest);
+            response.setResponseData(generalLedgerService.getAll());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Account Configuration save successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Account Configuration Save Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Save account Configuration",
+            notes = "This method will save account Configuration",
+            produces = "application/json", nickname = "Save account Configuration",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/updateRevenueConfig", method = RequestMethod.POST)
+    public ResponseEntity<?> updateRevenueConfig(@RequestBody AccountConfigRequestWrapper accountConfigRequest) {
+
+        logger.error("Save Account Configuration API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try
+        {
+            generalLedgerService.saveRevenueConfiguration(accountConfigRequest);
+            response.setResponseData(generalLedgerService.getAll());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Account Configuration save successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Account Configuration Save Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @ApiOperation(httpMethod = "POST", value = "Save account Configuration",
+            notes = "This method will save account Configuration",
+            produces = "application/json", nickname = "Save account Configuration",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/updateCOSConfig", method = RequestMethod.POST)
+    public ResponseEntity<?> updateCOSConfig(@RequestBody AccountConfigRequestWrapper accountConfigRequest) {
+
+        logger.error("Save Account Configuration API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try
+        {
+            generalLedgerService.saveCOGSConfiguration(accountConfigRequest);
+            response.setResponseData(generalLedgerService.getAll());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Account Configuration save successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Account Configuration Save Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @ApiOperation(httpMethod = "POST", value = "Save account Configuration",
+            notes = "This method will save account Configuration",
+            produces = "application/json", nickname = "Save account Configuration",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/updateExpenseConfig", method = RequestMethod.POST)
+    public ResponseEntity<?> updateExpenseConfig(@RequestBody AccountConfigRequestWrapper accountConfigRequest) {
+
+        logger.error("Save Account Configuration API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try
+        {
+            generalLedgerService.saveExpenseConfiguration(accountConfigRequest);
+            response.setResponseData(generalLedgerService.getAll());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Account Configuration save successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Account Configuration Save Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("account.configuration.update.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

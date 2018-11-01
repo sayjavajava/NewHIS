@@ -1,7 +1,6 @@
 package com.sd.his.wrapper;
 
 import com.sd.his.enums.AppointmentStatusTypeEnum;
-import com.sd.his.enums.AppointmentTypeEnum;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.utill.JSONUtil;
@@ -88,7 +87,7 @@ public class AppointmentWrapper {
     private String serviceName;
     private Double receivedAmount;
     private Double patientAdvanceDeposit;
-
+    private Boolean stateOfPatientBox;
     private String invoicePrefix;
     private boolean completed;
 
@@ -103,7 +102,7 @@ public class AppointmentWrapper {
                               Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, Long patientId,
                               Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId,Date followUpDate,Long serviceId,String serviceName
     ) {
-        //Long patientId,Long branchId, String branchName, Long roomId,
+
         this.id = id;
         this.appointmentId=appointmentId;
         this.title = title;
@@ -191,7 +190,13 @@ public class AppointmentWrapper {
                 '}';
     }
 
+    public Boolean getStateOfPatientBox() {
+        return stateOfPatientBox;
+    }
 
+    public void setStateOfPatientBox(Boolean stateOfPatientBox) {
+        this.stateOfPatientBox = stateOfPatientBox;
+    }
 
     public String getServiceName() {
         return serviceName;
