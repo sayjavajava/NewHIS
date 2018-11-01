@@ -491,7 +491,7 @@ public class StaffAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//
+
     @ApiOperation(httpMethod = "GET", value = "User By Type",
             notes = "This method will return Users By Type",
             produces = "application/json", nickname = "Get Users By type ",

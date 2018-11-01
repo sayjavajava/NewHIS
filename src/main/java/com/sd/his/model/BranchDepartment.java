@@ -42,6 +42,14 @@ public class BranchDepartment extends BaseEntity implements Serializable {
     @JoinColumn(name = "DEPARTMENT_ID",  nullable = false)
     private Department department;
 
+    public BranchDepartment(Branch branch, Department department) {
+        this.branch = branch;
+        this.department = department;
+    }
+
+    public BranchDepartment() {
+    }
+
     public Branch getBranch() {
         return branch;
     }

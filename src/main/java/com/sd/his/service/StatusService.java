@@ -1,8 +1,11 @@
 package com.sd.his.service;
 
+import com.sd.his.model.Status;
 import com.sd.his.model.Tax;
+import com.sd.his.repository.StatusRepository;
 import com.sd.his.repository.TaxRepository;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.StatusWrapper;
 import com.sd.his.wrapper.TaxWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * @author    : Irfan Nasim
@@ -39,73 +43,56 @@ import java.util.List;
 public class StatusService {
 
     @Autowired
-    TaxRepository taxRepository;
+    StatusRepository statusRepository;
 
-    public List<TaxWrapper> findAllActiveTax() {
-        return taxRepository.findAllByActiveTrue(true);
+    public StatusWrapper saveStatus(StatusWrapper statusWrapper) {
+        Status status1 = new Status();
+        status1.setName(statusWrapper.getName());
+        status1.setAbbreviation(statusWrapper.getAbbreviation());
+        status1.setHashColor(statusWrapper.getColorHash());
+        status1.setStatus(statusWrapper.isActive());
+        statusRepository.save(status1);
+        return statusWrapper;
     }
 
-    public List<TaxWrapper> findAllPaginatedTax(int offset, int limit) {
+     public List<StatusWrapper> getAllStatuses(int offset, int limit) {
+            Pageable pageable = new PageRequest(offset, limit);
+            List<Status> list = statusRepository.findBy(pageable);
+            return list.stream().map(
+                    x ->
+                    new StatusWrapper(x.getId(),x.getName(),x.getAbbreviation(),x.isStatus(),x.getHashColor()))
+                    .collect(Collectors.toList());
+     }
+
+     public int statusesCount(){
+         return statusRepository.countByStatusTrue();
+    }
+     public Status isAlreadyExist(String name){
+        return statusRepository.findByName(name);
+     }
+     public Status getById(long id){
+         return statusRepository.findOne(id);
+     }
+     public Status deleteStatus(Status status){
+         statusRepository.delete(status);
+         return status;
+     }
+     public StatusWrapper  updateStatus(StatusWrapper statusWrapper,Status status1){
+        status1.setName(statusWrapper.getName());
+        status1.setAbbreviation(statusWrapper.getAbbreviation());
+        status1.setHashColor(statusWrapper.getColorHash());
+        status1.setStatus(statusWrapper.isActive());
+        statusRepository.save(status1);
+        return statusWrapper;
+
+    }
+     public boolean isStatusNameOrIdExistsAlready(String name, long brId) {
+        return statusRepository.findByNameAndIdNot(name,brId) == null ? false : true;
+    }
+    public List<StatusWrapper> searchByStatusName(String name, int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        return taxRepository.findAllByCreatedOnNotNull(pageable);
-    }
+        List<StatusWrapper> branches = statusRepository.findByNameAndStatusTrue(name,pageable);
 
-    public int countAllTax() {
-        return taxRepository.findAll().size();
-    }
-
-    @Transactional(rollbackOn = Throwable.class)
-    public void deleteTax(long taxId) {
-        taxRepository.delete(taxId);
-    }
-
-    public Tax findTaxById(long taxId) {
-        return taxRepository.findOne(taxId);
-    }
-
-    @Transactional(rollbackOn = Throwable.class)
-    public void saveTax(TaxWrapper taxWrapper) throws ParseException {
-        Tax tax = new Tax(taxWrapper);
-        taxRepository.save(tax);
-    }
-
-    public boolean isAlreadyExist(TaxWrapper taxWrapper) {
-        Boolean isAlreadyExist = false;
-
-        if (taxWrapper.getId() > 0) {
-            List<Tax> taxes = this.taxRepository.findAllByNameAndIdNot(taxWrapper.getName(), taxWrapper.getId());
-            if (!HISCoreUtil.isListEmpty(taxes)) {
-                isAlreadyExist = true;
-            }
-        } else {
-            Tax tax = this.taxRepository.findByName(taxWrapper.getName());
-            if (HISCoreUtil.isValidObject(tax)) {
-                isAlreadyExist = true;
-            }
-        }
-        return isAlreadyExist;
-    }
-
-    public void updateTaxService(TaxWrapper updateRequest) throws ParseException {
-        Tax dbTax = this.taxRepository.findOne(updateRequest.getId());
-        new Tax(dbTax, updateRequest);
-        this.taxRepository.save(dbTax);
-    }
-
-    public List<TaxWrapper> searchByTaxByName(String searchTaxName, int pageNo, int pageSize) {
-        Pageable pageable = new PageRequest(pageNo, pageSize);
-        return taxRepository.findAllByNameContaining(searchTaxName, pageable);
-    }
-
-    public int countSearchByTaxByName(String searchTaxName) {
-        return taxRepository.findAllByNameContaining(searchTaxName).size();
-    }
-
-    public boolean hasChild(long taxId) {
-        Tax tax = this.taxRepository.findOne(taxId);
-        if (tax != null && tax.getMedicalServices() != null && tax.getMedicalServices().size() > 0) {
-            return true;
-        }
-        return false;
+        return branches;
     }
 }

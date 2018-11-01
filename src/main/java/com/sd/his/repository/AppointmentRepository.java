@@ -43,12 +43,11 @@ import java.util.List;
  */
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    /*   @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id, a.name, a.notes, a.reason, a.color, a.status, a.type," +
-                " a.duration, a.followUpReminder, a.followUpReasonReminder, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
-                "a.recurring, a.recurringDays, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.id,a.patient.username, " +
-                "a.patient.profile.firstName, a.patient.profile.lastName, a.branch.id, a.branch.name, a.room.id, a.room.examName) " +
-                "FROM Appointment a WHERE a.deleted =FALSE ")
-        List<AppointmentWrapper> findAllPaginatedAppointments(Pageable pageable);*/
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes, a.reason, a.color, a.status, a.type," +
+            " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
+            "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id ,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
+            "FROM Appointment a")
+        List<AppointmentWrapper> findAllPaginatedAppointments(Pageable pageable);
     @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes, a.reason, a.color, a.status, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id ,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
@@ -60,6 +59,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
             "FROM Appointment a WHERE a.doctor.id =?1 or a.branch.id =?2")
     List<AppointmentWrapper> findAllAppointmentsByDoctor(Long doctorId, Long branchId);
+
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes, a.reason, a.color, a.status, a.type," +
+            " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
+            "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
+            "FROM Appointment a WHERE a.patient.firstName =?1 or a.patient.lastName =?1")
+    List<AppointmentWrapper> searchAllAppointmentsByPatients(String patientName,Pageable pageable);
 
     @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes, a.reason, a.color, a.status, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
@@ -90,8 +95,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("select count(apt) from Appointment  apt where DATE(apt.schdeulledDate) = DATE_FORMAT(:date, '%Y-%m-%d') and ( :end between apt.startedOn  and apt.endedOn OR :start  between apt.startedOn  and apt.endedOn ) and apt.doctor.id =:doctorId " )
     int findAppointmentClash(@Param("date") Date date,@Param("start") Date start,@Param("end") Date end,@Param("doctorId") Long doctorId);
 
+    @Query("select apt from Appointment  apt where DATE(apt.schdeulledDate) = DATE_FORMAT(:date, '%Y-%m-%d') and ( :end between apt.startedOn  and apt.endedOn OR :start  between apt.startedOn  and apt.endedOn ) and apt.doctor.id =:doctorId " )
+    List<Appointment> findAppointmentClashForUpdate(@Param("date") Date date,@Param("start") Date start,@Param("end") Date end,@Param("doctorId") Long doctorId);
+
     Appointment findByAppointmentId(String id);
     List<Appointment> findByDoctorAndBranch(Doctor doctor, Branch branch);
+    int countAllByPatientFirstName(String patientName);
 
 }
 

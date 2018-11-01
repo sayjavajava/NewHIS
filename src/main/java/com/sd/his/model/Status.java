@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 /*
- * @author    : Irfan Nasim
+ * @author    : waqas kamran
  * @Date      : 24-Apr-18
  * @version   : ver. 1.0.0
  * 
@@ -35,7 +35,7 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name = "TAX")
+@Table(name = "Status")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Status extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -43,56 +43,17 @@ public class Status extends BaseEntity implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "DESCRIPTION")
-    private String description;
+    @Column(name = "ABBREVIATION")
+    private String abbreviation;
 
-    @Column(name = "RATE")
-    private Double rate;
+    @Column(name = "STATUS")
+    private boolean status;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "FROM_DATE")
-    private Date fromDate;
+    @Column(name = "HASHCOLOR")
+    private String hashColor;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "TO_DATE")
-    private Date toDate;
-
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
-    private Boolean active;
-
-    @JsonIgnore
-    @OneToMany(targetEntity = MedicalService.class, mappedBy = "tax")
-    private List<MedicalService> medicalServices;
 
     public Status() {
-    }
-
-    public Status(String name, String description, Date fromDate, Date toDate) {
-        this.name = name;
-        this.description = description;
-        this.fromDate =fromDate;
-        this.toDate=toDate;
-    }
-
-    public Status(TaxWrapper taxRequest) throws ParseException {
-        this.name = taxRequest.getName();
-        this.description = taxRequest.getDescription();
-        this.rate = taxRequest.getRate();
-        this.fromDate = DateTimeUtil.getDateFromString(taxRequest.getFromDate(), HISConstants.DATE_FORMATE_THREE);
-        this.toDate = DateTimeUtil.getDateFromString(taxRequest.getToDate(), HISConstants.DATE_FORMATE_THREE);
-        this.active = taxRequest.isActive();
-    }
-
-    public Status(Status dbTax, TaxWrapper taxRequest) throws ParseException {
-        dbTax.setName(taxRequest.getName());
-        dbTax.setDescription(taxRequest.getDescription());
-        if (taxRequest.isHasChild()){
-            dbTax.setRate(taxRequest.getRate());
-        }
-        dbTax.setFromDate(DateTimeUtil.getDateFromString(taxRequest.getFromDate(), HISConstants.DATE_FORMATE_THREE));
-        dbTax.setToDate(DateTimeUtil.getDateFromString(taxRequest.getToDate(), HISConstants.DATE_FORMATE_THREE));
-        dbTax.setActive(taxRequest.isActive());
-
     }
 
     public String getName() {
@@ -103,51 +64,27 @@ public class Status extends BaseEntity implements Serializable {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getAbbreviation() {
+        return abbreviation;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 
-    public Double getRate() {
-        return rate;
+    public boolean isStatus() {
+        return status;
     }
 
-    public void setRate(Double rate) {
-        this.rate = rate;
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
-    public Date getFromDate() {
-        return fromDate;
+    public String getHashColor() {
+        return hashColor;
     }
 
-    public void setFromDate(Date fromDate) {
-        this.fromDate = fromDate;
-    }
-
-    public Date getToDate() {
-        return toDate;
-    }
-
-    public void setToDate(Date toDate) {
-        this.toDate = toDate;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public List<MedicalService> getMedicalServices() {
-        return medicalServices;
-    }
-
-    public void setMedicalServices(List<MedicalService> medicalServices) {
-        this.medicalServices = medicalServices;
+    public void setHashColor(String hashColor) {
+        this.hashColor = hashColor;
     }
 }

@@ -2,6 +2,9 @@ package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Branch;
+import com.sd.his.model.Doctor;
+import com.sd.his.model.Organization;
+import com.sd.his.repository.OrganizationRepository;
 import com.sd.his.service.BranchService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -49,6 +52,8 @@ public class BranchAPI {
 
     @Autowired
     private BranchService branchService;
+    @Autowired
+    private OrganizationRepository organizationRepository;
 
     private final Logger logger = LoggerFactory.getLogger(BranchAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
@@ -181,7 +186,6 @@ public class BranchAPI {
         try {
             List<BranchResponseWrapper> branchWrappers = branchService.findAllBranches(page, pageSize);
             int countBranch = branchService.totalBranches();
-
             if (!HISCoreUtil.isListEmpty(branchWrappers)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
@@ -227,6 +231,102 @@ public class BranchAPI {
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
 
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @ApiOperation(httpMethod = "GET", value = "All Doctors With Branches",
+            notes = "This method will return all Branches Associated With Branch",
+            produces = "application/json", nickname = "All Branches With Doctors",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All Branches fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/doctorsInBranch/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllBranchesWithDoctors(HttpServletRequest request, @PathVariable("id") long id) {
+
+        logger.error("getAllBranches With Doctor API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("branch.fetch.error"));
+        response.setResponseCode(ResponseEnum.BRANCH_FETCH_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("getAllBranches API - branches fetching from DB");
+            List<Doctor> branchesWithDoctors = branchService.getDoctorsWithBranch(id);
+            if (HISCoreUtil.isListEmpty(branchesWithDoctors)) {
+                response.setResponseMessage(messageBundle.getString("branch.not-found"));
+                response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getAllBranches API - Branches not found");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            response.setResponseMessage(messageBundle.getString("branch.fetch.success"));
+            response.setResponseCode(ResponseEnum.BRANCH_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(branchesWithDoctors);
+
+            logger.error("getAllBranches API - Branches successfully fetched.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllBranches API -  exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "Organization",
+            notes = "This method will return  Organization Associated With Branch",
+            produces = "application/json", nickname = "Organization ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All Organization fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/organization", method = RequestMethod.GET)
+    public ResponseEntity<?> getOrganization(HttpServletRequest request) {
+
+        logger.error("get Organization");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("branch.fetch.error"));
+        response.setResponseCode(ResponseEnum.BRANCH_FETCH_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("get Organization API ");
+            Organization organization = organizationRepository.findOne(1L);
+            if (!HISCoreUtil.isValidObject(organization)) {
+                response.setResponseMessage(messageBundle.getString("branch.not-found"));
+                response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getAllBranches API - Branches not found");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            response.setResponseMessage(messageBundle.getString("branch.fetch.success"));
+            response.setResponseCode(ResponseEnum.BRANCH_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(organization);
+
+            logger.error("get Organization API .");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("get Organization API -  exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -429,7 +529,7 @@ public class BranchAPI {
               List<String> branchesName = branchService.findAllBranchName();
               if (!HISCoreUtil.isListEmpty(branchesName)) {
 
-                  response.setResponseMessage(messageBundle.getString("branch.fetched.success"));
+                  response.setResponseMessage(messageBundle.getaString("branch.fetched.success"));
                   response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
                   response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                   response.setResponseData(branchesName);

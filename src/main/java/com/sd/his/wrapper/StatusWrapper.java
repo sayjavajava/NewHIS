@@ -3,11 +3,19 @@ package com.sd.his.wrapper;
 public class StatusWrapper {
     private Long id;
     private String   name;
-    private String abbreveation;
+    private String abbreviation;
     private boolean active;
     private String colorHash;
 
-    public Status() {
+    public StatusWrapper() {
+    }
+
+    public StatusWrapper(Long id, String name, String abbreviation, boolean active, String colorHash) {
+        this.id = id;
+        this.name = name;
+        this.abbreviation = abbreviation;
+        this.active = active;
+        this.colorHash = colorHash;
     }
 
     public Long getId() {
@@ -26,12 +34,12 @@ public class StatusWrapper {
         this.name = name;
     }
 
-    public String getAbbreveation() {
-        return abbreveation;
+    public String getAbbreviation() {
+        return abbreviation;
     }
 
-    public void setAbbreveation(String abbreveation) {
-        this.abbreveation = abbreveation;
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 
     public boolean isActive() {

@@ -70,9 +70,8 @@ public class AppointmentService {
 
     public List<AppointmentWrapper> findAllPaginatedAppointments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        // List<AppointmentWrapper> list= appointmentRepository.findAllPaginatedAppointments(pageable);
-        //   return appointmentRepository.findAllPaginatedAppointments(pageable);
-        return null;
+        List<AppointmentWrapper> list= appointmentRepository.findAllPaginatedAppointments(pageable);
+        return appointmentRepository.findAllPaginatedAppointments(pageable);
     }
 
     public List<AppointmentWrapper> findAllAppointments() {
@@ -105,9 +104,9 @@ public class AppointmentService {
         Appointment appointment = new Appointment();
         String result = "success";
         Patient patient = null;
-        Optional<String> patientType = appointmentWrapper.getAppointmentType().stream()
-                .filter(x -> x.equalsIgnoreCase("NewPatient")).findFirst();
-        if (patientType.isPresent()) {
+        /*Optional<String> patientType = appointmentWrapper.getAppointmentType().stream()
+                .filter(x -> x.equalsIgnoreCase("NewPatient")).findFirst();*/
+        if (appointmentWrapper.getStateOfPatientBox()) {
             patient = new Patient();
             // patient.setEmail(appointmentWrapper.getEmail());
             patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
@@ -119,7 +118,7 @@ public class AppointmentService {
                 Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
                 appointment.setDoctor(doctor);
             } else
-                patient.setPrimaryDoctor(doctorRepository.findOne(1L));
+            patient.setPrimaryDoctor(doctorRepository.findOne(1L));
             patient.setLastName(appointmentWrapper.getNewPatient());
             patient.setMiddleName(appointmentWrapper.getNewPatient());
             // patient.setLastName(appointmentWrapper.getNewPatient());
@@ -203,6 +202,8 @@ public class AppointmentService {
             appointment.setPatient(patient);
         }
 
+
+
         //check date time exist already
         if (!checkTimeAndDateAlreadyExist(scheduleDate,date2 ,ended,appointmentWrapper.getDoctorId())) {
             appointmentRepository.save(appointment);
@@ -249,7 +250,7 @@ public class AppointmentService {
             patient = patientRepository.findOne(appointmentWrapper.getPatientId());
             alreadyExistAppointment.setPatient(patient);
         }
-        if (!checkTimeAndDateAlreadyExist(scheduleDate,  date2,ended,appointmentWrapper.getDoctorId())) {
+        if (!checkTimeAndDateAlreadyExistForUpdate(scheduleDate,  date2,ended,appointmentWrapper.getDoctorId(),appointmentWrapper.getAppointmentId())) {
              appointmentRepository.save(alreadyExistAppointment);
 
         } else {
@@ -260,16 +261,22 @@ public class AppointmentService {
     }
 
     public List<AppointmentWrapper> getPageableSearchedAppointments(Long doctorId, Long branchId) {
-        //Pageable pageable = new PageRequest(offset, limit);
-        List<AppointmentWrapper> test = appointmentRepository.findAllAppointmentsByDoctor(doctorId, branchId);
         return appointmentRepository.findAllAppointmentsByDoctor(doctorId, branchId);
     }
 
+    public List<AppointmentWrapper> searchAppointmentByPatients(String patientName,int offset,int limit) {
+        Pageable pageable = new PageRequest(offset, limit);
+        return appointmentRepository.searchAllAppointmentsByPatients(patientName,pageable);
+    }
     public int countSearchedAppointments(Long doctorId, Long branchId) {
         Doctor doctor = doctorRepository.findOne(doctorId);
         Branch branch = branchRepository.findOne(branchId);
         return appointmentRepository.findByDoctorAndBranch(doctor, branch).size();
     }
+    public int countSearchedAppointmentsByPatient(String patientName) {
+        return appointmentRepository.countAllByPatientFirstName(patientName);
+    }
+
 
     /*
         public Appointment updateAppointment(AppointmentWrapper appointmentWrapper,Appointment appointment) {
@@ -353,29 +360,24 @@ public class AppointmentService {
     private boolean checkTimeAndDateAlreadyExist(Date date1,Date startedOn, Date endedOn,Long drId) {
         boolean isExist = false;
         int appointments = appointmentRepository.findAppointmentClash(date1,startedOn ,endedOn,drId);
-      /*  if (appointments.size() > 0 ) {
-            boolean drExist =  this.checkDoctor(appointments,drId);
-            if(drExist)
-            isExist = true;
-        }*/
-
-        if(appointments > 0)
+        if(appointments > 1)
             isExist =true;
          return isExist;
     }
 
-    private boolean checkDoctor(List<Appointment> appointments, Long id) {
-        boolean alreadyExist = false;
-        long count = appointments.stream().filter(x -> x.getDoctor().getId() == id).count();
-        if (count > 0) {
-            alreadyExist = true;
+    private boolean checkTimeAndDateAlreadyExistForUpdate(Date date1,Date startedOn, Date endedOn,Long drId,String aptId) {
+        boolean isExist = false;
+        List<Appointment>  appointments = appointmentRepository.findAppointmentClashForUpdate(date1,startedOn ,endedOn,drId);
+        for(Appointment apt:appointments){
+            if(!(apt.getAppointmentId().equalsIgnoreCase(aptId)))
+                isExist =true;
         }
-        return alreadyExist;
+        return isExist;
     }
 
 
     public List<MedicalServicesDoctorWrapper> getMedicalServicesAgainstDoctors() {
-        return doctorMedicalServiceRepository.findAllByDoctorAndDoctor();
+        return doctorMedicalServiceRepository.findAllByDoctorAndServices();
     }
 
   /*  public void deleteAppointment(Appointment appointment) {

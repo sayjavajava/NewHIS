@@ -72,7 +72,7 @@ public class StaffService {
     @Autowired
     MedicalServiceRepository medicalServiceRepository;
     @Autowired
-    DoctorMedicalServiceRepository  doctorMedicalServiceRepository;
+    DoctorMedicalServiceRepository doctorMedicalServiceRepository;
     @Autowired
     NurseDepartmentRepository nurseDepartmentRepository;
 
@@ -89,7 +89,7 @@ public class StaffService {
         // String brName = branch.getName();
         User user = null;
 
-        if (usertype.equalsIgnoreCase("CASHIER") ) {
+        if (usertype.equalsIgnoreCase("CASHIER")) {
             user = new User();
             user.setActive(true);
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
@@ -100,7 +100,7 @@ public class StaffService {
             Role role = roleRepository.findByName(createRequest.getUserType().toUpperCase());
             /*List<UserRole> recAssignedRole = new ArrayList<>();
             if (!HISCoreUtil.isListEmpty(allRoles)) {*/
-            if(role!=null) {
+            if (role != null) {
                 //for (Role userAllowRole : allRoles) {
                 userRole = new UserRole();
                     /*userRole1.setRole(userAllowRole);
@@ -139,7 +139,7 @@ public class StaffService {
             cashierRepository.save(cashier);
             if (!HISCoreUtil.isListEmpty(allowBranches)) {
                 for (Branch userVisitBr : allowBranches) {
-                    if(userVisitBr.getId() == branch.getId())
+                    if (userVisitBr.getId() == branch.getId())
                         continue;
                     BranchCashier userVisitBranches = new BranchCashier();
                     userVisitBranches.setBranch(userVisitBr);
@@ -172,7 +172,7 @@ public class StaffService {
             Role role = roleRepository.findByName(createRequest.getUserType().toUpperCase());
             /*List<UserRole> recAssignedRole = new ArrayList<>();
             if (!HISCoreUtil.isListEmpty(allRoles)) {*/
-            if(role!=null) {
+            if (role != null) {
                 //for (Role userAllowRole : allRoles) {
                 userRole = new UserRole();
                     /*userRole1.setRole(userAllowRole);
@@ -243,7 +243,7 @@ public class StaffService {
             Role role = roleRepository.findByName(createRequest.getUserType().toUpperCase());
             /*List<UserRole> recAssignedRole = new ArrayList<>();
             if (!HISCoreUtil.isListEmpty(allRoles)) {*/
-            if(role!=null) {
+            if (role != null) {
                 //for (Role userAllowRole : allRoles) {
                 userRole = new UserRole();
                     /*userRole1.setRole(userAllowRole);
@@ -296,7 +296,7 @@ public class StaffService {
             nurseRepository.save(nurse);
 
             //nurse departments portion
-            List<Department> selectedDept = departmentRepository.findAllByIdIn( Arrays.asList(createRequest.getSelectedDepartment()) );
+            List<Department> selectedDept = departmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
             List<NurseDepartment> nurseDepartmentList = new ArrayList<>();
             if (!HISCoreUtil.isListEmpty(selectedDept)) {
                 for (Department dept : selectedDept) {
@@ -352,14 +352,14 @@ public class StaffService {
             Role role = roleRepository.findByName(createRequest.getUserType().toUpperCase());
             /*List<UserRole> recAssignedRole = new ArrayList<>();
             if (!HISCoreUtil.isListEmpty(allRoles)) {*/
-            if(role!=null) {
+            if (role != null) {
                 //for (Role userAllowRole : allRoles) {
-                    userRole = new UserRole();
+                userRole = new UserRole();
                     /*userRole1.setRole(userAllowRole);
                     userRole1.setUser(user);
                     recAssignedRole.add(userRole1);*/
-                    userRole.setRole(role);
-                    userRole.setUser(user);
+                userRole.setRole(role);
+                userRole.setUser(user);
                 //}
                 userRoleRepository.save(userRole);//recAssignedRole);
             }
@@ -383,7 +383,7 @@ public class StaffService {
 
             //doctor department portion
             Department selectedDocDept = null;
-            if(createRequest.getSelectedDepartment().length>0) {
+            if (createRequest.getSelectedDepartment().length > 0) {
                 selectedDocDept = departmentRepository.findOne((createRequest.getSelectedDepartment())[0]);
             }
             doctor.setDepartment(selectedDocDept);
@@ -423,9 +423,9 @@ public class StaffService {
 
             //doctor services portion
 
-            List<MedicalService> medicalServicesList =  medicalServiceRepository.findAllByIdIn( Arrays.asList(createRequest.getSelectedServices()) );
+            List<MedicalService> medicalServicesList = medicalServiceRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedServices()));
             List<DoctorMedicalService> doctorMedicalServiceList = new ArrayList<>();
-            for(MedicalService ms : medicalServicesList){
+            for (MedicalService ms : medicalServicesList) {
                 DoctorMedicalService dms = new DoctorMedicalService();
                 dms.setDoctor(doctor);
                 dms.setMedicalService(ms);
@@ -487,7 +487,7 @@ public class StaffService {
         }
         if (userType.equalsIgnoreCase("DOCTOR")) {
             staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(id);
-            staffResponseWrapper.setStaffBranches( branchDoctorRepository.getDoctorBranches(id) );
+            staffResponseWrapper.setStaffBranches(branchDoctorRepository.getDoctorBranches(id));
             staffResponseWrapper.setDoctorMedicalSrvcList(doctorMedicalServiceRepository.getDoctorMedicalServices(id));
             return staffResponseWrapper;
         }
@@ -495,8 +495,8 @@ public class StaffService {
             staffResponseWrapper = nurseRepository.findAllByIdAndStatusActive(id);
             Nurse nurse = nurseRepository.findOne(id);
             //branchService.getAllActiveBranches();
-            staffResponseWrapper.setStaffBranches( branchNurseRepository.getNurseBranches(id) );
-            staffResponseWrapper.setNurseDepartmentList( nurseDepartmentRepository.getNurseDepartments(id) );
+            staffResponseWrapper.setStaffBranches(branchNurseRepository.getNurseBranches(id));
+            staffResponseWrapper.setNurseDepartmentList(nurseDepartmentRepository.getNurseDepartments(id));
             //staffService.findByRole("DOCTOR");
             staffResponseWrapper.setDutyWithDoctors(nurseWithDoctorRepository.findNurseWithDoctors(id));
 
@@ -607,7 +607,7 @@ public class StaffService {
                 Doctor doctor = doctorRepository.findByUser(alreadyExistsUser);
                 alreadyExistsUser.setActive(createRequest.isActive());
                 userRepository.save(alreadyExistsUser);
-                    doctor.getDoctorMedicalServices().clear();
+                doctor.getDoctorMedicalServices().clear();
                 doctor.setEmail(createRequest.getEmail());
                 doctor.setHomePhone(createRequest.getHomePhone());
                 doctor.setCellPhone(createRequest.getCellPhone());
@@ -620,25 +620,25 @@ public class StaffService {
                 doctor.setVacationTO(HISCoreUtil.convertToDate(createRequest.getDateTo()));
                 doctor.setCheckUpInterval(createRequest.getInterval());
                 //doctor working days
-                List<String> daysList = new LinkedList<String>( Arrays.asList(createRequest.getSelectedWorkingDays()) );
-               if(!HISCoreUtil.isListEmpty(daysList)){
+                List<String> daysList = new LinkedList<String>(Arrays.asList(createRequest.getSelectedWorkingDays()));
+                if (!HISCoreUtil.isListEmpty(daysList)) {
                     doctor.setWorkingDays(daysList);
-               }
+                }
 
                 //doctor department portion
                 Department selectedDocDept = null;
-                if(createRequest.getSelectedDepartment().length>0) {
+                if (createRequest.getSelectedDepartment().length > 0) {
                     //departmentRepository.findOne( (createRequest.getSelectedDepartment())[0] );
                     selectedDocDept = departmentRepository.findOne((createRequest.getSelectedDepartment())[0]);
                 }
                 doctor.setDepartment(selectedDocDept);
                 doctorRepository.save(doctor);
                 //doctor visit branches
-                List<MedicalService> medicalServiceList = medicalServiceRepository.findAllByIdIn( Arrays.asList( createRequest.getSelectedServices() ) );
+                List<MedicalService> medicalServiceList = medicalServiceRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedServices()));
                 List<DoctorMedicalService> doctorMedicalServiceList = new ArrayList<>();
-                if(!HISCoreUtil.isListEmpty(medicalServiceList)){
+                if (!HISCoreUtil.isListEmpty(medicalServiceList)) {
                     doctorMedicalServiceRepository.deleteDoctorMedicalServiceByDoctor_Id(doctor.getId());
-                    for(MedicalService ms : medicalServiceList){
+                    for (MedicalService ms : medicalServiceList) {
                         DoctorMedicalService dms = new DoctorMedicalService();
                         dms.setDoctor(doctor);
                         dms.setMedicalService(ms);
@@ -764,6 +764,7 @@ public class StaffService {
                 userRepository.save(alreadyExistsUser);
                 nurse.setEmail(createRequest.getEmail());
                 nurse.setHomePhone(createRequest.getHomePhone());
+                nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 nurse.setCellPhone(createRequest.getCellPhone());
                 nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 nurse.setLastName(createRequest.getLastName());
@@ -773,7 +774,7 @@ public class StaffService {
                 nurseRepository.save(nurse);
 
                 //nurse department portion
-                List<Department> selectedDept = departmentRepository.findAllByIdIn( Arrays.asList(createRequest.getSelectedDepartment()) );
+                List<Department> selectedDept = departmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
                 List<NurseDepartment> nurseDepartmentList = new ArrayList<>();
                 if (!HISCoreUtil.isListEmpty(selectedDept)) {
                     nurseDepartmentRepository.deleteAllByNurse_Id(nurse.getId());
@@ -816,7 +817,7 @@ public class StaffService {
 
                 List<Doctor> doctorList = doctorRepository.findAllByIdIn(Arrays.asList(createRequest.getDutyWithDoctors()));
                 List<NurseWithDoctor> dutyWithDoctorsData = new ArrayList<>();
-                if( !HISCoreUtil.isListEmpty(doctorList) ) {
+                if (!HISCoreUtil.isListEmpty(doctorList)) {
                     nurseWithDoctorRepository.deleteAllByNurse_Id(nurse.getId());
                     for (Doctor docUser : doctorList) {
                         NurseWithDoctor dutyWithDoctor1 = new NurseWithDoctor();
@@ -1053,8 +1054,8 @@ public class StaffService {
             userRepository.delete(user);
             nurseWithDoctorRepository.deleteAllByNurse(nurse);
             nurseRepository.delete(nurse);
-        //    userRoleRepository.deleteAllByUser(user);
-           ;
+            //    userRoleRepository.deleteAllByUser(user);
+            ;
             return user;
         }
         if (userType.equalsIgnoreCase("DOCTOR")) {
@@ -1072,26 +1073,29 @@ public class StaffService {
         return null;
     }
 
+    //Long uid, Long pId, Long primaryBranchId, String userType, String email, String userName, String firstName, String lastName, String homePhone, String cellPhone, Long id, Long docDepartmentId
     public List<StaffResponseWrapper> findByRole(String role) {
         List<StaffResponseWrapper> staffRespWrapper = new ArrayList<>();
         List<User> userList = userRepository.findAllByUserRoles_role_name(role);
         StaffResponseWrapper staffWraper = new StaffResponseWrapper();
-        switch(role){
+        switch (role) {
             case "DOCTOR":
-                List<Doctor> doctorList =doctorRepository.findAllByUserIn(userList);
-                for (Doctor  doctor : doctorList){
-                    staffRespWrapper.add(new StaffResponseWrapper(doctor));
+                List<Doctor> doctorList = doctorRepository.findAllByUserIn(userList);
+                for (Doctor doctor : doctorList) {
+                    StaffResponseWrapper staffRespWrapper1 = new StaffResponseWrapper(doctor.getUser().getId(), doctor.getProfileId(), doctor.getUser().getUserType(),
+                            doctor.getEmail(), doctor.getUser().getUsername(), doctor.getFirstName(), doctor.getLastName(), doctor.getHomePhone(), doctor.getCellPhone(), doctor.getId());
+                    staffRespWrapper.add(staffRespWrapper1);
                 }
                 break;
             default:
-                break;
+
         }
         return staffRespWrapper;
     }
 
     public List<StaffWrapper> searchByNameOrRole(String name, String userType, int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        if(userType!=null && !userType.isEmpty())
+        if (userType != null && !userType.isEmpty())
             userType = userType.toLowerCase();
         List<StaffWrapper> drStaffList = doctorRepository.findAllBySearchCriteria(name, userType, pageable);
         List<StaffWrapper> crStaffList = cashierRepository.findAllBySearchCriteria(name, userType, pageable);

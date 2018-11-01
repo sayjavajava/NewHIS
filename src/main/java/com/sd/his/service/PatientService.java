@@ -328,24 +328,24 @@ public class  PatientService {
     public List<PatientWrapper> getAllPatientList(){
         List<Patient> patient =  patientRepository.findAll();
         return this.getPatientWrapperList(patient);
-
     }
 
     public PatientWrapper getPatientById(long id) {
         Patient patient = patientRepository.findOne(id);
         PatientWrapper patientWrapper = new PatientWrapper();
         this.populatePatientWrapper(patientWrapper, patient);
+        if(patient.getPrimaryDoctor() !=null){
         patientWrapper.setSelectedDoctor(patient.getPrimaryDoctor().getId());
         patientWrapper.setPrimaryDoctorFirstName(patient.getPrimaryDoctor().getFirstName());
-        patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
-        patientWrapper.setSmokingStatuses( patient.getSmokingStatusList()!=null ? patient.getSmokingStatusList() : null);
+        patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());}
+        patientWrapper.setSmokingStatuses(patient.getSmokingStatusList()!=null ? patient.getSmokingStatusList() : null);
         this.populateRaces(patientWrapper, patient);
         this.populateAppointments(patientWrapper,patient);
         this.populateInsurance(patientWrapper, patient);
         return patientWrapper;
     }
 
-    public Patient getPatientById(Long id) {
+    public Patient getPatientByIdForHistory(Long id) {
         return patientRepository.findOne(id);
     }
 

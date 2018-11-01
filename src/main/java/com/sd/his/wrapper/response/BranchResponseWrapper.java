@@ -8,6 +8,7 @@ import com.sd.his.utill.HISCoreUtil;
 import io.swagger.models.auth.In;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -65,7 +66,11 @@ public class BranchResponseWrapper {
     String lastName;
     Long doctorId;
     boolean checkedBranch;
-
+    long value;
+    String label;
+    String companyName;
+    String flow;
+    Map<String, List<BranchResponseWrapper>> doctorsInBranch;
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
         this.country = branch.getCountry();
@@ -87,6 +92,9 @@ public class BranchResponseWrapper {
                 .map(x-> new Room(x.getId(),x.getRoomName(),x.getAllowOnlineScheduling()))
                 .collect(Collectors.toList());
         this.user = user;
+        this.value=branch.getId() ;
+        this.label =branch.getName();
+        this.flow =branch.getFlow();
 
     }
     public BranchResponseWrapper(){}
@@ -115,6 +123,37 @@ public class BranchResponseWrapper {
 
     }
 
+    public String getFlow() {
+        return flow;
+    }
+
+    public void setFlow(String flow) {
+        this.flow = flow;
+    }
+
+    public Map<String, List<BranchResponseWrapper>> getDoctorsInBranch() {
+        return doctorsInBranch;
+    }
+
+    public void setDoctorsInBranch(Map<String, List<BranchResponseWrapper>> doctorsInBranch) {
+        this.doctorsInBranch = doctorsInBranch;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
+    }
 
     public Long getDoctorId() {
         return doctorId;

@@ -1,10 +1,13 @@
 package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Status;
+import com.sd.his.service.StatusService;
 import com.sd.his.service.TaxService;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.StatusWrapper;
 import com.sd.his.wrapper.TaxWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -43,102 +46,100 @@ import java.util.stream.IntStream;
  *
  */
 @RestController
-@RequestMapping("/setting/tax")
+@RequestMapping("/setting/status")
 public class StatusAPI {
+    @Autowired
+    private StatusService statusService;
 
     Logger logger = LoggerFactory.getLogger(StatusAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
-    @Autowired
-    TaxService taxService;
-
-    @ApiOperation(httpMethod = "GET", value = "All Services Tax",
-            notes = "This method will return All Service Tax",
-            produces = "application/json", nickname = "All Service Tax",
+    @ApiOperation(httpMethod = "POST", value = "Create Status",
+            notes = "This method will Create Status",
+            produces = "application/json", nickname = "Create Status",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "All Service Tax fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Status successfully created", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllServiceTax(HttpServletRequest request) {
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public ResponseEntity<?> createStatus(HttpServletRequest request,
+                                                 @RequestBody StatusWrapper statusWrapper) {
+        logger.info("Create Status API called...");
 
-        logger.error("getAllServiceTax API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("service.tax.fetch.error"));
-        response.setResponseCode(ResponseEnum.SERVICE_TAX_FETCH_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("status.add.error"));
+        response.setResponseCode(ResponseEnum.STATUS_ADD_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
-            logger.error("getAllServiceTax - service tax fetching from DB");
-            List<TaxWrapper> taxes = taxService.findAllActiveTax();
-            logger.error("getAllServiceTax - tax fetched successfully");
-
-            if (HISCoreUtil.isListEmpty(taxes)) {
-                response.setResponseMessage(messageBundle.getString("service.tax.not.found.error"));
-                response.setResponseCode(ResponseEnum.MED_SERVICE_NOT_FOUND.getValue());
+            Status statusAlready = statusService.isAlreadyExist(statusWrapper.getName());
+            if(HISCoreUtil.isValidObject(statusAlready)){
+                response.setResponseMessage(messageBundle.getString("status.already.error"));
+                response.setResponseCode(ResponseEnum.STATUS_ALREADY_EXIST_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
-                logger.error("getAllServiceTax API - Taxes not found");
+                logger.error("Status already exist with the same name...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            StatusWrapper statusObj = statusService.saveStatus(statusWrapper);
+            if (HISCoreUtil.isValidObject(statusObj)) {
+                response.setResponseData(statusObj);
+                response.setResponseMessage(messageBundle.getString("status.add.success"));
+                response.setResponseCode(ResponseEnum.STATUS_ADD_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("status created successfully...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            response.setResponseMessage(messageBundle.getString("service.tax.fetch.success"));
-            response.setResponseCode(ResponseEnum.SERVICE_TAX_FETCH_SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(taxes);
 
-            logger.error("getAllServiceTax API successfully executed.");
-            return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (Exception ex) {
-            logger.error("getAllServiceTax exception..", ex.fillInStackTrace());
+            logger.error("status Creation Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(httpMethod = "GET", value = "Paginated Services Tax",
-            notes = "This method will return Paginated Service Tax",
-            produces = "application/json", nickname = "Paginated Service Tax",
+    @ApiOperation(httpMethod = "GET", value = "Paginated Status",
+            notes = "This method will return Paginated Status",
+            produces = "application/json", nickname = "Get Paginated Status ",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Paginated Service Tax fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Paginated Status fetched successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllPaginatedServiceTax(HttpServletRequest request,
-                                                       @PathVariable("page") int page,
-                                                       @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+    public ResponseEntity<?> getAllStatus(HttpServletRequest request,
+                                                 @PathVariable("page") int page,
+                                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+        logger.info("getAllStatus paginated..");
 
-        logger.error("getAllPaginatedServiceTax API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("service.tax.fetch.error"));
-        response.setResponseCode(ResponseEnum.SERVICE_TAX_FETCH_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("status.not.found"));
+        response.setResponseCode(ResponseEnum.STATUS_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
-            logger.error("getAllPaginatedServiceTax - service tax fetching from DB");
-            List<TaxWrapper> taxes = taxService.findAllPaginatedTax(page, pageSize);
-            int taxCount = taxService.countAllTax();
+            List<StatusWrapper> fhistoryData = statusService.getAllStatuses(page,pageSize);
+            int countStatues = statusService.statusesCount();
 
-            logger.error("getAllPaginatedServiceTax - tax fetched successfully");
-
-            if (!HISCoreUtil.isListEmpty(taxes)) {
+            if (!HISCoreUtil.isListEmpty(fhistoryData)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
 
-                if (taxCount > pageSize) {
-                    int remainder = taxCount % pageSize;
-                    int totalPages = taxCount / pageSize;
+                if (countStatues > pageSize) {
+                    int remainder = countStatues % pageSize;
+                    int totalPages = countStatues / pageSize;
                     if (remainder > 0) {
                         totalPages = totalPages + 1;
                     }
@@ -160,72 +161,20 @@ public class StatusAPI {
                 returnValues.put("prePage", prePage);
                 returnValues.put("currPage", currPage);
                 returnValues.put("pages", pages);
-                returnValues.put("data", taxes);
+                returnValues.put("data", fhistoryData);
 
-                response.setResponseMessage(messageBundle.getString("service.tax.fetch.success"));
-                response.setResponseCode(ResponseEnum.SERVICE_TAX_FETCH_SUCCESS.getValue());
+                response.setResponseMessage(messageBundle.getString("status.fetched.success"));
+                response.setResponseCode(ResponseEnum.STATUS_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(returnValues);
-
-                logger.error("getAllPaginatedServiceTax API successfully executed.");
+                logger.info("getAll status Fetched successfully...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
+
             }
-        } catch (Exception ex) {
-            logger.error("getAllPaginatedServiceTax exception..", ex.fillInStackTrace());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @ApiOperation(httpMethod = "DELETE", value = "Delete Service Tax",
-            notes = "This method will Delete the Service Tax",
-            produces = "application/json", nickname = "Delete Service Tax ",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Deleted Service Tax successfully", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteServiceTax(HttpServletRequest request,
-                                              @RequestParam("taxId") long taxId) {
-        logger.info("deleteServiceTax API - Called..");
-        GenericAPIResponse response = new GenericAPIResponse();
-        try {
-            if (taxId <= 0) {
-                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("deleteServiceTax API - insufficient params.");
-
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-
-            if (taxService.hasChild(taxId)) {
-                response.setResponseMessage(messageBundle.getString("service.tax.delete.has.child"));
-                response.setResponseCode(ResponseEnum.SERVICE_TAX_DELETE_HAS_CHILD.getValue());
-                response.setResponseStatus(ResponseEnum.WARN.getValue());
-                response.setResponseData(null);
-                logger.info("deleteServiceTax API - tax has child record. First delete its child record then you can delete it.");
-
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-
-            taxService.deleteTax(taxId);
-            response.setResponseMessage(messageBundle.getString("service.tax.delete.success"));
-            response.setResponseCode(ResponseEnum.SERVICE_TAX_DELETE_SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(null);
-            logger.info("deleteServiceTax API - Deleted Successfully...");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("deleteServiceTax API - deleted failed.", ex.fillInStackTrace());
+            logger.error("get all paginated FamilyHistory failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -235,184 +184,165 @@ public class StatusAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "POST", value = "Save Service Tax",
-            notes = "This method will save the service tax.",
-            produces = "application/json", nickname = "Save Service Tax",
+    @ApiOperation(httpMethod = "DELETE", value = "Delete Status",
+            notes = "This method will Delete Branch on base of id",
+            produces = "application/json", nickname = "Delete Branch ",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Save Service Tax successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Status Deleted successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ResponseEntity<?> saveTax(HttpServletRequest request,
-                                     @RequestBody TaxWrapper taxWrapper) {
-        logger.info("saveTax API - initiated..");
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteStatus(HttpServletRequest request,
+                                          @PathVariable("id") long id) {
+
         GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("status.delete.error"));
+        response.setResponseCode(ResponseEnum.STATUS_DELETED_SUCCESS.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
 
         try {
+            Status status = this.statusService.getById(id);
 
-            if (HISCoreUtil.isNull(taxWrapper.getName()) ||
-                    HISCoreUtil.isNull(taxWrapper.getFromDate()) ||
-                    HISCoreUtil.isNull(taxWrapper.getToDate())) {
-                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+            if (HISCoreUtil.isValidObject(status)) {
+                Status  status1 = statusService.deleteStatus(status);
+                if(HISCoreUtil.isValidObject(status1)){
+                    response.setResponseData(null);
+                    response.setResponseMessage(messageBundle.getString("status.delete.success"));
+                    response.setResponseCode(ResponseEnum.STATUS_DELETED_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("Status Deleted successfully...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+
+            } else {
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("status.not.found"));
+                response.setResponseCode(ResponseEnum.STATUS_NOT_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
 
-                logger.error("saveTax API - insufficient params.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
+                logger.info("Unable to find Status...");
             }
-
-            Date fromDate = HISCoreUtil.convertToDateWithTime(taxWrapper.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
-            Date toDate = HISCoreUtil.convertToDateWithTime(taxWrapper.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
-
-            if (fromDate.after(toDate)) {
-                response.setResponseMessage(messageBundle.getString("service.tax.from.date"));
-                response.setResponseCode(ResponseEnum.SERVICE_TAX_FROM_DATE.getValue());
-                response.setResponseStatus(ResponseEnum.WARN.getValue());
-                response.setResponseData(null);
-
-                logger.error("saveTax API - Tax FROM DATE should be less than or equal to 'TO DATE'.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-
-            if (taxService.isAlreadyExist(taxWrapper)) {
-                response.setResponseMessage(messageBundle.getString("service.tax.already.exist"));
-                response.setResponseCode(ResponseEnum.SERVICE_TAX_ALREADY_EXIST_ERROR.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-
-                logger.error("saveTax API - Tax already exist with same name.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-
-            taxService.saveTax(taxWrapper);
-            response.setResponseMessage(messageBundle.getString("service.tax.save.success"));
-            response.setResponseCode(ResponseEnum.SERVICE_TAX_SAVE_SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(null);
-
-            logger.error("saveTax API - Tax successfully saved.");
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("saveTax exception.", e.fillInStackTrace());
+        } catch (Exception ex) {
+            logger.error("Unable to delete Status.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "PUT", value = "Update Status ",
+            notes = "This method will Update Status",
+            produces = "application/json", nickname = "Update Status",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Status successfully updated", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateStatus(HttpServletRequest request,
+                                                 @PathVariable("id") long id,
+                                                 @RequestBody StatusWrapper statusWrapper) {
+
+        logger.info("update Status API called...");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("status.update.error"));
+        response.setResponseCode(ResponseEnum.FAMILY_HISTORY_UPDATE_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+            Status alreadyStatus = statusService.getById(id);
+            if (HISCoreUtil.isValidObject(alreadyStatus)) {
+                logger.info("Status founded...");
+                StatusWrapper fmUpdated = statusService.updateStatus(statusWrapper, alreadyStatus);
+                if (statusService.isStatusNameOrIdExistsAlready(statusWrapper.getName(),id)) {
+                    response.setResponseMessage(messageBundle.getString("branch.add.already-found.error"));
+                    response.setResponseCode(ResponseEnum.BRANCH_ALREADY_EXIST_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+                    logger.error("Branch already exist with the same name...");
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+                if (HISCoreUtil.isValidObject(fmUpdated)) {
+                    logger.info("Status Updated...");
+                    response.setResponseData(fmUpdated);
+                    response.setResponseMessage(messageBundle.getString("status.update.success"));
+                    response.setResponseCode(ResponseEnum.FAMILY_HISTORY_UPDATE_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("Status updated successfully...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+                logger.info("Status not found...");
+                response.setResponseMessage(messageBundle.getString("status.not.found"));
+                response.setResponseCode(ResponseEnum.FAMILY_HISTORY_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Status not updated...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+        } catch (Exception ex) {
+            logger.error("Update Status Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(httpMethod = "PUT", value = "Update Tax Service",
-            notes = "This method will update Tax Service",
-            produces = "application/json", nickname = "Update Tax Service",
+    @ApiOperation(httpMethod = "GET", value = "Search Status",
+            notes = "This method will return Status on base of search",
+            produces = "application/json", nickname = "Search Status",
             response = GenericAPIResponse.class, protocols = "https")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Tax service updated successfully ", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateTax(HttpServletRequest request,
-                                       @RequestBody TaxWrapper updateRequest) {
-        logger.info("updateTax API initiated..");
-        GenericAPIResponse response = new GenericAPIResponse();
-
-        try {
-            if (updateRequest.getId() <= 0 ||
-                    HISCoreUtil.isNull(updateRequest.getFromDate()) ||
-                    HISCoreUtil.isNull(updateRequest.getToDate())) {
-                response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
-                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("updateTax API - insufficient params.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-            Date fromDate = HISCoreUtil.convertToDateWithTime(updateRequest.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
-            Date toDate = HISCoreUtil.convertToDateWithTime(updateRequest.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
-
-            if (fromDate.after(toDate)) {
-                response.setResponseMessage(messageBundle.getString("service.tax.update.from.date"));
-                response.setResponseCode(ResponseEnum.SERVICE_TAX_FROM_DATE.getValue());
-                response.setResponseStatus(ResponseEnum.WARN.getValue());
-                response.setResponseData(null);
-
-                logger.error("updateTax API - Tax FROM DATE should be less than or equal to 'TO DATE'.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-
-            if (taxService.isAlreadyExist(updateRequest)) {
-                response.setResponseMessage(messageBundle.getString("service.tax.already.exist"));
-                response.setResponseCode(ResponseEnum.SERVICE_TAX_ALREADY_EXIST_ERROR.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-
-                logger.error("updateICDCode API - Tax already exist with same name.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
-            taxService.updateTaxService(updateRequest);
-            response.setResponseData(null);
-            response.setResponseMessage(messageBundle.getString("service.tax.update.success"));
-            response.setResponseCode(ResponseEnum.SERVICE_TAX_UPDATE_SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("updateICDCode API - update failed.", e.fillInStackTrace());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("exception.occurs"));
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @ApiOperation(httpMethod = "GET", value = "GET Search Taxes",
-            notes = "This method will return Searched Tax",
-            produces = "application/json", nickname = "Searched Taxes ",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Searched Taxes fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 200, message = "Status found successfully", response = GenericAPIResponse.class),
             @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/search/{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> searchTaxByName(HttpServletRequest request,
-                                             @PathVariable("page") int pageNo,
-                                             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                             @RequestParam(value = "searchTax") String searchTaxName) {
+    public ResponseEntity<?> searchPaginatedStatus(HttpServletRequest request,
+                                                     @PathVariable("page") int page,
+                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                     @RequestParam(value = "statusName") String statusName){
 
-        logger.info("searchTaxByName initiated");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("icd.not-found"));
-        response.setResponseCode(ResponseEnum.ICD_CODE_NOT_FOUND.getValue());
+        response.setResponseMessage(messageBundle.getString("status.not.found"));
+        response.setResponseCode(ResponseEnum.STATUS_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
-            List<TaxWrapper> taxes = taxService.searchByTaxByName(searchTaxName, pageNo, pageSize);
-            int taxesCount = taxService.countSearchByTaxByName(searchTaxName);
+            List<StatusWrapper> branchWrappers = statusService.searchByStatusName(statusName,page, pageSize);
 
-            if (!HISCoreUtil.isListEmpty(taxes)) {
-                logger.info("searchTaxByName fetched from DB successfully...");
+            int countStatus = statusService.statusesCount();
+
+            if (!HISCoreUtil.isListEmpty(branchWrappers)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
 
-                if (taxesCount > pageSize) {
-                    int remainder = taxesCount % pageSize;
-                    int totalPages = taxesCount / pageSize;
+                if (countStatus > pageSize) {
+                    int remainder = countStatus % pageSize;
+                    int totalPages = countStatus / pageSize;
                     if (remainder > 0) {
                         totalPages = totalPages + 1;
                     }
                     pages = new int[totalPages];
                     pages = IntStream.range(0, totalPages).toArray();
-                    currPage = pageNo;
+                    currPage = page;
                     nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
                     prePage = currPage > 0 ? currPage : null;
                 } else {
@@ -428,24 +358,29 @@ public class StatusAPI {
                 returnValues.put("prePage", prePage);
                 returnValues.put("currPage", currPage);
                 returnValues.put("pages", pages);
-                returnValues.put("data", taxes);
+                returnValues.put("data", branchWrappers);
 
-                response.setResponseMessage(messageBundle.getString("service.tax.fetched.success"));
-                response.setResponseCode(ResponseEnum.SERVICE_TAX_SEARCH_SUCCESS.getValue());
+                response.setResponseMessage(messageBundle.getString("status.fetched.success"));
+                response.setResponseCode(ResponseEnum.STATUS_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 response.setResponseData(returnValues);
-                logger.info("All searched taxes fetched successfully...");
+                logger.info("searched Status Fetched successfully...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            logger.error("get all filtered Search Taxes failed.", ex.fillInStackTrace());
+            logger.error("searched Status failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+
+
+
+
 }

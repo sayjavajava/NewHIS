@@ -46,7 +46,16 @@ public class BranchRequestWrapper {
     String billingTaxID;
     boolean showBranchOnline;
     boolean allowOnlineSchedulingInBranch;
+    String flow;
 
+
+    public String getFlow() {
+        return flow;
+    }
+
+    public void setFlow(String flow) {
+        this.flow = flow;
+    }
 
     public String getCountry() {
         return country;

@@ -2,7 +2,9 @@ package com.sd.his.repository;
 
 
 import com.sd.his.model.Cashier;
+import com.sd.his.model.Status;
 import com.sd.his.model.User;
+import com.sd.his.wrapper.StatusWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
 import org.springframework.data.domain.Pageable;
@@ -37,19 +39,11 @@ import java.util.List;
  *
  */
 @Repository
-public interface StatusRepository extends JpaRepository<Cashier, Long> {
-
-    @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,cr.id,du.username,du.userType,cr.firstName,cr.lastName,cr.email,br.name) FROM Cashier cr INNER JOIN cr.user du INNER JOIN cr.branchCashiers branchCr INNER JOIN branchCr.branch  br  WHERE du.active = TRUE AND branchCr.primaryBranch=TRUE")
-    List<StaffWrapper> findAllByActive(Pageable pageable);
-
- /*   Long uId,Long pId,String userType,String firstName,String lastName,String userName,
-    String primaryBranch,String email,String homePhone,String cellPhone,String expiryDate,Boolean active,
-    List<Branch> branchLi*/
-
-    @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,cr.id,du.userType,cr.firstName,cr.lastName,du.username,cr.email,br.name,cr.homePhone,cr.cellPhone,du.active,br.id,cr.accountExpiry) FROM Cashier cr INNER JOIN cr.user du INNER JOIN cr.branchCashiers branchCr INNER JOIN branchCr.branch br WHERE cr.id =:id AND du.active = TRUE AND branchCr.primaryBranch=TRUE")
-    StaffResponseWrapper findAllByIdAndStatusActive(@Param("id") Long id);
-    Cashier findByUser(User user);
-
-    @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(cru.id,ca.id,cru.username,cru.userType,ca.firstName,ca.lastName,ca.email,br.name) FROM Cashier ca INNER JOIN ca.user cru INNER JOIN ca.branchCashiers branchCr INNER JOIN branchCr.branch br WHERE (lower( ca.firstName ) LIKE concat('%',:name,'%') or lower( ca.lastName ) LIKE concat('%',:name,'%') OR cru.userType=:userType) AND cru.active = TRUE AND branchCr.primaryBranch=TRUE")
-    List<StaffWrapper> findAllBySearchCriteria(@Param("name") String name, @Param("userType") String userType, Pageable pageable);
+public interface StatusRepository extends JpaRepository<Status, Long> {
+    List<Status> findBy(Pageable pageable);
+    int countByStatusTrue();
+    Status findByName(String name);
+    Status findByNameAndIdNot(String name ,Long id);//Long id, String name, String abbreviation, boolean active, String colorHash
+    @Query("SELECT new com.sd.his.wrapper.StatusWrapper(st.id,st.name, st.abbreviation,st.status,st.hashColor) FROM Status st WHERE st.status = TRUE and st.name LIKE CONCAT('%',:name,'%')")
+    List<StatusWrapper> findByNameAndStatusTrue(@Param("name")String name , Pageable pageable);
 }

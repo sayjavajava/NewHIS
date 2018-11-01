@@ -1,8 +1,6 @@
 package com.sd.his.repository;
 
-import com.sd.his.model.Branch;
-import com.sd.his.model.BranchDoctor;
-import com.sd.his.model.Doctor;
+import com.sd.his.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,15 +31,9 @@ import java.util.List;
  *
  */
 @Repository
-public interface BranchDoctorRepository extends JpaRepository<BranchDoctor, Long> {
+public interface BranchDepartmentRepository extends JpaRepository<BranchDepartment, Long> {
 
-     BranchDoctor findByBranch(Branch branch);
-     BranchDoctor findByDoctorAndPrimaryBranchTrue(Doctor doctor);
-     void deleteAllByDoctorAndPrimaryBranchFalse(Doctor doctor);
-     void deleteAllByDoctor(Doctor doctor);
-     @Query("select b from BranchDoctor bd inner join bd.branch b where bd.doctor.id=:id")
-     List<Branch> getDoctorBranches(@Param("id") Long id);//id=>doctor pk id
-     @Query("select b from BranchDoctor bd inner join bd.doctor b where bd.branch.id=:id")
-     List<Doctor> getBranchesDoctors(@Param("id") Long id);
+ //   BranchDepartment findByBranchAndDepartment(Department dpt);
+
 }
 
