@@ -1,7 +1,6 @@
 package com.sd.his.wrapper;
 
 import com.sd.his.enums.AppointmentStatusTypeEnum;
-import com.sd.his.enums.AppointmentTypeEnum;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.utill.JSONUtil;
@@ -89,6 +88,8 @@ public class AppointmentWrapper {
     private Double receivedAmount;
     private Double patientAdvanceDeposit;
     private Boolean stateOfPatientBox;
+    private String invoicePrefix;
+    private boolean completed;
 
     public AppointmentWrapper() {
     }
@@ -141,7 +142,7 @@ public class AppointmentWrapper {
 
 
 
-    public AppointmentWrapper(Long id,String appointmentId, String title, AppointmentStatusTypeEnum status,Date scheduleDate, String firstName, String lastName, String docFirstName, String docLastName, Long patientId)
+    public AppointmentWrapper(Long id,String appointmentId, String title, AppointmentStatusTypeEnum status,Date scheduleDate, String firstName, String lastName, String docFirstName, String docLastName, Long patientId, String invPrefix, boolean completed)
     {
         //Long patientId,Long branchId, String branchName, Long roomId,
         this.id = id;
@@ -170,6 +171,8 @@ public class AppointmentWrapper {
 
         this.branchName = branchName;
         this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToString(scheduleDate);
+        this.invoicePrefix = invPrefix;
+        this.completed = completed;
     }
 
 
@@ -639,5 +642,22 @@ public class AppointmentWrapper {
 
     public void setPatientAdvanceDeposit(Double patientAdvanceDeposit) {
         this.patientAdvanceDeposit = patientAdvanceDeposit;
+    }
+
+    public String getInvoicePrefix() {
+        return invoicePrefix;
+    }
+
+    public void setInvoicePrefix(String invoicePrefix) {
+        this.invoicePrefix = invoicePrefix;
+    }
+
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

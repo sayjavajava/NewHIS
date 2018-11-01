@@ -101,9 +101,7 @@ public class DateTimeUtil {
 
     public static Date getDateFromString(String dateString, String dateFormat) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
-        Date date = null;
-        date = format.parse(dateString);
-        return date;
+        return format.parse(dateString);
     }
 
     public static String getFormattedDateFromDate(Date date, String dateFormat) {
@@ -111,19 +109,20 @@ public class DateTimeUtil {
         return format.format(date);
     }
 
-    public static int convertAppointmentTime(String time){
+    public static int convertAppointmentTime(String time) {
         int temp = 0;
-        if(time !=null) {
-            int pmResult =0;
+        if (time != null) {
+            int pmResult = 0;
             String[] h1 = time.split(":");
             int hour = Integer.parseInt(h1[0]);
             int minute = Integer.parseInt(h1[1]);
-            if(hour <= 12){
+            if (hour <= 12) {
                 temp = minute + (60 * hour);
-            }else{
+            } else {
                 //logic will be change
-                temp =minute + ((hour + 12) * 60);}
+                temp = minute + ((hour + 12) * 60);
+            }
         }
-        return  temp;
+        return temp;
     }
 }

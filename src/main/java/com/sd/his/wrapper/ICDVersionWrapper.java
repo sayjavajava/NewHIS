@@ -15,6 +15,8 @@ public class ICDVersionWrapper {
      * means this object or ICD VERSION has child record
      */
     private boolean hasChild;///associated;
+    private boolean selectedVersion;
+
 
     public ICDVersionWrapper() {
     }
@@ -90,5 +92,13 @@ public class ICDVersionWrapper {
 
     public void setHasChild(boolean hasChild) {
         this.hasChild = hasChild;
+    }
+
+    public boolean isSelectedVersion() {
+        return selectedVersion;
+    }
+
+    public void setSelectedVersion(boolean selectedVersion) {
+        this.selectedVersion = selectedVersion;
     }
 }

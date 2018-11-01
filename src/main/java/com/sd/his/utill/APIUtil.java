@@ -161,7 +161,7 @@ public class APIUtil {
 //
 //    public static void buildMedicalService(MedicalService ms, MedicalServiceRequest createRequest) {
 //        ms.setDeleted(false);
-//        ms.setTitle(createRequest.getTitle());
+//        ms.setProblem(createRequest.getProblem());
 //        ms.setCost(createRequest.getCost());
 //        ms.setFee(createRequest.getFee());
 //        ms.setDuration(createRequest.getDuration());
@@ -170,7 +170,7 @@ public class APIUtil {
 //    }
 //
 //    public static EmailTemplate buildEmailTemplateRequest(EmailTemplate emailTemplate, EmailTemplateRequest createRequest) {
-//        emailTemplate.setTitle(createRequest.getTitle());
+//        emailTemplate.setProblem(createRequest.getProblem());
 //        emailTemplate.setSubject(createRequest.getSubject());
 //        emailTemplate.setType(createRequest.getType());
 //        emailTemplate.setEmailTemplate(createRequest.getEmailTemplate());

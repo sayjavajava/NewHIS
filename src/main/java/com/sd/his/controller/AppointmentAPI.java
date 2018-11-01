@@ -210,7 +210,7 @@ public class AppointmentAPI {
         response.setResponseData(null);
 
         try {
-/*            User alreadyExist = userService.findByUserName(appointmentWrapper.getTitle());
+/*            User alreadyExist = userService.findByUserName(appointmentWrapper.getProblem());
             if (HISCoreUtil.isValidObject(alreadyExist)) {
                 response.setResponseMessage(messageBundle.getString("user.add.already-found.error"));
                 response.setResponseCode(ResponseEnum.USER_ALREADY_EXIST_ERROR.getValue());

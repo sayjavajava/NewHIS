@@ -61,10 +61,10 @@ public class PatientWrapper {
     private boolean profileStatus = true;
 
     ///////////////// INSURANCE
-    private String insuranceId;
+    private Long insuranceId;// primary key , i m 100 percent source
     private String company = "";
-    private String insuranceIdNumber = "";
-    private String groupNumber = "";
+    private String insuranceIdNumber = "";// normal field
+    private String groupNumber = "";// normal field
     private String planName = "";
     private String planType = "";
     private String cardIssuedDate = "";
@@ -81,6 +81,7 @@ public class PatientWrapper {
 
     ////////////Smoking Status
     private List<SmokingStatus> smokingStatuses;
+    private boolean hasChild;//this object has child then true otherwise false
 
     public PatientWrapper() {
     }
@@ -140,7 +141,7 @@ public class PatientWrapper {
 
         this.insuranceId = insurance.getId();
         this.company = insurance.getCompany();
-        this.insuranceIdNumber = insurance.getInsuranceID();
+        this.insuranceIdNumber = insurance.getInsuranceIDNumber();
         this.groupNumber = insurance.getGroupNumber();
         this.planName = insurance.getPlanName();
         this.planType = insurance.getPlanType();
@@ -222,11 +223,11 @@ public class PatientWrapper {
         this.id = id;
     }
 
-    public String getInsuranceId() {
+    public Long getInsuranceId() {
         return insuranceId;
     }
 
-    public void setInsuranceId(String insuranceId) {
+    public void setInsuranceId(Long insuranceId) {
         this.insuranceId = insuranceId;
     }
 
@@ -620,5 +621,13 @@ public class PatientWrapper {
 
     public void setSmokingStatuses(List<SmokingStatus> smokingStatuses) {
         this.smokingStatuses = smokingStatuses;
+    }
+
+    public boolean isHasChild() {
+        return hasChild;
+    }
+
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
     }
 }

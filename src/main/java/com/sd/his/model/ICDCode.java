@@ -40,7 +40,7 @@ public class ICDCode extends BaseEntity implements Serializable {
     private String code;
 
     @Column(name = "TITLE")
-    private String title;
+    private String problem;// title replaced by problem
 
     @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
     private Boolean status;
@@ -52,7 +52,7 @@ public class ICDCode extends BaseEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(targetEntity = ICDCodeVersion.class, mappedBy = "icd", cascade = {CascadeType.ALL})
-    private List<ICDCodeVersion> icdCodes;
+    private List<ICDCodeVersion> icdCodes;//// codeVersions
 
     @JsonIgnore
     @OneToMany(targetEntity = Problem.class, mappedBy = "icdCode")
@@ -65,7 +65,7 @@ public class ICDCode extends BaseEntity implements Serializable {
     public ICDCode(ICDCodeCreateRequest createRequest) {
         this.code = createRequest.getCode();
         this.status = createRequest.isStatus();
-        this.title = createRequest.getTitle();
+        this.problem = createRequest.getProblem();
         this.description = createRequest.getDescription();
     }
 
@@ -77,12 +77,12 @@ public class ICDCode extends BaseEntity implements Serializable {
         this.code = code;
     }
 
-    public String getTitle() {
-        return title;
+    public String getProblem() {
+        return problem;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setProblem(String problem) {
+        this.problem = problem;
     }
 
     public Boolean getStatus() {
@@ -107,5 +107,13 @@ public class ICDCode extends BaseEntity implements Serializable {
 
     public void setIcdCodes(List<ICDCodeVersion> icdCodes) {
         this.icdCodes = icdCodes;
+    }
+
+    public List<Problem> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(List<Problem> problems) {
+        this.problems = problems;
     }
 }

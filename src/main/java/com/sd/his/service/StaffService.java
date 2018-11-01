@@ -827,7 +827,6 @@ public class StaffService {
                     }
                 }
                 nurseWithDoctorRepository.save(dutyWithDoctorsData);
-                //nurseWithDoctorRepository
 
                 break;
 

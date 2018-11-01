@@ -10,19 +10,16 @@ import java.util.List;
 
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, Long> {
-
     List<Permission> findById(Long id);
-
-    List<Permission> findAllByActiveTrue();
+    List<Permission> findAllByActiveTrueOrderBySortOrderAsc();
+    List<Permission> findAllByActiveTrueAndPermissionForIndEqualsOrderBySortOrder(char permFor);
 
     @Query("SELECT DISTINCT p FROM Permission p INNER JOIN p.rolePermissions rp INNER JOIN rp.role r INNER JOIN r.userRoles ur INNER JOIN ur.user u WHERE u.id=:userId")
     List<Permission> findUserPermissionByUserId(@Param("userId") Long userId);
-
     Permission findByName(String name);
-
     @Query("SELECT p FROM Permission p INNER JOIN p.rolePermissions pr  WHERE pr.role.id = :roleId")
     List<Permission> findByRoles(@Param("roleId") long roleId);
-
     List<Permission> findByIdInAndActiveTrue(List<Long> ids);
+    List<Permission> findByIdInAndActiveTrueAndPermissionForIndEquals(List<Long> permIds, char permFor);
 
 }

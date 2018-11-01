@@ -170,16 +170,16 @@ public class AppointmentService {
         /*if(appointmentWrapper.getAppointmentType().contains(AppointmentTypeEnum.NEW_PATIENT.getValue())) {
             User user = new User();
             Profile profile = new Profile();
-            user.setPassword(bCryptPasswordEncoder.encode(appointmentWrapper.getTitle()));
+            user.setPassword(bCryptPasswordEncoder.encode(appointmentWrapper.getProblem()));
             user.setEmail(appointmentWrapper.getEmail());
-            user.setUsername(appointmentWrapper.getTitle());
+            user.setUsername(appointmentWrapper.getProblem());
             user.setUserType(String.valueOf(UserTypeEnum.PATIENT));
             user.setDeleted(false);
             user.setActive(true);
 
             profile.setType(String.valueOf(UserTypeEnum.PATIENT));
-            profile.setFirstName(appointmentWrapper.getTitle());
-            profile.setLastName(appointmentWrapper.getTitle());
+            profile.setFirstName(appointmentWrapper.getProblem());
+            profile.setLastName(appointmentWrapper.getProblem());
             profile.setDeleted(false);
             profile.setActive(true);
             profile.setHomePhone(appointmentWrapper.getCellPhone());
@@ -234,7 +234,7 @@ public class AppointmentService {
         alreadyExistAppointment.setType(new Gson().toJson(appointmentWrapper.getAppointmentType()));
         alreadyExistAppointment.setDuration(appointmentWrapper.getDuration());
         alreadyExistAppointment.setStatus(AppointmentStatusTypeEnum.valueOf(appointmentWrapper.getStatus()));
-        //  alreadyExistAppointment.setName(appointmentWrapper.getTitle());
+        //  alreadyExistAppointment.setName(appointmentWrapper.getProblem());
         alreadyExistAppointment.setBranch(branch);
         Room room = findExamRoomById(appointmentWrapper.getRoomId());
         if (HISCoreUtil.isValidObject(room)) {
@@ -308,7 +308,7 @@ public class AppointmentService {
         appointment.setFollowUpReminder(appointmentWrapper.getFollowUpReminder());
      // appointment.setFollowUpDate(HISCoreUtil.convertDateToMilliSeconds(appointmentWrapper.getFollowUpDate()));
         appointment.setFollowUpReasonReminder(appointmentWrapper.getReason());
-        appointment.setName(appointmentWrapper.getTitle());
+        appointment.setName(appointmentWrapper.getProblem());
         appointment.setBranch(branch);
         roomRepository.getOne(appointmentWrapper.getRoomId());
         if(appointmentWrapper.getAppointmentType().contains(AppointmentTypeEnum.NEW_PATIENT.getValue())) {
@@ -321,8 +321,8 @@ public class AppointmentService {
             appointment.setAge(Long.valueOf(appointmentWrapper.getAge()).longValue());
 
             profile.setType(String.valueOf(UserTypeEnum.PATIENT));
-            profile.setFirstName(appointmentWrapper.getTitle());
-            profile.setLastName(appointmentWrapper.getTitle());
+            profile.setFirstName(appointmentWrapper.getProblem());
+            profile.setLastName(appointmentWrapper.getProblem());
             profile.setDeleted(false);
             profile.setActive(true);
             profile.setHomePhone(appointmentWrapper.getCellPhone());

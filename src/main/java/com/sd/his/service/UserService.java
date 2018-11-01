@@ -4,11 +4,13 @@ import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
+import com.sd.his.utill.APIUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.PermissionWrapper;
 import com.sd.his.wrapper.RoleWrapper;
 import com.sd.his.wrapper.UserWrapper;
 import com.sd.his.wrapper.request.AssignAuthoritiesRequestWrapper;
+import com.sd.his.wrapper.request.UserPermissionRequestWrapper;
 import com.sd.his.wrapper.response.AdminDashboardDataResponseWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import org.slf4j.Logger;
@@ -65,6 +67,8 @@ public class UserService implements UserDetailsService {
     ICDCodeRepository icdCodeRepository;
     @Autowired
     private S3KeyGen s3KeyGen;
+    @Autowired
+    private UserPermissionRepository userPermissionRepository;
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -174,6 +178,36 @@ public class UserService implements UserDetailsService {
         return permissionAssigned;
     }
 
+    @Transactional(rollbackOn = Throwable.class)
+    public Boolean assignPermissionsToUser(UserPermissionRequestWrapper userPermRequest) {
+        Boolean permissionAssigned;
+        //Role role = roleRepository.findByName(authRequest.getSelectedRole());
+        User user = userRepository.findById(userPermRequest.getUserId());
+        if (HISCoreUtil.isValidObject(user)) {
+            //rolePermissionRepository.deleteAllByRole_Id(role.getId());
+            userPermissionRepository.deleteAllByUser_Id(user.getId());
+
+            List<UserPermission> userPermissions = new ArrayList<>();
+            List<Permission> selectedPermissions = permissionRepository.findByIdInAndActiveTrueAndPermissionForIndEquals(userPermRequest.getPermissionIds(), 'D');
+            for (Permission perm : selectedPermissions) {
+                UserPermission up = new UserPermission(perm, user);
+                userPermissions.add(up);
+            }
+            userPermissionRepository.save(userPermissions);
+            /*List<RolePermission> rolePermissions = new ArrayList<>();
+            List<Permission> selectedPermissions = permissionRepository.findByIdInAndActiveTrue(userPermRequest.getPermissionIds());
+            for (Permission per : selectedPermissions) {
+                RolePermission rp = new RolePermission(role, per,true,true,true);
+                rolePermissions.add(rp);
+            }*/
+            //rolePermissionRepository.save(rolePermissions);
+            permissionAssigned = true;
+        } else {
+            permissionAssigned = false;
+        }
+        return permissionAssigned;
+    }
+
     public UserWrapper buildLoggedInUserWrapper(User dbUser) {
         UserWrapper user = new UserWrapper(dbUser);
         List<PermissionWrapper> permissionWrappers = new ArrayList<>();
@@ -250,7 +284,27 @@ public class UserService implements UserDetailsService {
     }
 
     public List<Permission> getAllActivePermissions() {
-        return permissionRepository.findAllByActiveTrue();
+        return permissionRepository.findAllByActiveTrueOrderBySortOrderAsc();
+    }
+
+    public List<Permission> getAllActivePermissionsByIndicator(char permForInd) {
+        return permissionRepository.findAllByActiveTrueAndPermissionForIndEqualsOrderBySortOrder(permForInd);
+    }
+
+    /*public List<Permission> getAllUserActivePermissions() {
+        return permissionRepository.findAllByActiveTrueAndPermissionForIndEqualsOrderBySortOrder('D');
+    }*/
+
+
+    public List<PermissionWrapper> getUserGrantedPermissions(Long userId) {
+        List<UserPermission> userPerm = userPermissionRepository.findAllByUser_id(userId);
+        List<Permission> permissionList = userPerm.stream().map(UserPermission::getPermission).collect(Collectors.toList());
+        List<PermissionWrapper> allPermissions = APIUtil.buildPermissionWrapper(permissionList);
+        return allPermissions;
+    }
+
+    public List<User> getAllUsers(){
+        return userRepository.findAllByActiveTrue();
     }
 
     public Permission getPermissionByName(String name) {
@@ -662,8 +716,8 @@ public class UserService implements UserDetailsService {
 
         //#TODO pass type from UserTypeEnum
       //  List<User> patients = patientRepository.count();
-      //  List<MedicalService> medicalServices = medicalServicesRepository.findAllByDeletedFalse();
-      //  List<ICDCode> icdCodes = icdCodeRepository.findAllByDeletedFalse();
+      //  List<MedicalService> medicalServices = medicalServicesRepository.findAllByCreatedOnNotNull();
+      //  List<ICDCode> icdCodes = icdCodeRepository.findAllByCreatedOnNotNull();
 
         adminData.setPatientCount(patientRepository.count());
         adminData.setAppointmentsCount(appointmentRepository.count());

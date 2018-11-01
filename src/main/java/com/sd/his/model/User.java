@@ -53,6 +53,10 @@ public class User extends BaseEntity implements Serializable {
     @OneToMany(targetEntity = UserRole.class, mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UserRole> userRoles;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<UserPermission> userPermissionList;
+
     public User(){}
     public User(String username, String userType, String password, Boolean active) {
         this.username = username;
@@ -100,5 +104,13 @@ public class User extends BaseEntity implements Serializable {
 
     public void setUserRoles(List<UserRole> userRoles) {
         this.userRoles = userRoles;
+    }
+
+    public List<UserPermission> getUserPermissionList() {
+        return userPermissionList;
+    }
+
+    public void setUserPermissionList(List<UserPermission> userPermissionList) {
+        this.userPermissionList = userPermissionList;
     }
 }

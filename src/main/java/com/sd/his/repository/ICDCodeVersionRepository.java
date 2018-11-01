@@ -3,6 +3,7 @@ package com.sd.his.repository;
 import com.sd.his.model.ICDCodeVersion;
 import com.sd.his.wrapper.ICDCodeVersionWrapper;
 import com.sd.his.wrapper.ICDCodeWrapper;
+import com.sd.his.wrapper.ICDVersionWrapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,16 +25,34 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
     @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(codeVersion,codeVersion.icd) FROM com.sd.his.model.ICDCodeVersion codeVersion where codeVersion.version.id=:id")
     List<ICDCodeWrapper> findAllByVersion_id(@Param("id") long iCDCVsById);
 
+    @Query("SELECT new com.sd.his.wrapper.ICDVersionWrapper(codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion where codeVersion.icd.id=:id")
+    List<ICDVersionWrapper> findAllVersionsByCode_id(@Param("id") Long iCDVsByCodeId);
+
     List<Long> deleteAllByVersion_id(long id);
 
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.version.name LIKE concat('%',:n,'%') AND cv.icd.code LIKE concat('%',:c,'%') ")
+    List<ICDCodeVersionWrapper> findAllCodeVersionByVersion_NameAndIcd_Code(@Param("n") String versionName, @Param("c") String code, Pageable pageable);
 
-    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(codeVersion,codeVersion.icd,codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion " +
-            "where codeVersion.version.name LIKE CONCAT('%',:name,'%') or codeVersion.icd.code LIKE CONCAT('%',:code,'%') ")
-    List<ICDCodeVersionWrapper> findAllByVersion_NameContainingOrIcd_CodeContaining(@Param("name") String versionName, @Param("code") String code, Pageable pageable);
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.version.name LIKE concat('%',:n,'%') AND cv.icd.code LIKE concat('%',:c,'%') ")
+    List<ICDCodeVersionWrapper> countFindAllCodeVersionByVersion_NameAndIcd_Code(@Param("n") String versionName, @Param("c") String code);
 
-    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(codeVersion,codeVersion.icd,codeVersion.version) FROM com.sd.his.model.ICDCodeVersion codeVersion " +
-            "where codeVersion.version.name LIKE CONCAT('%',:name,'%') or codeVersion.icd.code LIKE CONCAT('%',:code,'%') ")
-    List<ICDCodeVersionWrapper> findAllByVersion_NameContainingOrIcd_CodeContaining(@Param("name") String versionName, @Param("code") String code);
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.version.name LIKE concat('%',:n,'%') ")
+    List<ICDCodeVersionWrapper> findAllCodeVersionByVersion_Name(@Param("n") String versionName, Pageable pageable);
+
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.version.name LIKE concat('%',:n,'%') ")
+    List<ICDCodeVersionWrapper> countFindAllCodeVersionByVersion_Name(@Param("n") String versionName);
+
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.icd.code LIKE concat('%',:c,'%') ")
+    List<ICDCodeVersionWrapper> findAllCodeVersionByIcd_Code(@Param("c") String code, Pageable pageable);
+
+    @Query("SELECT DISTINCT new com.sd.his.wrapper.ICDCodeVersionWrapper(cv,cv.icd,cv.version) FROM com.sd.his.model.ICDCodeVersion cv " +
+            "where cv.icd.code LIKE concat('%',:c,'%') ")
+    List<ICDCodeVersionWrapper> countFindAllCodeVersionByIcd_Code(@Param("c") String code);
 
     ICDCodeVersion findByIcd_id(long codeId);
 
@@ -47,5 +66,6 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
             "WHERE codeVersion.version.id=:versionId")
     boolean isVersionAssociated(@Param("versionId") Long versionId);
 
+    List<Long> deleteAllByIcd_id(long id);
 
 }

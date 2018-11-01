@@ -1,7 +1,6 @@
 package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.ICDCode;
 import com.sd.his.model.ICDCodeVersion;
 import com.sd.his.model.ICDVersion;
 import com.sd.his.service.ICDService;
@@ -17,6 +16,8 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -251,8 +252,8 @@ public class ICDAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            ICDCode icd = icdService.saveICD(createRequest);
-            if (HISCoreUtil.isValidObject(icd)) {
+            String message = icdService.saveICDCode(createRequest);
+            if (HISCoreUtil.isValidObject(message)) {
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("icd.code.save.success"));
                 response.setResponseCode(ResponseEnum.ICD_CODE_SAVE_SUCCESS.getValue());
@@ -316,7 +317,7 @@ public class ICDAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            icdService.updateICD(createRequest);
+            icdService.updateICDCode(createRequest);
             response.setResponseData(null);
             response.setResponseMessage(messageBundle.getString("icd.update.success"));
             response.setResponseCode(ResponseEnum.ICD_CODE_UPDATE_SUCC.getValue());
@@ -846,7 +847,7 @@ public class ICDAPI {
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            logger.error("updateICD Version failed.", e.fillInStackTrace());
+            logger.error("updateICDCode Version failed.", e.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
@@ -1155,6 +1156,62 @@ public class ICDAPI {
         }
     }
 
+    @ApiOperation(httpMethod = "DELETE", value = "get associated ICDV",
+            notes = "This method will return associated ICDVs",
+            produces = "application/json", nickname = "Associated ICDVs ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Get Associated ICDVs successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/versions/associated", method = RequestMethod.GET)
+    public ResponseEntity<?> getAssociatedVersionsByCodeId(HttpServletRequest request,
+                                                           @RequestParam("codeId") long codeId) {
+        logger.info("getAssociatedVersionsByCodeId Api Called..");
+        GenericAPIResponse response = new GenericAPIResponse();
+
+
+        try {
+            if (codeId <= 0) {
+                response.setResponseMessage(messageBundle.getString("icd.code.required"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getAssociatedVersionsByCodeId API - Code id not present. Please provide code id.");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            List<ICDVersionWrapper> associatedVersions = this.icdService.getAssociatedICDVByCId(codeId);
+
+            if (!HISCoreUtil.isListEmpty(associatedVersions)) {
+                response.setResponseMessage(messageBundle.getString("icd.versions.code.fetched.success"));
+                response.setResponseCode(ResponseEnum.ICD_VERSIONS_BY_CODE_SUCCESS.getValue());
+                response.setResponseData(associatedVersions);
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Associated found  Successfully...");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            response.setResponseMessage(messageBundle.getString("icd.versions.code.fetched.not.found"));
+            response.setResponseCode(ResponseEnum.ICD_CODE_DELETE_ERROR.getValue());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseData(null);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getAssociatedVersionsByCodeId Exception.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * @return Response with all search Filtered Code Version by Version.
      * @author Jamal
@@ -1187,8 +1244,26 @@ public class ICDAPI {
         response.setResponseData(null);
 
         try {
-            List<ICDCodeVersionWrapper> searchedCodeVersions = icdService.searchCodeVersionByVersionName(page, pageSize, versionName, searchCode);
-            int icdCount = icdService.countSearchCodeVersionByVersionName(versionName, searchCode);
+
+            List<ICDCodeVersionWrapper> searchedCodeVersions = new ArrayList<>();
+            int icdCount = 0;
+            Pageable pageable = new PageRequest(page, pageSize);
+            if (!versionName.isEmpty() && !searchCode.isEmpty()) {
+                searchedCodeVersions = icdService.searchCodeVersionByCodeAndVersionName(pageable, versionName, searchCode);
+                icdCount = icdService.countSearchCodeVersionByCodeAndVersionName(versionName, searchCode);
+            } else if (!versionName.isEmpty()) {
+                searchedCodeVersions = icdService.searchCodeVersionByVersionName(pageable, versionName);
+                icdCount = icdService.countSearchCodeVersionByVersionName(versionName);
+            } else if (!searchCode.isEmpty()) {
+                searchedCodeVersions = icdService.searchCodeVersionByCode(pageable, searchCode);
+                icdCount = icdService.countSearchCodeVersionByCode(searchCode);
+            } else {
+                searchedCodeVersions = icdService.codeVersions(page, pageSize);
+                icdCount = icdService.countCodeVersions();
+            }
+
+
+//            int icdCount = icdService.countCodeVersionByCodeAndVersionName(versionName, searchCode);
 
             if (!HISCoreUtil.isListEmpty(searchedCodeVersions)) {
                 logger.info("search Code Version By VersionName fetched from DB successfully...");
@@ -1237,5 +1312,65 @@ public class ICDAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "DELETE", value = "get associated ICDCV",
+            notes = "This method will return associated Status of   associate ICDCVs",
+            produces = "application/json", nickname = "Associated ICDCVs ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Get Associated ICDCVs successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/code/get", method = RequestMethod.GET)
+    public ResponseEntity<?> getCodeById(HttpServletRequest request,
+                                         @RequestParam("codeId") long codeId) {
+        logger.info("getCodeById Api Called..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("icd.associated.not.found"));
+        response.setResponseCode(ResponseEnum.ICD_CODE_DELETE_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            if (codeId <= 0) {
+                response.setResponseMessage(messageBundle.getString("icd.code.required"));
+                response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getCodeById API - insufficient params.");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            List<ICDVersionWrapper> versions = this.icdService.versios();
+            ICDCodeWrapper codeWrapper = this.icdService.getCodeById(codeId);//this.iCDService.getAssociatedICDCVByVId(versionId);
+
+            for (ICDVersionWrapper selectedVersionWrap : codeWrapper.getSelectedVersions()) {
+                for (ICDVersionWrapper version : versions) {
+                    if (selectedVersionWrap.getId() == version.getId()) {
+                        version.setSelectedVersion(true);
+                    }
+                }
+            }
+
+            codeWrapper.setSelectedVersions(versions);
+            response.setResponseMessage(messageBundle.getString("icd.code.found.success"));
+            response.setResponseCode(ResponseEnum.ICD_CODE_FOUND.getValue());
+            response.setResponseData(codeWrapper);
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Code found  Successfully.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getCodeById exception.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

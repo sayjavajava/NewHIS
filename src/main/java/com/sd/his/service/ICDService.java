@@ -37,13 +37,45 @@ public class ICDService {
     }
 
     public List<ICDCodeWrapper> codes() {
+        System.out.println(this.codeRepository.findAllByCreatedOnNotNull());
         return this.codeRepository.findAllByCreatedOnNotNull();
     }
 
 
-    public ICDCode saveICD(ICDCodeCreateRequest createRequest) {
+    public String saveICDCode(ICDCodeCreateRequest createRequest) {
         ICDCode icd = new ICDCode(createRequest);
-        return codeRepository.save(icd);
+        codeRepository.save(icd);
+        this.associateICDCODEBySelectedVersion(icd, createRequest);
+        return "";
+    }
+
+    private void associateICDCODEBySelectedVersion(ICDCode icd, ICDCodeCreateRequest createRequest) {
+
+        /***
+         * now old record going to delete by icd code id
+         *
+         * */
+        this.codeVersionRepository.deleteAllByIcd_id(createRequest.getId());
+
+        List<ICDCodeVersion> codeVersions = new ArrayList<>();
+        ICDCodeVersion codeVersion = null;
+        ICDVersion version = null;
+        for (ICDVersionWrapper selectedVersionWrapper : createRequest.getSelectedVersions()) {
+            if (selectedVersionWrapper.isSelectedVersion()) {
+//                version = new ICDVersion();
+                version = this.versionRepository.findOne(selectedVersionWrapper.getId());
+                if (version != null) {
+                    codeVersion = new ICDCodeVersion();
+                    codeVersion.setIcd(icd);
+                    codeVersion.setVersion(version);
+                    codeVersions.add(codeVersion);//one code going to save against multiple versions
+                }
+            }
+        }
+
+        if (codeVersions.size() > 0) {
+            this.codeVersionRepository.save(codeVersions);
+        }
     }
 
     public boolean isICDCodeAlreadyExist(String iCDCode) {
@@ -72,16 +104,16 @@ public class ICDService {
 
     public List<ICDCodeWrapper> findCodes(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        List<ICDCodeWrapper> list = codeRepository.findAllByCreatedOnNotNull(pageable);
+//        List<ICDCodeWrapper> list = codeRepository.findAllByCreatedOnNotNull(pageable);
 
-        if (list != null) {
-            for (ICDCodeWrapper codeWrapper : list) {
-                if (this.codeVersionRepository.isCodeAssociated(codeWrapper.getId())) {
-                    codeWrapper.setHasChild(true);
-                }
-            }
-        }
-        return list;
+//        if (list != null) {
+//            for (ICDCodeWrapper codeWrapper : list) {
+//                if (this.codeVersionRepository.isCodeAssociated(codeWrapper.getId())) {
+//                    codeWrapper.setHasChild(true);
+//                }
+//            }
+//        }
+        return codeRepository.findAllByCreatedOnNotNull(pageable);
     }
 
     public int countCodes() {
@@ -122,13 +154,28 @@ public class ICDService {
         return codeRepository.findAllByCodeContaining(code).size();
     }
 
-    public List<ICDCodeVersionWrapper> searchCodeVersionByVersionName(int offset, int limit, String versionName, String code) {
-        Pageable pageable = new PageRequest(offset, limit);
-        return this.codeVersionRepository.findAllByVersion_NameContainingOrIcd_CodeContaining(versionName, code, pageable);
+    public List<ICDCodeVersionWrapper> searchCodeVersionByCodeAndVersionName(Pageable pageable, String versionName, String code) {
+        return this.codeVersionRepository.findAllCodeVersionByVersion_NameAndIcd_Code(versionName, code, pageable);
     }
 
-    public int countSearchCodeVersionByVersionName(String versionName, String code) {
-        return codeVersionRepository.findAllByVersion_NameContainingOrIcd_CodeContaining(versionName, code).size();
+    public int countSearchCodeVersionByCodeAndVersionName(String versionName, String code) {
+        return this.codeVersionRepository.countFindAllCodeVersionByVersion_NameAndIcd_Code(versionName, code).size();
+    }
+
+    public List<ICDCodeVersionWrapper> searchCodeVersionByVersionName(Pageable pageable, String versionName) {
+        return this.codeVersionRepository.findAllCodeVersionByVersion_Name(versionName, pageable);
+    }
+
+    public int countSearchCodeVersionByVersionName(String versionName) {
+        return codeVersionRepository.countFindAllCodeVersionByVersion_Name(versionName).size();
+    }
+
+    public List<ICDCodeVersionWrapper> searchCodeVersionByCode(Pageable pageable, String code) {
+        return this.codeVersionRepository.findAllCodeVersionByIcd_Code(code, pageable);
+    }
+
+    public int countSearchCodeVersionByCode(String code) {
+        return codeVersionRepository.countFindAllCodeVersionByIcd_Code(code).size();
     }
 
     public List<ICDVersionWrapper> searchByVersion(String name, int offset, int limit) {
@@ -186,15 +233,17 @@ public class ICDService {
     }
 
     @Transactional(rollbackOn = Throwable.class)
-    public void updateICD(ICDCodeCreateRequest createRequest) {
+    public String updateICDCode(ICDCodeCreateRequest createRequest) {
         ICDCode icdCode = this.codeRepository.findOne(createRequest.getId());
         if (HISCoreUtil.isValidObject(icdCode)) {
             icdCode.setCode(createRequest.getCode());
-            icdCode.setTitle(createRequest.getTitle());
+            icdCode.setProblem(createRequest.getProblem());
             icdCode.setDescription(createRequest.getDescription());
             icdCode.setStatus(createRequest.isStatus());
         }
         this.codeRepository.save(icdCode);
+        this.associateICDCODEBySelectedVersion(icdCode, createRequest);
+        return "";
     }
 
     @Transactional(rollbackOn = Throwable.class)
@@ -287,11 +336,37 @@ public class ICDService {
         return null;
     }
 
+    public List<ICDVersionWrapper> getAssociatedICDVByCId(long codeId) {
+        return codeVersionRepository.findAllVersionsByCode_id(codeId);
+    }
+
     public boolean isCodeAssociated(long codeId) {
-        return this.codeVersionRepository.isCodeAssociated(codeId);
+        ICDCode icdCode = this.codeRepository.findOne(codeId);
+        if (icdCode != null) {
+            if (icdCode.getIcdCodes() != null && icdCode.getIcdCodes().size() > 0) {//this.codeVersionRepository.isCodeAssociated(codeId)
+                return true;
+            }
+            if (icdCode.getProblems() != null && icdCode.getProblems().size() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isVersionAssociated(long versionId) {
         return this.codeVersionRepository.isVersionAssociated(versionId);
+    }
+
+    public ICDCodeWrapper getCodeById(long codeId) {
+        ICDCode icdCode = this.codeRepository.findOne(codeId);
+        if (icdCode != null) {
+            ICDCodeWrapper codeWrapper = new ICDCodeWrapper(icdCode);
+            codeWrapper.setSelectedVersions(new ArrayList<>());
+            for (ICDCodeVersion codeVersion : icdCode.getIcdCodes()) {
+                codeWrapper.getSelectedVersions().add(new ICDVersionWrapper(codeVersion.getVersion()));
+            }
+            return codeWrapper;
+        }
+        return null;
     }
 }

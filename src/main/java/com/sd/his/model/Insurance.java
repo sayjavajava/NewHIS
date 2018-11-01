@@ -1,8 +1,6 @@
 package com.sd.his.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -37,8 +35,8 @@ public class Insurance extends BaseEntity implements Serializable {
     @Column(name = "COMPANY")
     private String company;
 
-    @Column(name = "INSURANCE_ID")
-    private String insuranceID;
+    @Column(name = "INSURANCE_ID_NUMBER")// old INSURANCE_ID Replace it by INSURANCE_ID_NUMBER
+    private String insuranceIDNumber;//this is not primary key, THIS IS NORMAL FIELD
 
     @Column(name = "GROUP_NUMBER")
     private String groupNumber;
@@ -49,9 +47,11 @@ public class Insurance extends BaseEntity implements Serializable {
     @Column(name = "PLAN_TYPE")
     private String planType;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "CARD_ISSUED_DATE")
     private Date cardIssuedDate;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "CARD_EXPIRY_DATE")
     private Date cardExpiryDate;
 
@@ -72,12 +72,12 @@ public class Insurance extends BaseEntity implements Serializable {
         this.company = company;
     }
 
-    public String getInsuranceID() {
-        return insuranceID;
+    public String getInsuranceIDNumber() {
+        return insuranceIDNumber;
     }
 
-    public void setInsuranceID(String insuranceID) {
-        this.insuranceID = insuranceID;
+    public void setInsuranceIDNumber(String insuranceIDNumber) {
+        this.insuranceIDNumber = insuranceIDNumber;
     }
 
     public String getGroupNumber() {
