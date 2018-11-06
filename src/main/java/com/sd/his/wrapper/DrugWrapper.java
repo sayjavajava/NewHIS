@@ -1,26 +1,26 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.Drug;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by jamal on 10/22/2018.
  */
 public class DrugWrapper extends BaseWrapper {
 
-    private String name;
-    private String url;
-    private long strengthMin;
-    private long strengthMax;
-    private String oral;
-    private String frequency;
-    private long duration;
-    private long refill;
-    private long days;
-    private boolean sig;
-    private String notes;
+    private String drugNaturalId;
+    private String drugName;
+    private String genericName;
+    private String companyName;
+    private String route;
+    private List<String> strengths;
+    private String strength = "";
+    private String uOM;
+    private String origin;
     private boolean active = true;
     private boolean hasChild;
 
@@ -28,105 +28,116 @@ public class DrugWrapper extends BaseWrapper {
     public DrugWrapper() {
     }
 
-    public DrugWrapper(Long id, Date createdOn, Date updatedOn, String name, String url, long strengthMin, long strengthMax, String oral, String frequency,
-                       long duration, long refill, long days, boolean sig, String notes, boolean active, boolean hasChild) {
+
+    public DrugWrapper(Long id, Date createdOn, Date updatedOn,
+                       String drugNaturalId, String drugName, String genericName, String companyName, String route,
+                       List<String> strengths, String uOM, String origin, boolean active, boolean hasChild) {
         super(id,
                 HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_dd),
                 HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMATE_YYY_MM_dd));
-        this.name = name;
-        this.url = url;
-        this.strengthMin = strengthMin;
-        this.strengthMax = strengthMax;
-        this.oral = oral;
-        this.frequency = frequency;
-        this.duration = duration;
-        this.refill = refill;
-        this.days = days;
-        this.sig = sig;
-        this.notes = notes;
+        this.drugNaturalId = drugNaturalId;
+        this.drugName = drugName;
+        this.genericName = genericName;
+        this.companyName = companyName;
+        this.route = route;
+        this.strengths = strengths;
+
+        if (strengths != null && strengths.size() > 0) {
+            for (String s : strengths) {
+                this.strength.concat(s + ",");
+            }
+        }
+        this.uOM = uOM;
+        this.origin = origin;
         this.active = active;
         this.hasChild = hasChild;
     }
 
+    public DrugWrapper(Drug drug) {
+        super(drug.getId(),
+                HISCoreUtil.convertDateToString(drug.getCreatedOn(), HISConstants.DATE_FORMATE_YYY_MM_dd),
+                HISCoreUtil.convertDateToString(drug.getUpdatedOn(), HISConstants.DATE_FORMATE_YYY_MM_dd));
+        this.drugNaturalId = drug.getDrugNaturalId();
+        this.drugName = drug.getDrugName();
+        this.genericName = drug.getGenericName();
+        this.companyName = drug.getCompanyName();
+        this.route = drug.getRoute();
+        this.strengths = drug.getStrengths();
 
-    public String getName() {
-        return name;
+        if (drug.getStrengths() != null && drug.getStrengths().size() > 0) {
+            for (String s : drug.getStrengths()) {
+                this.strength += (s + ",");
+            }
+            this.strength = this.strength.substring(0, this.getStrength().length() - 1);
+        }
+        this.uOM = drug.getuOM();
+        this.origin = drug.getOrigin();
+        this.active = drug.isActive();
+        this.hasChild = false;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getDrugNaturalId() {
+        return drugNaturalId;
     }
 
-    public long getStrengthMin() {
-        return strengthMin;
+    public void setDrugNaturalId(String drugNaturalId) {
+        this.drugNaturalId = drugNaturalId;
     }
 
-    public void setStrengthMin(long strengthMin) {
-        this.strengthMin = strengthMin;
+    public String getDrugName() {
+        return drugName;
     }
 
-    public long getStrengthMax() {
-        return strengthMax;
+    public void setDrugName(String drugName) {
+        this.drugName = drugName;
     }
 
-    public void setStrengthMax(long strengthMax) {
-        this.strengthMax = strengthMax;
+    public String getGenericName() {
+        return genericName;
     }
 
-    public String getOral() {
-        return oral;
+    public void setGenericName(String genericName) {
+        this.genericName = genericName;
     }
 
-    public void setOral(String oral) {
-        this.oral = oral;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public String getFrequency() {
-        return frequency;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
+    public String getRoute() {
+        return route;
     }
 
-    public long getDuration() {
-        return duration;
+    public void setRoute(String route) {
+        this.route = route;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public List<String> getStrengths() {
+        return strengths;
     }
 
-    public long getRefill() {
-        return refill;
+    public void setStrengths(List<String> strengths) {
+        this.strengths = strengths;
     }
 
-    public void setRefill(long refill) {
-        this.refill = refill;
+    public String getuOM() {
+        return uOM;
     }
 
-    public long getDays() {
-        return days;
+    public void setuOM(String uOM) {
+        this.uOM = uOM;
     }
 
-    public void setDays(long days) {
-        this.days = days;
+    public String getOrigin() {
+        return origin;
     }
 
-    public boolean isSig() {
-        return sig;
-    }
-
-    public void setSig(boolean sig) {
-        this.sig = sig;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
     public boolean isActive() {
@@ -145,11 +156,11 @@ public class DrugWrapper extends BaseWrapper {
         this.hasChild = hasChild;
     }
 
-    public String getUrl() {
-        return url;
+    public String getStrength() {
+        return strength;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setStrength(String strength) {
+        this.strength = strength;
     }
 }

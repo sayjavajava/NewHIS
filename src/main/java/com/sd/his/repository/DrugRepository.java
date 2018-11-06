@@ -18,28 +18,33 @@ public interface DrugRepository extends JpaRepository<Drug, Long> {
 
     @Query("SELECT CASE WHEN COUNT (drug) > 0 THEN true ELSE false END " +
             "FROM com.sd.his.model.Drug drug " +
-            "WHERE drug.name=:name")
-    boolean getDrugByName(@Param("name") String name);
+            "WHERE drug.drugName=:name")
+    boolean getDrugByDrugName(@Param("name") String name);
 
     @Query("SELECT CASE WHEN COUNT (drug) > 0 THEN true ELSE false END " +
             "FROM com.sd.his.model.Drug drug " +
-            "WHERE drug.name=:name AND drug.id<>:id")
-    boolean getDrugByNameAndNotEqualId(@Param("id") Long id, @Param("name") String name);
+            "WHERE drug.drugName=:name AND drug.id<>:id")
+    boolean getDrugByDrugNameAndNotEqualId(@Param("id") Long id, @Param("name") String name);
 
-    @Query("SELECT new com.sd.his.wrapper.DrugWrapper(drug.id,drug.createdOn,drug.updatedOn,drug.name,drug.url,drug.strengthMin,drug.strengthMax," +
-            "drug.oral,drug.frequency,drug.duration,drug.refill,drug.days,drug.sig,drug.notes,drug.active,false ) " +
+    @Query("SELECT new com.sd.his.wrapper.DrugWrapper(drug) " +
             "FROM Drug drug")
     List<DrugWrapper> findAllByCreatedOn(Pageable pageable);
 
-    @Query("SELECT new com.sd.his.wrapper.DrugWrapper(drug.id,drug.createdOn,drug.updatedOn,drug.name,drug.url,drug.strengthMin,drug.strengthMax," +
-            "drug.oral,drug.frequency,drug.duration,drug.refill,drug.days,drug.sig,drug.notes,drug.active,false )" +
-            "FROM com.sd.his.model.Drug drug " +
+    @Query("SELECT new com.sd.his.wrapper.DrugWrapper(drug) " +
+            "FROM Drug drug " +
             "WHERE drug.id=:id")
     DrugWrapper getDrugById(@Param("id") Long drugId);
 
-    @Query("SELECT new com.sd.his.wrapper.DrugWrapper(drug.id,drug.createdOn,drug.updatedOn,drug.name,drug.url,drug.strengthMin,drug.strengthMax," +
-            "drug.oral,drug.frequency,drug.duration,drug.refill,drug.days,drug.sig,drug.notes,drug.active,false )" +
-            "FROM com.sd.his.model.Drug drug " +
-            "WHERE drug.name LIKE CONCAT('%',:name,'%') ")
+    @Query("SELECT new com.sd.his.wrapper.DrugWrapper(drug) " +
+            "FROM Drug drug " +
+            "WHERE drug.drugName LIKE CONCAT('%',:name,'%') ")
     List<DrugWrapper> searchDrugByParams(Pageable pageable, @Param("name") String drugName);
+
+    @Query("SELECT drug.drugName as name FROM Drug drug " +
+            "WHERE drug.drugName LIKE CONCAT('%',:name,'%') ")
+    List<String> searchDrugByParams(@Param("name") String drugName);
+
+    @Query("SELECT new com.sd.his.wrapper.DrugWrapper(drug) " +
+            "FROM Drug drug ")
+    List<DrugWrapper> getAllDrugWrappers();
 }

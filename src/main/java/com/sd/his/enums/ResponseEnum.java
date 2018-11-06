@@ -313,6 +313,7 @@ public enum ResponseEnum {
     DRUG_UPDATE_ID_REQUIRED("DRUG_SUC_12"),
     DRUG_UPDATE_NAME_REQUIRED("DRUG_SUC_13"),
     DRUG_UPDATE_URL_REQUIRED("DRUG_SUC_14"),
+    DRUG_GET_NATURAL_ID_SUCCESS("DRUG_SUC_15"),
     /*  Documentation   */
 
     /*  Patient Group   */
