@@ -78,6 +78,8 @@ public class PatientWrapper {
     ////////////Appointment
     List<AppointmentWrapper> futureAppointments;
     List<AppointmentWrapper> pastAppointments;
+    private String label;
+    private long value;
 
     ////////////Smoking Status
     private List<SmokingStatus> smokingStatuses;
@@ -93,6 +95,8 @@ public class PatientWrapper {
         this.city =city;
         this.formattedAddress =address;
         this.cellPhone =cellPhone;
+        this.label = firstName;
+        this.value = id;
 
     }
 
@@ -151,6 +155,22 @@ public class PatientWrapper {
         *//*this.photoFront = insurance.getPhotoFront();
         this.photoBack = insurance.getPhotoBack();*//*
     }*/
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
+    }
 
     public String getPhotoFrontURL() {
         return photoFrontURL;
