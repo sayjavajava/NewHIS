@@ -1,7 +1,5 @@
 package com.sd.his.wrapper;
 
-import java.util.Date;
-
 /**
  * Created by jamal on 8/20/2018.
  */

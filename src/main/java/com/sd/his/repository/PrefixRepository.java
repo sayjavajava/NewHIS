@@ -36,6 +36,8 @@ public interface PrefixRepository extends JpaRepository<Prefix, Long> {
 
     Prefix findByModule(ModuleEnum moduleName);
 
+    Prefix findByName(String moduleName);
+
 
     @Query("SELECT new com.sd.his.model.Prefix(prefix) FROM Prefix prefix")
     List<Prefix> getAll();
