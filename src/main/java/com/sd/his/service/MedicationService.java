@@ -44,7 +44,7 @@ public class MedicationService {
     @Transactional
     public boolean updateMedication(MedicationWrapper medicationWrapper) throws Exception {
         Medication medication = this.medicationRepository.findOne(medicationWrapper.getId());
-        if (medication != null){
+        if (medication != null) {
             Patient patient = this.patientRepository.findOne(medicationWrapper.getPatientId());
             new Medication(medication, medicationWrapper);
             medication.setPatient(patient);
@@ -72,19 +72,21 @@ public class MedicationService {
         return this.medicationRepository.getMedicationById(medicationId);
     }
 
-    public List<MedicationWrapper> getPaginatedMedications(Pageable pageable,Long patientId) {
-        return this.medicationRepository.getPaginatedMedications(pageable ,patientId);
+    public List<MedicationWrapper> getPaginatedMedications(Pageable pageable, Long patientId) {
+        return this.medicationRepository.getPaginatedMedications(pageable, patientId);
     }
+
     public int countPaginatedMedications(Long patientId) {
         return this.medicationRepository.countPaginatedMedications(patientId).size();
     }
 
 
     public List<MedicationWrapper> getPaginatedMedicationsByStatusAndPatientId(Pageable pageable, String status, Long aLong) {
-        return this.medicationRepository.getPaginatedMedicationsByStatusAndPatientId(pageable,status,aLong);
+        return this.medicationRepository.getPaginatedMedicationsByStatusAndPatientId(pageable, status, aLong);
     }
 
-    public int countPaginatedMedicationsByStatusAndPatientId( String status, Long aLong) {
-        return this.medicationRepository.countPaginatedMedicationsByStatusAndPatientId(status,aLong).size();
+    public int countPaginatedMedicationsByStatusAndPatientId(String status, Long aLong) {
+        return this.medicationRepository.countPaginatedMedicationsByStatusAndPatientId(status, aLong).size();
     }
+
 }

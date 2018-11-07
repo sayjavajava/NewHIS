@@ -36,8 +36,6 @@ public class ICDCodeCreateRequest {
     String description;
     List<ICDVersionWrapper> selectedVersions;
 
-
-
     public ICDCodeCreateRequest() {
     }
 

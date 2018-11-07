@@ -27,6 +27,8 @@ public class ICDCodeWrapper {
     private List<ICDVersionWrapper> selectedVersions;
     private String checkedVersionCount;
     private boolean versionCountUnique;
+    private long value;
+    private String label;
 
 
     public ICDCodeWrapper() {
@@ -40,6 +42,8 @@ public class ICDCodeWrapper {
         this.createdOn = icd.getCreatedOn().getTime();
         this.updatedOn = icd.getUpdatedOn().getTime();
         this.description = icd.getDescription();
+        this.label =code;
+        this.value =id;
 
         if (icd.getIcdCodes() != null) {
             long versionCount = icd.getIcdCodes().size();
@@ -65,6 +69,24 @@ public class ICDCodeWrapper {
         this.updatedOn = icd.getUpdatedOn().getTime();
         this.description = icd.getDescription();
         this.descriptionCodeVersion = icdCodeVersion.getDescription();
+        this.label=code;
+        this.value =id;
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public long getId() {

@@ -90,6 +90,8 @@ public class AppointmentWrapper {
     private Boolean stateOfPatientBox;
     private String invoicePrefix;
     private boolean completed;
+    private String label;
+    private Long value;
 
     public AppointmentWrapper() {
     }
@@ -138,6 +140,8 @@ public class AppointmentWrapper {
         this.followUpDate =HISCoreUtil.convertDateAndTimeToString(followUpDate);
         this.serviceId=serviceId;
         this.serviceName=serviceName;
+        this.label = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
+        this.value = id;
     }
 
 
@@ -173,6 +177,8 @@ public class AppointmentWrapper {
         this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToString(scheduleDate);
         this.invoicePrefix = invPrefix;
         this.completed = completed;
+        this.label = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
+        this.value = id;
     }
 
 
@@ -188,6 +194,22 @@ public class AppointmentWrapper {
                 ", type='" + type + '\'' +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
     }
 
     public Boolean getStateOfPatientBox() {

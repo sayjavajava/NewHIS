@@ -1,10 +1,13 @@
 package com.sd.his.model;
 
 import com.sd.his.wrapper.DrugWrapper;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Created by jamal on 10/22/2018.
@@ -13,141 +16,116 @@ import javax.persistence.Table;
 @Table(name = "drug")
 public class Drug extends BaseEntity {
 
-    private String name;
-    private String url;
-    @Column(name = "strength_min")
-    private long strengthMin;
-    @Column(name = "strength_max")
-    private long strengthMax;
-    private String oral;
-    private String frequency;
-    private long duration;
-    private long refill;
-    private long days;
-    private boolean sig;
-    private String notes;
+    @NaturalId
+    @Column(name = "DRUG_NATURAL")
+    private String drugNaturalId;
+    @Column(name = "DRUG_NAME")
+    private String drugName;
+    @Column(name = "GENERIC_NAME")
+    private String GenericName;
+    @Column(name = "COMPANY_NAME")
+    private String companyName;
+    private String route;
+    @ElementCollection
+    private List<String> strengths;
+    private String uOM;
+    private String origin;
     private boolean active;
 
     public Drug() {
     }
 
+    /**
+     * for save
+     */
     public Drug(DrugWrapper drugWrapper) {
-        this.name = drugWrapper.getName();
-        this.url = drugWrapper.getUrl();
-        this.strengthMin = drugWrapper.getStrengthMin();
-        this.strengthMax = drugWrapper.getStrengthMax();
-        this.oral = drugWrapper.getOral();
-        this.frequency = drugWrapper.getFrequency();
-        this.duration = drugWrapper.getDuration();
-        this.refill = drugWrapper.getRefill();
-        this.days = drugWrapper.getDays();
-        this.sig = drugWrapper.isSig();
-        this.notes = drugWrapper.getNotes();
+        this.drugNaturalId = drugWrapper.getDrugNaturalId();
+        this.drugName = drugWrapper.getDrugName();
+        this.GenericName = drugWrapper.getGenericName();
+        this.companyName = drugWrapper.getCompanyName();
+        this.route = drugWrapper.getRoute();
+        this.strengths = drugWrapper.getStrengths();
+        this.uOM = drugWrapper.getuOM();
+        this.origin = drugWrapper.getOrigin();
         this.active = drugWrapper.isActive();
     }
-
+    /**
+     * for update
+     */
     public Drug(Drug drug, DrugWrapper drugWrapper) {
-        drug.name = drugWrapper.getName();
-        drug.url = drugWrapper.getUrl();
-        drug.strengthMin = drugWrapper.getStrengthMin();
-        drug.strengthMax = drugWrapper.getStrengthMax();
-        drug.oral = drugWrapper.getOral();
-        drug.frequency = drugWrapper.getFrequency();
-        drug.duration = drugWrapper.getDuration();
-        drug.refill = drugWrapper.getRefill();
-        drug.days = drugWrapper.getDays();
-        drug.sig = drugWrapper.isSig();
-        drug.notes = drugWrapper.getNotes();
+        drug.drugNaturalId = drugWrapper.getDrugNaturalId();
+        drug.drugName = drugWrapper.getDrugName();
+        drug.GenericName = drugWrapper.getGenericName();
+        drug.companyName = drugWrapper.getCompanyName();
+        drug.route = drugWrapper.getRoute();
+        drug.strengths = drugWrapper.getStrengths();
+        drug.uOM = drugWrapper.getuOM();
+        drug.origin = drugWrapper.getOrigin();
         drug.active = drugWrapper.isActive();
     }
 
-
-    public String getName() {
-        return name;
+    public String getDrugNaturalId() {
+        return drugNaturalId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDrugNaturalId(String drugNaturalId) {
+        this.drugNaturalId = drugNaturalId;
     }
 
-    public String getUrl() {
-        return url;
+    public String getDrugName() {
+        return drugName;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setDrugName(String drugName) {
+        this.drugName = drugName;
     }
 
-    public long getStrengthMin() {
-        return strengthMin;
+    public String getGenericName() {
+        return GenericName;
     }
 
-    public void setStrengthMin(long strengthMin) {
-        this.strengthMin = strengthMin;
+    public void setGenericName(String genericName) {
+        GenericName = genericName;
     }
 
-    public long getStrengthMax() {
-        return strengthMax;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setStrengthMax(long strengthMax) {
-        this.strengthMax = strengthMax;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
-    public String getOral() {
-        return oral;
+    public String getRoute() {
+        return route;
     }
 
-    public void setOral(String oral) {
-        this.oral = oral;
+    public void setRoute(String route) {
+        this.route = route;
     }
 
-    public String getFrequency() {
-        return frequency;
+    public List<String> getStrengths() {
+        return strengths;
     }
 
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
+    public void setStrengths(List<String> strengths) {
+        this.strengths = strengths;
     }
 
-    public long getDuration() {
-        return duration;
+    public String getuOM() {
+        return uOM;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public void setuOM(String uOM) {
+        this.uOM = uOM;
     }
 
-    public long getRefill() {
-        return refill;
+    public String getOrigin() {
+        return origin;
     }
 
-    public void setRefill(long refill) {
-        this.refill = refill;
-    }
-
-    public long getDays() {
-        return days;
-    }
-
-    public void setDays(long days) {
-        this.days = days;
-    }
-
-    public boolean isSig() {
-        return sig;
-    }
-
-    public void setSig(boolean sig) {
-        this.sig = sig;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
     public boolean isActive() {

@@ -1,7 +1,10 @@
 package com.sd.his.service;
 
+import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.Drug;
+import com.sd.his.model.Prefix;
 import com.sd.his.repository.DrugRepository;
+import com.sd.his.repository.PrefixRepository;
 import com.sd.his.wrapper.DrugWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -18,18 +21,23 @@ public class DrugService {
 
     @Autowired
     DrugRepository drugRepository;
+    @Autowired
+    private PrefixRepository prefixRepository;
 
     public boolean isNameDrugDuplicateByName(String name) {
-        return this.drugRepository.getDrugByName(name);
+        return this.drugRepository.getDrugByDrugName(name);
     }
 
-    public boolean isNameDrugDuplicateByNameAndNotEqualId(long id,String name) {
-        return this.drugRepository.getDrugByNameAndNotEqualId(id,name);
+    public boolean isNameDrugDuplicateByNameAndNotEqualId(long id, String name) {
+        return this.drugRepository.getDrugByDrugNameAndNotEqualId(id, name);
     }
 
     @Transactional
     public String saveDrug(DrugWrapper drugWrapper) {
         Drug drug = new Drug(drugWrapper);
+        Prefix pr = this.prefixRepository.findByName(ModuleEnum.DRUG.name());
+        pr.setCurrentValue(pr.getCurrentValue() + 1L);
+        this.prefixRepository.save(pr);
         this.drugRepository.save(drug);
         return "";
     }
@@ -65,7 +73,20 @@ public class DrugService {
     }
 
     public List<DrugWrapper> searchDrugByParams(Pageable pageable, DrugWrapper drugWrapper) {
-        return this.drugRepository.searchDrugByParams(pageable, drugWrapper.getName());
+        return /*this.drugRepository.searchDrugByParams(pageable, drugWrapper.getDrugName())*/ null;
     }
 
+    public String getDrugNaturalId() {
+        Prefix prefix = prefixRepository.findByName(ModuleEnum.DRUG.name());
+        String currentPrefix = prefix.getName() + "-" + prefix.getCurrentValue();
+        return currentPrefix;
+    }
+
+    public List<String> searchByDrugNameAutoComplete(String text) {
+        return this.drugRepository.searchDrugByParams(text);
+    }
+
+    public List<DrugWrapper> getAllDrugWrappers() {
+        return this.drugRepository.getAllDrugWrappers();
+    }
 }

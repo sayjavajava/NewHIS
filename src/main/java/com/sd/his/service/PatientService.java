@@ -89,7 +89,8 @@ public class PatientService {
             patientWrapper.setEmergencyContactRelation(patient.getEmergencyContactRelation());
         if (patient.getSignatureOnFile() != null)
             patientWrapper.setSignatureOnFile(patient.getSignatureOnFile());
-        patientWrapper.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+           // patientWrapper.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+           patientWrapper.setPatientId(patient.getPatientId());
 
 
         if (patient.getAppointments() != null && patient.getAppointments().size() > 0) {
@@ -569,6 +570,10 @@ public class PatientService {
     public List<FamilyHistoryWrapper> getAllFamilyHistory(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
         return familyHistoryRepository.findAllByActive(pageable);
+    }
+
+    public List<FamilyHistoryWrapper> findAllFamilyHistory() {
+        return familyHistoryRepository.findAllByActive();
     }
 
     public int familyHistoryCount() {

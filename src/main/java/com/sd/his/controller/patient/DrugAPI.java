@@ -36,6 +36,39 @@ public class DrugAPI {
     @Autowired
     private DrugService drugService;
 
+    @ApiOperation(httpMethod = "GET", value = "Drug Natural Id",
+            notes = "This method will return drug Natural Id",
+            produces = "application/json", nickname = "GetNaturalId",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = " Drug Natural Id found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "natural", method = RequestMethod.GET)
+    public ResponseEntity<?> getDrugNaturalId() {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            response.setResponseData(this.drugService.getDrugNaturalId());
+            response.setResponseMessage(messageBundle.getString("drug.get.natural.success"));
+            response.setResponseCode(ResponseEnum.DRUG_GET_NATURAL_ID_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("getDrugNaturalId Found successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getDrugNaturalId Exception..", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @ApiOperation(httpMethod = "POST", value = "Save Drug",
             notes = "This method will save the Drug.",
@@ -54,22 +87,16 @@ public class DrugAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
 
-            if (drugWrapper.getName().isEmpty() || drugWrapper.getName().length() == 0) {
+            if (drugWrapper.getDrugName().isEmpty() || drugWrapper.getDrugName().length() == 0) {
                 response.setResponseCode(ResponseEnum.DRUG_SAVE_NAME_REQUIRED.getValue());
                 response.setResponseMessage(messageBundle.getString("drug.save.name.required"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.error("saveDrug API - name of DRUG Required.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            if (drugWrapper.getUrl().isEmpty() || drugWrapper.getUrl().length() == 0) {
-                response.setResponseCode(ResponseEnum.DRUG_SAVE_NAME_REQUIRED.getValue());
-                response.setResponseMessage(messageBundle.getString("drug.save.url.required"));
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.error("saveDrug API - url of DRUG NAME Required.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
 
-            if (this.drugService.isNameDrugDuplicateByName(drugWrapper.getName())) {
+
+            if (this.drugService.isNameDrugDuplicateByName(drugWrapper.getDrugName())) {
                 response.setResponseCode(ResponseEnum.DRUG_SAVE_NAME_DUBPLUCATE.getValue());
                 response.setResponseMessage(messageBundle.getString("drug.save.name.duplicate"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -94,7 +121,7 @@ public class DrugAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "get", value = "Load all drugs",
+    @ApiOperation(httpMethod = "GET", value = "Load all drugs",
             notes = "This method will save the Drug.",
             produces = "application/json", nickname = "Load all drug",
             response = GenericAPIResponse.class, protocols = "https")
@@ -222,6 +249,39 @@ public class DrugAPI {
         }
     }
 
+    @ApiOperation(httpMethod = "GET", value = "GET Paginated Medications",
+            notes = "This method will return Paginated  Medications",
+            produces = "application/json", nickname = "GET Paginated Medications",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated  Medications fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ResponseEntity<?> getDrugsByName(@RequestParam(value = "drugName", required = false) String drugName) {
+
+        logger.error("getMedicationByNameAutocomplete API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+
+        try {
+            logger.error("getMedicationByNameAutocomplete -  fetching from DB");
+            response.setResponseData(this.drugService.searchByDrugNameAutoComplete(drugName));
+            response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());//(""),
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+
+            logger.error("getMedicationByNameAutocomplete API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getDrugByNameAutocomplete exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ApiOperation(httpMethod = "GET", value = "Drug Id",
             notes = "This method will return drug wrapper on base of id",
             produces = "application/json", nickname = "Get Single User",
@@ -292,7 +352,7 @@ public class DrugAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            if (drugWrapper.getName() == "") {
+            if (drugWrapper.getDrugName() == "") {
                 response.setResponseMessage(messageBundle.getString("drug.update.name.required"));
                 response.setResponseCode(ResponseEnum.DRUG_UPDATE_NAME_REQUIRED.getValue());//DOC_SUC_13
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -301,15 +361,8 @@ public class DrugAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            if (drugWrapper.getUrl().isEmpty() || drugWrapper.getUrl().length() == 0) {
-                response.setResponseCode(ResponseEnum.DRUG_UPDATE_URL_REQUIRED.getValue());
-                response.setResponseMessage(messageBundle.getString("drug.update.url.required"));
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                logger.error("saveDrug API - url of DRUG  Required.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
 
-            if (this.drugService.isNameDrugDuplicateByNameAndNotEqualId(drugWrapper.getId(), drugWrapper.getName())) {
+            if (this.drugService.isNameDrugDuplicateByNameAndNotEqualId(drugWrapper.getId(), drugWrapper.getDrugName())) {
                 response.setResponseMessage(messageBundle.getString("drug.update.name.duplicate"));
                 response.setResponseCode(ResponseEnum.DRUG_UPDATE_NAME_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -331,6 +384,40 @@ public class DrugAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+
+    @ApiOperation(httpMethod = "GET", value = "Drug all",
+            notes = "This method will return drug wrapper on base of all",
+            produces = "application/json", nickname = "Get Single User",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = " all drugs found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "all", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllDrugs() {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            response.setResponseData(this.drugService.getAllDrugWrappers());
+            response.setResponseMessage(messageBundle.getString("drug.get.success"));
+            response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("getAllDrugWrappers Found successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllDrugWrappers Exception", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
