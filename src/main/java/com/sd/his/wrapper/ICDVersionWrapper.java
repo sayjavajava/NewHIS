@@ -11,6 +11,8 @@ public class ICDVersionWrapper {
     private long updatedOn;
     private long createdOn;
     private boolean deleted;
+    private long value ;
+    private String label;
     /**
      * means this object or ICD VERSION has child record
      */
@@ -28,6 +30,25 @@ public class ICDVersionWrapper {
         this.status = iCDVersion.isStatus();
         this.updatedOn = iCDVersion.getUpdatedOn().getTime();
         this.createdOn = iCDVersion.getCreatedOn().getTime();
+        this.label = iCDVersion.getName();
+        this.value = iCDVersion.getId();
+    }
+
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public long getId() {

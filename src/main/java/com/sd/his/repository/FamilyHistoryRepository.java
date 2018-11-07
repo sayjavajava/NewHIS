@@ -42,6 +42,8 @@ public interface FamilyHistoryRepository extends JpaRepository<FamilyHistory, Lo
 
     @Query("SELECT new com.sd.his.wrapper.FamilyHistoryWrapper(fh.id,fh.name,fh.relation,fh.status,fh.ethnicGroup,fp.id) FROM FamilyHistory fh INNER JOIN fh.patient fp ")
     List<FamilyHistoryWrapper> findAllByActive(Pageable pageable);
+    @Query("SELECT new com.sd.his.wrapper.FamilyHistoryWrapper(fh.id,fh.name,fh.relation,fh.status,fh.ethnicGroup,fp.id) FROM FamilyHistory fh INNER JOIN fh.patient fp ")
+    List<FamilyHistoryWrapper> findAllByActive();
 
     /*List<LabOrderProjection> findAllProjectedBy(Pageable pageable);
      LabOrderProjection findById(Long id);

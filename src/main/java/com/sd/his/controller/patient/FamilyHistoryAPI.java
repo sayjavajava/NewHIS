@@ -333,6 +333,50 @@ public class FamilyHistoryAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @ApiOperation(httpMethod = "GET", value = "All FamilyHistory",
+            notes = "This method will return All FamilyHistory",
+            produces = "application/json", nickname = "Get All FamilyHistory ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All FamilyHistory fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllFamilyHistory(HttpServletRequest request) {
+        logger.info("getAllFamilyHistory ..");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("family-history.not.found"));
+        response.setResponseCode(ResponseEnum.FAMILY_HISTORY_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            List<FamilyHistoryWrapper> fhistoryData = patientService.findAllFamilyHistory();
+            if(!HISCoreUtil.isListEmpty(fhistoryData)){
+                response.setResponseMessage(messageBundle.getString("family-history.fetched.success"));
+                response.setResponseCode(ResponseEnum.FAMILY_HISTORY_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(fhistoryData);
+                logger.info("getAll FamilyHistory Fetched successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+
+            }
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("get all paginated FamilyHistory failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
 

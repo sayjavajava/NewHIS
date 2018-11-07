@@ -8,6 +8,8 @@ public class FamilyHistoryWrapper {
     private String ethnicGroup;
     private String status;
     private Long patientId;
+    private String label;
+    private Long value;
 
     public FamilyHistoryWrapper() {
     }
@@ -21,6 +23,24 @@ public class FamilyHistoryWrapper {
         this.ethnicGroup = ethnicGroup;
         this.status = status;
         this.patientId = patientId;
+        this.label = name;
+        this.value = id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
     }
 
     public Long getPatientId() {

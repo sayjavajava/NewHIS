@@ -31,6 +31,9 @@ public class GeneralLedger  extends BaseEntity implements Serializable {
     @Column(name = "BALANCE_TYPE")
     private String balanceType;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bank_id")
+    private BankAccount bankAccount;
 
     public GeneralLedger() {
     }
@@ -42,6 +45,7 @@ public class GeneralLedger  extends BaseEntity implements Serializable {
         this.name = generalLedger.getName();
         this.code = generalLedger.getCode();
         this.description = generalLedger.getDescription();
+        this.bankAccount = generalLedger.getBankAccount();
     }
 
 
@@ -93,4 +97,11 @@ public class GeneralLedger  extends BaseEntity implements Serializable {
         this.balanceType = balanceType;
     }
 
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+    }
 }

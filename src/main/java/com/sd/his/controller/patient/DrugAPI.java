@@ -121,7 +121,7 @@ public class DrugAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "get", value = "Load all drugs",
+    @ApiOperation(httpMethod = "GET", value = "Load all drugs",
             notes = "This method will save the Drug.",
             produces = "application/json", nickname = "Load all drug",
             response = GenericAPIResponse.class, protocols = "https")
