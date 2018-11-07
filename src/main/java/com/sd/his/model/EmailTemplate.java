@@ -28,7 +28,7 @@ import java.io.Serializable;
  *
  */
 @Entity
-@Table(name = "EmailTemplate")
+@Table(name = "EMAIL_TEMPLATE")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EmailTemplate extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;

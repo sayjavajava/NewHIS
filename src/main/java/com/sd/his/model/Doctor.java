@@ -52,8 +52,8 @@ public class Doctor extends StaffProfile implements Serializable {
     @JoinColumn(name="USER_ID", unique= true)
     private User user;
 
-    @OneToOne
-    @JoinColumn(name="DEPARTMENT_ID", nullable = false)
+    @ManyToOne
+    @JoinColumn(name="DEPARTMENT_ID")
     private Department department;
 
     @JsonIgnore

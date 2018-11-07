@@ -2,6 +2,7 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,21 +39,25 @@ public class Branch extends BaseEntity implements Serializable {
 
     @Column(name = "NAME")
     private String name;
+//
+//    @Column(name = "NO_OF_ROOMS")
+//    private Long noOfRooms;
 
-    @Column(name = "NO_OF_ROOMS")
-    private Long noOfRooms;
+    @NaturalId
+    @Column(name = "BRANCH_ID", unique = true, nullable = false, updatable = false)
+    private String branchId;
 
     @Column(name = "BILLING_NAME")
     private String billingName;
 
-    @Column(name = "BILLING_BRANCH_NAME")
-    private String billingBranchName;
+//    @Column(name = "CITY")
+//    private String city;
+//
+//    @Column(name = "COUNTRY")
+//    private String country;
 
-    @Column(name = "CITY")
-    private String city;
-
-    @Column(name = "COUNTRY")
-    private String country;
+//    @Column(name = "STATE")
+//    private String country;
 
     @Column(name = "ADDRESS")
     private String address;
@@ -63,8 +68,8 @@ public class Branch extends BaseEntity implements Serializable {
     @Column(name = "OFFICE_PHONE")
     private String officePhone;
 
-    @Column(name = "STATE")
-    private String state;
+//    @Column(name = "STATE")
+//    private String state;
 
     @Column(name = "FLOW")
     private String flow;
@@ -77,23 +82,25 @@ public class Branch extends BaseEntity implements Serializable {
     @Column(name = "OFFICE_END_TIME")
     private Date officeEndTime;
 
-    @Column(name = "BILLING_TAX_ID")
-    private String billingTaxId;
+//    @Column(name = "BILLING_TAX_ID")
+//    private String billingTaxId;
 
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
-    private Boolean active;
+//    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
+//    private Boolean active;
+
+    //STATUS boolean
 
     @Column(name = "SYSTEM_BRANCH", columnDefinition = "boolean default false", nullable = false)
     private Boolean systemBranch;
 
-    @Column(name = "ZIP_CODE")
-    private Integer zipCode;
+//    @Column(name = "ZIP_CODE")
+//    private Integer zipCode;
 
-    @Column(name = "ALLOW_ONLINE_SCHEDULE", columnDefinition = "boolean default true")
-    private Boolean allowOnlineSchedule;
-
-    @Column(name = "SHOW_BRANCH_INFO_ONLINE", columnDefinition = "boolean default true")
-    private Boolean showBranchInfoOnline;
+//    @Column(name = "ALLOW_ONLINE_SCHEDULE", columnDefinition = "boolean default true")
+//    private Boolean allowOnlineSchedule;
+//
+//    @Column(name = "SHOW_BRANCH_INFO_ONLINE", columnDefinition = "boolean default true")
+//    private Boolean showBranchInfoOnline;
 
     @JsonIgnore
     @OneToMany(targetEntity = BranchDoctor.class, mappedBy = "branch")

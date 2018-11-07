@@ -40,7 +40,6 @@ public class User extends BaseEntity implements Serializable {
     private String username;
 
     @Column(name = "USER_TYPE", nullable = false)
-    //@Enumerated(EnumType.STRING)
     private String userType;
 
     @Column(name = "PASSWORD", nullable = false)

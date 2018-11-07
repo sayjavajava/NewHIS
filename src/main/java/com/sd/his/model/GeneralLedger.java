@@ -1,6 +1,7 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,14 +23,15 @@ public class GeneralLedger  extends BaseEntity implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "CODE")
-    private String code;
+    @NaturalId
+    @Column(name = "CODE", unique = true, nullable = false, updatable = false)
+    private String code; //Prefix from
 
     @Column(name = "DESCRIPTION")
     private String description;
 
     @Column(name = "BALANCE_TYPE")
-    private String balanceType;
+    private String balanceType; //BalanceTypeEnum
 
 
     public GeneralLedger() {

@@ -1,11 +1,11 @@
 package com.sd.his.repository;
 
-import com.sd.his.model.SmsTemplate;
+import com.sd.his.model.SMSTemplate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SmsTemplateRepository extends JpaRepository<SmsTemplate, Long> {
+public interface SmsTemplateRepository extends JpaRepository<SMSTemplate, Long> {
 
-  //  SmsTemplate findByServerType(String serverType);
+  //  SMSTemplate findByServerType(String serverType);
 }

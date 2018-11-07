@@ -6,6 +6,7 @@ import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.TaxWrapper;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -43,6 +44,10 @@ public class Tax extends BaseEntity implements Serializable {
 
     @Column(name = "NAME")
     private String name;
+
+    @NaturalId
+    @Column(name = "TAX_ID", unique = true, nullable = false, updatable = false)
+    private String branchId;
 
     @Column(name = "DESCRIPTION")
     private String description;

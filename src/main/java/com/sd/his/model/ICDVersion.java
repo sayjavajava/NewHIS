@@ -40,8 +40,8 @@ public class ICDVersion extends BaseEntity implements Serializable {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "TITLE")
-    private String title;
+    @Column(name = "DESCRIPTION")
+    private String description;
 
     @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
     private boolean status;

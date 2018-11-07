@@ -1,7 +1,6 @@
 package com.sd.his.service;
 
 import com.sd.his.model.Prefix;
-import com.sd.his.model.SmsTemplate;
 import com.sd.his.repository.PrefixRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

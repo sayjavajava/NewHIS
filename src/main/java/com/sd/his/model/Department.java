@@ -3,6 +3,7 @@ package com.sd.his.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.wrapper.DepartmentWrapper;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,6 +42,9 @@ public class Department extends BaseEntity implements Serializable {
 
     @Column(name = "NAME")
     private String name;
+    @NaturalId
+    @Column(name = "DEPT_ID", unique = true, nullable = false, updatable = false)
+    private String branchId;
 
     @Column(name = "DESCRIPTION")
     private String description;
@@ -55,6 +59,10 @@ public class Department extends BaseEntity implements Serializable {
     @JsonIgnore
     @OneToMany(targetEntity = DepartmentMedicalService.class, mappedBy = "department")
     private List<DepartmentMedicalService> departmentMedicalServices;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = Doctor.class,mappedBy = "department")
+    private List<Doctor> doctors;
 
     public Department() {
     }

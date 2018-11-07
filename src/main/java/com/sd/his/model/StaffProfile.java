@@ -57,22 +57,20 @@ public abstract class StaffProfile extends BaseEntity implements Serializable {
     private String address;
 
 
-    @Column(name = "CITY")
-    private String city;
-
-    @Column(name = "COUNTRY")
-    private String country;
+//    @Column(name = "CITY")
+//    private String city;
+//
+//    @Column(name = "COUNTRY")
+//    private String country;
 
     @Column(name = "EMAIL")
     private String email;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "MARITAL_STATUS")
-    private MaritalStatusTypeEnum martialStatus;
+    private String maritalStatus;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
-    private ProfileStatusTypeEnum status;
+    private String status;
 
     public String getFirstName() {
         return firstName;

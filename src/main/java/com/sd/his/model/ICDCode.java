@@ -39,19 +39,18 @@ public class ICDCode extends BaseEntity implements Serializable {
     @Column(name = "CODE")
     private String code;
 
-    @Column(name = "TITLE")
-    private String problem;// title replaced by problem
+    @Column(name = "NAME")
+    private String name;
 
     @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
     private Boolean status;
-
 
     @Column(name = "DESCRIPTION")
     private String description;
 
 
     @JsonIgnore
-    @OneToMany(targetEntity = ICDCodeVersion.class, mappedBy = "icd", cascade = {CascadeType.ALL})
+    @OneToMany(targetEntity = ICDCodeVersion.class, mappedBy = "icd")
     private List<ICDCodeVersion> icdCodes;//// codeVersions
 
     @JsonIgnore

@@ -52,11 +52,6 @@ public class Nurse extends StaffProfile implements Serializable {
     @OneToMany(targetEntity = NurseDepartment.class, mappedBy = "nurse", cascade=CascadeType.ALL)
     private List<NurseDepartment> nurseDepartments;
 
-    @Column(name = "MANAGE_PATIENT_INVOICES", columnDefinition = "boolean default false")
-    private Boolean managePatientInvoices;
-
-    @Column(name = "MANAGE_PATIENT_RECORDS", columnDefinition = "boolean default false")
-    private Boolean managePatientRecords;
 
     public List<NurseWithDoctor> getNurseWithDoctorList() {
         return nurseWithDoctorList;

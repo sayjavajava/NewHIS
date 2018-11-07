@@ -8,9 +8,9 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "SmsTemplate")
+@Table(name = "SMS_TEMPLATE")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SmsTemplate extends BaseEntity implements Serializable {
+public class SMSTemplate extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,7 @@ public class SmsTemplate extends BaseEntity implements Serializable {
     private boolean active;
 
 
-    public SmsTemplate() {
+    public SMSTemplate() {
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.SmsTemplate;
+import com.sd.his.model.SMSTemplate;
 import com.sd.his.service.SmsTemplateService;
 import com.sd.his.wrapper.GenericAPIResponse;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +32,7 @@ public class SmsTemplateController {
             response = GenericAPIResponse.class, protocols = "https")
 
     @RequestMapping(value = "/saveSmsConfiguration", method = RequestMethod.POST)
-    public ResponseEntity<?> saveSmsConfiguration(HttpServletRequest request, @RequestBody SmsTemplate configurationRequestWrapper) {
+    public ResponseEntity<?> saveSmsConfiguration(HttpServletRequest request, @RequestBody SMSTemplate configurationRequestWrapper) {
 
         logger.error("save SMS Configuration API initiated");
         GenericAPIResponse response = new GenericAPIResponse();

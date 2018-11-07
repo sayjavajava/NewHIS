@@ -1,33 +1,10 @@
 package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.*;
-import com.sd.his.service.CustomerService;
+import com.sd.his.model.PaymentType;
 import com.sd.his.service.PaymentTypeService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-
-import com.sd.his.controller.patient.PatientAPI;
-import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.CustomerEntity;
-import com.sd.his.service.CustomerService;
-import com.sd.his.service.PatientService;
-import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.DepartmentWrapper;
-import com.sd.his.wrapper.GenericAPIResponse;
-import com.sd.his.wrapper.PatientWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -46,7 +23,7 @@ import java.util.ResourceBundle;
 @RequestMapping(value = "/PaymentType")
 public class PaymentTypeAPI {
 
-    private final Logger logger = LoggerFactory.getLogger(com.sd.his.controller.customer.CustomerAPI.class);
+    private final Logger logger = LoggerFactory.getLogger(PaymentTypeAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @Autowired
