@@ -46,7 +46,7 @@ import java.util.ResourceBundle;
 @RequestMapping(value = "/PaymentType")
 public class PaymentTypeAPI {
 
-    private final Logger logger = LoggerFactory.getLogger(com.sd.his.controller.customer.CustomerAPI.class);
+    private final Logger logger = LoggerFactory.getLogger(PaymentTypeAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @Autowired
