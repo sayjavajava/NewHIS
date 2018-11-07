@@ -2,7 +2,6 @@ package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.*;
-import com.sd.his.service.CustomerService;
 import com.sd.his.service.PaymentTypeService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -21,8 +20,7 @@ import java.util.List;
 
 import com.sd.his.controller.patient.PatientAPI;
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.CustomerEntity;
-import com.sd.his.service.CustomerService;
+
 import com.sd.his.service.PatientService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DepartmentWrapper;
@@ -46,7 +44,7 @@ import java.util.ResourceBundle;
 @RequestMapping(value = "/PaymentType")
 public class PaymentTypeAPI {
 
-    private final Logger logger = LoggerFactory.getLogger(com.sd.his.controller.customer.CustomerAPI.class);
+    private final Logger logger = LoggerFactory.getLogger(PaymentTypeAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @Autowired
