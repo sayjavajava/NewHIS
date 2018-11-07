@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 @RestController
@@ -39,7 +40,13 @@ public class ChartOfAccountController {
         GenericAPIResponse response = new GenericAPIResponse();
         try
         {
-            response.setResponseData(generalLedgerService.getAll());
+//            response.setResponseData(generalLedgerService.getAll());
+
+            HashMap<String,Object> hashMap=new HashMap<String,Object>();
+            hashMap.put("accountList",generalLedgerService.getAll());
+            hashMap.put("accountConfig",generalLedgerService.getAccountConfig());
+
+            response.setResponseData(hashMap);
 
             response.setResponseMessage(messageBundle.getString("chart.of.account.configuration.fetched.success"));
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
