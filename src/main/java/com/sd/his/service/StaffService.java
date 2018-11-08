@@ -2,20 +2,12 @@ package com.sd.his.service;
 
 import com.sd.his.enums.DutyShiftEnum;
 import com.sd.his.enums.ModuleEnum;
-import com.sd.his.enums.ProfileStatusTypeEnum;
-
-import static com.sd.his.enums.UserTypeEnum.*;
-
-import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.UserWrapper;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
-import com.sd.his.wrapper.response.DashboardResponseWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +20,8 @@ import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.sd.his.enums.UserTypeEnum.*;
 
 @Service
 public class StaffService {
@@ -131,7 +125,7 @@ public class StaffService {
             cashier.setEmail(createRequest.getEmail());
             cashier.setFirstName(createRequest.getFirstName());
             cashier.setLastName(createRequest.getLastName());
-            cashier.setStatus(ProfileStatusTypeEnum.ACTIVE);
+          //  cashier.setStatus(ProfileStatusTypeEnum.ACTIVE);
             cashier.setUser(user);
             cashier.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
             List<Branch> allowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
@@ -201,7 +195,7 @@ public class StaffService {
             receptionist.setCellPhone(createRequest.getCellPhone());
             receptionist.setHomePhone(createRequest.getHomePhone());
             receptionist.setEmail(createRequest.getEmail());
-            receptionist.setStatus(ProfileStatusTypeEnum.ACTIVE);
+            receptionist.setStatus(createRequest.isActive());
             receptionist.setFirstName(createRequest.getFirstName());
             receptionist.setLastName(createRequest.getLastName());
             receptionist.setUser(user);
@@ -269,13 +263,13 @@ public class StaffService {
             nurse.setCellPhone(createRequest.getCellPhone());
             nurse.setHomePhone(createRequest.getHomePhone());
             nurse.setEmail(createRequest.getEmail());
-            nurse.setStatus(ProfileStatusTypeEnum.ACTIVE);
+            nurse.setStatus(createRequest.isActive());
             nurse.setFirstName(createRequest.getFirstName());
             nurse.setLastName(createRequest.getLastName());
             nurse.setUser(user);
             nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
-            nurse.setManagePatientInvoices(createRequest.isManagePatientInvoices());
-            nurse.setManagePatientRecords(createRequest.isManagePatientRecords());
+       //     nurse.setManagePatientInvoices(createRequest.isManagePatientInvoices());
+      //      nurse.setManagePatientRecords(createRequest.isManagePatientRecords());
 
             /*List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
             List<DepartmentUser> departmentUserListData = new ArrayList<>();
@@ -373,7 +367,7 @@ public class StaffService {
             doctor.setHomePhone(createRequest.getHomePhone());
             doctor.setCheckUpInterval(createRequest.getInterval());
             doctor.setEmail(createRequest.getEmail());
-            doctor.setStatus(ProfileStatusTypeEnum.ACTIVE);
+            doctor.setStatus(createRequest.isActive());
             doctor.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
             doctor.setVacation(createRequest.isVacation());
             doctor.setVacationFrom(HISCoreUtil.convertToDate(createRequest.getDateFrom()));
@@ -615,7 +609,7 @@ public class StaffService {
                 doctor.setLastName(createRequest.getLastName());
                 doctor.setFirstName(createRequest.getFirstName());
                 doctor.setVacation(createRequest.isVacation());
-                doctor.setStatus(ProfileStatusTypeEnum.ACTIVE);
+                doctor.setStatus(createRequest.isActive());
                 doctor.setVacationFrom(HISCoreUtil.convertToDate(createRequest.getDateFrom()));
                 doctor.setVacationTO(HISCoreUtil.convertToDate(createRequest.getDateTo()));
                 doctor.setCheckUpInterval(createRequest.getInterval());
@@ -769,8 +763,6 @@ public class StaffService {
                 nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 nurse.setLastName(createRequest.getLastName());
                 nurse.setFirstName(createRequest.getFirstName());
-                nurse.setManagePatientInvoices(createRequest.isManagePatientInvoices());
-                nurse.setManagePatientRecords(createRequest.isManagePatientRecords());
                 nurseRepository.save(nurse);
 
                 //nurse department portion

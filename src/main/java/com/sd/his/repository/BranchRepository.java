@@ -43,7 +43,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
 
     Branch findByNameAndIdNot(String name,Long id);
 
-    @Query("SELECT  new com.sd.his.wrapper.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms,bb.firstName) FROM Branch b LEFT OUTER JOIN b.branchDoctors bu LEFT OUTER JOIN bu.doctor bb WHERE b.active=TRUE ")
+    @Query("SELECT  new com.sd.his.wrapper.response.BranchResponseWrapper(b.id,b.name,bb.firstName) FROM Branch b LEFT OUTER JOIN b.branchDoctors bu LEFT OUTER JOIN bu.doctor bb WHERE b.status=TRUE ")
     List<BranchResponseWrapper> findAllByActive(Pageable pageable);
 
 
@@ -56,10 +56,10 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
 
     List<Branch> findAllByIdIn(List<Long> ids);
 
-    @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b) FROM Branch b WHERE b.active = TRUE")
+    @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b) FROM Branch b WHERE b.status = TRUE")
     List<BranchResponseWrapper> findAllByActiveTrue();
     Branch findBySystemBranchTrue();
-    @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b.id,b.name, b.country,b.city,b.noOfRooms,bb.firstName) FROM Branch b LEFT OUTER JOIN b.branchDoctors bu LEFT OUTER JOIN bu.doctor bb WHERE b.active = TRUE and b.name LIKE CONCAT('%',:name,'%')")
+    @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b.id,b.name,bb.firstName) FROM Branch b LEFT OUTER JOIN b.branchDoctors bu LEFT OUTER JOIN bu.doctor bb WHERE b.status = TRUE and b.name LIKE CONCAT('%',:name,'%')")
     List<BranchResponseWrapper> findByNameAndBranchDepartments(@Param("name")String name ,Pageable pageable);
 
     @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(br,bdd.id,bdd.firstName,bdd.lastName) from Branch br INNER JOIN br.branchDoctors bd inner join bd.doctor bdd")

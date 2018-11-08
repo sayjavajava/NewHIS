@@ -47,7 +47,7 @@ public class Tax extends BaseEntity implements Serializable {
 
     @NaturalId
     @Column(name = "TAX_ID", unique = true, nullable = false, updatable = false)
-    private String branchId;
+    private String taxId;
 
     @Column(name = "DESCRIPTION")
     private String description;
@@ -103,6 +103,14 @@ public class Tax extends BaseEntity implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
     }
 
     public void setName(String name) {

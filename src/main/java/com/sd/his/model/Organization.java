@@ -2,6 +2,7 @@ package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -67,6 +68,8 @@ public class Organization extends BaseEntity implements Serializable {
     @Column(name = "EMAIL")
     private String email;
 
+    @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
+    private Boolean status;
     //CITY //COUNTRY //STATE  should be updated accroding to static table data
 
     @Column(name = "FAX")
@@ -87,20 +90,25 @@ public class Organization extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Branch> branches;
 
-    public String getFax() {
-        return fax;
-    }
-
-    public void setFax(String fax) {
+    public Organization(){}
+    public Organization(String companyName, String officePhone, String website, String email, String fax, String address,Boolean status) {
+        this.companyName = companyName;
+        this.officePhone = officePhone;
+        this.website = website;
+        this.email = email;
         this.fax = fax;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
         this.address = address;
+        this.status = status;
+   //     this.prefixList = prefixList;
+   //     this.branches = branches;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     public String getCompanyName() {
@@ -119,22 +127,6 @@ public class Organization extends BaseEntity implements Serializable {
         this.durationOFExam = durationOFExam;
     }
 
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
-
-    public Long getDurationFollowUp() {
-        return durationFollowUp;
-    }
-
-    public void setDurationFollowUp(Long durationFollowUp) {
-        this.durationFollowUp = durationFollowUp;
-    }
-
     public String getOfficePhone() {
         return officePhone;
     }
@@ -143,28 +135,36 @@ public class Organization extends BaseEntity implements Serializable {
         this.officePhone = officePhone;
     }
 
-    public String getHomePhone() {
-        return homePhone;
-    }
-
-    public void setHomePhone(String homePhone) {
-        this.homePhone = homePhone;
-    }
-
-    public String getCellPhone() {
-        return cellPhone;
-    }
-
-    public void setCellPhone(String cellPhone) {
-        this.cellPhone = cellPhone;
-    }
-
     public String getWebsite() {
         return website;
     }
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public List<S3Bucket> getBucketList() {
@@ -190,37 +190,4 @@ public class Organization extends BaseEntity implements Serializable {
     public void setBranches(List<Branch> branches) {
         this.branches = branches;
     }
-
-    public String getSpecialty() {
-        return specialty;
-    }
-
-    public void setSpecialty(String specialty) {
-        this.specialty = specialty;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Organization() {
-    }
-
-    public Organization(String companyName, Long durationOFExam, String timezone, Long durationFollowUp, String officePhone, String homePhone, String cellPhone, String website, String specialty, String email) {
-        this.companyName = companyName;
-        this.durationOFExam = durationOFExam;
-        this.timezone = timezone;
-        this.durationFollowUp = durationFollowUp;
-        this.officePhone = officePhone;
-        this.homePhone = homePhone;
-        this.cellPhone = cellPhone;
-        this.website = website;
-        this.specialty = specialty;
-        this.email = email;
-    }
-
 }

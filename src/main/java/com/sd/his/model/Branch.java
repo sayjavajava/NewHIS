@@ -47,18 +47,6 @@ public class Branch extends BaseEntity implements Serializable {
     @Column(name = "BRANCH_ID", unique = true, nullable = false, updatable = false)
     private String branchId;
 
-    @Column(name = "BILLING_NAME")
-    private String billingName;
-
-//    @Column(name = "CITY")
-//    private String city;
-//
-//    @Column(name = "COUNTRY")
-//    private String country;
-
-//    @Column(name = "STATE")
-//    private String country;
-
     @Column(name = "ADDRESS")
     private String address;
 
@@ -68,11 +56,8 @@ public class Branch extends BaseEntity implements Serializable {
     @Column(name = "OFFICE_PHONE")
     private String officePhone;
 
-//    @Column(name = "STATE")
-//    private String state;
-
     @Column(name = "FLOW")
-    private String flow;
+    private String flow; //enum
 
     @Temporal(TemporalType.TIME)
     @Column(name = "OFFICE_START_TIME")
@@ -82,25 +67,27 @@ public class Branch extends BaseEntity implements Serializable {
     @Column(name = "OFFICE_END_TIME")
     private Date officeEndTime;
 
-//    @Column(name = "BILLING_TAX_ID")
-//    private String billingTaxId;
-
-//    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
-//    private Boolean active;
+    @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
+     private Boolean status;
 
     //STATUS boolean
 
+
+    public Branch(String name, String address, String fax, String officePhone, String flow, Date officeStartTime, Date officeEndTime, Boolean status, Boolean systemBranch, Organization organization) {
+        this.name = name;
+        this.address = address;
+        this.fax = fax;
+        this.officePhone = officePhone;
+        this.flow = flow;
+        this.officeStartTime = officeStartTime;
+        this.officeEndTime = officeEndTime;
+        this.status = status;
+        this.systemBranch = systemBranch;
+        this.organization = organization;
+    }
+
     @Column(name = "SYSTEM_BRANCH", columnDefinition = "boolean default false", nullable = false)
     private Boolean systemBranch;
-
-//    @Column(name = "ZIP_CODE")
-//    private Integer zipCode;
-
-//    @Column(name = "ALLOW_ONLINE_SCHEDULE", columnDefinition = "boolean default true")
-//    private Boolean allowOnlineSchedule;
-//
-//    @Column(name = "SHOW_BRANCH_INFO_ONLINE", columnDefinition = "boolean default true")
-//    private Boolean showBranchInfoOnline;
 
     @JsonIgnore
     @OneToMany(targetEntity = BranchDoctor.class, mappedBy = "branch")
@@ -142,35 +129,7 @@ public class Branch extends BaseEntity implements Serializable {
 
     public Branch(){}
 
-    public Branch(String name, Long noOfRooms, String billingName, String billingBranchName, String city, String country, String address, String fax, String officePhone, String state, Date officeStartTime, Date officeEndTime, String billingTaxId, Boolean active, Boolean systemBranch, Integer zipCode, Boolean allowOnlineSchedule, Boolean showBranchInfoOnline, Organization organization) {
-        this.name = name;
-        this.noOfRooms = noOfRooms;
-        this.billingName = billingName;
-        this.billingBranchName = billingBranchName;
-        this.city = city;
-        this.country = country;
-        this.address = address;
-        this.fax = fax;
-        this.officePhone = officePhone;
-        this.state = state;
-        this.officeStartTime = officeStartTime;
-        this.officeEndTime = officeEndTime;
-        this.billingTaxId = billingTaxId;
-        this.active = active;
-        this.systemBranch = systemBranch;
-        this.zipCode = zipCode;
-        this.allowOnlineSchedule = allowOnlineSchedule;
-        this.showBranchInfoOnline = showBranchInfoOnline;
-        this.organization = organization;
-    }
 
-    public String getFlow() {
-        return flow;
-    }
-
-    public void setFlow(String flow) {
-        this.flow = flow;
-    }
 
     public String getName() {
         return name;
@@ -180,45 +139,14 @@ public class Branch extends BaseEntity implements Serializable {
         this.name = name;
     }
 
-    public Long getNoOfRooms() {
-        return noOfRooms;
+    public String getBranchId() {
+        return branchId;
     }
 
-    public void setNoOfRooms(Long noOfRooms) {
-        this.noOfRooms = noOfRooms;
+    public void setBranchId(String branchId) {
+        this.branchId = branchId;
     }
 
-    public String getBillingName() {
-        return billingName;
-    }
-
-    public void setBillingName(String billingName) {
-        this.billingName = billingName;
-    }
-
-    public String getBillingBranchName() {
-        return billingBranchName;
-    }
-
-    public void setBillingBranchName(String billingBranchName) {
-        this.billingBranchName = billingBranchName;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
 
     public String getAddress() {
         return address;
@@ -244,12 +172,12 @@ public class Branch extends BaseEntity implements Serializable {
         this.officePhone = officePhone;
     }
 
-    public String getState() {
-        return state;
+    public String getFlow() {
+        return flow;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setFlow(String flow) {
+        this.flow = flow;
     }
 
     public Date getOfficeStartTime() {
@@ -268,52 +196,12 @@ public class Branch extends BaseEntity implements Serializable {
         this.officeEndTime = officeEndTime;
     }
 
-    public String getBillingTaxId() {
-        return billingTaxId;
-    }
-
-    public void setBillingTaxId(String billingTaxId) {
-        this.billingTaxId = billingTaxId;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
     public Boolean getSystemBranch() {
         return systemBranch;
     }
 
     public void setSystemBranch(Boolean systemBranch) {
         this.systemBranch = systemBranch;
-    }
-
-    public Integer getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(Integer zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public Boolean getAllowOnlineSchedule() {
-        return allowOnlineSchedule;
-    }
-
-    public void setAllowOnlineSchedule(Boolean allowOnlineSchedule) {
-        this.allowOnlineSchedule = allowOnlineSchedule;
-    }
-
-    public Boolean getShowBranchInfoOnline() {
-        return showBranchInfoOnline;
-    }
-
-    public void setShowBranchInfoOnline(Boolean showBranchInfoOnline) {
-        this.showBranchInfoOnline = showBranchInfoOnline;
     }
 
     public List<BranchDoctor> getBranchDoctors() {
@@ -344,16 +232,16 @@ public class Branch extends BaseEntity implements Serializable {
         return branchReceptionists;
     }
 
+    public void setBranchReceptionists(List<BranchReceptionist> branchReceptionists) {
+        this.branchReceptionists = branchReceptionists;
+    }
+
     public List<BranchMedicalService> getBranchMedicalServices() {
         return branchMedicalServices;
     }
 
     public void setBranchMedicalServices(List<BranchMedicalService> branchMedicalServices) {
         this.branchMedicalServices = branchMedicalServices;
-    }
-
-    public void setBranchReceptionists(List<BranchReceptionist> branchReceptionists) {
-        this.branchReceptionists = branchReceptionists;
     }
 
     public List<Room> getRooms() {
@@ -378,5 +266,21 @@ public class Branch extends BaseEntity implements Serializable {
 
     public void setBranchDepartments(List<BranchDepartment> branchDepartments) {
         this.branchDepartments = branchDepartments;
+    }
+
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

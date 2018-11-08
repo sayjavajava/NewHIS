@@ -60,8 +60,7 @@ public class DepartmentWrapper {
         this.description = dpt.getDescription();
         this.label =dpt.getName();
         this.value =dpt.getId();
-    //    this.branchDepartmentId =dpt.getBranchDepartments().stream().mapToLong(x->x.getId()).findFirst().getAsLong();
-        this.active = dpt.getActive() == null ? false : dpt.getActive();
+        this.active = dpt.getStatus() == null ? false : dpt.getStatus();
         if (dpt.getDepartmentMedicalServices() != null && dpt.getDepartmentMedicalServices().size() > 0) {
             this.hasChild = true;
         } else {

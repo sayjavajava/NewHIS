@@ -11,7 +11,7 @@ public class ICDCodeWrapper {
 
     private long id;
     private String code;
-    private String problem;//problem replaced by problem
+    private String name;
     private boolean status;
     private boolean deleted;
     private long updatedOn;
@@ -37,7 +37,7 @@ public class ICDCodeWrapper {
     public ICDCodeWrapper(ICDCode icd) {
         this.id = icd.getId();
         this.code = icd.getCode();
-        this.problem = icd.getProblem();
+        this.name = icd.getName();
         this.status = icd.getStatus();
         this.createdOn = icd.getCreatedOn().getTime();
         this.updatedOn = icd.getUpdatedOn().getTime();
@@ -63,7 +63,7 @@ public class ICDCodeWrapper {
     public ICDCodeWrapper(ICDCodeVersion icdCodeVersion, ICDCode icd) {
         this.id = icd.getId();
         this.code = icd.getCode();
-        this.problem = icd.getProblem();
+        this.name = icd.getName();
         this.status = icd.getStatus();
         this.createdOn = icd.getCreatedOn().getTime();
         this.updatedOn = icd.getUpdatedOn().getTime();
@@ -105,12 +105,12 @@ public class ICDCodeWrapper {
         this.code = code;
     }
 
-    public String getProblem() {
-        return problem;
+    public String getName() {
+        return name;
     }
 
-    public void setProblem(String problem) {
-        this.problem = problem;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isStatus() {

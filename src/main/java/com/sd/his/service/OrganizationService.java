@@ -99,7 +99,7 @@ public class OrganizationService {
             organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
             organization.setFax(organizationRequestWrapper.getFax());
             organization.setAddress(organizationRequestWrapper.getAddress());
-            organization.setSpecialty(organizationRequestWrapper.getSpecialty());
+         //   organization.setSpecialty(organizationRequestWrapper.getSpecialty());
             organization.setEmail(organizationRequestWrapper.getCompanyEmail());
             organizationRepository.save(organization);
             return organizationRequestWrapper;
@@ -110,7 +110,6 @@ public class OrganizationService {
             Branch branch1 = branchRepository.findOne(organizationRequestWrapper.getDefaultBranch());
             branch1.setSystemBranch(true);
             branchRepository.save(branch1);
-            organization.setDurationFollowUp(organizationRequestWrapper.getDurationFollowUp());
             organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
             organizationRepository.save(organization);
             return organizationRequestWrapper;

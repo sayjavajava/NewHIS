@@ -1,8 +1,10 @@
 package com.sd.his.service;
 
 
-import com.sd.his.enums.UserTypeEnum;
-import com.sd.his.model.*;
+import com.sd.his.model.Branch;
+import com.sd.his.model.Doctor;
+import com.sd.his.model.Organization;
+import com.sd.his.model.Room;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.ExamRooms;
@@ -17,14 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
 
 /*
  * @author    : waqas kamran
@@ -94,23 +89,13 @@ public class BranchService {
     public Branch saveBranch(BranchRequestWrapper branchRequestWrapper) {
         Branch branch = new Branch();
         branch.setName(branchRequestWrapper.getBranchName());
-        branch.setActive(true);
-        branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
+        branch.setStatus(true);
         branch.setAddress(branchRequestWrapper.getAddress());
-        branch.setCity(branchRequestWrapper.getCity());
         branch.setSystemBranch(false);
-        branch.setState(branchRequestWrapper.getState());
-        branch.setZipCode(branchRequestWrapper.getZipCode());
         branch.setOfficePhone(branchRequestWrapper.getOfficePhone());
-        branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
+       // branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
         branch.setOfficeStartTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursStart()));
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
-        branch.setCountry(branchRequestWrapper.getCountry());
-        branch.setBillingName(branchRequestWrapper.getBillingName());
-        branch.setBillingTaxId(branchRequestWrapper.getBillingTaxID());
-        branch.setBillingBranchName(branchRequestWrapper.getBillingBranch());
-        branch.setAllowOnlineSchedule(branchRequestWrapper.isAllowOnlineSchedulingInBranch());
-        branch.setShowBranchInfoOnline(branchRequestWrapper.isShowBranchOnline());
         branch.setFax(branchRequestWrapper.getFax());
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setFlow(branchRequestWrapper.getFlow());
@@ -133,7 +118,7 @@ public class BranchService {
         branchDoctor.setDoctor(doctor);
         branchDoctor.setPrimaryBranch(true);
         branchDoctorRepository.save(branchDoctor);
-*/
+        */
         return branch;
 
     }
@@ -234,28 +219,17 @@ public class BranchService {
     public Branch updateBranch(BranchRequestWrapper branchRequestWrapper, Branch branch) {
 
         branch.setName(branchRequestWrapper.getBranchName());
-        branch.setActive(true);
-        branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
+        branch.setStatus(true);
+    //    branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
         branch.setAddress(branchRequestWrapper.getAddress());
-        branch.setCity(branchRequestWrapper.getCity());
         branch.setFlow(branchRequestWrapper.getFlow());
         //    branch.setSystemBranch(false);
-        branch.setState(branchRequestWrapper.getState());
-        branch.setZipCode(branchRequestWrapper.getZipCode());
         branch.setOfficePhone(branchRequestWrapper.getOfficePhone());
-        branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
         branch.setOfficeStartTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursStart()));
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
-        branch.setCountry(branchRequestWrapper.getCountry());
-        branch.setBillingName(branchRequestWrapper.getBillingName());
-        branch.setBillingTaxId(branchRequestWrapper.getBillingTaxID());
-        branch.setBillingBranchName(branchRequestWrapper.getBillingBranch());
-        branch.setAllowOnlineSchedule(branchRequestWrapper.isAllowOnlineSchedulingInBranch());
-        branch.setShowBranchInfoOnline(branchRequestWrapper.isShowBranchOnline());
         branch.setFax(branchRequestWrapper.getFax());
         branch.setAddress(branchRequestWrapper.getAddress());
         branchRepository.save(branch);
-
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
         /*if(!HISCoreUtil.isListEmpty(exRooms)){ // delete branches room for future
              roomRepository.deleteAllByBranch(branch);
@@ -277,7 +251,6 @@ public class BranchService {
         branchDoctorRepository.save(branchDoctor);
 */
         return branch;
-
     }
 
     /*

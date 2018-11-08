@@ -87,6 +87,11 @@ public class Doctor extends StaffProfile implements Serializable {
     @OneToMany(targetEntity = DoctorMedicalService.class, mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<DoctorMedicalService> doctorMedicalServices;
 
+    @Column(name = "STATUS")
+    private Boolean status;
+
+
+
     public Boolean getVacation() {
         return vacation;
     }
@@ -189,5 +194,13 @@ public class Doctor extends StaffProfile implements Serializable {
 
     public void setDoctorMedicalServices(List<DoctorMedicalService> doctorMedicalServices) {
         this.doctorMedicalServices = doctorMedicalServices;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

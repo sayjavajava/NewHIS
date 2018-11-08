@@ -42,15 +42,16 @@ public class Department extends BaseEntity implements Serializable {
 
     @Column(name = "NAME")
     private String name;
+
     @NaturalId
     @Column(name = "DEPT_ID", unique = true, nullable = false, updatable = false)
-    private String branchId;
+    private String deptId;
 
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "IS_ACTIVE", columnDefinition = "boolean default false", nullable = false)
-    private Boolean active;
+    @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
+    private Boolean status;
 
     @JsonIgnore
     @OneToMany(targetEntity = BranchDepartment.class, mappedBy = "department")
@@ -61,7 +62,7 @@ public class Department extends BaseEntity implements Serializable {
     private List<DepartmentMedicalService> departmentMedicalServices;
 
     @JsonIgnore
-    @OneToMany(targetEntity = Doctor.class,mappedBy = "department")
+    @OneToMany(targetEntity = Doctor.class, mappedBy = "department")
     private List<Doctor> doctors;
 
     public Department() {
@@ -70,12 +71,37 @@ public class Department extends BaseEntity implements Serializable {
     public Department(DepartmentWrapper createRequest) {
         this.name = createRequest.getName();
         this.description = createRequest.getDescription();
-        this.active = createRequest.isActive();
+        this.status = createRequest.isActive();
     }
 
-    public Department(String name, String description) {
+    public Department(String name, String deptId, String description) {
         this.name = name;
+        this.deptId = deptId;
         this.description = description;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
+    public List<Doctor> getDoctors() {
+        return doctors;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public void setDoctors(List<Doctor> doctors) {
+        this.doctors = doctors;
     }
 
     public String getName() {
@@ -92,14 +118,6 @@ public class Department extends BaseEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
     public List<BranchDepartment> getBranchDepartments() {

@@ -1,11 +1,12 @@
 package com.sd.his.wrapper.response;
 
-import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.utill.HISCoreUtil;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.OptionalLong;
 
 /*
  * @author    : waqas kamran
@@ -59,7 +60,7 @@ public class StaffResponseWrapper{
     String address;
     String city;
     String country;
-    String status;
+    Boolean status;
     String profileImg;
     Long id;
     String naturalId;
@@ -78,7 +79,7 @@ public class StaffResponseWrapper{
 
     public StaffResponseWrapper() {
     }
-
+//du.id,nr.id,du.userType,nr.firstName,nr.lastName,du.username,nr.email,br.name,nr.homePhone,nr.cellPhone,du.active,br.id,nr.accountExpiry
     //constructor for cashier and receptionist
     public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
                                 String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
@@ -150,9 +151,9 @@ public class StaffResponseWrapper{
         this.docDepartmentId = doctor.getDepartment().getId();
     }
 
-    public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
+  /*  public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
                                 String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
-                                Date expiryDate,Boolean managePatientRecords,Boolean managePatientInvoices
+                                Date expiryDate
 
     ){
         this.uid = uId;
@@ -174,7 +175,7 @@ public class StaffResponseWrapper{
 
         // this.visitBranches=branchCashiers;
 
-    }
+    }*/
 
     //constructor for nurse
     public StaffResponseWrapper(Nurse nurse){
@@ -193,8 +194,6 @@ public class StaffResponseWrapper{
         this.homePhone=nurse.getHomePhone();
         this.cellPhone=nurse.getCellPhone();
         this.primaryBranch = nurse.getBranchNurses().stream().filter(p->p.getPrimaryBranch()==true).map(pb->pb.getBranch().getName()).findAny().get();
-        this.managePatientInvoices=nurse.getManagePatientInvoices();
-        this.managePatientRecords=nurse.getManagePatientRecords();
         //List<Branch> branches = nurse.getBranchNurses().stream().map(b->b.getBranch()).collect(Collectors.toList());
         //this.staffBranches = branches;
         //this.dutyWithDoctors = nurse.getNurseWithDoctorList().stream().map(d->d.getDoctor()).collect(Collectors.toList());
@@ -212,11 +211,9 @@ public class StaffResponseWrapper{
             this.lastName = doctor.getLastName();
             this.cellPhone = doctor.getCellPhone();
             this.address = doctor.getAddress();
-            this.city = doctor.getCity();
-            this.country = doctor.getCountry();
             //this.gender = doctor.getGender().name();
             this.profileImg = doctor.getProfileImgURL();
-            this.status = doctor.getStatus().name();
+            this.status = doctor.getStatus();
             this.docDepartmentId = doctor.getDepartment().getId();
         }else
         if(object instanceof Nurse){
@@ -227,11 +224,9 @@ public class StaffResponseWrapper{
             this.lastName = nurse.getLastName();
             this.cellPhone = nurse.getCellPhone();
             this.address = nurse.getAddress();
-            this.city = nurse.getCity();
-            this.country = nurse.getCountry();
             //this.gender = nurse.getGender().name();
             this.profileImg = nurse.getProfileImgURL();
-            this.status = nurse.getStatus().name();
+            this.status = nurse.getStatus();
         }else
         if(object instanceof Cashier){
             Cashier cashier = (Cashier)object;
@@ -241,11 +236,9 @@ public class StaffResponseWrapper{
             this.lastName = cashier.getLastName();
             this.cellPhone = cashier.getCellPhone();
             this.address = cashier.getAddress();
-            this.city = cashier.getCity();
-            this.country = cashier.getCountry();
             //this.gender = cashier.getGender().name();
             this.profileImg = cashier.getProfileImgURL();
-            this.status = cashier.getStatus().name();
+            this.status = cashier.getStatus();
         }else
         if(object instanceof Receptionist) {
             Receptionist receptionist = (Receptionist) object;
@@ -255,11 +248,9 @@ public class StaffResponseWrapper{
             this.lastName = receptionist.getLastName();
             this.cellPhone = receptionist.getCellPhone();
             this.address = receptionist.getAddress();
-            this.city = receptionist.getCity();
-            this.country = receptionist.getCountry();
             //this.gender = receptionist.getGender().name();
             this.profileImg = receptionist.getProfileImgURL();
-            this.status = receptionist.getStatus().name();
+            this.status = receptionist.getStatus();
         }
     }
 
@@ -519,11 +510,11 @@ public class StaffResponseWrapper{
         this.profileImg = profileImg;
     }
 
-    public String getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

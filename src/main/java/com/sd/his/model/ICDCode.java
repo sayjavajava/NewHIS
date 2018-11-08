@@ -64,7 +64,7 @@ public class ICDCode extends BaseEntity implements Serializable {
     public ICDCode(ICDCodeCreateRequest createRequest) {
         this.code = createRequest.getCode();
         this.status = createRequest.isStatus();
-        this.problem = createRequest.getProblem();
+        //   this.problem = createRequest.getProblem();
         this.description = createRequest.getDescription();
     }
 
@@ -76,12 +76,12 @@ public class ICDCode extends BaseEntity implements Serializable {
         this.code = code;
     }
 
-    public String getProblem() {
-        return problem;
+    public String getName() {
+        return name;
     }
 
-    public void setProblem(String problem) {
-        this.problem = problem;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Boolean getStatus() {

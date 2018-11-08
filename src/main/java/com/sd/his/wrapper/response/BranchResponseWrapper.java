@@ -71,20 +71,14 @@ public class BranchResponseWrapper {
     String companyName;
     String flow;
     Map<String, List<BranchResponseWrapper>> doctorsInBranch;
+
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
-        this.country = branch.getCountry();
         this.officeHoursEnd = HISCoreUtil.convertTimeToString(branch.getOfficeEndTime());
         this.officeHoursStart = HISCoreUtil.convertTimeToString(branch.getOfficeStartTime());
-        this.billingBranch = branch.getBillingBranchName();
-        this.billingTaxID = branch.getBillingTaxId();
-        this.billingName = branch.getBillingName();
-        this.city = branch.getCity();
-        this.rooms = branch.getNoOfRooms();
+      //  this.rooms = branch.getNoOfRooms();
         this.fax = branch.getFax();
-        this.zipCode = branch.getZipCode();
         this.officePhone = branch.getOfficePhone();
-        this.state = branch.getState();
         this.name = branch.getName();
         this.id = branch.getId();
         this.address = branch.getAddress();
@@ -98,7 +92,7 @@ public class BranchResponseWrapper {
 
     }
     public BranchResponseWrapper(){}
-
+//b.id,b.name, b.country,b.city,b.noOfRooms,bb.firstName
 
     public BranchResponseWrapper(Branch branch, Long drId, String drFirstName,String drLastName) {
        this.branchName=branch.getName();
@@ -111,12 +105,9 @@ public class BranchResponseWrapper {
                 .collect(Collectors.toList());
 
     }
-    public BranchResponseWrapper(long id, String name, String country, String city, Long rooms, String firstName) {
+    public BranchResponseWrapper(long id, String name, String firstName) {
         this.id = id;
-        this.city = city;
         this.name = name;
-        this.country = country;
-        this.rooms = rooms;
         this.firstName=firstName;
         //this.doctor =doctor;
 

@@ -69,9 +69,6 @@ public abstract class StaffProfile extends BaseEntity implements Serializable {
     @Column(name = "MARITAL_STATUS")
     private String maritalStatus;
 
-    @Column(name = "STATUS")
-    private String status;
-
     public String getFirstName() {
         return firstName;
     }
@@ -176,22 +173,6 @@ public abstract class StaffProfile extends BaseEntity implements Serializable {
         this.address = address;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -200,19 +181,13 @@ public abstract class StaffProfile extends BaseEntity implements Serializable {
         this.email = email;
     }
 
-    public MaritalStatusTypeEnum getMartialStatus() {
-        return martialStatus;
+    public String getMaritalStatus() {
+        return maritalStatus;
     }
 
-    public void setMartialStatus(MaritalStatusTypeEnum martialStatus) {
-        this.martialStatus = martialStatus;
+    public void setMaritalStatus(String maritalStatus) {
+        this.maritalStatus = maritalStatus;
     }
 
-    public ProfileStatusTypeEnum getStatus() {
-        return status;
-    }
 
-    public void setStatus(ProfileStatusTypeEnum status) {
-        this.status = status;
-    }
 }

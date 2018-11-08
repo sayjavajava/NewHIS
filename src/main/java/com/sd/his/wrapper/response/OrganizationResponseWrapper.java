@@ -52,8 +52,7 @@ public class OrganizationResponseWrapper {
     String address;
     String userType;
 
-    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email,String homePhone, Long durationFollowUp,Long durationOFExam, String timezone,String speciality ,String fax,String address,String branchName
-    ) {
+    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email ,String fax,String address) {
         this.id = id;
         this.companyName = companyName;
         this.officePhone = officePhone;
@@ -62,7 +61,6 @@ public class OrganizationResponseWrapper {
         this.companyEmail = email;
         this.website=website;
         this.homePhone=homePhone;
-        this.durationOfExam=durationOFExam;
         this.durationFollowUp=durationFollowUp;
         this.speciality=speciality;
         this.fax=fax;
@@ -73,7 +71,7 @@ public class OrganizationResponseWrapper {
     }
 
     //organization pagination cons
-    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email,String homePhone, Long durationFollowUp,Long durationOFExam, String timezone,String speciality ,String fax,String address
+ /*   public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email ,String fax,String address
     ) {
         this.id = id;
         this.companyName = companyName;
@@ -83,7 +81,6 @@ public class OrganizationResponseWrapper {
         this.companyEmail = email;
         this.website=website;
         this.homePhone=homePhone;
-        this.durationOfExam=durationOFExam;
         this.durationFollowUp=durationFollowUp;
         this.speciality=speciality;
         this.fax=fax;
@@ -91,7 +88,7 @@ public class OrganizationResponseWrapper {
         //   this.branchId =brId;
         //   this.branchName =brName;
 
-    }
+    }*/
 
     public OrganizationResponseWrapper(Long id,String userType,String userName,String email,String firstName,String lastName,
                                        String cellPhone,String homePhone,String address,String branchName,Long branchId) {

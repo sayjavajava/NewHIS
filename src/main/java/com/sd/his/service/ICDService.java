@@ -33,7 +33,6 @@ public class ICDService {
 
 
     public List<ICDVersionWrapper> versios() {
-        List<ICDVersionWrapper> list = this.versionRepository.findAllByCreatedOnNotNull();
         return this.versionRepository.findAllByCreatedOnNotNull();
     }
 
@@ -238,7 +237,7 @@ public class ICDService {
         ICDCode icdCode = this.codeRepository.findOne(createRequest.getId());
         if (HISCoreUtil.isValidObject(icdCode)) {
             icdCode.setCode(createRequest.getCode());
-            icdCode.setProblem(createRequest.getProblem());
+            icdCode.setName(createRequest.getProblem());
             icdCode.setDescription(createRequest.getDescription());
             icdCode.setStatus(createRequest.isStatus());
         }
@@ -266,7 +265,6 @@ public class ICDService {
         ICDVersion icdVersion = versionRepository.findOne(request.getId());
         if (HISCoreUtil.isValidObject(icdVersion)) {
             icdVersion.setName(request.getName());
-            icdVersion.setTitle(request.getTitle());
             icdVersion.setStatus(request.isStatus());
         }
         return icdVersion;

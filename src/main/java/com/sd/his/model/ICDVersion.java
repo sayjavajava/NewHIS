@@ -57,10 +57,10 @@ public class ICDVersion extends BaseEntity implements Serializable {
     }
 
     public ICDVersion(ICDVersionWrapper createRequest) {
-        this.name = createRequest.getName();
-        this.title = createRequest.getTitle();
-        this.status = createRequest.isStatus();
+      this.name=createRequest.getName();
+      this.status =createRequest.isStatus();
     }
+
 
     public String getName() {
         return name;
@@ -70,13 +70,6 @@ public class ICDVersion extends BaseEntity implements Serializable {
         this.name = name;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public boolean isStatus() {
         return status;

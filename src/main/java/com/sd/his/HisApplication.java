@@ -5,6 +5,8 @@ import com.sd.his.enums.ModuleEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
+import com.sd.his.service.HISUtilService;
+import com.sd.his.service.PrefixServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,23 +79,24 @@ public class HisApplication {
     private MedicalServiceRepository medicalServiceRepository;
     @Autowired
     private DoctorMedicalServiceRepository doctorMedicalServiceRepository;
-
-
-
-
-
+    @Autowired
+    private HISUtilService hisUtilService;
 
     @EventListener
     @Transactional(rollbackOn = Throwable.class)
     public void onBootStartup(ApplicationContextEvent event) {
 
         if (organizationRepository.findOne(1L) == null) {
-            Organization organization = new Organization("SolutionDots Hospital", 30L, "Asia/Karachi", 15L, "+96645484654", "+964547854", "+456498465", "https://solutiondots.com/", "General", "imran@solutiondots.net");
+            Organization organization = new Organization("SolutionDots Hospital", "31231221", "Asia/Karachi",  "HIS@solutiondots.com", "fax32131", "Lahore",true);
             organization.setBucketList(Arrays.asList(new S3Bucket("hisdev", "development bucket", "AKIAJGSNPR3WX7C3EVMA", "4enduKPgokQP43xA9B1Qc/Vrymtai9X9M6AMqfcD", "https://", "s3.amazonaws.com", true, true, organization)));
             List<Prefix> prefixes = new ArrayList<>();
             prefixes.add(new Prefix("P", ModuleEnum.PROFILE.name(), 10000L, 10003L, organization));
             prefixes.add(new Prefix("APT", ModuleEnum.APPOINTMENT.name(), 10000L, 10000L, organization));
             prefixes.add(new Prefix("PAT", ModuleEnum.PATIENT.name(), 10000L, 10000L, organization));
+            prefixes.add(new Prefix("DPT", ModuleEnum.DEPARTMENT.name(), 10000L, 10000L, organization));
+            prefixes.add(new Prefix("BR", ModuleEnum.BRANCH.name(), 10000L, 10000L, organization));
+            prefixes.add(new Prefix("TX", ModuleEnum.TAX.name(), 10000L, 10000L, organization));
+           // prefixes.add(new Prefix("DPT", ModuleEnum.DEPARTMENT.name(), 10000L, 10000L, organization));
             organization.setPrefixList(prefixes);
 
             List<Permission> permissions = new ArrayList<>();
@@ -136,8 +139,9 @@ public class HisApplication {
 
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-            Department department = new Department("IT", "Information Technology department for HIS");
-            department.setActive(true);
+          //  String deptId = hisUtilService.generatePrefix(ModuleEnum.DEPARTMENT);
+            Department department = new Department("IT","10000L", "Information Technology department for HIS");
+            department.setStatus(true);
             departmentRepository.save(department);
 
             User admin = new User("admin", UserTypeEnum.ADMIN.name(), encoder.encode("admin"), true);
@@ -162,13 +166,13 @@ public class HisApplication {
             managerRepository.save(manager);
 
             Tax tax = new Tax("taxABC","tax applied", new Date(),new Date());
+            tax.setTaxId("10000L");
             tax.setActive(true);
+
             taxRepository.save(tax);
             MedicalService medicalService = new MedicalService("Sugar Test","test",300d,200d,tax);
             medicalService.setStatus(true);
             medicalServiceRepository.save(medicalService);
-
-
 
             Doctor doctor = new Doctor();
             doctor.setDob(new Date());
@@ -190,7 +194,8 @@ public class HisApplication {
             doctorMedicalServiceRepository.save(dms);
 
 
-            Branch primaryBranch = new Branch("DHA Branch", 1L, "DHA Branch", "DHA Branch", "Lahore", "Pakistan", "H Block", "+9245786468", "+9284657867", "Punjab", new Date(), new Date(), "TX0564512387", true, true, 1345464797, true, true, organization);
+            Branch primaryBranch = new Branch("DHA Branch","Lahore", "fax234233", "+9284657867", "RCD", new Date(), new Date(), true, true, organization);
+            primaryBranch.setBranchId("10000L");
             branchRepository.save(primaryBranch);
             roomRepository.save(new Room("Room1", primaryBranch, true, true));
             branchDoctorRepository.save(new BranchDoctor(doctor, primaryBranch, true));
@@ -205,7 +210,7 @@ public class HisApplication {
 
 
 /**
- * @author Irfan Nasim
+ * @author waqas kamran
  * @description To create WAR Packaging
  * @since 05-Jun-2018
  */

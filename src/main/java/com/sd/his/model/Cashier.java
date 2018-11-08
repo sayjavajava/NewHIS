@@ -18,9 +18,20 @@ public class Cashier extends StaffProfile implements Serializable {
     @JoinColumn(name="USER_ID")
     private User user;
 
+    @Column(name = "STATUS")
+    private Boolean status;
+
     @JsonIgnore
     @OneToMany(targetEntity = BranchCashier.class, mappedBy = "cashier")
     private List<BranchCashier> branchCashiers;
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
 
     public User getUser() {
         return user;

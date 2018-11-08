@@ -21,6 +21,9 @@ public class Receptionist extends StaffProfile implements Serializable {
     @OneToMany(targetEntity = BranchReceptionist.class, mappedBy = "receptionist")
     private List<BranchReceptionist> branchReceptionists;
 
+    @Column(name = "STATUS")
+    private Boolean status;
+
     public User getUser() {
         return user;
     }
@@ -31,6 +34,14 @@ public class Receptionist extends StaffProfile implements Serializable {
 
     public void setBranchReceptionists(List<BranchReceptionist> branchReceptionists) {
         this.branchReceptionists = branchReceptionists;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     public void setUser(User user) {

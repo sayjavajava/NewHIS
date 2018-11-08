@@ -58,7 +58,7 @@ public class DepartmentService {
         List<DepartmentWrapper> dptsWrappers = new ArrayList<>();
 
         for (Department cd : dpts) {
-            if (cd.getActive()) {
+            if (cd.getStatus()) {
                 DepartmentWrapper dpt = new DepartmentWrapper(cd);
                 for(BranchDepartment cdd :cd.getBranchDepartments()){
                     dpt.setBranchDepartmentId(cdd.getId());
@@ -135,7 +135,7 @@ public class DepartmentService {
         BranchDepartment branchDepartment =null;
         dpt.setName(updateRequest.getName());
         dpt.setDescription(updateRequest.getDescription());
-        dpt.setActive(updateRequest.isActive());
+        dpt.setStatus(updateRequest.isActive());
 
         long branchId = updateRequest.getBranchId();
         Branch branch = branchRepository.findOne(branchId);
