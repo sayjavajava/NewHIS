@@ -15,9 +15,9 @@ public class Country extends BaseEntity {
     private String iso3;
     private String iso2;
     @Column(name = "country_code")
-    private String country_code;
+    private String countryCode;
     @Column(name = "phone_code")
-    private String phone_code;
+    private String phoneCode;
     private String capital;
     private String currency;
     private boolean status;
@@ -53,20 +53,20 @@ public class Country extends BaseEntity {
         this.iso2 = iso2;
     }
 
-    public String getCountry_code() {
-        return country_code;
+    public String getCountryCode() {
+        return countryCode;
     }
 
-    public void setCountry_code(String country_code) {
-        this.country_code = country_code;
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
-    public String getPhone_code() {
-        return phone_code;
+    public String getPhoneCode() {
+        return phoneCode;
     }
 
-    public void setPhone_code(String phone_code) {
-        this.phone_code = phone_code;
+    public void setPhoneCode(String phoneCode) {
+        this.phoneCode = phoneCode;
     }
 
     public String getCapital() {
