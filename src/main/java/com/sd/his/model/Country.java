@@ -1,33 +1,48 @@
 package com.sd.his.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import java.lang.annotation.Target;
 import java.util.List;
 
 /**
  * Created by jamal on 11/7/2018.
  */
 @Entity
-@Table
+@Table(name = "COUNTRY")
 public class Country extends BaseEntity {
 
+    @Column(name = "NAME")
     private String name;
 
+    @Column(name = "ISO3")
     private String iso3;
+
+    @Column(name = "ISO2")
     private String iso2;
-    @Column(name = "country_code")
+
+    @Column(name = "COUNTRY_CODE")
     private String countryCode;
-    @Column(name = "phone_code")
+
+    @Column(name = "PHONE_CODE")
     private String phoneCode;
+
+    @Column(name = "CAPITAL")
     private String capital;
+
+    @Column(name = "CURRENCY")
     private String currency;
+
+    @Column(name = "STATUS")
     private boolean status;
 
-    @OneToMany(mappedBy = "country")
+    @OneToMany(targetEntity = State.class, mappedBy = "country")
     private List<State> states;
 
-
-    public Country() {
-    }
+    @OneToMany(targetEntity = City.class, mappedBy = "country")
+    private List<City> cities;
 
     public String getName() {
         return name;
@@ -100,4 +115,13 @@ public class Country extends BaseEntity {
     public void setStates(List<State> states) {
         this.states = states;
     }
+
+    public List<City> getCities() {
+        return cities;
+    }
+
+    public void setCities(List<City> cities) {
+        this.cities = cities;
+    }
+
 }

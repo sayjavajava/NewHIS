@@ -1,8 +1,9 @@
 package com.sd.his.wrapper.request;
 
+import com.sd.his.model.City;
+import com.sd.his.model.Country;
+import com.sd.his.model.State;
 import com.sd.his.wrapper.ExamRooms;
-
-import java.util.Date;
 
 /*
  * @author    Waqas Kamran
@@ -31,8 +32,8 @@ public class BranchRequestWrapper {
     String officeHoursStart;
     String officeHoursEnd;
     Long noOfExamRooms;
-    String state;
-    String city;
+    State state;
+    City city;
     Long primaryDoctor;
     Integer zipCode;
     String address;
@@ -40,7 +41,7 @@ public class BranchRequestWrapper {
     String fax;
     String formattedAddress;
     ExamRooms[] examRooms;
-    String country;
+    Country country;
     String billingName;
     String billingBranch;
     String billingTaxID;
@@ -57,11 +58,11 @@ public class BranchRequestWrapper {
         this.flow = flow;
     }
 
-    public String getCountry() {
+    public Country getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 
@@ -148,16 +149,20 @@ public class BranchRequestWrapper {
         this.noOfExamRooms = noOfExamRooms;
     }
 
-    public String getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(State state) {
         this.state = state;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 
     public void setPrimaryDoctor(Long primaryDoctor) {
@@ -170,10 +175,6 @@ public class BranchRequestWrapper {
 
     public void setZipCode(Integer zipCode) {
         this.zipCode = zipCode;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public long getPrimaryDoctor() {

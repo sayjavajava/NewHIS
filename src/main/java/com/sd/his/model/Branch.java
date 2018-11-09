@@ -126,10 +126,11 @@ public class Branch extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "branch")
     private List<Appointment> appointments;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CITY_ID")
+    private City city;
 
     public Branch(){}
-
-
 
     public String getName() {
         return name;
@@ -146,7 +147,6 @@ public class Branch extends BaseEntity implements Serializable {
     public void setBranchId(String branchId) {
         this.branchId = branchId;
     }
-
 
     public String getAddress() {
         return address;
@@ -282,5 +282,13 @@ public class Branch extends BaseEntity implements Serializable {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 }
