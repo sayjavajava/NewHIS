@@ -25,6 +25,10 @@ public interface ICDVersionRepository extends JpaRepository<ICDVersion, Long> {
             "WHERE version.status=true")
     List<ICDVersionWrapper> findAllByCreatedOnNotNull();
 
+    @Query("SELECT new com.sd.his.wrapper.ICDVersionWrapper(version) " +
+            "FROM com.sd.his.model.ICDVersion version ")
+    List<ICDVersionWrapper> findAllVersionsForDataTable();
+
     @Query("SELECT new com.sd.his.wrapper.ICDVersionWrapper(version) FROM com.sd.his.model.ICDVersion  version where version.name LIKE CONCAT('%',:name,'%') ")
     List<ICDVersionWrapper> findAllByNameContaining(@Param("name") String name, Pageable pageable);
 

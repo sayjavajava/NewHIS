@@ -1,5 +1,6 @@
 package com.sd.his.service;
 
+import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.Tax;
 import com.sd.his.repository.TaxRepository;
 import com.sd.his.utill.HISCoreUtil;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -41,6 +41,8 @@ public class TaxService {
 
     @Autowired
     TaxRepository taxRepository;
+    @Autowired
+    HISUtilService hisUtilService;
 
     public List<TaxWrapper> findAllActiveTax() {
         return taxRepository.findAllByActiveTrue(true);
@@ -67,6 +69,7 @@ public class TaxService {
     @Transactional(rollbackOn = Throwable.class)
     public void saveTax(TaxWrapper taxWrapper) throws ParseException {
         Tax tax = new Tax(taxWrapper);
+        tax.setTaxId(this.hisUtilService.generateAndUpdatePrefix(ModuleEnum.TAX));
         taxRepository.save(tax);
     }
 

@@ -32,22 +32,23 @@ public class HISUtilService {
     private PrefixRepository prefixRepository;
 
     private final Logger logger = LoggerFactory.getLogger(HISUtilService.class);
-/*
-* this method used where you need to get current prefix and update sequence of that prefix
-* used where you need both operation
-* */
+
+    /*
+    * this method used where you need to get current prefix and update sequence of that prefix
+    * used where you need both operation
+    * */
     public String getPrefixId(ModuleEnum moduleName) {
-       String currentPrefix =  generatePrefix(moduleName);
+        String currentPrefix = generatePrefix(moduleName);
         updatePrefix(moduleName);
         return currentPrefix;
     }
 
-/*
-this method use for getting prefix on popup and will not update current sequence in database
-* */
+    /*
+    this method use for getting prefix on popup and will not update current sequence in database
+    * */
     public String generatePrefix(ModuleEnum moduleName) {
-        Prefix prefix= prefixRepository.findByModule(moduleName);
-        String currentPrefix = prefix.getName()+ prefix.getCurrentValue();
+        Prefix prefix = prefixRepository.findByName(moduleName.name());
+        String currentPrefix = prefix.getName() + prefix.getCurrentValue();
         return currentPrefix;
     }
 
@@ -55,9 +56,17 @@ this method use for getting prefix on popup and will not update current sequence
 this method use for update current sequence in database after saving new entity in database
 * */
     public void updatePrefix(ModuleEnum moduleName) {
-        Prefix prefix= prefixRepository.findByModule(moduleName);
-        prefix.setCurrentValue(prefix.getCurrentValue()+1L);
+        Prefix prefix = prefixRepository.findByName(moduleName.name());
+        prefix.setCurrentValue(prefix.getCurrentValue() + 1L);
         prefixRepository.save(prefix);
+    }
+
+    public String generateAndUpdatePrefix(ModuleEnum moduleName) {
+        Prefix prefix = prefixRepository.findByModule(moduleName.name());
+        String currentPrefix = prefix.getName() + prefix.getCurrentValue();
+        prefix.setCurrentValue(prefix.getCurrentValue() + 1L);
+        prefixRepository.save(prefix);
+        return currentPrefix;
     }
 
 }
