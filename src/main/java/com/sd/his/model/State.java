@@ -7,19 +7,20 @@ import java.util.List;
  * Created by jamal on 11/7/2018.
  */
 @Entity
-@Table
+@Table(name = "STATE")
 public class State extends BaseEntity {
 
+    @Column(name = "NAME")
     private String name;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = "COUNTRY_ID")
     private Country country;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "state")
+    @OneToMany(targetEntity = City.class, mappedBy = "state")
     private List<City> cities;
 
+    @Column(name = "STATUS")
     private boolean status;
 
     public State() {

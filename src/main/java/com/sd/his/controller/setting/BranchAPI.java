@@ -674,5 +674,178 @@ public class BranchAPI {
         }
     }
 
+    @ApiOperation(httpMethod = "GET", value = "Rooms count of Branches",
+            notes = "This method will return Rooms count of Branches",
+            produces = "application/json", nickname = "Get Rooms count of Branches ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Rooms of Branches fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/rooms/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getNumberOfRooms(HttpServletRequest request, @PathVariable("id") Long branchId) {
+        logger.info("getNumberOfRooms called..");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("rooms.configuration.fetch.error"));
+        response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+            List<com.sd.his.model.Room> branchRooms = branchService.getTotalRoomsByBrId(branchId);
+            int roomCount = branchRooms.size();
+
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", roomCount);
+            response.setResponseMessage(messageBundle.getString("rooms.configuration.fetched.success"));
+            response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(returnValues);
+
+            logger.info("getNumberOfRooms Fetched successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getNumberOfRooms failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "List of Countries",
+            notes = "This method will return all countries",
+            produces = "application/json", nickname = "Get List of Countries ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "List of Counties fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/countries/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllCountries(HttpServletRequest request) {
+        logger.info("getAllCountries called..");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("rooms.configuration.fetch.error"));
+        response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+            List<?> countries = branchService.getAllCountries();
+
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", countries);
+            response.setResponseMessage(messageBundle.getString("branch.data.fetch.success"));
+            response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(returnValues);
+
+            logger.info("getAllCountries Fetched successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllCountries failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "List of States",
+            notes = "This method will return all States of a specific country",
+            produces = "application/json", nickname = "Get List of States ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "List of States fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/states/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllStates(HttpServletRequest request, @PathVariable("id") Long countryId) {
+        logger.info("getAllStates called..");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("rooms.configuration.fetch.error"));
+        response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+            List<?> states = branchService.getStatesByCntryId(countryId);
+
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", states);
+            response.setResponseMessage(messageBundle.getString("branch.data.fetch.success"));
+            response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(returnValues);
+
+            logger.info("getAllStates Fetched successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllStates failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "List of Cities",
+            notes = "This method will return all Cities of a specific state",
+            produces = "application/json", nickname = "Get List of Cities ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "List of Cities fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/cities/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllCities(HttpServletRequest request, @PathVariable("id") Long stateId) {
+        logger.info("getAllCities called..");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("rooms.configuration.fetch.error"));
+        response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+            List<?> cities = branchService.getCitiesByStateId(stateId);
+
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", cities);
+            response.setResponseMessage(messageBundle.getString("branch.data.fetch.success"));
+            response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(returnValues);
+
+            logger.info("getAllCities Fetched successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllCities failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
