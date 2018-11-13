@@ -46,8 +46,8 @@ public class HISUtilService {
 this method use for getting prefix on popup and will not update current sequence in database
 * */
     public String generatePrefix(ModuleEnum moduleName) {
-        Prefix prefix= prefixRepository.findByModule(moduleName);
-        String currentPrefix = prefix.getName()+ prefix.getCurrentValue();
+        Prefix prefix= prefixRepository.findByModule(moduleName.name());
+        String currentPrefix = prefix.getName() + prefix.getCurrentValue();
         return currentPrefix;
     }
 
@@ -55,7 +55,7 @@ this method use for getting prefix on popup and will not update current sequence
 this method use for update current sequence in database after saving new entity in database
 * */
     public void updatePrefix(ModuleEnum moduleName) {
-        Prefix prefix= prefixRepository.findByModule(moduleName);
+        Prefix prefix= prefixRepository.findByModule(moduleName.name());
         prefix.setCurrentValue(prefix.getCurrentValue()+1L);
         prefixRepository.save(prefix);
     }

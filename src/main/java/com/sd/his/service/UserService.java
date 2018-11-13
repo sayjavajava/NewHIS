@@ -121,7 +121,7 @@ public class UserService implements UserDetailsService {
             PermissionWrapper permissionWrapper = new PermissionWrapper(per);
             permissionWrappers.add(permissionWrapper);
         }*/
-        user.setPermissions(permissionWrappers);
+         user.setPermissions(permissionWrappers);
         //user.setPermissionMap(permissionWrapperMap);
         return user;
     }

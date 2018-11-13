@@ -82,6 +82,7 @@ public class MedicalServicesService {
     }
 
     public List<MedicalServiceWrapper> getMedicalServicesByDeptId(Long deptId){
+        List<MedicalServiceWrapper> list = medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
         return medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
     }
 

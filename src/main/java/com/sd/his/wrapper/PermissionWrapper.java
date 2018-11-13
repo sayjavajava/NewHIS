@@ -40,7 +40,9 @@ public class PermissionWrapper {
     boolean canAdd;
     boolean candEdit;
     boolean canDelete;
-    String permissionIcon;
+    String  permissionIcon;
+    String  label;
+    char indicatior;
 
     public PermissionWrapper() {
     }
@@ -50,6 +52,7 @@ public class PermissionWrapper {
         this.name = permission.getName();
         this.description = permission.getDescription();
         this.active = permission.getActive();
+        this.label =permission.getName();
     }
 
     public PermissionWrapper(String name, String description) {
@@ -75,6 +78,24 @@ public class PermissionWrapper {
         this.candEdit = rolePermission.getUpdate();
         this.canDelete = rolePermission.getDelete();
         this.routeUrl = rolePermission.getPermission().getUrl();
+        this.label =rolePermission.getPermission().getName();
+        this.indicatior = rolePermission.getPermission().getPermissionForInd();
+    }
+
+    public char getIndicatior() {
+        return indicatior;
+    }
+
+    public void setIndicatior(char indicatior) {
+        this.indicatior = indicatior;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public long getId() {

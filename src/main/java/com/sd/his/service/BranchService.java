@@ -1,6 +1,7 @@
 package com.sd.his.service;
 
 
+import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.Branch;
 import com.sd.his.model.Doctor;
 import com.sd.his.model.Organization;
@@ -74,6 +75,8 @@ public class BranchService {
     private OrganizationRepository organizationRepository;
     @Autowired
     private  DepartmentRepository departmentRepository;
+    @Autowired
+    HISUtilService hisUtilService;
     /*private BranchUserRepository branchUserRepository;
     private UserRepository userRepository;
     private RoomRepository roomRepository;
@@ -97,6 +100,7 @@ public class BranchService {
         branch.setOfficeStartTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursStart()));
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
         branch.setFax(branchRequestWrapper.getFax());
+        branch.setBranchId(hisUtilService.generatePrefix(ModuleEnum.BRANCH));
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setFlow(branchRequestWrapper.getFlow());
         Organization organization = organizationRepository.findOne(1L);

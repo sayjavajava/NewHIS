@@ -43,6 +43,8 @@ public interface CashierRepository extends JpaRepository<Cashier, Long> {
 
     @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,cr.id,du.username,du.userType,cr.firstName,cr.lastName,cr.email,br.name) FROM Cashier cr INNER JOIN cr.user du INNER JOIN cr.branchCashiers branchCr INNER JOIN branchCr.branch  br  WHERE du.active = TRUE AND branchCr.primaryBranch=TRUE")
     List<StaffWrapper> findAllByActive(Pageable pageable);
+    @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,cr.id,du.username,du.userType,cr.firstName,cr.lastName,cr.email,br.name) FROM Cashier cr INNER JOIN cr.user du INNER JOIN cr.branchCashiers branchCr INNER JOIN branchCr.branch  br  WHERE du.active = TRUE AND branchCr.primaryBranch=TRUE")
+    List<StaffWrapper> findAllByActive();
 
  /*   Long uId,Long pId,String userType,String firstName,String lastName,String userName,
     String primaryBranch,String email,String homePhone,String cellPhone,String expiryDate,Boolean active,

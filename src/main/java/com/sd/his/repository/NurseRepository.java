@@ -44,6 +44,8 @@ public interface NurseRepository extends JpaRepository<Nurse, Long> {
 
     @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,nr.id,du.username,du.userType,nr.firstName,nr.lastName,nr.email,br.name) FROM Nurse nr INNER JOIN nr.user du INNER JOIN nr.branchNurses branchNr INNER JOIN branchNr.branch  br  WHERE du.active = TRUE AND branchNr.primaryBranch=TRUE")
     List<StaffWrapper> findAllByActive(Pageable pageable);
+    @Query("SELECT new com.sd.his.wrapper.response.StaffWrapper(du.id,nr.id,du.username,du.userType,nr.firstName,nr.lastName,nr.email,br.name) FROM Nurse nr INNER JOIN nr.user du INNER JOIN nr.branchNurses branchNr INNER JOIN branchNr.branch  br  WHERE du.active = TRUE AND branchNr.primaryBranch=TRUE")
+    List<StaffWrapper> findAllByActive();
 
     @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,nr.id,du.userType,nr.firstName,nr.lastName,du.username,nr.email,br.name,nr.homePhone,nr.cellPhone,du.active,br.id,nr.accountExpiry) FROM Nurse nr INNER JOIN nr.user du INNER JOIN nr.branchNurses branchCr INNER JOIN branchCr.branch br WHERE nr.id =:id AND du.active = TRUE AND branchCr.primaryBranch=true ")
     StaffResponseWrapper findAllByIdAndStatusActive(@Param("id") Long id);

@@ -25,7 +25,7 @@ public class GeneralLedgerService {
     }
 
     public List<GeneralLedger> getAll(){
-        return generalLedgerRepository.getAll();
+        return generalLedgerRepository.findAll();
     }
 
     public void saveConfiguration(GeneralLedger generalLedger){
@@ -34,7 +34,7 @@ public class GeneralLedgerService {
 
 
     public AccountConfig getAccountConfig(){
-        return accountConfigRepository.findAll().get(0);
+        return accountConfigRepository.findOne(1L);
     }
 
     public void saveAssetsConfiguration(AccountConfigRequestWrapper accountConfigRequest){

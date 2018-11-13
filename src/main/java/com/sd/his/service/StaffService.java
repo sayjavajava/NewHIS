@@ -82,6 +82,7 @@ public class StaffService {
         UserRole userRole = null;//new UserRole();
         // String brName = branch.getName();
         User user = null;
+        String prefID = hisUtilService.generatePrefix(ModuleEnum.PROFILE);
 
         if (usertype.equalsIgnoreCase("CASHIER")) {
             user = new User();
@@ -125,6 +126,7 @@ public class StaffService {
             cashier.setEmail(createRequest.getEmail());
             cashier.setFirstName(createRequest.getFirstName());
             cashier.setLastName(createRequest.getLastName());
+            cashier.setProfileId(prefID);
           //  cashier.setStatus(ProfileStatusTypeEnum.ACTIVE);
             cashier.setUser(user);
             cashier.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
@@ -191,7 +193,7 @@ public class StaffService {
             }*/
 
             Receptionist receptionist = new Receptionist();
-            receptionist.setProfileId(hisUtilService.getPrefixId(ModuleEnum.PROFILE));
+            receptionist.setProfileId(prefID);
             receptionist.setCellPhone(createRequest.getCellPhone());
             receptionist.setHomePhone(createRequest.getHomePhone());
             receptionist.setEmail(createRequest.getEmail());
@@ -259,6 +261,7 @@ public class StaffService {
             }*/
             Nurse nurse = new Nurse();
             nurse.setUser(user);
+            nurse.setProfileId(prefID);
             nurse.setProfileId(hisUtilService.getPrefixId(ModuleEnum.PROFILE));
             nurse.setCellPhone(createRequest.getCellPhone());
             nurse.setHomePhone(createRequest.getHomePhone());
@@ -362,6 +365,7 @@ public class StaffService {
             doctor.setUser(user);
             doctor.setFirstName(createRequest.getFirstName());
             doctor.setLastName(createRequest.getLastName());
+            doctor.setProfileId(prefID);
             doctor.setProfileId(hisUtilService.getPrefixId(ModuleEnum.PROFILE));
             doctor.setCellPhone(createRequest.getCellPhone());
             doctor.setHomePhone(createRequest.getHomePhone());
@@ -583,6 +587,17 @@ public class StaffService {
         List<StaffWrapper> crStaffList = cashierRepository.findAllByActive(pageable);
         List<StaffWrapper> rtStaffList = receptionistRepository.findAllByActive(pageable);
         List<StaffWrapper> nrStaffList = nurseRepository.findAllByActive(pageable);
+        finalStaffList = Stream.of(drStaffList, crStaffList, rtStaffList, nrStaffList)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        return finalStaffList;
+    }
+    public List<StaffWrapper> findAllStaffWithoutPagination() {
+
+        List<StaffWrapper> drStaffList = doctorRepository.findAllByActive();
+        List<StaffWrapper> crStaffList = cashierRepository.findAllByActive();
+        List<StaffWrapper> rtStaffList = receptionistRepository.findAllByActive();
+        List<StaffWrapper> nrStaffList = nurseRepository.findAllByActive();
         finalStaffList = Stream.of(drStaffList, crStaffList, rtStaffList, nrStaffList)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
