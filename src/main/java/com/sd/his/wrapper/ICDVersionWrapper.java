@@ -30,6 +30,11 @@ public class ICDVersionWrapper {
         this.createdOn = iCDVersion.getCreatedOn().getTime();
         this.label = iCDVersion.getName();
         this.value = iCDVersion.getId();
+
+        if (iCDVersion.getVersions() != null && iCDVersion.getVersions().size() > 0) {
+            this.hasChild = true;
+        }
+
     }
 
 

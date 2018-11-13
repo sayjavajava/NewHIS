@@ -83,6 +83,9 @@ public interface MedicalServiceRepository extends JpaRepository<MedicalService, 
     @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms where ms.status=true")
     List<MedicalServiceWrapper> findAllMedicalServiceWrappers();
 
+    @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms) FROM MedicalService ms ")
+    List<MedicalServiceWrapper> findAllMedicalServiceWrappersForDataTable();
+
     @Query("SELECT new com.sd.his.wrapper.MedicalServiceWrapper(ms.id,ms.name,ms.description) FROM MedicalService ms where ms.status=TRUE ")
     List<MedicalServiceWrapper> findAllMedicalServicesForAppointment();
 

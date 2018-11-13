@@ -23,6 +23,8 @@ public interface ICDCodeRepository extends JpaRepository<ICDCode, Long> {
             "where code.status=true ")
     List<ICDCodeWrapper> findAllByCreatedOnNotNull();
 
+    @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(code) from com.sd.his.model.ICDCode code ")
+    List<ICDCodeWrapper> findAllCodesForDataTable();
 
     @Query("SELECT new com.sd.his.wrapper.ICDCodeWrapper(code) from com.sd.his.model.ICDCode code where code.code LIKE CONCAT('%',:code,'%')")
     List<ICDCodeWrapper> findAllByCodeContaining(@Param("code") String code, Pageable pageable);
