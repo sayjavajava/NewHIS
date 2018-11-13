@@ -16,4 +16,8 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 
     @Query("SELECT new com.sd.his.wrapper.CountryWrapper(c) FROM com.sd.his.model.Country c ")
     List<CountryWrapper> getAllCountries();
+
+
+    @Query("SELECT c FROM Country c")
+    List<Country> getAllBy();
 }

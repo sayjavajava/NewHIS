@@ -45,4 +45,8 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
     OrganizationResponseWrapper findById(@Param("id") Long id);
 
     Organization findByCompanyName(String companyName);
+
+    @Query("SELECT o FROM Organization o  WHERE o.id=:id")
+    Organization findByIdContains(@Param("id") Long id);
+
 }

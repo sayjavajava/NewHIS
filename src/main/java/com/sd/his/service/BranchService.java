@@ -314,9 +314,9 @@ public class BranchService {
         return RandomStringUtils.random(length, "abcdefghijklmnopqrstuvwxyz") + "@" + domain;
     }
 
-    public List<Room> getTotalRoomsByBrId(Long branchId){
+   /* public List<Room> getTotalRoomsByBrId(Long branchId){
         return roomRepository.findByBranchId(branchId);
-    }
+    }*/
 
     public City getCityByBrId(Long branchId){
         return branchRepository.findCityByBranchId(branchId);
