@@ -32,8 +32,8 @@ public class BranchRequestWrapper {
     String officeHoursStart;
     String officeHoursEnd;
     Long noOfExamRooms;
-    State state;
-    City city;
+    Long stateId;
+    Long cityId;
     Long primaryDoctor;
     Integer zipCode;
     String address;
@@ -41,7 +41,7 @@ public class BranchRequestWrapper {
     String fax;
     String formattedAddress;
     ExamRooms[] examRooms;
-    Country country;
+    Long countryId;
     String billingName;
     String billingBranch;
     String billingTaxID;
@@ -58,12 +58,12 @@ public class BranchRequestWrapper {
         this.flow = flow;
     }
 
-    public Country getCountry() {
-        return country;
+    public Long getCountryId() {
+        return countryId;
     }
 
-    public void setCountry(Country country) {
-        this.country = country;
+    public void setCountryId(Long country) {
+        this.countryId = countryId;
     }
 
     public String getBillingName() {
@@ -149,20 +149,20 @@ public class BranchRequestWrapper {
         this.noOfExamRooms = noOfExamRooms;
     }
 
-    public State getState() {
-        return state;
+    public Long getStateId() {
+        return stateId;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setStateId(Long stateId) {
+        this.stateId = stateId;
     }
 
-    public City getCity() {
-        return city;
+    public Long getCityId() {
+        return cityId;
     }
 
-    public void setCity(City city) {
-        this.city = city;
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
     }
 
     public void setPrimaryDoctor(Long primaryDoctor) {

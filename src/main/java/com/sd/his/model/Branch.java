@@ -1,5 +1,6 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.NaturalId;
@@ -68,23 +69,9 @@ public class Branch extends BaseEntity implements Serializable {
     private Date officeEndTime;
 
     @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
-     private Boolean status;
+    private Boolean status;
 
     //STATUS boolean
-
-
-    public Branch(String name, String address, String fax, String officePhone, String flow, Date officeStartTime, Date officeEndTime, Boolean status, Boolean systemBranch, Organization organization) {
-        this.name = name;
-        this.address = address;
-        this.fax = fax;
-        this.officePhone = officePhone;
-        this.flow = flow;
-        this.officeStartTime = officeStartTime;
-        this.officeEndTime = officeEndTime;
-        this.status = status;
-        this.systemBranch = systemBranch;
-        this.organization = organization;
-    }
 
     @Column(name = "SYSTEM_BRANCH", columnDefinition = "boolean default false", nullable = false)
     private Boolean systemBranch;
@@ -130,7 +117,20 @@ public class Branch extends BaseEntity implements Serializable {
     @JoinColumn(name = "CITY_ID")
     private City city;
 
-    public Branch(){}
+    public Branch(String name, String address, String fax, String officePhone, String flow, Date officeStartTime, Date officeEndTime, Boolean status, Boolean systemBranch, Organization organization) {
+        this.name = name;
+        this.address = address;
+        this.fax = fax;
+        this.officePhone = officePhone;
+        this.flow = flow;
+        this.officeStartTime = officeStartTime;
+        this.officeEndTime = officeEndTime;
+        this.status = status;
+        this.systemBranch = systemBranch;
+        this.organization = organization;
+    }
+
+    public Branch() {}
 
     public String getName() {
         return name;

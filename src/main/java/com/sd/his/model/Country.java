@@ -44,6 +44,33 @@ public class Country extends BaseEntity {
     @OneToMany(targetEntity = City.class, mappedBy = "country")
     private List<City> cities;
 
+    public Country() {
+    }
+
+    public Country(String name, String iso3, String iso2, String countryCode, String phoneCode, String capital, String currency, boolean status, List<State> states, List<City> cities) {
+        this.name = name;
+        this.iso3 = iso3;
+        this.iso2 = iso2;
+        this.countryCode = countryCode;
+        this.phoneCode = phoneCode;
+        this.capital = capital;
+        this.currency = currency;
+        this.status = status;
+        this.states = states;
+        this.cities = cities;
+    }
+
+    public Country(String name, String iso3, String iso2, String countryCode, String phoneCode, String capital, String currency, boolean status) {
+        this.name = name;
+        this.iso3 = iso3;
+        this.iso2 = iso2;
+        this.countryCode = countryCode;
+        this.phoneCode = phoneCode;
+        this.capital = capital;
+        this.currency = currency;
+        this.status = status;
+    }
+
     public String getName() {
         return name;
     }

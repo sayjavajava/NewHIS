@@ -1,15 +1,11 @@
 package com.sd.his.wrapper.response;
 
-import com.sd.his.model.Branch;
-import com.sd.his.model.Doctor;
-import com.sd.his.model.Room;
-import com.sd.his.model.User;
+import com.sd.his.model.*;
 import com.sd.his.utill.HISCoreUtil;
-import io.swagger.models.auth.In;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /*
@@ -42,11 +38,11 @@ public class BranchResponseWrapper {
     String officeHoursStart;
     String officeHoursEnd;
     Integer noOfExamRooms;
-    String state;
-    String city;
+    State state;
+//    City city;
     String primaryDoctor;
     Integer zipCode;
-    String country;
+    Country country;
     String officePhone;
     String fax;
     String formattedAddress;
@@ -71,6 +67,7 @@ public class BranchResponseWrapper {
     String companyName;
     String flow;
     Map<String, List<BranchResponseWrapper>> doctorsInBranch;
+    Map<String, Object> city;
 
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
@@ -86,9 +83,21 @@ public class BranchResponseWrapper {
                 .map(x-> new Room(x.getId(),x.getRoomName(),x.getAllowOnlineScheduling()))
                 .collect(Collectors.toList());
         this.user = user;
+        this.city = new HashMap<>();
+        this.city.put("cityId", branch.getCity().getId());
+        this.city.put("city", branch.getCity().getName());
+        this.city.put("stateId", branch.getCity().getState().getId());
+        this.city.put("state", branch.getCity().getState().getName());
+        this.city.put("countryId", branch.getCity().getState().getCountry().getId());
+        this.city.put("country", branch.getCity().getState().getCountry().getName());
+//        branch.getCity();
         this.value=branch.getId() ;
         this.label =branch.getName();
         this.flow =branch.getFlow();
+
+
+      //  this.state = branch.getCity().getState();
+      //  this.country = branch.getCity().getState().getCountry();
 
     }
     public BranchResponseWrapper(){}
@@ -234,19 +243,19 @@ public class BranchResponseWrapper {
         this.noOfExamRooms = noOfExamRooms;
     }
 
-    public String getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(State state) {
         this.state = state;
     }
 
-    public String getCity() {
+    public Map<String, Object> getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(Map<String, Object> city) {
         this.city = city;
     }
 
@@ -266,11 +275,11 @@ public class BranchResponseWrapper {
         this.zipCode = zipCode;
     }
 
-    public String getCountry() {
+    public Country getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 

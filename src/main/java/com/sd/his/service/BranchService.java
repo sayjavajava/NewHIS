@@ -105,10 +105,11 @@ public class BranchService {
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
         branch.setFax(branchRequestWrapper.getFax());
         branch.setAddress(branchRequestWrapper.getAddress());
-        branch.setCity(branchRequestWrapper.getCity());
+        branch.setCity(cityRepository.findOne(branchRequestWrapper.getCityId()));
         branch.setFlow(branchRequestWrapper.getFlow());
         Organization organization = organizationRepository.findOne(1L);
         branch.setOrganization(organization);
+        branch.setBranchId(String.valueOf(branchRepository.getMaxBranchId() + 1));          //TODO: Unable to set it to auto
         branchRepository.save(branch);
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
         for (ExamRooms ex : exRooms) {
@@ -318,15 +319,15 @@ public class BranchService {
         return roomRepository.findByBranchId(branchId);
     }
 
-    public City getCityByBrId(Long branchId){
+    public CityWrapper getCityByBrId(Long branchId){
         return branchRepository.findCityByBranchId(branchId);
     }
 
-    public State getStateByBrId(Long branchId){
+    public StateWrapper getStateByBrId(Long branchId){
         return branchRepository.findStateByBranchId(branchId);
     }
 
-    public Country getCountryByBrId(Long branchId){
+    public CountryWrapper getCountryByBrId(Long branchId){
         return branchRepository.findCountryByBranchId(branchId);
     }
 

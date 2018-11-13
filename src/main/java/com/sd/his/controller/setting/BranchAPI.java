@@ -7,7 +7,10 @@ import com.sd.his.model.Organization;
 import com.sd.his.repository.OrganizationRepository;
 import com.sd.his.service.BranchService;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.CityWrapper;
+import com.sd.his.wrapper.CountryWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.StateWrapper;
 import com.sd.his.wrapper.request.BranchRequestWrapper;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -149,7 +152,6 @@ public class BranchAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-
 
         } catch (Exception ex) {
             logger.error("Branch Creation Failed.", ex.fillInStackTrace());
@@ -738,10 +740,10 @@ public class BranchAPI {
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
         try {
-            List<?> countries = branchService.getAllCountries();
 
+            List<CountryWrapper> countryWrappers = branchService.getAllCountries();
             Map<String, Object> returnValues = new LinkedHashMap<>();
-            returnValues.put("data", countries);
+            returnValues.put("data", countryWrappers);
             response.setResponseMessage(messageBundle.getString("branch.data.fetch.success"));
             response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -771,8 +773,8 @@ public class BranchAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/states/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllStates(HttpServletRequest request, @PathVariable("id") Long countryId) {
+    @RequestMapping(value = "/states/{countryId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllStates(HttpServletRequest request, @PathVariable("countryId") Long countryId) {
         logger.info("getAllStates called..");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -847,5 +849,55 @@ public class BranchAPI {
         }
     }
 
+    @ApiOperation(httpMethod = "GET", value = "Branch's City State Country",
+            notes = "This method will return city state country of branch",
+            produces = "application/json", nickname = "Get Branch's City State Country ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Branch's City State Country fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/cityStateCountry/{branchId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getCityStateCountryByBrId(HttpServletRequest request, @PathVariable("branchId") Long branchId) {
+        logger.info("getCountryById called..");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("rooms.configuration.fetch.error"));
+        response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+
+            CityWrapper city = branchService.getCityByBrId(branchId);
+            StateWrapper state = branchService.getStateByBrId(branchId);
+            CountryWrapper country = branchService.getCountryByBrId(branchId);
+
+            Map<String, Object> cityStateCountry = new HashMap<>();
+            cityStateCountry.put("city", city);
+            cityStateCountry.put("state", state);
+            cityStateCountry.put("country", country);
+
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", cityStateCountry);
+            response.setResponseMessage(messageBundle.getString("branch.data.fetch.success"));
+            response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(returnValues);
+
+            logger.info("getAllCountries Fetched successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllCountries failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
