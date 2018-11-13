@@ -11,7 +11,6 @@ public class ICDCodeWrapper {
 
     private long id;
     private String code;
-    private String name;
     private boolean status;
     private boolean deleted;
     private long updatedOn;
@@ -37,13 +36,12 @@ public class ICDCodeWrapper {
     public ICDCodeWrapper(ICDCode icd) {
         this.id = icd.getId();
         this.code = icd.getCode();
-        this.name = icd.getName();
         this.status = icd.getStatus();
         this.createdOn = icd.getCreatedOn().getTime();
         this.updatedOn = icd.getUpdatedOn().getTime();
         this.description = icd.getDescription();
-        this.label =code;
-        this.value =id;
+        this.label = code;
+        this.value = id;
 
         if (icd.getIcdCodes() != null) {
             long versionCount = icd.getIcdCodes().size();
@@ -63,14 +61,13 @@ public class ICDCodeWrapper {
     public ICDCodeWrapper(ICDCodeVersion icdCodeVersion, ICDCode icd) {
         this.id = icd.getId();
         this.code = icd.getCode();
-        this.name = icd.getName();
         this.status = icd.getStatus();
         this.createdOn = icd.getCreatedOn().getTime();
         this.updatedOn = icd.getUpdatedOn().getTime();
         this.description = icd.getDescription();
         this.descriptionCodeVersion = icdCodeVersion.getDescription();
-        this.label=code;
-        this.value =id;
+        this.label = code;
+        this.value = id;
     }
 
     public long getValue() {
@@ -103,14 +100,6 @@ public class ICDCodeWrapper {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public boolean isStatus() {

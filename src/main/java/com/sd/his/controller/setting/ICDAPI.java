@@ -77,7 +77,6 @@ public class ICDAPI {
         response.setResponseCode(ResponseEnum.ICD_VERSION_FETCH_FAILED.getValue());
         response.setResponseStatus(ResponseEnum.ICD_VERSION_ERROR.getValue());
         response.setResponseData(null);
-
         try {
 
             logger.info("Versions Found Successfully");
@@ -90,6 +89,81 @@ public class ICDAPI {
 
         } catch (Exception ex) {
             logger.error("getAllICDVersions failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "versions",
+            notes = "This method will return   Versions ",
+            produces = "application/json", nickname = " versions",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "versions fetched", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/versions/dataTable", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllICDVersionsForDataTable() {
+
+        logger.info("getAllICDVersionsForDataTable API initiated..");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("icd.versions.not.found"));
+        response.setResponseCode(ResponseEnum.ICD_VERSION_FETCH_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ICD_VERSION_ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+
+            logger.info("getAllICDVersionsForDataTable Found Successfully");
+            response.setResponseData(icdService.versiosForDataTable());
+            response.setResponseMessage(messageBundle.getString("icd.versions.found.success"));
+            response.setResponseCode(ResponseEnum.ICD_VERSIONS_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getAllICDVersionsForDataTable failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "codes Not Deleted ",
+            notes = "This method will return codes Not Deleted",
+            produces = "application/json", nickname = "codes Not Deleted",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "codes Not Deleted fetched", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/codes/dataTable", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllICDCodesForDataTable() {
+
+        logger.info("getAllICDCodesForDataTable API initiated..");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+
+        try {
+
+            response.setResponseData(icdService.codesForDataTable());
+            response.setResponseMessage(messageBundle.getString("icd.codes.found.success"));
+            response.setResponseCode(ResponseEnum.ICD_CODE_VERSION_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getAllICDCodesForDataTable failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
@@ -361,7 +435,6 @@ public class ICDAPI {
         response.setResponseCode(ResponseEnum.ICD_CODE_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
-
         try {
             List<ICDCodeWrapper> icdsWrappers = icdService.findCodes(page, pageSize);
             int countICDs = icdService.countCodes();

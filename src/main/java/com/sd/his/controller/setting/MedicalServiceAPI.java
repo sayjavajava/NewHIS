@@ -153,7 +153,7 @@ public class MedicalServiceAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             logger.error("getAllMedicalServices - Medical Services fetching from DB");
-            List<MedicalServiceWrapper> mss = medicalServicesService.getAllMedicalServicesForAppointment();
+            List<MedicalServiceWrapper> mss = medicalServicesService.findAllMedicalServicesForDataTable();
 
             logger.info("getAllMedicalServices - Medical Services fetched successfully" + mss.size());
             response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));

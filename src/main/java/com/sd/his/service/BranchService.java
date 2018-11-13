@@ -1,6 +1,11 @@
 package com.sd.his.service;
 
 
+import com.sd.his.enums.ModuleEnum;
+import com.sd.his.model.Branch;
+import com.sd.his.model.Doctor;
+import com.sd.his.model.Organization;
+import com.sd.his.model.Room;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
@@ -75,6 +80,8 @@ public class BranchService {
     @Autowired
     private  DepartmentRepository departmentRepository;
     @Autowired
+    HISUtilService hisUtilService;
+    @Autowired
     private  CountryRepository countryRepository;
     @Autowired
     private  StateRepository stateRepository;
@@ -104,6 +111,7 @@ public class BranchService {
         branch.setOfficeStartTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursStart()));
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
         branch.setFax(branchRequestWrapper.getFax());
+        branch.setBranchId(hisUtilService.generatePrefix(ModuleEnum.BRANCH));
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setCity(cityRepository.findOne(branchRequestWrapper.getCityId()));
         branch.setFlow(branchRequestWrapper.getFlow());
@@ -298,7 +306,6 @@ public class BranchService {
         List<BranchResponseWrapper> branches = branchRepository.findByNameAndBranchDepartments(branch1.getName(),pageable);
         return branches;
     }
-
     public boolean isBranchNameOrIdExistsAlready(String name, long brId) {
         return branchRepository.findByNameAndIdNot(name,brId) == null;        // Simplified from  (this==null?false:true)
     }
@@ -315,9 +322,9 @@ public class BranchService {
         return RandomStringUtils.random(length, "abcdefghijklmnopqrstuvwxyz") + "@" + domain;
     }
 
-    public List<Room> getTotalRoomsByBrId(Long branchId){
+   /* public List<Room> getTotalRoomsByBrId(Long branchId){
         return roomRepository.findByBranchId(branchId);
-    }
+    }*/
 
     public CityWrapper getCityByBrId(Long branchId){
         return branchRepository.findCityByBranchId(branchId);

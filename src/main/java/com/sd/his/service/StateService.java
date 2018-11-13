@@ -1,5 +1,6 @@
 package com.sd.his.service;
 
+import com.sd.his.model.State;
 import com.sd.his.repository.StateRepository;
 import com.sd.his.wrapper.StateWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,4 +26,10 @@ public class StateService {
     public List<StateWrapper> getAllStatesByCountryId(long countryId){
         return this.stateRepository.getAllStatesByCountry(countryId);
     }
+
+
+    public List<State> getAllStatesById(long countryId){
+        return this.stateRepository.getAllStatesByCountryById(countryId);
+    }
+
 }

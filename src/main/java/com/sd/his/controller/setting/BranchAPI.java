@@ -676,7 +676,7 @@ public class BranchAPI {
         }
     }
 
-    @ApiOperation(httpMethod = "GET", value = "Rooms count of Branches",
+   /* @ApiOperation(httpMethod = "GET", value = "Rooms count of Branches",
             notes = "This method will return Rooms count of Branches",
             produces = "application/json", nickname = "Get Rooms count of Branches ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -719,7 +719,7 @@ public class BranchAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+*/
     @ApiOperation(httpMethod = "GET", value = "List of Countries",
             notes = "This method will return all countries",
             produces = "application/json", nickname = "Get List of Countries ",

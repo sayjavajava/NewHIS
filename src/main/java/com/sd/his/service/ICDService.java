@@ -36,9 +36,16 @@ public class ICDService {
         return this.versionRepository.findAllByCreatedOnNotNull();
     }
 
+    public List<ICDVersionWrapper> versiosForDataTable() {
+        return this.versionRepository.findAllVersionsForDataTable();
+    }
+
     public List<ICDCodeWrapper> codes() {
-        System.out.println(this.codeRepository.findAllByCreatedOnNotNull());
         return this.codeRepository.findAllByCreatedOnNotNull();
+    }
+
+    public List<ICDCodeWrapper> codesForDataTable() {
+        return this.codeRepository.findAllCodesForDataTable();
     }
 
 
@@ -237,7 +244,6 @@ public class ICDService {
         ICDCode icdCode = this.codeRepository.findOne(createRequest.getId());
         if (HISCoreUtil.isValidObject(icdCode)) {
             icdCode.setCode(createRequest.getCode());
-            icdCode.setName(createRequest.getProblem());
             icdCode.setDescription(createRequest.getDescription());
             icdCode.setStatus(createRequest.isStatus());
         }

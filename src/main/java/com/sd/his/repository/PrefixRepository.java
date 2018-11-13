@@ -34,7 +34,7 @@ import java.util.List;
 @Repository
 public interface PrefixRepository extends JpaRepository<Prefix, Long> {
 
-    Prefix findByModule(ModuleEnum moduleName);
+    Prefix findByModule(String moduleName);
 
     Prefix findByName(String moduleName);
 

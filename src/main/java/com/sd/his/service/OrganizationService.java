@@ -24,10 +24,7 @@ package com.sd.his.service;/*
 
 import com.sd.his.enums.OrganizationFormTypeEnum;
 import com.sd.his.enums.UserTypeEnum;
-import com.sd.his.model.Branch;
-import com.sd.his.model.Manager;
-import com.sd.his.model.Organization;
-import com.sd.his.model.User;
+import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.wrapper.TimezoneWrapper;
 import com.sd.his.wrapper.request.OrganizationRequestWrapper;
@@ -54,6 +51,18 @@ public class OrganizationService {
     private ManagerRepository managerRepository;
     @Autowired
     private BranchRepository branchRepository;
+    @Autowired
+    private ZoneRepository zoneRepository;
+
+    @Autowired
+    private CityRepository cityRepository;
+
+    @Autowired
+    private StateRepository stateRepository;
+
+    @Autowired
+    private CountryRepository countryRepository;
+
 
   /*  @Autowired
     private BranchRepository branchRepository;*/
@@ -63,6 +72,12 @@ public class OrganizationService {
 
     public List<TimezoneWrapper> getAllTimeZone() {
         return timezoneRepository.findAllByCountryCode();
+    }
+
+
+    public List<Zone> getAllZone() {
+       // List<Zone> lst=zoneRepository.findAll();
+        return zoneRepository.findAll();
     }
 
 /*    public List<OrganizationResponseWrapper> getAllActiveOrganizations() {
@@ -87,6 +102,14 @@ public class OrganizationService {
         return organizationRepository.findById(id);
     }
 
+
+    public Organization getOrganizationByIdWithResponseAdditionalInfo(long id) {
+        return organizationRepository.findByIdContains(id);
+    }
+   /*public Organization getOrganizationByIdWithResponse(long id) {
+        return organizationRepository.findById(id);
+    }*/
+
     public Organization getByID(long id) {
         return organizationRepository.getOne(id);
     }
@@ -101,6 +124,10 @@ public class OrganizationService {
             organization.setAddress(organizationRequestWrapper.getAddress());
          //   organization.setSpecialty(organizationRequestWrapper.getSpecialty());
             organization.setEmail(organizationRequestWrapper.getCompanyEmail());
+
+            organization.setCity(cityRepository.findOne(Long.valueOf(organizationRequestWrapper.getCity())));
+            organization.setState(stateRepository.findOne(Long.valueOf(organizationRequestWrapper.getState())));
+            organization.setCountry(countryRepository.findOne(Long.valueOf(organizationRequestWrapper.getCountry())));
             organizationRepository.save(organization);
             return organizationRequestWrapper;
         }
@@ -111,6 +138,14 @@ public class OrganizationService {
             branch1.setSystemBranch(true);
             branchRepository.save(branch1);
             organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
+          //  organization.setZone(zoneRepository.findOne(Long.valueOf(organizationRequestWrapper.getTimezoneList()));
+            long id=Long.valueOf(organizationRequestWrapper.getZoneFormat());
+            Zone zoneId=zoneRepository.findOne(id);
+            organization.setZone(zoneId);
+        //    organization.setZone(organizationRequestWrapper.getZoneFormat().replaceAll("\\s",""));
+            organization.setDateFormat(organizationRequestWrapper.getDateFormat());
+            organization.setTimeFormat(organizationRequestWrapper.getTimeFormat());
+
             organizationRepository.save(organization);
             return organizationRequestWrapper;
         }
@@ -148,6 +183,7 @@ public class OrganizationService {
         ,branch.getName(),branch.getId());
         return organizationResponseWrapper;
     }
+
 
 
 }

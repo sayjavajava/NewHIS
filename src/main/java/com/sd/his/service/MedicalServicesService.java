@@ -73,6 +73,10 @@ public class MedicalServicesService {
         return medicalServiceRepository.findAllMedicalServiceWrappers();
     }
 
+    public List<MedicalServiceWrapper> findAllMedicalServicesForDataTable() {
+        return medicalServiceRepository.findAllMedicalServiceWrappersForDataTable();
+    }
+
     public List<MedicalServiceWrapper> getAllMedicalServicesForAppointment() {
         return medicalServiceRepository.findAllMedicalServicesForAppointment();
     }
@@ -82,6 +86,7 @@ public class MedicalServicesService {
     }
 
     public List<MedicalServiceWrapper> getMedicalServicesByDeptId(Long deptId){
+        List<MedicalServiceWrapper> list = medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
         return medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
     }
 

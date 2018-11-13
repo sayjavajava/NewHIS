@@ -34,6 +34,7 @@ import java.util.List;
 public interface BranchDepartmentRepository extends JpaRepository<BranchDepartment, Long> {
 
  //   BranchDepartment findByBranchAndDepartment(Department dpt);
+    BranchDepartment findByDepartment(Department department);
 
 }
 

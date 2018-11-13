@@ -39,9 +39,6 @@ public class ICDCode extends BaseEntity implements Serializable {
     @Column(name = "CODE")
     private String code;
 
-    @Column(name = "NAME")
-    private String name;
-
     @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
     private Boolean status;
 
@@ -74,14 +71,6 @@ public class ICDCode extends BaseEntity implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Boolean getStatus() {
