@@ -6,9 +6,13 @@ import com.sd.his.model.Branch;
 import com.sd.his.model.Doctor;
 import com.sd.his.model.Organization;
 import com.sd.his.model.Room;
+import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.CityWrapper;
+import com.sd.his.wrapper.CountryWrapper;
 import com.sd.his.wrapper.ExamRooms;
+import com.sd.his.wrapper.StateWrapper;
 import com.sd.his.wrapper.request.BranchRequestWrapper;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.apache.commons.lang.RandomStringUtils;
@@ -77,6 +81,13 @@ public class BranchService {
     private  DepartmentRepository departmentRepository;
     @Autowired
     HISUtilService hisUtilService;
+    @Autowired
+    private  CountryRepository countryRepository;
+    @Autowired
+    private  StateRepository stateRepository;
+    @Autowired
+    private  CityRepository cityRepository;
+
     /*private BranchUserRepository branchUserRepository;
     private UserRepository userRepository;
     private RoomRepository roomRepository;
@@ -102,6 +113,7 @@ public class BranchService {
         branch.setFax(branchRequestWrapper.getFax());
         branch.setBranchId(hisUtilService.generatePrefix(ModuleEnum.BRANCH));
         branch.setAddress(branchRequestWrapper.getAddress());
+        branch.setCity(branchRequestWrapper.getCity());
         branch.setFlow(branchRequestWrapper.getFlow());
         Organization organization = organizationRepository.findOne(1L);
         branch.setOrganization(organization);
@@ -294,7 +306,7 @@ public class BranchService {
         return branches;
     }
     public boolean isBranchNameOrIdExistsAlready(String name, long brId) {
-        return branchRepository.findByNameAndIdNot(name,brId) == null ? false : true;
+        return branchRepository.findByNameAndIdNot(name,brId) == null;        // Simplified from  (this==null?false:true)
     }
 
 
@@ -307,5 +319,33 @@ public class BranchService {
     }
     private String generateEmail(String domain, int length) {
         return RandomStringUtils.random(length, "abcdefghijklmnopqrstuvwxyz") + "@" + domain;
+    }
+
+   /* public List<Room> getTotalRoomsByBrId(Long branchId){
+        return roomRepository.findByBranchId(branchId);
+    }*/
+
+    public City getCityByBrId(Long branchId){
+        return branchRepository.findCityByBranchId(branchId);
+    }
+
+    public State getStateByBrId(Long branchId){
+        return branchRepository.findStateByBranchId(branchId);
+    }
+
+    public Country getCountryByBrId(Long branchId){
+        return branchRepository.findCountryByBranchId(branchId);
+    }
+
+    public List<CountryWrapper> getAllCountries(){
+        return countryRepository.getAllCountries();
+    }
+
+    public List<StateWrapper> getStatesByCntryId(Long countryId){
+        return stateRepository.getAllStatesByCountry(countryId);
+    }
+
+    public List<CityWrapper> getCitiesByStateId(Long stateId){
+        return cityRepository.getAllCitiesByStateId(stateId);
     }
 }

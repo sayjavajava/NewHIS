@@ -2,6 +2,9 @@ package com.sd.his.repository;
 
 import com.sd.his.model.Branch;
 
+import com.sd.his.model.City;
+import com.sd.his.model.Country;
+import com.sd.his.model.State;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -68,6 +71,11 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     //  List<Branch> findByNameIgnoreCaseContainingAndActiveTrueOrBranchDepartments_department_nameIgnoreCaseContaining(String name, String department, Pageable pageable);
 
 
+    City findCityByBranchId(Long branchId);
+
+    State findStateByBranchId(Long branchId);
+
+    Country findCountryByBranchId(Long branchId);
 
 
  /*   Branch findByIdAndDeletedFalse(long id);

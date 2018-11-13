@@ -1,25 +1,31 @@
 package com.sd.his.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by jamal on 11/7/2018.
  */
 @Entity
-@Table
+@Table(name = "CITY")
 public class City extends BaseEntity {
 
+    @Column(name = "NAME")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country_id")
+    @JoinColumn(name = "COUNTRY_ID")
     private Country country;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "state_id")
+    @JoinColumn(name = "STATE_ID")
     private State state;
 
+    @Column(name = "STATUS")
     private boolean status;
+
+    @OneToMany(targetEntity = Branch.class, mappedBy = "city")
+    private List<Branch> branches;
 
     public City() {
     }

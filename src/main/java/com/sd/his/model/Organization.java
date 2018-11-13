@@ -90,6 +90,77 @@ public class Organization extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Branch> branches;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "City_id")
+    private City city;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "zone_id")
+    private Zone zone;
+
+    public Zone getZone() {
+        return zone;
+    }
+
+    public void setZone(Zone zone) {
+        this.zone = zone;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+    }
+
+    @Column(name = "date_format")
+    private String dateFormat;
+
+    @Column(name = "time_format")
+    private String timeFormat;
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "state_id")
+    private State state;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Country_id")
+    private Country country;
+
     public Organization(){}
     public Organization(String companyName, String officePhone, String website, String email, String fax, String address,Boolean status) {
         this.companyName = companyName;
@@ -99,6 +170,11 @@ public class Organization extends BaseEntity implements Serializable {
         this.fax = fax;
         this.address = address;
         this.status = status;
+        this.timeFormat=timeFormat;
+        this.dateFormat=dateFormat;
+        this.city=city;
+        this.country=country;
+
    //     this.prefixList = prefixList;
    //     this.branches = branches;
     }

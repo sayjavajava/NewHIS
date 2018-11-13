@@ -21,6 +21,10 @@ package com.sd.his.wrapper.request;/*
  *
  */
 
+import com.sd.his.model.Zone;
+
+import java.util.List;
+
 public class OrganizationRequestWrapper {
 
     String CompanyEmail;    //profile form
@@ -49,6 +53,77 @@ public class OrganizationRequestWrapper {
     String userAddress;
     String homePhone;
     Long userId;
+    String dateFormat;
+    String timeFormat;
+
+    public String getZoneFormat() {
+        return zoneFormat;
+    }
+
+    public void setZoneFormat(String zoneFormat) {
+        this.zoneFormat = zoneFormat;
+    }
+
+    String zoneFormat;
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
+    }
+
+    String country;
+    String zoneId;
+
+
+
+
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    String state;
+    String city;
+
 
     public Long getUserId() {
         return userId;

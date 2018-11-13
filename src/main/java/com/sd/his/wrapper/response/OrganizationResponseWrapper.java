@@ -1,5 +1,8 @@
 package com.sd.his.wrapper.response;
 
+import com.sd.his.model.City;
+import com.sd.his.model.Country;
+import com.sd.his.model.State;
 import com.sd.his.model.User;
 
 /*
@@ -50,7 +53,66 @@ public class OrganizationResponseWrapper {
     String username;
     String email;
     String address;
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     String userType;
+    String dateFormat;
+    String country;
+    String city;
+    String state;
+
+    public OrganizationResponseWrapper() {
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getTimeFormat() {
+        return timeFormat;
+    }
+
+    public void setTimeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+    }
+
+    public String getZoneFormat() {
+        return zoneFormat;
+    }
+
+    public void setZoneFormat(String zoneFormat) {
+        this.zoneFormat = zoneFormat;
+    }
+
+    String timeFormat;
+    String zoneFormat;
 
     public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email ,String fax,String address) {
         this.id = id;
@@ -70,6 +132,31 @@ public class OrganizationResponseWrapper {
 
     }
 
+
+
+    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email, String fax, String address, String city, String country, String state,String dateFormat,String timeFormat,String zoneFormat) {
+        this.id = id;
+        this.companyName = companyName;
+        this.officePhone = officePhone;
+//        this.appointmentSerial = appointmentSerial;
+        this.website = website;
+        this.companyEmail = email;
+        this.website=website;
+        this.homePhone=homePhone;
+        this.durationFollowUp=durationFollowUp;
+        this.speciality=speciality;
+        this.fax=fax;
+        this.address=address;
+        this.city=city;
+        this.country= country;
+        this.state=state;
+        this.dateFormat= dateFormat;
+        this.timeFormat=timeFormat;
+        this.zoneFormat=zoneFormat;
+        //   this.branchId =brId;
+        //   this.branchName =brName;
+
+    }
     //organization pagination cons
  /*   public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email ,String fax,String address
     ) {

@@ -73,6 +73,10 @@ public class MedicalServicesService {
         return medicalServiceRepository.findAllMedicalServiceWrappers();
     }
 
+    public List<MedicalServiceWrapper> findAllMedicalServicesForDataTable() {
+        return medicalServiceRepository.findAllMedicalServiceWrappersForDataTable();
+    }
+
     public List<MedicalServiceWrapper> getAllMedicalServicesForAppointment() {
         return medicalServiceRepository.findAllMedicalServicesForAppointment();
     }
