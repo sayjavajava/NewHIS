@@ -312,6 +312,7 @@ public class BranchService {
 
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
+        List<BranchResponseWrapper> list = branchRepository.findAllByActiveTrue();
         return branchRepository.findAllByActiveTrue();
     }
 

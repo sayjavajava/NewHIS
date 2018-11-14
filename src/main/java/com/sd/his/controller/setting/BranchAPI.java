@@ -74,7 +74,7 @@ public class BranchAPI {
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity<?> getAllBranches(HttpServletRequest request) {
 
-        logger.error("getAllBranches API initiated");
+        logger.info("getAllBranches API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("branch.fetch.error"));
         response.setResponseCode(ResponseEnum.BRANCH_FETCH_FAILED.getValue());
@@ -89,7 +89,7 @@ public class BranchAPI {
                 response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
-                logger.error("getAllBranches API - Branches not found");
+                logger.info("getAllBranches API - Branches not found");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
@@ -99,7 +99,7 @@ public class BranchAPI {
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(branches);
 
-            logger.error("getAllBranches API - Branches successfully fetched.");
+            logger.info("getAllBranches API - Branches successfully fetched.");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("getAllBranches API -  exception..", ex.fillInStackTrace());
@@ -735,7 +735,7 @@ public class BranchAPI {
         logger.info("getAllCountries called..");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("rooms.configuration.fetch.error"));
+        response.setResponseMessage(messageBundle.getString("country.fetch.error"));
         response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
@@ -744,7 +744,7 @@ public class BranchAPI {
             List<CountryWrapper> countryWrappers = branchService.getAllCountries();
             Map<String, Object> returnValues = new LinkedHashMap<>();
             returnValues.put("data", countryWrappers);
-            response.setResponseMessage(messageBundle.getString("branch.data.fetch.success"));
+            response.setResponseMessage(messageBundle.getString("country.fetched.success"));
             response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(returnValues);
@@ -778,7 +778,7 @@ public class BranchAPI {
         logger.info("getAllStates called..");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("rooms.configuration.fetch.error"));
+        response.setResponseMessage(messageBundle.getString("city.fetch.error"));
         response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
@@ -787,7 +787,7 @@ public class BranchAPI {
 
             Map<String, Object> returnValues = new LinkedHashMap<>();
             returnValues.put("data", states);
-            response.setResponseMessage(messageBundle.getString("branch.data.fetch.success"));
+            response.setResponseMessage(messageBundle.getString("city.fetched.success"));
             response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(returnValues);
@@ -821,7 +821,7 @@ public class BranchAPI {
         logger.info("getAllCities called..");
 
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("rooms.configuration.fetch.error"));
+        response.setResponseMessage(messageBundle.getString("city.fetch.error"));
         response.setResponseCode(ResponseEnum.BRANCH_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
@@ -830,7 +830,7 @@ public class BranchAPI {
 
             Map<String, Object> returnValues = new LinkedHashMap<>();
             returnValues.put("data", cities);
-            response.setResponseMessage(messageBundle.getString("branch.data.fetch.success"));
+            response.setResponseMessage(messageBundle.getString("city.fetched.success"));
             response.setResponseCode(ResponseEnum.BRANCH_FOUND.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(returnValues);
