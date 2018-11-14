@@ -259,6 +259,13 @@ public class OrganizationAPI {
 
         try {
             OrganizationResponseWrapper dbOrganization = this.organizationService.getOrganizationByIdWithResponse(id);
+            Organization addInfo  =  this.organizationService.getOrganizationByIdWithResponseAdditionalInfo(id);
+            dbOrganization.setCity(String.valueOf(addInfo.getCity().getId()));
+            dbOrganization.setCountry(String.valueOf(addInfo.getCountry().getId()));
+            dbOrganization.setState(String.valueOf(addInfo.getState().getId()));
+            dbOrganization.setDateFormat(String.valueOf(addInfo.getDateFormat()));
+            dbOrganization.setTimeFormat(String.valueOf(addInfo.getTimeFormat()));
+            dbOrganization.setZoneFormat(String.valueOf(addInfo.getZone()));
 
             if (HISCoreUtil.isValidObject(dbOrganization)) {
                 response.setResponseData(dbOrganization);

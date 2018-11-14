@@ -1,6 +1,11 @@
 package com.sd.his.service;
 
 
+import com.sd.his.enums.ModuleEnum;
+import com.sd.his.model.Branch;
+import com.sd.his.model.Doctor;
+import com.sd.his.model.Organization;
+import com.sd.his.model.Room;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
@@ -75,6 +80,8 @@ public class BranchService {
     @Autowired
     private  DepartmentRepository departmentRepository;
     @Autowired
+    HISUtilService hisUtilService;
+    @Autowired
     private  CountryRepository countryRepository;
     @Autowired
     private  StateRepository stateRepository;
@@ -104,11 +111,13 @@ public class BranchService {
         branch.setOfficeStartTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursStart()));
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
         branch.setFax(branchRequestWrapper.getFax());
+        branch.setBranchId(hisUtilService.generatePrefix(ModuleEnum.BRANCH));
         branch.setAddress(branchRequestWrapper.getAddress());
-        branch.setCity(branchRequestWrapper.getCity());
+        branch.setCity(cityRepository.findOne(branchRequestWrapper.getCityId()));
         branch.setFlow(branchRequestWrapper.getFlow());
         Organization organization = organizationRepository.findOne(1L);
         branch.setOrganization(organization);
+        branch.setBranchId(String.valueOf(branchRepository.getMaxBranchId() + 1));          //TODO: Unable to set it to auto
         branchRepository.save(branch);
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
         for (ExamRooms ex : exRooms) {
@@ -297,13 +306,13 @@ public class BranchService {
         List<BranchResponseWrapper> branches = branchRepository.findByNameAndBranchDepartments(branch1.getName(),pageable);
         return branches;
     }
-
     public boolean isBranchNameOrIdExistsAlready(String name, long brId) {
         return branchRepository.findByNameAndIdNot(name,brId) == null;        // Simplified from  (this==null?false:true)
     }
 
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
+        List<BranchResponseWrapper> list = branchRepository.findAllByActiveTrue();
         return branchRepository.findAllByActiveTrue();
     }
 
@@ -314,19 +323,22 @@ public class BranchService {
         return RandomStringUtils.random(length, "abcdefghijklmnopqrstuvwxyz") + "@" + domain;
     }
 
+   /* public List<Room> getTotalRoomsByBrId(Long branchId){
+        return roomRepository.findByBranchId(branchId);
+    }*/
     public List<Room> getTotalRoomsByBrId(Long branchId){
         return null;//roomRepository.findByBranchId(branchId)
     }
 
-    public City getCityByBrId(Long branchId){
+    public CityWrapper getCityByBrId(Long branchId){
         return branchRepository.findCityByBranchId(branchId);
     }
 
-    public State getStateByBrId(Long branchId){
+    public StateWrapper getStateByBrId(Long branchId){
         return branchRepository.findStateByBranchId(branchId);
     }
 
-    public Country getCountryByBrId(Long branchId){
+    public CountryWrapper getCountryByBrId(Long branchId){
         return branchRepository.findCountryByBranchId(branchId);
     }
 

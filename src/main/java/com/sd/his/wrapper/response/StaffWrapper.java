@@ -12,6 +12,8 @@ public class StaffWrapper {
     String primaryBranch;
     String username;
     String userType;
+    String label;
+    Long value;
 
     public StaffWrapper(Long uId, Long pId, String username, String userType , String firstName, String lastName, String email, String primaryBranch) {
         this.uId = uId;
@@ -22,6 +24,24 @@ public class StaffWrapper {
         this.email = email;
         this.primaryBranch = primaryBranch;
         this.userType=userType;
+        this.label = username;
+        this.value =uId;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
     }
 
     public Long getuId() {

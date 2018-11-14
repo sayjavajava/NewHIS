@@ -1,5 +1,8 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -15,16 +18,19 @@ public class City extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COUNTRY_ID")
+    @JsonBackReference
     private Country country;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STATE_ID")
+    @JsonBackReference
     private State state;
 
     @Column(name = "STATUS")
     private boolean status;
 
     @OneToMany(targetEntity = Branch.class, mappedBy = "city")
+    @JsonBackReference
     private List<Branch> branches;
 
     public City() {

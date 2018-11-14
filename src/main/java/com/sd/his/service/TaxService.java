@@ -72,7 +72,7 @@ public class TaxService {
     @Transactional(rollbackOn = Throwable.class)
     public void saveTax(TaxWrapper taxWrapper) throws ParseException {
         Tax tax = new Tax(taxWrapper);
-        tax.setTaxId(this.hisUtilService.generateAndUpdatePrefix(ModuleEnum.TAX));
+        tax.setTaxId(this.hisUtilService.generatePrefix(ModuleEnum.TAX));
         taxRepository.save(tax);
     }
 

@@ -5,6 +5,9 @@ import com.sd.his.model.Branch;
 import com.sd.his.model.City;
 import com.sd.his.model.Country;
 import com.sd.his.model.State;
+import com.sd.his.wrapper.CityWrapper;
+import com.sd.his.wrapper.CountryWrapper;
+import com.sd.his.wrapper.StateWrapper;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -71,11 +74,17 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     //  List<Branch> findByNameIgnoreCaseContainingAndActiveTrueOrBranchDepartments_department_nameIgnoreCaseContaining(String name, String department, Pageable pageable);
 
 
-    City findCityByBranchId(Long branchId);
+    @Query("SELECT new com.sd.his.wrapper.CityWrapper(cty) FROM Branch b JOIN b.city cty WHERE b.id = :branchId")
+    CityWrapper findCityByBranchId(@Param("branchId") Long branchId);
 
-    State findStateByBranchId(Long branchId);
+    @Query("SELECT new com.sd.his.wrapper.StateWrapper(st) FROM Branch b JOIN b.city cty JOIN cty.state st WHERE b.id = :branchId")
+    StateWrapper findStateByBranchId(@Param("branchId") Long branchId);
 
-    Country findCountryByBranchId(Long branchId);
+    @Query("SELECT new com.sd.his.wrapper.CountryWrapper(cntry) FROM Branch b JOIN b.city cty JOIN cty.country cntry WHERE b.id = :branchId")
+    CountryWrapper findCountryByBranchId(@Param("branchId") Long branchId);
+
+    @Query("SELECT MAX(br.id) from Branch br")
+    Long getMaxBranchId();
 
 
  /*   Branch findByIdAndDeletedFalse(long id);

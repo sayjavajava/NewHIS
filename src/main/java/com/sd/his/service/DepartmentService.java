@@ -1,5 +1,6 @@
 package com.sd.his.service;
 
+import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.Branch;
 import com.sd.his.model.BranchDepartment;
 import com.sd.his.model.Department;
@@ -49,6 +50,8 @@ public class DepartmentService {
     private BranchRepository branchRepository;
     @Autowired
     private BranchDepartmentRepository branchDepartmentRepository;
+    @Autowired
+    HISUtilService hisUtilService;
 
 
     private final Logger logger = LoggerFactory.getLogger(DepartmentService.class);
@@ -118,6 +121,7 @@ public class DepartmentService {
     @Transactional(rollbackOn = Throwable.class)
     public Department saveDepartment(DepartmentWrapper createRequest) {
         Department dpt = new Department(createRequest);
+        dpt.setDeptId(hisUtilService.generatePrefix(ModuleEnum.DEPARTMENT));
         long branchId = createRequest.getBranchId();
         Branch branch = branchRepository.findOne(branchId);
         BranchDepartment branchDepartment = new BranchDepartment();
@@ -136,14 +140,13 @@ public class DepartmentService {
         dpt.setName(updateRequest.getName());
         dpt.setDescription(updateRequest.getDescription());
         dpt.setStatus(updateRequest.isActive());
-
         long branchId = updateRequest.getBranchId();
         Branch branch = branchRepository.findOne(branchId);
         if(updateRequest.getBranchDepartmentId() != 0)
-        branchDepartment = branchDepartmentRepository.findOne(updateRequest.getBranchDepartmentId());
+        branchDepartment = branchDepartmentRepository.findByDepartment(dpt);
         Department department = departmentRepository.save(dpt);
-      //  branchDepartment.setBranch(branch);
-        branchDepartment.setDepartment(dpt);
+        branchDepartment.setBranch(branch);
+      //  branchDepartment.setDepartment(dpt);
         branchDepartmentRepository.save(branchDepartment);
         return department;
     }

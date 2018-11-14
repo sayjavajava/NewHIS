@@ -21,4 +21,7 @@ public interface StateRepository extends JpaRepository<State, Long> {
     @Query("SELECT new com.sd.his.wrapper.StateWrapper(s) FROM com.sd.his.model.State s WHERE s.country.id =:id ")
     List<StateWrapper> getAllStatesByCountry(@Param("id") Long countryId);
 
+
+    @Query("SELECT s FROM State s WHERE s.country.id =:id ")
+    List<State> getAllStatesByCountryById(@Param("id") Long countryId);
 }
