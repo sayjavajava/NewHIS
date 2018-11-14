@@ -39,6 +39,12 @@ public class ICDCode extends BaseEntity implements Serializable {
     @Column(name = "CODE")
     private String code;
 
+    @Column(name = "PROBLEM")
+    private String problem;
+
+    @Column(name = "INFO_URL")
+    private String infoURL;
+
     @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
     private Boolean status;
 
@@ -48,7 +54,7 @@ public class ICDCode extends BaseEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(targetEntity = ICDCodeVersion.class, mappedBy = "icd")
-    private List<ICDCodeVersion> icdCodes;//// codeVersions
+    private List<ICDCodeVersion> versions;//// codeVersions
 
     @JsonIgnore
     @OneToMany(targetEntity = Problem.class, mappedBy = "icdCode")
@@ -60,8 +66,9 @@ public class ICDCode extends BaseEntity implements Serializable {
 
     public ICDCode(ICDCodeCreateRequest createRequest) {
         this.code = createRequest.getCode();
+        this.problem = createRequest.getProblem();
+        this.infoURL = createRequest.getInfoURL();
         this.status = createRequest.isStatus();
-        //   this.problem = createRequest.getProblem();
         this.description = createRequest.getDescription();
     }
 
@@ -89,12 +96,12 @@ public class ICDCode extends BaseEntity implements Serializable {
         this.description = description;
     }
 
-    public List<ICDCodeVersion> getIcdCodes() {
-        return icdCodes;
+    public List<ICDCodeVersion> getVersions() {
+        return versions;
     }
 
-    public void setIcdCodes(List<ICDCodeVersion> icdCodes) {
-        this.icdCodes = icdCodes;
+    public void setVersions(List<ICDCodeVersion> versions) {
+        this.versions = versions;
     }
 
     public List<Problem> getProblems() {
@@ -103,5 +110,21 @@ public class ICDCode extends BaseEntity implements Serializable {
 
     public void setProblems(List<Problem> problems) {
         this.problems = problems;
+    }
+
+    public String getProblem() {
+        return problem;
+    }
+
+    public void setProblem(String problem) {
+        this.problem = problem;
+    }
+
+    public String getInfoURL() {
+        return infoURL;
+    }
+
+    public void setInfoURL(String infoURL) {
+        this.infoURL = infoURL;
     }
 }
