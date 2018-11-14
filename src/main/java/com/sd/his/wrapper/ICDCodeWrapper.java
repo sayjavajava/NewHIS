@@ -11,6 +11,8 @@ public class ICDCodeWrapper {
 
     private long id;
     private String code;
+    private String problem;
+    private String infoURL;
     private boolean status;
     private boolean deleted;
     private long updatedOn;
@@ -36,6 +38,8 @@ public class ICDCodeWrapper {
     public ICDCodeWrapper(ICDCode icd) {
         this.id = icd.getId();
         this.code = icd.getCode();
+        this.problem = icd.getProblem();
+        this.infoURL = icd.getInfoURL();
         this.status = icd.getStatus();
         this.createdOn = icd.getCreatedOn().getTime();
         this.updatedOn = icd.getUpdatedOn().getTime();
@@ -43,11 +47,11 @@ public class ICDCodeWrapper {
         this.label = code;
         this.value = id;
 
-        if (icd.getIcdCodes() != null) {
-            long versionCount = icd.getIcdCodes().size();
+        if (icd.getVersions() != null) {
+            long versionCount = icd.getVersions().size();
             this.hasChild = versionCount > 0 ? true : false;
             if (versionCount == 1) {
-                this.checkedVersionCount = icd.getIcdCodes().get(0).getVersion().getName() + "";
+                this.checkedVersionCount = icd.getVersions().get(0).getVersion().getName() + "";
                 this.versionCountUnique = true;
             } else if (versionCount > 1) {
                 this.checkedVersionCount = versionCount + "";
@@ -61,6 +65,8 @@ public class ICDCodeWrapper {
     public ICDCodeWrapper(ICDCodeVersion icdCodeVersion, ICDCode icd) {
         this.id = icd.getId();
         this.code = icd.getCode();
+        this.problem = icd.getProblem();
+        this.infoURL = icd.getInfoURL();
         this.status = icd.getStatus();
         this.createdOn = icd.getCreatedOn().getTime();
         this.updatedOn = icd.getUpdatedOn().getTime();
@@ -204,5 +210,21 @@ public class ICDCodeWrapper {
 
     public void setVersionCountUnique(boolean versionCountUnique) {
         this.versionCountUnique = versionCountUnique;
+    }
+
+    public String getProblem() {
+        return problem;
+    }
+
+    public void setProblem(String problem) {
+        this.problem = problem;
+    }
+
+    public String getInfoURL() {
+        return infoURL;
+    }
+
+    public void setInfoURL(String infoURL) {
+        this.infoURL = infoURL;
     }
 }

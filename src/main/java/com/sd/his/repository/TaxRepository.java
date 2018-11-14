@@ -22,6 +22,9 @@ public interface TaxRepository extends JpaRepository<Tax, Long> {
     @Query("SELECT new com.sd.his.wrapper.TaxWrapper(tax) FROM com.sd.his.model.Tax tax where tax.active =:status ")//status true , false
     List<TaxWrapper> findAllByActiveTrue(@Param("status") boolean status);
 
+    @Query("SELECT new com.sd.his.wrapper.TaxWrapper(tax) FROM com.sd.his.model.Tax tax ")//status true , false
+    List<TaxWrapper> findAllTaxesForDataTable();
+
     List<Tax> findAllByNameAndIdNot(String name, long id);
 
     Tax findByName(String name);

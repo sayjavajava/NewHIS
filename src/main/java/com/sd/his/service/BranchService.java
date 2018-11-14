@@ -326,6 +326,9 @@ public class BranchService {
    /* public List<Room> getTotalRoomsByBrId(Long branchId){
         return roomRepository.findByBranchId(branchId);
     }*/
+    public List<Room> getTotalRoomsByBrId(Long branchId){
+        return null;//roomRepository.findByBranchId(branchId)
+    }
 
     public CityWrapper getCityByBrId(Long branchId){
         return branchRepository.findCityByBranchId(branchId);

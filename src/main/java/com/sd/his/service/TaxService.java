@@ -48,6 +48,9 @@ public class TaxService {
         return taxRepository.findAllByActiveTrue(true);
     }
 
+    public List<TaxWrapper> getAllTaxesForDataTable() {
+        return taxRepository.findAllTaxesForDataTable();
+    }
     public List<TaxWrapper> findAllPaginatedTax(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
         return taxRepository.findAllByCreatedOnNotNull(pageable);
