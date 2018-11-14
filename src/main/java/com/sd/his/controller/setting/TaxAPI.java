@@ -66,8 +66,11 @@ public class TaxAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllServiceTax(HttpServletRequest request) {
-
+    public ResponseEntity<?> getAllTax(HttpServletRequest request) {
+/***
+ * only active Taxes will return
+ *
+ * ***/
         logger.error("getAllServiceTax API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("service.tax.fetch.error"));
@@ -105,6 +108,58 @@ public class TaxAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @ApiOperation(httpMethod = "GET", value = "All Services Tax",
+            notes = "This method will return All Service Tax",
+            produces = "application/json", nickname = "All Service Tax",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All Service Tax fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/dataTable", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllTaxesForDataTable() {
+
+        logger.error("getAllTaxesForDataTable API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("service.tax.fetch.error"));
+        response.setResponseCode(ResponseEnum.SERVICE_TAX_FETCH_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("getAllTaxesForDataTable - service tax fetching from DB");
+            List<TaxWrapper> taxes = taxService.getAllTaxesForDataTable();
+            logger.error("getAllServiceTax - tax fetched successfully");
+
+            if (HISCoreUtil.isListEmpty(taxes)) {
+                response.setResponseMessage(messageBundle.getString("service.tax.not.found.error"));
+                response.setResponseCode(ResponseEnum.MED_SERVICE_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("getAllTaxesForDataTable API - Taxes not found");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            response.setResponseMessage(messageBundle.getString("service.tax.fetch.success"));
+            response.setResponseCode(ResponseEnum.SERVICE_TAX_FETCH_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(taxes);
+
+            logger.error("getAllTaxesForDataTable API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getAllTaxesForDataTable exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @ApiOperation(httpMethod = "GET", value = "Paginated Services Tax",
             notes = "This method will return Paginated Service Tax",
@@ -194,7 +249,7 @@ public class TaxAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteServiceTax(HttpServletRequest request,
+    public ResponseEntity<?> deleteTax(HttpServletRequest request,
                                               @RequestParam("taxId") long taxId) {
         logger.info("deleteServiceTax API - Called..");
         GenericAPIResponse response = new GenericAPIResponse();

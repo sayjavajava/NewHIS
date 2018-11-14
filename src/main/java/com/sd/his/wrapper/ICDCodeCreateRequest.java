@@ -31,6 +31,7 @@ public class ICDCodeCreateRequest {
     boolean status;
     String code;
     String problem;//title replaced by problem
+    private String infoURL;
     long updatedOn;
     long createdOn;
     String description;
@@ -101,5 +102,13 @@ public class ICDCodeCreateRequest {
 
     public void setSelectedVersions(List<ICDVersionWrapper> selectedVersions) {
         this.selectedVersions = selectedVersions;
+    }
+
+    public String getInfoURL() {
+        return infoURL;
+    }
+
+    public void setInfoURL(String infoURL) {
+        this.infoURL = infoURL;
     }
 }

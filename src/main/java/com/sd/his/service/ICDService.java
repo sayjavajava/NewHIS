@@ -68,8 +68,7 @@ public class ICDService {
         ICDCodeVersion codeVersion = null;
         ICDVersion version = null;
         for (ICDVersionWrapper selectedVersionWrapper : createRequest.getSelectedVersions()) {
-           /* if (selectedVersionWrapper.isSelectedVersion()) {*/
-//                version = new ICDVersion();
+            if (selectedVersionWrapper.isSelectedVersion()) {
                 version = this.versionRepository.findOne(selectedVersionWrapper.getId());
                 if (version != null) {
                     codeVersion = new ICDCodeVersion();
@@ -77,7 +76,7 @@ public class ICDService {
                     codeVersion.setVersion(version);
                     codeVersions.add(codeVersion);//one code going to save against multiple versions
                 }
-         //   }
+            }
         }
 
         if (codeVersions.size() > 0) {
@@ -244,6 +243,7 @@ public class ICDService {
         ICDCode icdCode = this.codeRepository.findOne(createRequest.getId());
         if (HISCoreUtil.isValidObject(icdCode)) {
             icdCode.setCode(createRequest.getCode());
+            icdCode.setProblem(createRequest.getProblem());
             icdCode.setDescription(createRequest.getDescription());
             icdCode.setStatus(createRequest.isStatus());
         }
@@ -348,7 +348,7 @@ public class ICDService {
     public boolean isCodeAssociated(long codeId) {
         ICDCode icdCode = this.codeRepository.findOne(codeId);
         if (icdCode != null) {
-            if (icdCode.getIcdCodes() != null && icdCode.getIcdCodes().size() > 0) {//this.codeVersionRepository.isCodeAssociated(codeId)
+            if (icdCode.getVersions() != null && icdCode.getVersions().size() > 0) {//this.codeVersionRepository.isCodeAssociated(codeId)
                 return true;
             }
             if (icdCode.getProblems() != null && icdCode.getProblems().size() > 0) {
@@ -367,7 +367,7 @@ public class ICDService {
         if (icdCode != null) {
             ICDCodeWrapper codeWrapper = new ICDCodeWrapper(icdCode);
             codeWrapper.setSelectedVersions(new ArrayList<>());
-            for (ICDCodeVersion codeVersion : icdCode.getIcdCodes()) {
+            for (ICDCodeVersion codeVersion : icdCode.getVersions()) {
                 codeWrapper.getSelectedVersions().add(new ICDVersionWrapper(codeVersion.getVersion()));
             }
             return codeWrapper;

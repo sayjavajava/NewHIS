@@ -53,7 +53,7 @@ public class Tax extends BaseEntity implements Serializable {
     private String description;
 
     @Column(name = "RATE")
-    private Double rate;
+    private double rate;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "FROM_DATE")
@@ -64,7 +64,7 @@ public class Tax extends BaseEntity implements Serializable {
     private Date toDate;
 
     @Column(name = "IS_ACTIVE", columnDefinition = "boolean default true", nullable = false)
-    private Boolean active;
+    private boolean active;
 
     @JsonIgnore
     @OneToMany(targetEntity = MedicalService.class, mappedBy = "tax")
@@ -125,11 +125,11 @@ public class Tax extends BaseEntity implements Serializable {
         this.description = description;
     }
 
-    public Double getRate() {
+    public double getRate() {
         return rate;
     }
 
-    public void setRate(Double rate) {
+    public void setRate(double rate) {
         this.rate = rate;
     }
 
@@ -149,11 +149,11 @@ public class Tax extends BaseEntity implements Serializable {
         this.toDate = toDate;
     }
 
-    public Boolean getActive() {
+    public boolean getActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
