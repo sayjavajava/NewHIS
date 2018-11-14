@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 @RestController
@@ -80,6 +82,7 @@ public class ChartOfAccountController {
         try
         {
             generalLedgerService.saveConfiguration(generalLedgerRequestWrapper);
+            generalLedgerService.updateAccountCode();
             response.setResponseData(generalLedgerService.getAll());
             response.setResponseMessage(messageBundle.getString("chart.of.account.configuration.update.success"));
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
@@ -256,6 +259,38 @@ public class ChartOfAccountController {
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("account.configuration.update.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Get latest account code",
+            notes = "This method will get account code",
+            produces = "application/json", nickname = "Get latest account code",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/accountCode", method = RequestMethod.GET)
+    public ResponseEntity<?> getAccountCode() {
+
+        logger.info("getAccountCode API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            String accountCode = generalLedgerService.getAccountCode();
+
+            Map<String, Object> returnValue = new LinkedHashMap<>();
+            returnValue.put("data", accountCode);
+
+            response.setResponseData(returnValue);
+            response.setResponseMessage(messageBundle.getString("account.code.fetched.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Account Code Fetched Successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("Account Code Fetch Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("account.code.fetch.error"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
