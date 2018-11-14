@@ -73,6 +73,7 @@ public class StaffResponseWrapper{
     // List<DutyWithDoctor> dutyWithDoctors;
 
     List<Branch> staffBranches = new ArrayList();
+    List<BranchResponseWrapper> staffBranches2 = new ArrayList();
     List<Doctor> dutyWithDoctors;
     boolean checkedDoc;
     List<MedicalService> doctorMedicalSrvcList = new ArrayList();
@@ -252,6 +253,14 @@ public class StaffResponseWrapper{
             this.profileImg = receptionist.getProfileImgURL();
             this.status = receptionist.getStatus();
         }
+    }
+
+    public List<BranchResponseWrapper> getStaffBranches2() {
+        return staffBranches2;
+    }
+
+    public void setStaffBranches2(List<BranchResponseWrapper> staffBranches2) {
+        this.staffBranches2 = staffBranches2;
     }
 
     public long getValue() {

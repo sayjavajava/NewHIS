@@ -102,6 +102,12 @@ public class BranchResponseWrapper {
     }
     public BranchResponseWrapper(){}
 //b.id,b.name, b.country,b.city,b.noOfRooms,bb.firstName
+    public BranchResponseWrapper(long id, String name){
+        this.name =name;
+        this.id = id;
+        this.label = name;
+        this.value = id;
+    }
 
     public BranchResponseWrapper(Branch branch, Long drId, String drFirstName,String drLastName) {
        this.branchName=branch.getName();

@@ -4,6 +4,7 @@ import com.sd.his.model.Branch;
 import com.sd.his.model.BranchCashier;
 import com.sd.his.model.BranchNurse;
 import com.sd.his.model.Nurse;
+import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -43,7 +44,7 @@ public interface BranchNurseRepository extends JpaRepository<BranchNurse, Long> 
      void deleteAllByNurseAndPrimaryBranchFalse(Nurse nurse);
      BranchNurse findByNurseAndPrimaryBranchTrue(Nurse nurse);
 
-     @Query("select b from BranchNurse bn inner join bn.branch b where bn.nurse.id=:id")
+     @Query("select b from BranchNurse as bn inner join bn.branch b where bn.nurse.id=:id")
      List<Branch> getNurseBranches(@Param("id") Long id);//id=>nurse pk id
 }
 
