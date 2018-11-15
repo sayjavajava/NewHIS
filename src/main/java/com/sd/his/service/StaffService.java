@@ -5,6 +5,7 @@ import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
@@ -62,13 +63,15 @@ public class StaffService {
     @Autowired
     StaffService staffService;
     @Autowired
-    DepartmentRepository departmentRepository;
+    BranchDepartmentRepository branchDepartmentRepository;
     @Autowired
     MedicalServiceRepository medicalServiceRepository;
     @Autowired
     DoctorMedicalServiceRepository doctorMedicalServiceRepository;
     @Autowired
     NurseDepartmentRepository nurseDepartmentRepository;
+    @Autowired
+    DepartmentRepository departmentRepository;
 
 
     List<StaffWrapper> finalStaffList = new ArrayList<>();
@@ -127,7 +130,7 @@ public class StaffService {
             cashier.setFirstName(createRequest.getFirstName());
             cashier.setLastName(createRequest.getLastName());
             cashier.setProfileId(prefID);
-          //  cashier.setStatus(ProfileStatusTypeEnum.ACTIVE);
+            //  cashier.setStatus(ProfileStatusTypeEnum.ACTIVE);
             cashier.setUser(user);
             cashier.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
             List<Branch> allowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
@@ -271,8 +274,8 @@ public class StaffService {
             nurse.setLastName(createRequest.getLastName());
             nurse.setUser(user);
             nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
-       //     nurse.setManagePatientInvoices(createRequest.isManagePatientInvoices());
-      //      nurse.setManagePatientRecords(createRequest.isManagePatientRecords());
+            //     nurse.setManagePatientInvoices(createRequest.isManagePatientInvoices());
+            //      nurse.setManagePatientRecords(createRequest.isManagePatientRecords());
 
             /*List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedDepartment()));
             List<DepartmentUser> departmentUserListData = new ArrayList<>();
@@ -592,6 +595,7 @@ public class StaffService {
                 .collect(Collectors.toList());
         return finalStaffList;
     }
+
     public List<StaffWrapper> findAllStaffWithoutPagination() {
 
         List<StaffWrapper> drStaffList = doctorRepository.findAllByActive();
@@ -839,200 +843,6 @@ public class StaffService {
 
         }
 
-        /*if (userType.equalsIgnoreCase(UserTypeEnum.RECEPTIONIST.toString())) {
-            alreadyExistsUser.setUsername(userCreateRequest.getUserName());
-            alreadyExistsUser.setActive(userCreateRequest.isActive());
-            alreadyExistsUser.setEmail(userCreateRequest.getEmail());
-
-            Profile updateProfile = alreadyExistsUser.getProfile();
-            updateProfile.setCellPhone(userCreateRequest.getCellPhone());
-            updateProfile.setFirstName(userCreateRequest.getFirstName());
-            updateProfile.setLastName(userCreateRequest.getLastName());
-            updateProfile.setType(userCreateRequest.getUserType());
-            updateProfile.setHomePhone(userCreateRequest.getHomePhone());
-            updateProfile.setSendBillingReport(userCreateRequest.isSendBillingReport());
-            updateProfile.setUseReceptDashBoard(userCreateRequest.isUseReceptDashboard());
-            updateProfile.setOtherDoctorDashBoard(userCreateRequest.isOtherDoctorDashBoard());
-            updateProfile.setOtherDashboard(userCreateRequest.getOtherDashboard());
-            updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
-            updateProfile.setActive(userCreateRequest.isActive());
-            updateProfile.setAllowDiscount(userCreateRequest.getAllowDiscount());
-            updateProfile.setUpdatedOn(System.currentTimeMillis());
-            alreadyExistsUser.setProfile(updateProfile);
-
-            List<Branch> recepVisitBranchesReceptionist = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
-            List<UserVisitBranches> recepVisitBranchesData = new ArrayList<>();
-            if (!HISCoreUtil.isListEmpty(recepVisitBranchesReceptionist)) {
-                userVisitBranchesRepository.deleteByUser(alreadyExistsUser);
-            }
-            for (Branch userVisitBr : recepVisitBranchesReceptionist) {
-                UserVisitBranches recepVisitBranches = new UserVisitBranches();
-                recepVisitBranches.setBranch(userVisitBr);
-                recepVisitBranches.setUser(alreadyExistsUser);
-            }
-            branchUser.setBranch(primaryBranch);
-            branchUserRepository.save(branchUser);
-            userVisitBranchesRepository.save(recepVisitBranchesData);
-            userRepository.saveAndFlush(alreadyExistsUser);
-            return alreadyExistsUser;
-        }
-
-        if (userType.equalsIgnoreCase(UserTypeEnum.NURSE.toString())) {
-            alreadyExistsUser.setUsername(userCreateRequest.getUserName());
-            alreadyExistsUser.setActive(userCreateRequest.isActive());
-            alreadyExistsUser.setEmail(userCreateRequest.getEmail());
-
-            Profile updateProfile = alreadyExistsUser.getProfile();
-
-            updateProfile.setCellPhone(userCreateRequest.getCellPhone());
-            updateProfile.setFirstName(userCreateRequest.getFirstName());
-            updateProfile.setLastName(userCreateRequest.getLastName());
-            updateProfile.setHomePhone(userCreateRequest.getHomePhone());
-            updateProfile.setSendBillingReport(userCreateRequest.isSendBillingReport());
-            updateProfile.setUseReceptDashBoard(userCreateRequest.isUseReceptDashboard());
-            updateProfile.setOtherDoctorDashBoard(userCreateRequest.isOtherDoctorDashBoard());
-            updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
-            updateProfile.setActive(userCreateRequest.isActive());
-            updateProfile.setUpdatedOn(System.currentTimeMillis());
-            updateProfile.setManagePatientRecords(userCreateRequest.isManagePatientRecords());
-            updateProfile.setManagePatientInvoices(userCreateRequest.isManagePatientInvoices());
-            updateProfile.setOtherDashboard(userCreateRequest.getOtherDashboard());
-
-            alreadyExistsUser.setProfile(updateProfile);
-            branchUser.setBranch(primaryBranch);
-            branchUserRepository.save(branchUser);
-            userRepository.save(alreadyExistsUser);
-            List<ClinicalDepartment> clinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedDepartment()));
-            List<DepartmentUser> departmentUserListData = new ArrayList<>();
-            if (!HISCoreUtil.isListEmpty(clinicalDepartments)) {
-                departmentUserRepository.deleteByUser(alreadyExistsUser);
-            }
-            for (ClinicalDepartment clinicalDepartment : clinicalDepartments) {
-                DepartmentUser departmentUser = new DepartmentUser();
-                departmentUser.setClinicalDepartment(clinicalDepartment);
-                departmentUser.setUser(alreadyExistsUser);
-                departmentUser.setCreatedOn(System.currentTimeMillis());
-                departmentUser.setUpdatedOn(System.currentTimeMillis());
-                departmentUser.setDeleted(false);
-                departmentUserListData.add(departmentUser);
-            }
-            departmentUserRepository.save(departmentUserListData);
-
-            List<Branch> userVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
-            List<UserVisitBranches> userVisitBranchesData = new ArrayList<>();
-            if (!HISCoreUtil.isListEmpty(userVisitBranches)) {
-                userVisitBranchesRepository.deleteByUser(alreadyExistsUser);
-            }
-            for (Branch userVisitBr : userVisitBranches) {
-                UserVisitBranches userVisitBranches1 = new UserVisitBranches();
-                userVisitBranches1.setBranch(userVisitBr);
-                userVisitBranches1.setUser(alreadyExistsUser);
-                userVisitBranchesData.add(userVisitBranches1);
-            }
-            userVisitBranchesRepository.save(userVisitBranchesData);
-
-            List<User> doctors = userRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getDutyWithDoctors()));
-            List<DutyWithDoctor> listOFData = new ArrayList<>();
-            if (!HISCoreUtil.isListEmpty(doctors)) {
-                dutyWithDoctorRepository.deleteByNurse(alreadyExistsUser);
-            }
-            for (User docUser : doctors) {
-                DutyWithDoctor dutyWithDoctor1 = new DutyWithDoctor();
-                dutyWithDoctor1.setNurse(alreadyExistsUser);
-                dutyWithDoctor1.setDoctor(docUser);
-                listOFData.add(dutyWithDoctor1);
-            }
-            dutyWithDoctorRepository.save(listOFData);
-
-
-            return alreadyExistsUser;
-        }
-
-        if (userType.equalsIgnoreCase(UserTypeEnum.DOCTOR.toString())) {
-            Vacation vacation = vacationRepository.findByUser(alreadyExistsUser);
-            alreadyExistsUser.setUsername(userCreateRequest.getUserName());
-            alreadyExistsUser.setActive(userCreateRequest.isActive());
-            alreadyExistsUser.setEmail(userCreateRequest.getEmail());
-
-            Profile updateProfile = alreadyExistsUser.getProfile();
-
-            updateProfile.setCellPhone(userCreateRequest.getCellPhone());
-            updateProfile.setHomePhone(userCreateRequest.getHomePhone());
-            updateProfile.setSendBillingReport(userCreateRequest.isSendBillingReport());
-            updateProfile.setUseReceptDashBoard(userCreateRequest.isUseReceptDashboard());
-            updateProfile.setOtherDoctorDashBoard(userCreateRequest.isOtherDoctorDashBoard());
-            updateProfile.setAccountExpiry(userCreateRequest.getAccountExpiry());
-            updateProfile.setFirstName(userCreateRequest.getFirstName());
-            updateProfile.setLastName(userCreateRequest.getLastName());
-            updateProfile.setActive(userCreateRequest.isActive());
-            updateProfile.setUpdatedOn(System.currentTimeMillis());
-            updateProfile.setOtherDashboard(userCreateRequest.getOtherDashboard());
-            List<String> daysList = new ArrayList<>(Arrays.asList(userCreateRequest.getSelectedWorkingDays()));
-            updateProfile.setWorkingDays(daysList);
-            branchUser.setBranch(primaryBranch);
-            branchUserRepository.save(branchUser);
-            alreadyExistsUser.setProfile(updateProfile);
-            userRepository.save(alreadyExistsUser);
-            vacation.setVacation(userCreateRequest.isVacation());
-            vacation.setStatus(userCreateRequest.isVacation());
-            vacation.setStartDate(HISCoreUtil.convertDateToMilliSeconds(userCreateRequest.getDateFrom()));
-            vacation.setEndDate(HISCoreUtil.convertDateToMilliSeconds(userCreateRequest.getDateTo()));
-
-            vacationRepository.saveAndFlush(vacation);
-
-            UserDutyShift userDutyShift = userDutyShiftRepository.findByUser(alreadyExistsUser);
-            DutyShift dutyShift = userDutyShift.getDutyShift();
-            dutyShift.setEndTimeShift2(userCreateRequest.getSecondShiftToTime());
-            dutyShift.setStartTimeShift2(userCreateRequest.getSecondShiftFromTime());
-            dutyShift.setEndTimeShift1(userCreateRequest.getFirstShiftToTime());
-            dutyShift.setStartTimeShift1(userCreateRequest.getFirstShiftFromTime());
-            dutyShiftRepository.save(dutyShift);
-
-
-            List<MedicalService> medicalServiceslist = medicalServicesRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedServices()));
-            List<UserMedicalService> userDetailsServicesData = new ArrayList<>();
-            if (!HISCoreUtil.isListEmpty(medicalServiceslist)) {
-                userMedicalServiceRepository.deleteByUser(alreadyExistsUser);
-            }
-            for (MedicalService mdService : medicalServiceslist) {
-                UserMedicalService userMedicalService = new UserMedicalService();
-                userMedicalService.setMedicalService(mdService);
-                userMedicalService.setUser(alreadyExistsUser);
-                userDetailsServicesData.add(userMedicalService);
-            }
-            userMedicalServiceRepository.save(userDetailsServicesData);
-
-            List<Branch> docVisitBranches = branchRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedVisitBranches()));
-            List<UserVisitBranches> docVisitBranchesData = new ArrayList<>();
-            if (!HISCoreUtil.isListEmpty(docVisitBranches)) {
-                userVisitBranchesRepository.deleteByUser(alreadyExistsUser);
-            }
-            for (Branch userVisitBr : docVisitBranches) {
-                UserVisitBranches docVisitBranch = new UserVisitBranches();
-                docVisitBranch.setBranch(userVisitBr);
-                docVisitBranch.setUser(alreadyExistsUser);
-                docVisitBranchesData.add(docVisitBranch);
-            }
-            userVisitBranchesRepository.save(docVisitBranchesData);
-
-            List<ClinicalDepartment> doctorClinicalDepartments = clinicalDepartmentRepository.findAllByIdIn(Arrays.asList(userCreateRequest.getSelectedDepartment()));
-            List<DepartmentUser> docDepartmentUser = new ArrayList<>();
-            if (!HISCoreUtil.isListEmpty(doctorClinicalDepartments)) {
-                departmentUserRepository.deleteByUser(alreadyExistsUser);
-            }
-            for (ClinicalDepartment clinicalDepartment : doctorClinicalDepartments) {
-                DepartmentUser departmentUser = new DepartmentUser();
-                departmentUser.setClinicalDepartment(clinicalDepartment);
-                departmentUser.setUser(alreadyExistsUser);
-                departmentUser.setCreatedOn(System.currentTimeMillis());
-                departmentUser.setUpdatedOn(System.currentTimeMillis());
-                departmentUser.setDeleted(false);
-                docDepartmentUser.add(departmentUser);
-            }
-            departmentUserRepository.save(docDepartmentUser);
-            return alreadyExistsUser;
-
-        }*/
         return alreadyExistsUser;
     }
 
@@ -1114,6 +924,14 @@ public class StaffService {
 
 
         return finalStaffList;
+    }
+
+    public List<DepartmentWrapper> findDepartmentsByBranch(long branchId) {
+        List<Department> department = branchDepartmentRepository.findByBranch(branchId);
+        return department.stream()
+                .map(x -> new DepartmentWrapper(x.getId(), x.getName(), x.getDescription()))
+                .collect(Collectors.toList());
+
     }
 
 

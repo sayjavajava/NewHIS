@@ -1,5 +1,6 @@
 package com.sd.his.service;
 
+import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.AccountConfig;
 import com.sd.his.model.GeneralLedger;
 import com.sd.his.repository.AccountConfigRepository;
@@ -20,6 +21,9 @@ public class GeneralLedgerService {
     @Autowired
     AccountConfigRepository accountConfigRepository;
 
+    @Autowired
+    private HISUtilService hisUtilService;
+
     public GeneralLedger getById(long id){
         return generalLedgerRepository.findOne(id);
     }
@@ -34,6 +38,8 @@ public class GeneralLedgerService {
 
 
     public AccountConfig getAccountConfig(){
+//        List<AccountConfig> result = accountConfigRepository.findAll();
+//        return result.size() > 0 ? result.get(0) : null;
         return accountConfigRepository.findOne(1L);
     }
 
@@ -96,5 +102,13 @@ public class GeneralLedgerService {
         }
         accountConfig.setGeneralExpense(generalLedgerRepository.findOne(accountConfigRequest.getGeneralExpense()));
         accountConfigRepository.save(accountConfig);
+    }
+
+    public String getAccountCode(){
+        return this.hisUtilService.generatePrefix(ModuleEnum.GENERAL_LEDGER);
+    }
+
+    public void updateAccountCode(){
+        this.hisUtilService.updatePrefix(ModuleEnum.GENERAL_LEDGER);
     }
 }

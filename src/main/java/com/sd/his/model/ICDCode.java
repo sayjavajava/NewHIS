@@ -42,7 +42,7 @@ public class ICDCode extends BaseEntity implements Serializable {
     @Column(name = "PROBLEM")
     private String problem;
 
-    @Column(name = "INFO_URL")
+    @Column(name = "INFO_URL",length = 4000)
     private String infoURL;
 
     @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)

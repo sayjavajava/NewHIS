@@ -5,6 +5,7 @@ import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * @author    : Jamal
@@ -50,6 +51,7 @@ public class MedicalServiceWrapper {
     private List<TaxWrapper> taxes;
     private boolean hasChild;
 
+
     public MedicalServiceWrapper() {
     }
 
@@ -71,12 +73,12 @@ public class MedicalServiceWrapper {
     }
 
     public MedicalServiceWrapper(MedicalService ms) {
-        /*if (ms.getTax() == null) {
+        if (ms.getTax() == null) {
             this.tax = new TaxWrapper();
             this.tax.setId(-1);
         } else {
             this.tax = new TaxWrapper(ms.getTax());
-        }*/
+        }
         this.id = ms.getId();
         this.label= ms.getName();
         this.value = ms.getId();
@@ -86,15 +88,24 @@ public class MedicalServiceWrapper {
         this.cost = ms.getCost();
         this.status = ms.getStatus();
         this.description = ms.getDescription();
-        //this.duration = ms.getDuration();
-       /* this.checkedBranchCount = ms.getBranchMedicalServices() == null ? 0 : ms.getBranchMedicalServices().size();
+        this.duration = ms.getDuration();
+        this.checkedBranchCount = ms.getBranchMedicalServices() == null ? 0 : ms.getBranchMedicalServices().size();
         this.checkedDepartmentCount = ms.getDepartmentMedicalServices() == null ? 0 : ms.getDepartmentMedicalServices().size();
 
         if (ms.getDoctorMedicalServices() != null && ms.getDoctorMedicalServices().size() > 0 ||
                 ms.getAppointment() != null && ms.getAppointment().size() > 0) {
             this.hasChild = true;
-        }*/
+        }
 
+       if(ms.getBranchMedicalServices().size() != 0){
+           this.setBranchServices(ms.getBranchMedicalServices());
+       }
+
+    }
+    public void setBranchServices(List<BranchMedicalService> list){
+        this.branches = list.stream()
+                .map(x->new BranchResponseWrapper(x.getBranch().getId(),x.getBranch().getName()))
+                .collect(Collectors.toList());
     }
 
     public MedicalServiceWrapper(MedicalService ms, String search) {
