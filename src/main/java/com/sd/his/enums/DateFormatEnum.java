@@ -10,11 +10,17 @@ public enum DateFormatEnum {
                 return "dd-MM-yyyy";
             }
         },
-        yyyy_MM_dd {
+        yyyy_dd_MM {
             @Override
             public String toString() {
-                return "yyyy-MM-dd";
+                return "yyyy-dd-MM";
             }
+        },
+        yyyy_MM_dd {
+        @Override
+        public String toString() {
+            return "yyyy-MM-dd";
+        }
         },
 
         yyyyMMdd {
@@ -29,55 +35,12 @@ public enum DateFormatEnum {
             return "dd/MM/YYYY";
         }
         },
-        MMdd {
+        yyyyddMM {
         @Override
         public String toString() {
-            return "MM/dd";
+            return "yyyy/dd/MM";
         }
         },
-        MM_dd {
-        @Override
-        public String toString() {
-            return "MM-dd";
-        }
-    },
-
-        /*yyyyMMddHHmmss{
-        @Override
-        public String toString() {
-            return "yyyy-MM-dd-HH:mm:ss";
-        }
-        },
-        yyyyMMddHHmmssSSS{
-        @Override
-        public String toString() {
-            return "yyyy-MM-dd-HH:mm:ss:SSS";
-        }
-        },
-        yyyyMMddHHmm{
-        @Override
-        public String toString() {
-            return "yyyy-MM-dd-HH:mm";
-        }
-        },
-        yyMMddHHmmss{
-        @Override
-        public String toString() {
-            return "yy-MM-dd-HH:mm:ss";
-        }
-        },*/
-       /* HHmmss{
-        @Override
-        public String toString() {
-            return "HH:mm:ss";
-        }
-        },
-        HHmm{
-        @Override
-        public String toString() {
-            return "HH:mm:ss";
-        }
-        },*/
         yyyyMMdd0000{
         @Override
         public String toString() {

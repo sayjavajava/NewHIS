@@ -12,13 +12,13 @@ public enum TimeFormatEnum {
     HHmm{
         @Override
         public String toString() {
-            return "HH:mm:ss";
+            return "HH:mm";
         }
     },
-    mmss{
+   /* mmss{
         @Override
         public String toString() {
             return "mm:ss";
         }
-    },
+    },*/
 }
