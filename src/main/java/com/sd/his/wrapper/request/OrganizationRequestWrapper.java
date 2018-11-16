@@ -90,20 +90,40 @@ public class OrganizationRequestWrapper {
         this.zoneId = zoneId;
     }
 
-    String country;
+    String  selectedCity;
+    String selectedCountry;
+
+    public String getSelectedCity() {
+        return selectedCity;
+    }
+
+    public void setSelectedCity(String selectedCity) {
+        this.selectedCity = selectedCity;
+    }
+
+    public String getSelectedCountry() {
+        return selectedCountry;
+    }
+
+    public void setSelectedCountry(String selectedCountry) {
+        this.selectedCountry = selectedCountry;
+    }
+
+    public String getSelectedState() {
+        return selectedState;
+    }
+
+    public void setSelectedState(String selectedState) {
+        this.selectedState = selectedState;
+    }
+
+    String selectedState;
     String zoneId;
 
 
 
 
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
 
     public String getState() {
         return state;

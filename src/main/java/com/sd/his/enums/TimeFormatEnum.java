@@ -3,16 +3,22 @@ package com.sd.his.enums;
 public enum TimeFormatEnum {
 
 
-    HHmmss{
+    HHmmssA{
         @Override
         public String toString() {
-            return "HH:mm:ss";
+            return "HH:mm:ss a";
         }
     },
     HHmm{
         @Override
         public String toString() {
             return "HH:mm";
+        }
+    },
+    HHmmss{
+        @Override
+        public String toString() {
+            return "HH:mm:ss";
         }
     },
    /* mmss{
