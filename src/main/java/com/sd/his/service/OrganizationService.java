@@ -126,9 +126,9 @@ public class OrganizationService {
          //   organization.setSpecialty(organizationRequestWrapper.getSpecialty());
             organization.setEmail(organizationRequestWrapper.getCompanyEmail());
 
-            organization.setCity(cityRepository.findOne(Long.valueOf(organizationRequestWrapper.getSelectedCity())));
-            organization.setState(stateRepository.findOne(Long.valueOf(organizationRequestWrapper.getSelectedState())));
-            organization.setCountry(countryRepository.findOne(Long.valueOf(organizationRequestWrapper.getSelectedCountry())));
+            organization.setCity(cityRepository.findTitleById(organizationRequestWrapper.getSelectedCity()));
+            organization.setState(stateRepository.findTitleById(organizationRequestWrapper.getSelectedState()));
+            organization.setCountry(countryRepository.findTitleById(organizationRequestWrapper.getSelectedCountry()));
             organizationRepository.save(organization);
             return organizationRequestWrapper;
         }

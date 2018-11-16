@@ -1,5 +1,6 @@
 package com.sd.his.repository;
 
+import com.sd.his.model.City;
 import com.sd.his.model.State;
 import com.sd.his.wrapper.StateWrapper;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,8 @@ public interface StateRepository extends JpaRepository<State, Long> {
 
     @Query("SELECT s FROM State s WHERE s.country.id =:id ")
     List<State> getAllStatesByCountryById(@Param("id") Long countryId);
+
+
+    @Query("SELECT t FROM State t where t.name = :name")
+    State findTitleById(@Param("name") String id);
 }
