@@ -43,7 +43,8 @@ public class DepartmentWrapper {
     long branchId;
     long branchDepartmentId;
     List<Long> selectedBranches;
-    List<BranchResponseWrapper> listOfBranches;
+    List<BranchesListWrapper> listOfBranches;
+   // List<BranchResponseWrapper> listOfBranches;
     /***
      * if true ,this object has child record
      * if false, this object has no child record
@@ -75,11 +76,11 @@ public class DepartmentWrapper {
 
     }
 
-    public List<BranchResponseWrapper> getListOfBranches() {
+    public List<BranchesListWrapper> getListOfBranches() {
         return listOfBranches;
     }
 
-    public void setListOfBranches(List<BranchResponseWrapper> listOfBranches) {
+    public void setListOfBranches(List<BranchesListWrapper> listOfBranches) {
         this.listOfBranches = listOfBranches;
     }
 

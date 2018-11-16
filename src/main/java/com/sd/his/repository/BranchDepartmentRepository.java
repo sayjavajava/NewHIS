@@ -35,6 +35,7 @@ public interface BranchDepartmentRepository extends JpaRepository<BranchDepartme
 
  //   BranchDepartment findByBranchAndDepartment(Department dpt);
     BranchDepartment findByDepartment(Department department);
+    List<BranchDepartment> findAllByDepartment(Department department);
 
     @Query("select b from BranchDepartment as bd inner join bd.department b where bd.branch.id=:id")
     List<Department> findByBranch(@Param("id") Long id);//write query here

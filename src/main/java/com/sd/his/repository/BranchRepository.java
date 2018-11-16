@@ -61,6 +61,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     BranchResponseWrapper findAllById(@Param("id") Long id);
 
     List<Branch> findAllByIdIn(List<Long> ids);
+    List<Branch> deleteAllByIdIn(List<Long> ids);
 
     @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b) FROM Branch b WHERE b.status = TRUE")
     List<BranchResponseWrapper> findAllByActiveTrue();
