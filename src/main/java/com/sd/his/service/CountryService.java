@@ -1,6 +1,7 @@
 package com.sd.his.service;
 
 import com.sd.his.model.Country;
+import com.sd.his.model.Permission;
 import com.sd.his.repository.CountryRepository;
 import com.sd.his.wrapper.CountryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class CountryService {
 
     public List<CountryWrapper> getAllCountries() {
         return this.countryRepository.getAllCountries();
+    }
+    public Country getCountryById(Long id) {
+        return this.countryRepository.findOne(id);
     }
 
 

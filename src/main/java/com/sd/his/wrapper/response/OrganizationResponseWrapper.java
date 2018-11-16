@@ -5,6 +5,9 @@ import com.sd.his.model.Country;
 import com.sd.his.model.State;
 import com.sd.his.model.User;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*
  * @author    : waqas kamran
  * @Date      : 17-Apr-18
@@ -54,6 +57,15 @@ public class OrganizationResponseWrapper {
     String email;
     String address;
 
+    public Map<String, Object> getAddInfo() {
+        return addInfo;
+    }
+
+    public void setAddInfo(Map<String, Object> addInfo) {
+        this.addInfo = addInfo;
+    }
+
+    Map<String, Object> addInfo;
     public String getCountry() {
         return country;
     }
@@ -78,7 +90,7 @@ public class OrganizationResponseWrapper {
         this.state = state;
     }
 
-    String userType;
+   String userType;
     String dateFormat;
     String country;
     String city;
@@ -127,6 +139,7 @@ public class OrganizationResponseWrapper {
         this.speciality=speciality;
         this.fax=fax;
         this.address=address;
+
      //   this.branchId =brId;
      //   this.branchName =brName;
 
