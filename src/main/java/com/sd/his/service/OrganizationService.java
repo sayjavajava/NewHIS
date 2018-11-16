@@ -119,11 +119,11 @@ public class OrganizationService {
 
         if (organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.PROFILE.name())) {
 
+            organization.setCompanyName(organizationRequestWrapper.getCompanyName());
             organization.setWebsite(organizationRequestWrapper.getWebsite());
             organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
             organization.setFax(organizationRequestWrapper.getFax());
             organization.setAddress(organizationRequestWrapper.getAddress());
-         //   organization.setSpecialty(organizationRequestWrapper.getSpecialty());
             organization.setEmail(organizationRequestWrapper.getCompanyEmail());
 
             organization.setCity(cityRepository.findTitleById(organizationRequestWrapper.getSelectedCity()));
