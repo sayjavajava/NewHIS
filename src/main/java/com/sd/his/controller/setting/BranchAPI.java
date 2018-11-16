@@ -400,7 +400,7 @@ public class BranchAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
     public ResponseEntity<?> updateBranch(HttpServletRequest request,
                                           @PathVariable("id") long id,
                                           @RequestBody BranchRequestWrapper branchRequestWrapper) {
@@ -676,7 +676,7 @@ public class BranchAPI {
         }
     }
 
-   /* @ApiOperation(httpMethod = "GET", value = "Rooms count of Branches",
+    @ApiOperation(httpMethod = "GET", value = "Rooms count of Branches",
             notes = "This method will return Rooms count of Branches",
             produces = "application/json", nickname = "Get Rooms count of Branches ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -719,7 +719,7 @@ public class BranchAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-*/
+
     @ApiOperation(httpMethod = "GET", value = "List of Countries",
             notes = "This method will return all countries",
             produces = "application/json", nickname = "Get List of Countries ",

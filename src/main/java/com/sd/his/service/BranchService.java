@@ -307,12 +307,11 @@ public class BranchService {
         return branches;
     }
     public boolean isBranchNameOrIdExistsAlready(String name, long brId) {
-        return branchRepository.findByNameAndIdNot(name,brId) == null;        // Simplified from  (this==null?false:true)
+        return branchRepository.findByNameAndIdNot(name,brId) == null ? false : true;
     }
 
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
-        List<BranchResponseWrapper> list = branchRepository.findAllByActiveTrue();
         return branchRepository.findAllByActiveTrue();
     }
 

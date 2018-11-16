@@ -1,5 +1,7 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class State extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COUNTRY_ID")
+    @JsonBackReference
     private Country country;
 
     @OneToMany(targetEntity = City.class, mappedBy = "state")
