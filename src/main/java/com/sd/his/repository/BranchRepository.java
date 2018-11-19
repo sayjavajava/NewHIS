@@ -5,6 +5,7 @@ import com.sd.his.model.Branch;
 import com.sd.his.model.City;
 import com.sd.his.model.Country;
 import com.sd.his.model.State;
+import com.sd.his.wrapper.BranchWrapperPart;
 import com.sd.his.wrapper.CityWrapper;
 import com.sd.his.wrapper.CountryWrapper;
 import com.sd.his.wrapper.StateWrapper;
@@ -65,6 +66,9 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
 
     @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b) FROM Branch b WHERE b.status = TRUE")
     List<BranchResponseWrapper> findAllByActiveTrue();
+
+    @Query("SELECT new com.sd.his.wrapper.BranchWrapperPart(b) FROM Branch b WHERE b.status = TRUE")
+    List<BranchWrapperPart> findAllByActive();
     Branch findBySystemBranchTrue();
     @Query("SELECT new com.sd.his.wrapper.response.BranchResponseWrapper(b.id,b.name,bb.firstName) FROM Branch b LEFT OUTER JOIN b.branchDoctors bu LEFT OUTER JOIN bu.doctor bb WHERE b.status = TRUE and b.name LIKE CONCAT('%',:name,'%')")
     List<BranchResponseWrapper> findByNameAndBranchDepartments(@Param("name")String name ,Pageable pageable);

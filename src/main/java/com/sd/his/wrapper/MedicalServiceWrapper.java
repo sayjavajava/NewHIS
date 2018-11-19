@@ -1,11 +1,12 @@
 package com.sd.his.wrapper;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.model.*;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /*
  * @author    : Jamal
@@ -44,13 +45,11 @@ public class MedicalServiceWrapper {
     private long value;
     private String label;
 
-    private List<BranchResponseWrapper> branches;//checkedBranch
-    private List<BranchResponseWrapper> checkedBranches;
+    private List<BranchWrapperPart> branches;
+    private List<BranchWrapperPart> checkedBranches;
     private List<DepartmentWrapper> departments;
     private List<DepartmentWrapper> checkedDepartments;
-    private List<TaxWrapper> taxes;
     private boolean hasChild;
-
 
     public MedicalServiceWrapper() {
     }
@@ -80,7 +79,7 @@ public class MedicalServiceWrapper {
             this.tax = new TaxWrapper(ms.getTax());
         }
         this.id = ms.getId();
-        this.label= ms.getName();
+        this.label = ms.getName();
         this.value = ms.getId();
         this.name = ms.getName();
         this.code = ms.getCode();
@@ -97,15 +96,6 @@ public class MedicalServiceWrapper {
             this.hasChild = true;
         }
 
-       if(ms.getBranchMedicalServices().size() != 0){
-           this.setBranchServices(ms.getBranchMedicalServices());
-       }
-
-    }
-    public void setBranchServices(List<BranchMedicalService> list){
-        this.branches = list.stream()
-                .map(x->new BranchResponseWrapper(x.getBranch().getId(),x.getBranch().getName()))
-                .collect(Collectors.toList());
     }
 
     public MedicalServiceWrapper(MedicalService ms, String search) {
@@ -209,19 +199,19 @@ public class MedicalServiceWrapper {
         this.tax = tax;
     }
 
-    public List<BranchResponseWrapper> getBranches() {
+    public List<BranchWrapperPart> getBranches() {
         return branches;
     }
 
-    public void setBranches(List<BranchResponseWrapper> branches) {
+    public void setBranches(List<BranchWrapperPart> branches) {
         this.branches = branches;
     }
 
-    public List<BranchResponseWrapper> getCheckedBranches() {
+    public List<BranchWrapperPart> getCheckedBranches() {
         return checkedBranches;
     }
 
-    public void setCheckedBranches(List<BranchResponseWrapper> checkedBranches) {
+    public void setCheckedBranches(List<BranchWrapperPart> checkedBranches) {
         this.checkedBranches = checkedBranches;
     }
 
@@ -239,14 +229,6 @@ public class MedicalServiceWrapper {
 
     public void setCheckedDepartments(List<DepartmentWrapper> checkedDepartments) {
         this.checkedDepartments = checkedDepartments;
-    }
-
-    public List<TaxWrapper> getTaxes() {
-        return taxes;
-    }
-
-    public void setTaxes(List<TaxWrapper> taxes) {
-        this.taxes = taxes;
     }
 
     public long getCheckedDepartmentCount() {

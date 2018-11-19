@@ -6,9 +6,7 @@ import com.sd.his.service.BranchService;
 import com.sd.his.service.DepartmentService;
 import com.sd.his.service.MedicalServicesService;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.DepartmentWrapper;
-import com.sd.his.wrapper.GenericAPIResponse;
-import com.sd.his.wrapper.MedicalServiceWrapper;
+import com.sd.his.wrapper.*;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -233,7 +231,7 @@ public class MedicalServiceAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             logger.error("getCheckedBranchesByMedicalServiceId - fetching from DB");
-            List<BranchResponseWrapper> checkedBranches = medicalServicesService.getCheckedBranchesByMedicalServiceId(msId);
+            List<BranchWrapperPart> checkedBranches = medicalServicesService.getCheckedBranchesByMedicalServiceId(msId);
 
             if (checkedBranches.size() > 0) {
 
@@ -256,6 +254,7 @@ public class MedicalServiceAPI {
         }
 
     }
+
     @ApiOperation(httpMethod = "GET", value = "Department Medical Services",
             notes = "This method will return Paginated Medical Services",
             produces = "application/json", nickname = "Paginated CMedical Services",
@@ -322,8 +321,19 @@ public class MedicalServiceAPI {
             }
             logger.error("getMedicalServiceById - Medical Service fetching from DB");
             MedicalServiceWrapper mss = medicalServicesService.findMedicalServicesDetailsById(id);
+
+            mss.setBranches(new ArrayList<>());
+            mss.getBranches().addAll(this.branchService.getAllBranches());
+            for (BranchWrapperPart b : mss.getBranches()) {
+                for (BranchWrapperPart checked : mss.getCheckedBranches()) {
+                    if (checked.getId() == b.getId())
+                        b.setCheckedBranch(true);
+                }
+            }
+
             mss.setDepartments(new ArrayList<>());
             mss.getDepartments().addAll(this.departmentService.getDepartmentsActive());
+
             /***/
             for (DepartmentWrapper d : mss.getDepartments()) {
                 for (DepartmentWrapper checked : mss.getCheckedDepartments()) {
@@ -331,14 +341,7 @@ public class MedicalServiceAPI {
                         d.setCheckedDepartment(true);
                 }
             }
-            mss.setBranches(new ArrayList<>());
-            mss.getBranches().addAll(this.branchService.getAllActiveBranches());
-            for (BranchResponseWrapper b : mss.getBranches()) {
-                for (BranchResponseWrapper checked : mss.getCheckedBranches()) {
-                    if (checked.getId() == b.getId())
-                        b.setCheckedBranch(true);
-                }
-            }
+
             logger.error("getMedicalServiceById - Medical Service fetched successfully");
             if (HISCoreUtil.isValidObject(mss)) {
                 response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
@@ -371,8 +374,7 @@ public class MedicalServiceAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ResponseEntity<?> saveMedicalService(HttpServletRequest request,
-                                                @RequestBody MedicalServiceWrapper createRequest) {
+    public ResponseEntity<?> saveMedicalService(@RequestBody MedicalServiceWrapper createRequest) {
         logger.info("saveMedicalService API initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
 
@@ -465,8 +467,7 @@ public class MedicalServiceAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateMedicalService(HttpServletRequest request,
-                                                  @RequestBody MedicalServiceWrapper createRequest) {
+    public ResponseEntity<?> updateMedicalService(@RequestBody MedicalServiceWrapper createRequest) {
         logger.info("updateMedicalService API initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
 

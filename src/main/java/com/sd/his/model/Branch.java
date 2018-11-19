@@ -34,7 +34,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "BRANCH")
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Branch extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -1,9 +1,11 @@
 package com.sd.his.wrapper.response;
 
-import com.sd.his.model.*;
+import com.sd.his.model.Branch;
+import com.sd.his.model.Doctor;
+import com.sd.his.model.Room;
+import com.sd.his.model.User;
 import com.sd.his.utill.HISCoreUtil;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,11 +40,14 @@ public class BranchResponseWrapper {
     String officeHoursStart;
     String officeHoursEnd;
     Integer noOfExamRooms;
-    State state;
-//    City city;
+    String country;
+    String state;
+    String city;
+    String countryId;
+    String stateId;
+    String cityId;
     String primaryDoctor;
     Integer zipCode;
-    Country country;
     String officePhone;
     String fax;
     String formattedAddress;
@@ -67,39 +72,34 @@ public class BranchResponseWrapper {
     String companyName;
     String flow;
     Map<String, List<BranchResponseWrapper>> doctorsInBranch;
-    Map<String, Object> city;
 
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
         this.officeHoursEnd = HISCoreUtil.convertTimeToString(branch.getOfficeEndTime());
         this.officeHoursStart = HISCoreUtil.convertTimeToString(branch.getOfficeStartTime());
-      //  this.rooms = branch.getNoOfRooms();
         this.fax = branch.getFax();
         this.officePhone = branch.getOfficePhone();
         this.name = branch.getName();
         this.id = branch.getId();
         this.address = branch.getAddress();
-        this.examRooms = branch.getRooms().stream().filter(x->x.getRoomName() !=null)
-                .map(x-> new Room(x.getId(),x.getRoomName(),x.getAllowOnlineScheduling()))
+        this.examRooms = branch.getRooms().stream().filter(x -> x.getRoomName() != null)
+                .map(x -> new Room(x.getId(), x.getRoomName(), x.getAllowOnlineScheduling()))
                 .collect(Collectors.toList());
+        this.rooms = Long.valueOf(this.examRooms.size());
         this.user = user;
-        this.city = new HashMap<>();
-        this.city.put("cityId", branch.getCity().getId());
-        this.city.put("city", branch.getCity().getName());
-        this.city.put("stateId", branch.getCity().getState().getId());
-        this.city.put("state", branch.getCity().getState().getName());
-        this.city.put("countryId", branch.getCity().getState().getCountry().getId());
-        this.city.put("country", branch.getCity().getState().getCountry().getName());
-//        branch.getCity();
-        this.value=branch.getId() ;
-        this.label =branch.getName();
-        this.flow =branch.getFlow();
-
-
-      //  this.state = branch.getCity().getState();
-      //  this.country = branch.getCity().getState().getCountry();
+        this.city = branch.getCity().getName();
+        this.state = branch.getCity().getState().getName();
+        this.country = branch.getCity().getState().getCountry().getName();
+        // Update section
+        this.cityId = String.valueOf(branch.getCity().getId());
+        this.stateId = String.valueOf(branch.getCity().getState().getId());
+        this.countryId = String.valueOf(branch.getCity().getState().getCountry().getId());
+        this.value = branch.getId();
+        this.label = branch.getName();
+        this.flow = branch.getFlow();
 
     }
+
     public BranchResponseWrapper(){}
 //b.id,b.name, b.country,b.city,b.noOfRooms,bb.firstName
     public BranchResponseWrapper(long id, String name){
@@ -109,24 +109,22 @@ public class BranchResponseWrapper {
         this.value = id;
     }
 
-    public BranchResponseWrapper(Branch branch, Long drId, String drFirstName,String drLastName) {
-       this.branchName=branch.getName();
-       this.id=branch.getId();
-       this.firstName = drFirstName;
-       this.lastName =drLastName;
-       this.doctorId =drId;
-        this.examRooms = branch.getRooms().stream().filter(x->x.getRoomName() !=null)
-                .map(x-> new Room(x.getId(),x.getRoomName(),x.getAllowOnlineScheduling()))
+    public BranchResponseWrapper(Branch branch, Long drId, String drFirstName, String drLastName) {
+        this.branchName = branch.getName();
+        this.id = branch.getId();
+        this.firstName = drFirstName;
+        this.lastName = drLastName;
+        this.doctorId = drId;
+        this.examRooms = branch.getRooms().stream().filter(x -> x.getRoomName() != null)
+                .map(x -> new Room(x.getId(), x.getRoomName(), x.getAllowOnlineScheduling()))
                 .collect(Collectors.toList());
-
     }
+
     public BranchResponseWrapper(long id, String name, String firstName) {
         this.id = id;
         this.name = name;
-        this.firstName=firstName;
+        this.firstName = firstName;
         //this.doctor =doctor;
-
-
     }
 
     public String getFlow() {
@@ -249,19 +247,11 @@ public class BranchResponseWrapper {
         this.noOfExamRooms = noOfExamRooms;
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
-
-    public Map<String, Object> getCity() {
+    public String getCity() {
         return city;
     }
 
-    public void setCity(Map<String, Object> city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
@@ -281,11 +271,11 @@ public class BranchResponseWrapper {
         this.zipCode = zipCode;
     }
 
-    public Country getCountry() {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry(Country country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
@@ -400,4 +390,45 @@ public class BranchResponseWrapper {
     public void setRoomList(Room roomList) {
         this.roomList = roomList;
     }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(String countryId) {
+        this.countryId = countryId;
+    }
+
+    public String getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(String stateId) {
+        this.stateId = stateId;
+    }
+
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 }
+

@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class HISUtilService {
-
-
     @Autowired
     private PrefixRepository prefixRepository;
 

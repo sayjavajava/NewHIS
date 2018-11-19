@@ -9,10 +9,7 @@ import com.sd.his.model.Room;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.CityWrapper;
-import com.sd.his.wrapper.CountryWrapper;
-import com.sd.his.wrapper.ExamRooms;
-import com.sd.his.wrapper.StateWrapper;
+import com.sd.his.wrapper.*;
 import com.sd.his.wrapper.request.BranchRequestWrapper;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.apache.commons.lang.RandomStringUtils;
@@ -307,12 +304,20 @@ public class BranchService {
         return branches;
     }
     public boolean isBranchNameOrIdExistsAlready(String name, long brId) {
-        return branchRepository.findByNameAndIdNot(name,brId) == null;        // Simplified from  (this==null?false:true)
+        return branchRepository.findByNameAndIdNot(name,brId) == null ? false : true;
     }
 
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
         return branchRepository.findAllByActiveTrue();
+    }
+
+    public List<BranchWrapperPart> getActiveBranches() {
+        return branchRepository.findAllByActive();
+    }
+
+    public List<BranchWrapperPart> getAllBranches() {
+        return branchRepository.findAllByActive();
     }
 
     public Set<BranchResponseWrapper> getAllActiveBranchesWithDoctors() {

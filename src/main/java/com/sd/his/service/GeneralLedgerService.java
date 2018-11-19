@@ -111,4 +111,8 @@ public class GeneralLedgerService {
     public void updateAccountCode(){
         this.hisUtilService.updatePrefix(ModuleEnum.GENERAL_LEDGER);
     }
+
+    public void deleteLedger(Long generalLedgerId) {
+        this.generalLedgerRepository.delete(generalLedgerId);
+    }
 }
