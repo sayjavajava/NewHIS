@@ -3,6 +3,8 @@ package com.sd.his.service;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.BranchWrapper;
+import com.sd.his.wrapper.BranchWrapperPart;
 import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
@@ -85,7 +87,7 @@ public class MedicalServicesService {
         return medicalServiceRepository.findAll().size();
     }
 
-    public List<MedicalServiceWrapper> getMedicalServicesByDeptId(Long deptId){
+    public List<MedicalServiceWrapper> getMedicalServicesByDeptId(Long deptId) {
         List<MedicalServiceWrapper> list = medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
         return medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
     }
@@ -112,7 +114,7 @@ public class MedicalServicesService {
         medicalServiceRepository.save(medicalService);
         if (HISCoreUtil.isListValid(createRequest.getBranches())) {
             List<BranchMedicalService> list = new ArrayList<>();
-            for (BranchResponseWrapper branchWrapper : createRequest.getBranches()) {
+            for (BranchWrapperPart branchWrapper : createRequest.getBranches()) {
                 if (branchWrapper.isCheckedBranch()) {
                     Branch branch = this.branchRepository.findOne(branchWrapper.getId());
                     BranchMedicalService branchMedicalService = new BranchMedicalService(branch, medicalService);
@@ -153,7 +155,7 @@ public class MedicalServicesService {
         if (HISCoreUtil.isListValid(createRequest.getBranches())) {
             List<BranchMedicalService> list = new ArrayList<>();
             this.branchMedicalServiceRepository.deleteByMedicalService_id(medicalService.getId());
-            for (BranchResponseWrapper branchWrapper : createRequest.getBranches()) {
+            for (BranchWrapperPart branchWrapper : createRequest.getBranches()) {
                 if (branchWrapper.isCheckedBranch()) {
                     Branch branch = this.branchRepository.findOne(branchWrapper.getId());
                     BranchMedicalService branchMedicalService = new BranchMedicalService(branch, medicalService);
@@ -199,7 +201,7 @@ public class MedicalServicesService {
                                                                    int pageNo,
                                                                    int pageSize) {
         Pageable pageable = new PageRequest(pageNo, pageSize);
-        return medicalServiceRepository.findAllByParam(serviceName,searchCode,branchId, departmentId, serviceFee, pageable);
+        return medicalServiceRepository.findAllByParam(serviceName, searchCode, branchId, departmentId, serviceFee, pageable);
     }
 
     public int countSearchMedicalServiceByParam(String serviceName,
@@ -210,11 +212,12 @@ public class MedicalServicesService {
         return medicalServiceRepository.countAllByParam(serviceName, searchCode, branchId, departmentId, serviceFee).size();
     }
 
-    public List<BranchResponseWrapper> getCheckedBranchesByMedicalServiceId(long msId) {
-        List<BranchResponseWrapper> branchWrappers = new ArrayList<>();
+    public List<BranchWrapperPart> getCheckedBranchesByMedicalServiceId(long msId) {
+        List<BranchWrapperPart> branchWrappers = new ArrayList<>();
         branchWrappers.addAll(this.findMedicalServicesDetailsById(msId).getCheckedBranches());
         return branchWrappers;
     }
+
     public List<DepartmentWrapper> getCheckedDepartsByMedicalServiceId(long msId) {
         List<DepartmentWrapper> branchWrappers = new ArrayList<>();
         branchWrappers.addAll(this.findMedicalServicesDetailsById(msId).getCheckedDepartments());
@@ -238,7 +241,7 @@ public class MedicalServicesService {
                 mSW.setCheckedBranches(new ArrayList<>());
                 for (BranchMedicalService branchMedicalService : mS.getBranchMedicalServices()) {
                     if (branchMedicalService.getBranch() != null) {
-                        mSW.getCheckedBranches().add(new BranchResponseWrapper(branchMedicalService.getBranch()));
+                        mSW.getCheckedBranches().add(new BranchWrapperPart(branchMedicalService.getBranch()));
                     }
                 }
             }

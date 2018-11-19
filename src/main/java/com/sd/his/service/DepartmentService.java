@@ -63,7 +63,7 @@ public class DepartmentService {
         for (Department cd : dpts) {
             if (cd.getStatus()) {
                 DepartmentWrapper dpt = new DepartmentWrapper(cd);
-                for(BranchDepartment cdd :cd.getBranchDepartments()){
+                for (BranchDepartment cdd : cd.getBranchDepartments()) {
                     dpt.setBranchDepartmentId(cdd.getId());
                     dpt.setBranchId(cdd.getBranch().getId());
                 }
@@ -73,6 +73,28 @@ public class DepartmentService {
         return dptsWrappers;
     }
 
+    public List<DepartmentWrapper> getDepartmentsByBranchIds(List<Long> branchIds) {
+        List<DepartmentWrapper> departmentList = new ArrayList<>();
+
+        for (Long i : branchIds) {
+            List<BranchDepartment> branchDepartment = branchDepartmentRepository.getAllByBranch_id(i);
+            for (BranchDepartment bd : branchDepartment) {
+                boolean idFound = false;
+
+                for (DepartmentWrapper d : departmentList) {
+                    if (d.getId() == bd.getDepartment().getId()) {
+                        idFound = true;
+                        break;
+                    }
+                }
+                if (!idFound) {
+                    departmentList.add(new DepartmentWrapper(bd.getDepartment()));
+                }
+            }
+        }
+
+        return departmentList;
+    }
 
     public List<DepartmentWrapper> getPaginatedAllDepartments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
@@ -81,7 +103,7 @@ public class DepartmentService {
 
         for (Department cd : dpts) {
             DepartmentWrapper dpt = new DepartmentWrapper(cd);
-            for(BranchDepartment cdd :cd.getBranchDepartments()){
+            for (BranchDepartment cdd : cd.getBranchDepartments()) {
                 dpt.setBranchDepartmentId(cdd.getId());
                 dpt.setBranchId(cdd.getBranch().getId());
             }
@@ -130,23 +152,23 @@ public class DepartmentService {
         branchDepartment.setDepartment(dpt);
         branchDepartmentRepository.save(branchDepartment);
 
-        return department ;
+        return department;
     }
 
     @Transactional(rollbackOn = Throwable.class)
     public Department updateDepartment(DepartmentWrapper updateRequest) {
         Department dpt = departmentRepository.findOne(updateRequest.getId());
-        BranchDepartment branchDepartment =null;
+        BranchDepartment branchDepartment = null;
         dpt.setName(updateRequest.getName());
         dpt.setDescription(updateRequest.getDescription());
         dpt.setStatus(updateRequest.isActive());
         long branchId = updateRequest.getBranchId();
         Branch branch = branchRepository.findOne(branchId);
-        if(updateRequest.getBranchDepartmentId() != 0)
-        branchDepartment = branchDepartmentRepository.findByDepartment(dpt);
+        if (updateRequest.getBranchDepartmentId() != 0)
+            branchDepartment = branchDepartmentRepository.findByDepartment(dpt);
         Department department = departmentRepository.save(dpt);
         branchDepartment.setBranch(branch);
-      //  branchDepartment.setDepartment(dpt);
+        //  branchDepartment.setDepartment(dpt);
         branchDepartmentRepository.save(branchDepartment);
         return department;
     }

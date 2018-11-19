@@ -170,7 +170,7 @@ public class HisApplication {
             tax.setActive(true);
 
             taxRepository.save(tax);
-            MedicalService medicalService = new MedicalService("Sugar Test","test",300d,200d,tax);
+            MedicalService medicalService = new MedicalService("Test Medical Service","test",300d,200d,tax);
             medicalService.setStatus(true);
             medicalServiceRepository.save(medicalService);
 
