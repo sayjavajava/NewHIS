@@ -43,10 +43,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @RestController
@@ -260,13 +257,24 @@ public class OrganizationAPI {
         try {
             OrganizationResponseWrapper dbOrganization = this.organizationService.getOrganizationByIdWithResponse(id);
             Organization addInfo  =  this.organizationService.getOrganizationByIdWithResponseAdditionalInfo(id);
-            dbOrganization.setCity(String.valueOf(addInfo.getCity().getId()));
-            dbOrganization.setCountry(String.valueOf(addInfo.getCountry().getId()));
-            dbOrganization.setState(String.valueOf(addInfo.getState().getId()));
-            dbOrganization.setDateFormat(String.valueOf(addInfo.getDateFormat()));
-            dbOrganization.setTimeFormat(String.valueOf(addInfo.getTimeFormat()));
-            dbOrganization.setZoneFormat(String.valueOf(addInfo.getZone()));
-
+            Map<String, Object> orgCity;
+            orgCity = new HashMap<>();
+            orgCity.put("cityId", addInfo.getCity().getId());
+            orgCity.put("city", addInfo.getCity().getName());
+            orgCity.put("stateId", addInfo.getCity().getState().getId());
+            orgCity.put("state", addInfo.getCity().getState().getName());
+            orgCity.put("countryId", addInfo.getCity().getState().getCountry().getId());
+            orgCity.put("country", addInfo.getCity().getState().getCountry().getName());
+            orgCity.put("Currency",addInfo.getCity().getState().getCountry().getCurrency());
+            dbOrganization.setAddInfo(orgCity);
+            dbOrganization.setDateFormat(addInfo.getDateFormat());
+            dbOrganization.setTimeFormat(addInfo.getTimeFormat());
+            dbOrganization.setZoneFormat(String.valueOf(addInfo.getZone().getZoneId()));
+            for(int i=0;i<addInfo.getBranches().size();i++){
+                if(addInfo.getBranches().get(i).getSystemBranch()==true){
+                    dbOrganization.setDefaultBranch(addInfo.getBranches().get(i).getBranchId());
+                }
+            }
             if (HISCoreUtil.isValidObject(dbOrganization)) {
                 response.setResponseData(dbOrganization);
                 response.setResponseCode(ResponseEnum.ORGANIZATION_FETCH_SUCCESS.getValue());

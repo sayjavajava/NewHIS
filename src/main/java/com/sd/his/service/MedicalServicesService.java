@@ -87,8 +87,8 @@ public class MedicalServicesService {
         return medicalServiceRepository.findAll().size();
     }
 
-    public List<MedicalServiceWrapper> getMedicalServicesByDeptId(Long deptId) {
-        List<MedicalServiceWrapper> list = medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
+    public List<MedicalServiceWrapper> getMedicalServicesByDeptId(Long deptId){
+      //  List<MedicalServiceWrapper> list = medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
         return medicalServiceRepository.findMedicalServicesByDepartmentId(deptId);
     }
 
@@ -201,7 +201,7 @@ public class MedicalServicesService {
                                                                    int pageNo,
                                                                    int pageSize) {
         Pageable pageable = new PageRequest(pageNo, pageSize);
-        return medicalServiceRepository.findAllByParam(serviceName, searchCode, branchId, departmentId, serviceFee, pageable);
+        return medicalServiceRepository.findAllByParam(serviceName,searchCode,branchId, departmentId, serviceFee, pageable);
     }
 
     public int countSearchMedicalServiceByParam(String serviceName,

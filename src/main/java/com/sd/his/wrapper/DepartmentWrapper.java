@@ -1,7 +1,11 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.Branch;
+import com.sd.his.model.BranchDepartment;
 import com.sd.his.model.Department;
+import com.sd.his.wrapper.response.BranchResponseWrapper;
 
+import java.util.List;
 import java.util.Optional;
 
 /*
@@ -38,6 +42,9 @@ public class DepartmentWrapper {
     String branch;
     long branchId;
     long branchDepartmentId;
+    List<Long> selectedBranches;
+    List<BranchesListWrapper> listOfBranches;
+   // List<BranchResponseWrapper> listOfBranches;
     /***
      * if true ,this object has child record
      * if false, this object has no child record
@@ -67,6 +74,31 @@ public class DepartmentWrapper {
             this.hasChild = false;
         }
 
+    }
+
+    public List<BranchesListWrapper> getListOfBranches() {
+        return listOfBranches;
+    }
+
+    public void setListOfBranches(List<BranchesListWrapper> listOfBranches) {
+        this.listOfBranches = listOfBranches;
+    }
+
+    public DepartmentWrapper(long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.label = name;
+        this.value = id;
+    }
+
+
+    public List<Long> getSelectedBranches() {
+        return selectedBranches;
+    }
+
+    public void setSelectedBranches(List<Long> selectedBranches) {
+        this.selectedBranches = selectedBranches;
     }
 
     public long getBranchDepartmentId() {

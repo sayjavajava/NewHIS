@@ -34,9 +34,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OrganizationService {
@@ -99,12 +97,15 @@ public class OrganizationService {
     }
 
     public OrganizationResponseWrapper getOrganizationByIdWithResponse(long id) {
+
         return organizationRepository.findById(id);
+
     }
 
 
     public Organization getOrganizationByIdWithResponseAdditionalInfo(long id) {
         return organizationRepository.findByIdContains(id);
+
     }
    /*public Organization getOrganizationByIdWithResponse(long id) {
         return organizationRepository.findById(id);
@@ -118,16 +119,16 @@ public class OrganizationService {
 
         if (organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.PROFILE.name())) {
 
+            organization.setCompanyName(organizationRequestWrapper.getCompanyName());
             organization.setWebsite(organizationRequestWrapper.getWebsite());
             organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
             organization.setFax(organizationRequestWrapper.getFax());
             organization.setAddress(organizationRequestWrapper.getAddress());
-         //   organization.setSpecialty(organizationRequestWrapper.getSpecialty());
             organization.setEmail(organizationRequestWrapper.getCompanyEmail());
 
-            organization.setCity(cityRepository.findOne(Long.valueOf(organizationRequestWrapper.getCity())));
-            organization.setState(stateRepository.findOne(Long.valueOf(organizationRequestWrapper.getState())));
-            organization.setCountry(countryRepository.findOne(Long.valueOf(organizationRequestWrapper.getCountry())));
+            organization.setCity(cityRepository.findTitleById(organizationRequestWrapper.getSelectedCity()));
+            organization.setState(stateRepository.findTitleById(organizationRequestWrapper.getSelectedState()));
+            organization.setCountry(countryRepository.findTitleById(organizationRequestWrapper.getSelectedCountry()));
             organizationRepository.save(organization);
             return organizationRequestWrapper;
         }

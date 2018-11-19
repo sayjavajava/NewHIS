@@ -34,7 +34,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "BRANCH")
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Branch extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -115,6 +116,7 @@ public class Branch extends BaseEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CITY_ID")
+    @JsonBackReference
     private City city;
 
     public Branch(String name, String address, String fax, String officePhone, String flow, Date officeStartTime, Date officeEndTime, Boolean status, Boolean systemBranch, Organization organization) {

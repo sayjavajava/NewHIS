@@ -1,9 +1,11 @@
 package com.sd.his.repository;
 
 import com.sd.his.model.Country;
+import com.sd.his.model.State;
 import com.sd.his.wrapper.CountryWrapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,4 +22,8 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
 
     @Query("SELECT c FROM Country c")
     List<Country> getAllBy();
+
+
+    @Query("SELECT t FROM Country t where t.name = :name")
+    Country findTitleById(@Param("name") String id);
 }

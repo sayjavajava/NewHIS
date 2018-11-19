@@ -1,5 +1,6 @@
 package com.sd.his.repository;
 
+import com.sd.his.model.Branch;
 import com.sd.his.model.Department;
 import com.sd.his.wrapper.DepartmentWrapper;
 import org.springframework.data.domain.Pageable;
@@ -52,6 +53,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     DepartmentWrapper findByNameAndActiveNotNull(@Param("name") String name);
 
     List<Department> findAllByIdIn(List<Long> ids);
+
+
 
 
 }

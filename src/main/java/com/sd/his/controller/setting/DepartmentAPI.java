@@ -6,6 +6,7 @@ import com.sd.his.service.DepartmentService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.request.UserRequestWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +41,7 @@ import java.util.stream.IntStream;
  *
  * Copyright ©
  * SolutionDots,
- * All rights reserved.
+ * All rights reserved.s
  *
  */
 @RestController
@@ -394,7 +396,7 @@ public class DepartmentAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST,consumes="application/json")
     public ResponseEntity<?> saveDepartment(HttpServletRequest request,
                                             @RequestBody DepartmentWrapper createRequest) {
 
@@ -405,7 +407,7 @@ public class DepartmentAPI {
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
-        try {
+        try{
 
             if (HISCoreUtil.isNull(createRequest.getName())) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
@@ -446,6 +448,7 @@ public class DepartmentAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
     @ApiOperation(httpMethod = "PUT", value = "Update Clinical Department",
             notes = "This method will Update Clinical Department",
