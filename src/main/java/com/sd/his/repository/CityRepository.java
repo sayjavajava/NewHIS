@@ -27,4 +27,10 @@ public interface CityRepository extends JpaRepository<City, Long> {
 
     @Query("SELECT c FROM City c")
     List<City> findAllBy();
+
+
+    @Query("SELECT t FROM City t where t.name = :name")
+    City findTitleById(@Param("name") String id);
+
+
 }

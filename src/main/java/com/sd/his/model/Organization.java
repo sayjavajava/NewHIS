@@ -42,35 +42,17 @@ public class Organization extends BaseEntity implements Serializable {
     @Column(name = "DURATION_OF_EXAM")
     private Long durationOFExam;
 
-//    @Column(name = "TIMEZONE")
-//    private String timezone; time zone will be updated with time zone id
-
-//    @Column(name = "DURATION_FOLLOW_UP")
-//    private Long durationFollowUp;
-
     @Column(name = "OFFICE_PHONE")
     private String officePhone;
 
-//    @Column(name = "HOME_PHONE")
-//    private String homePhone;
-
-//    @Column(name = "CELL_PHONE")
-//    private String cellPhone;
-
-    //Dateformat
-
     @Column(name = "WEBSITE")
     private String website;
-
-//    @Column(name = "SPECIALTY")
-//    private String specialty; Multi specialty table and should have multiple element collection
 
     @Column(name = "EMAIL")
     private String email;
 
     @Column(name = "STATUS", columnDefinition = "boolean default true", nullable = false)
     private Boolean status;
-    //CITY //COUNTRY //STATE  should be updated accroding to static table data
 
     @Column(name = "FAX")
     private String fax;
@@ -89,7 +71,6 @@ public class Organization extends BaseEntity implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Branch> branches;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "City_id")

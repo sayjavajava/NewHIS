@@ -7,7 +7,10 @@ import com.sd.his.model.Department;
 import com.sd.his.repository.BranchDepartmentRepository;
 import com.sd.his.repository.BranchRepository;
 import com.sd.his.repository.DepartmentRepository;
+import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.BranchesListWrapper;
 import com.sd.his.wrapper.DepartmentWrapper;
+import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * @author    : Arif Heer
@@ -63,9 +67,21 @@ public class DepartmentService {
         for (Department cd : dpts) {
             if (cd.getStatus()) {
                 DepartmentWrapper dpt = new DepartmentWrapper(cd);
+              //  dpt.setListOfBranches(cd.getBranchDepartments());
+                List<BranchesListWrapper> branhes= new ArrayList<>();
                 for(BranchDepartment cdd :cd.getBranchDepartments()){
-                    dpt.setBranchDepartmentId(cdd.getId());
-                    dpt.setBranchId(cdd.getBranch().getId());
+                    if(cdd.getId() != 0 ){
+                    /*    dpt.setBranchDepartmentId(cdd.getId());
+                        dpt.setBranchId(cdd.getBranch().getId());
+                        dpt.setBranch(cdd.getBranch().getName());*/
+                        BranchesListWrapper branch =new BranchesListWrapper();
+                        branch.setId(cdd.getBranch().getId());
+                        branch.setName(cdd.getBranch().getName());
+                        branch.setLabel(cdd.getBranch().getName());
+                        branch.setValue(cdd.getBranch().getId());
+                        branhes.add(branch);
+                    }
+                   dpt.setListOfBranches(branhes);
                 }
                 dptsWrappers.add(dpt);
             }
@@ -122,32 +138,58 @@ public class DepartmentService {
     public Department saveDepartment(DepartmentWrapper createRequest) {
         Department dpt = new Department(createRequest);
         dpt.setDeptId(hisUtilService.generatePrefix(ModuleEnum.DEPARTMENT));
-        long branchId = createRequest.getBranchId();
-        Branch branch = branchRepository.findOne(branchId);
+        List<Long> listOFBranch=  createRequest.getSelectedBranches().stream().collect(Collectors.toList());
+        List<Branch> branch = branchRepository.findAllByIdIn(listOFBranch);
         BranchDepartment branchDepartment = new BranchDepartment();
         Department department = departmentRepository.save(dpt);
-        branchDepartment.setBranch(branch);
-        branchDepartment.setDepartment(dpt);
-        branchDepartmentRepository.save(branchDepartment);
-
-        return department ;
+        List<BranchDepartment> branchDepartmentList = new ArrayList<>();
+        if(branch !=null){
+        for(Branch br :branch){
+         BranchDepartment brDpt = new BranchDepartment();
+         brDpt.setBranch(br);
+         brDpt.setDepartment(department);
+         branchDepartmentList.add(brDpt);
+        }
+         branchDepartmentRepository.save(branchDepartmentList);
+         hisUtilService.updatePrefix(ModuleEnum.DEPARTMENT);
+        }
+        return dpt ;
     }
 
     @Transactional(rollbackOn = Throwable.class)
     public Department updateDepartment(DepartmentWrapper updateRequest) {
         Department dpt = departmentRepository.findOne(updateRequest.getId());
-        BranchDepartment branchDepartment =null;
         dpt.setName(updateRequest.getName());
         dpt.setDescription(updateRequest.getDescription());
         dpt.setStatus(updateRequest.isActive());
-        long branchId = updateRequest.getBranchId();
+        /*long branchId = updateRequest.getBranchId();
         Branch branch = branchRepository.findOne(branchId);
         if(updateRequest.getBranchDepartmentId() != 0)
         branchDepartment = branchDepartmentRepository.findByDepartment(dpt);
         Department department = departmentRepository.save(dpt);
         branchDepartment.setBranch(branch);
       //  branchDepartment.setDepartment(dpt);
-        branchDepartmentRepository.save(branchDepartment);
+        branchDepartmentRepository.save(branchDepartment);*/
+   //     dpt.setDeptId(hisUtilService.generatePrefix(ModuleEnum.DEPARTMENT));
+        List<Long> listOFBranch=  updateRequest.getSelectedBranches().stream().collect(Collectors.toList());
+        List<Branch> branch = branchRepository.findAllByIdIn(listOFBranch);
+
+        List<BranchDepartment> branchDepartment = branchDepartmentRepository.findAllByDepartment(dpt);
+        if(!HISCoreUtil.isListEmpty(branchDepartment)){
+          branchDepartmentRepository.delete(branchDepartment);
+        }
+        List<BranchDepartment> branchDepartmentList = new ArrayList<>();
+        Department department = departmentRepository.save(dpt);
+        if(branch != null){
+            for(Branch br :branch){
+                BranchDepartment brDpt = new BranchDepartment();
+                brDpt.setBranch(br);
+                brDpt.setDepartment(department);
+                branchDepartmentList.add(brDpt);
+            }
+            branchDepartmentRepository.save(branchDepartmentList);
+        //    hisUtilService.updatePrefix(ModuleEnum.DEPARTMENT);
+        }
         return department;
     }
 

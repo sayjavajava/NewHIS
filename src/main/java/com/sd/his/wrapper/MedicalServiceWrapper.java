@@ -5,6 +5,7 @@ import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * @author    : Jamal
@@ -49,6 +50,7 @@ public class MedicalServiceWrapper {
     private List<DepartmentWrapper> checkedDepartments;
     private List<TaxWrapper> taxes;
     private boolean hasChild;
+
 
     public MedicalServiceWrapper() {
     }
@@ -95,6 +97,15 @@ public class MedicalServiceWrapper {
             this.hasChild = true;
         }
 
+       if(ms.getBranchMedicalServices().size() != 0){
+           this.setBranchServices(ms.getBranchMedicalServices());
+       }
+
+    }
+    public void setBranchServices(List<BranchMedicalService> list){
+        this.branches = list.stream()
+                .map(x->new BranchResponseWrapper(x.getBranch().getId(),x.getBranch().getName()))
+                .collect(Collectors.toList());
     }
 
     public MedicalServiceWrapper(MedicalService ms, String search) {

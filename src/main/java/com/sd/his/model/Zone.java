@@ -16,8 +16,6 @@ public class Zone implements Serializable {
     @Column(name = "zone_id")
     private long zoneId;
 
-
-
     @Column(name = "zone_name")
     private String name;
 
