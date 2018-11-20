@@ -397,6 +397,8 @@ public enum ResponseEnum {
     CITY_DELETE_ERROR("CITY_ERR_02"),
     CITY_DELETE_SUCCESS("CITY_SUC_02"),
     DATEFORMAT_NOT_FOUND_ERROR("DATEFORMAT_ERR_13"),
+    ORGANIZATIONDATA_FETCH_FAILED("ORG_ERR_02"),
+    ORGANIZATIONDATA_FETCH_SUCCESS("ORG_SUC_01"),
     DATEFORMAT_FETCHED_SUCCESS("DATEFORMAT_SUC_11"),
 
     GENERAL_LEDGER_DELETE_SUCCESS("GL_DEL_SUC_01"),
@@ -419,4 +421,6 @@ public enum ResponseEnum {
     public void setValue(String value) {
         this.value = value;
     }
+
+
 }

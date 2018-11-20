@@ -41,12 +41,7 @@ public class StaffAPI {
     private UserService userService;
     @Autowired
     private StaffService staffService;
-//    @Autowired
-//    private AWSService awsService;
-//    @Autowired
-//    PatientService patientService;
-//    @Autowired
-//    InsuranceManager insuranceManager;
+
 //
     private final Logger logger = LoggerFactory.getLogger(StaffAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");

@@ -26,6 +26,7 @@ import com.sd.his.enums.OrganizationFormTypeEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
+import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.TimezoneWrapper;
 import com.sd.his.wrapper.request.OrganizationRequestWrapper;
 import com.sd.his.wrapper.response.OrganizationResponseWrapper;
@@ -35,6 +36,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+
 
 @Service
 public class OrganizationService {
@@ -125,10 +128,39 @@ public class OrganizationService {
             organization.setFax(organizationRequestWrapper.getFax());
             organization.setAddress(organizationRequestWrapper.getAddress());
             organization.setEmail(organizationRequestWrapper.getCompanyEmail());
+            boolean chkStatusCity=containsDigit(organizationRequestWrapper.getSelectedCity());
+            boolean chkStatusState=containsDigit(organizationRequestWrapper.getSelectedState());
+            boolean chkStatusCountry=containsDigit(organizationRequestWrapper.getSelectedCountry());
+            long num;
+            long numState;
+            long numCountry;
+            if(chkStatusCity==true){
+                 num = Long.parseLong(organizationRequestWrapper.getSelectedCity());
+            }else{
+                City cityObj=cityRepository.findTitleById(organizationRequestWrapper.getSelectedCity());
+                num=cityObj.getId();
 
-            organization.setCity(cityRepository.findTitleById(organizationRequestWrapper.getSelectedCity()));
-            organization.setState(stateRepository.findTitleById(organizationRequestWrapper.getSelectedState()));
-            organization.setCountry(countryRepository.findTitleById(organizationRequestWrapper.getSelectedCountry()));
+            }
+            if(chkStatusState==true){
+                numState = Long.parseLong(organizationRequestWrapper.getSelectedState());
+            }else{
+                State stateObj=stateRepository.findTitleById(organizationRequestWrapper.getSelectedState());
+                numState=stateObj.getId();
+
+            }
+            if(chkStatusCountry==true){
+                numCountry = Long.parseLong(organizationRequestWrapper.getSelectedCountry());
+            }else{
+                Country countryObj=countryRepository.findTitleById(organizationRequestWrapper.getSelectedCountry());
+                numCountry=countryObj.getId();
+
+            }
+         //   long num = Long.parseLong(organizationRequestWrapper.getSelectedCity());
+          //  long numState = Long.parseLong(organizationRequestWrapper.getSelectedState());
+         //   long numCountry = Long.parseLong(organizationRequestWrapper.getSelectedCountry());
+            organization.setCity(cityRepository.findOne(num));
+            organization.setState(stateRepository.findOne(numState));
+            organization.setCountry(countryRepository.findOne(numCountry));
             organizationRepository.save(organization);
             return organizationRequestWrapper;
         }
@@ -140,7 +172,7 @@ public class OrganizationService {
             branchRepository.save(branch1);
             organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
           //  organization.setZone(zoneRepository.findOne(Long.valueOf(organizationRequestWrapper.getTimezoneList()));
-            long id=Long.valueOf(organizationRequestWrapper.getZoneFormat());
+            long id=Long.valueOf(organizationRequestWrapper.getSelectedTimeZoneFormat());
             Zone zoneId=zoneRepository.findOne(id);
             organization.setZone(zoneId);
         //    organization.setZone(organizationRequestWrapper.getZoneFormat().replaceAll("\\s",""));
@@ -185,6 +217,36 @@ public class OrganizationService {
         return organizationResponseWrapper;
     }
 
+    public Organization getAllOrgizationData() {
+        List<Organization> organization = organizationRepository.findAll();
+        if(!HISCoreUtil.isListEmpty(organization)){
+            Organization organizationData = (Organization)getFirstIndexofList(organization);
+            return organizationData;
+        }
+        return null;
+    }
+
+    private   Organization  getFirstIndexofList(List<Organization> dataList) {
+        if (null == dataList || dataList.isEmpty()) {
+            return null;
+        }
+        Organization OrganizationObj= (Organization) dataList.get(0);
+        return OrganizationObj;
+    }
 
 
+
+    public final boolean containsDigit(String s) {
+        boolean containsDigit = false;
+
+        if (s != null && !s.isEmpty()) {
+            for (char c : s.toCharArray()) {
+                if (containsDigit = Character.isDigit(c)) {
+                    break;
+                }
+            }
+        }
+
+        return containsDigit;
+    }
 }

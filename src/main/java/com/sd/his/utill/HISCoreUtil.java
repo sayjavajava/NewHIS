@@ -8,14 +8,9 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
         /*
@@ -210,4 +205,111 @@ public class HISCoreUtil {
         return p->(p.getId() ==id);
     }
 
+    public static String  getCurrentDateWithZone(String ZoneName,String format){
+        System.out.println("-----Current Date  of a  time zone using -----");
+        ZoneId zoneId = ZoneId.of(ZoneName);
+        LocalTime localTime=LocalTime.now(zoneId);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        String formattedTime=localTime.format(formatter);
+        System.out.println("Current Date : " + formattedTime);
+        return formattedTime;
+    }
+
+
+    public static String convertDateToTimeZone(Date date, String format,
+                                               String timeZone) {
+
+        if (date == null)
+            return null;
+
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+
+
+        if (timeZone == null || "".equalsIgnoreCase(timeZone.trim())) {
+            return null;
+        }
+
+        sdf.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
+
+
+                return  sdf.format(date);
+
+            //    return
+
+    }
+
+
+    public static String  getCurrentTimeByzone(String tzName) {
+
+        String currentTime="";
+
+        if(isNull(tzName)){
+            return null;
+        }
+        Calendar time = new GregorianCalendar(TimeZone.getTimeZone(tzName));
+        time.setTimeInMillis(time.getTimeInMillis());
+        int hour = time.get(Calendar.HOUR);
+        int minute = time.get(Calendar.MINUTE);
+        int second = time.get(Calendar.SECOND);
+        int year = time.get(Calendar.YEAR);
+        currentTime=hour+":"+minute+":"+second;
+        return currentTime;
+    }
+
+    public static String formatDateToString(Date date, String format,
+                                            String timeZone) {
+
+        if (date == null)
+            return null;
+
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+
+        if (timeZone == null || "".equalsIgnoreCase(timeZone.trim())) {
+            return null;
+        }
+
+        sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
+
+        return sdf.format(date);
+    }
+
+    public static Date convertToDateZone(String str) {
+        Date date = null;
+        if (str != null) {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
+
+    public static String convertToTimeFormat(String str,String timeFormat) {
+
+        LocalTime time = LocalTime.parse(str);
+        System.out.println(time);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
+        System.out.println(formatter.format(time));
+        return  formatter.format(time);
+    }
+
+    public static Date convertToAPPDate(String str) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(HISConstants.DATE_FORMAT_APP);
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
 }

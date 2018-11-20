@@ -27,6 +27,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Service
@@ -188,6 +189,27 @@ this method use for update current sequence in database after saving new entity 
 
 
     }
+
+
+    public  String convertDateToTimeZone(Date date, String format,
+                                               String timeZone) {
+
+        if (date == null)
+            return null;
+
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+
+
+        if (timeZone == null || "".equalsIgnoreCase(timeZone.trim())) {
+            return null;
+        }
+
+        sdf.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
+
+        return sdf.format(date);
+    }
+
+
 
 
 }
