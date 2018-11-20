@@ -6,6 +6,8 @@ import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DepartmentWrapper;
+import com.sd.his.wrapper.MedicalServiceWrapper;
+import com.sd.his.wrapper.ServiceComission;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
@@ -423,14 +425,20 @@ public class StaffService {
             }
 
             //doctor services portion
-
-            List<MedicalService> medicalServicesList = medicalServiceRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedServices()));
+            List<Long> selectedServces = createRequest.getServiceComission().stream().map(x->x.getId()).collect(Collectors.toList());
+            List<MedicalService> medicalServicesList = medicalServiceRepository.findAllByIdIn(selectedServces);
             List<DoctorMedicalService> doctorMedicalServiceList = new ArrayList<>();
+            Optional<String> serviceCom =null;
+            if (!HISCoreUtil.isListEmpty(medicalServicesList)) {
             for (MedicalService ms : medicalServicesList) {
                 DoctorMedicalService dms = new DoctorMedicalService();
                 dms.setDoctor(doctor);
                 dms.setMedicalService(ms);
+                serviceCom = this.getComissionOfServices(createRequest.getServiceComission(),ms.getId());
+                if(serviceCom.isPresent())
+                    dms.setComission(serviceCom.get());
                 doctorMedicalServiceList.add(dms);
+            }
             }
             doctorMedicalServiceRepository.save(doctorMedicalServiceList);
 
@@ -468,6 +476,9 @@ public class StaffService {
         }
         return null;
     }
+    private Optional<String> getComissionOfServices(List<ServiceComission> list, long id){
+        return list.stream().filter(x-> x.getId() == id).map(x->x.getComission()).findFirst();
+    }
 
     public User findById(long id) {
         return userRepository.findOne(id);
@@ -487,9 +498,9 @@ public class StaffService {
             return staffResponseWrapper;//cashierRepository.findAllByIdAndStatusActive(id);
         }
         if (userType.equalsIgnoreCase("DOCTOR")) {
-            staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(id);
+             staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(id);
             staffResponseWrapper.setStaffBranches(branchDoctorRepository.getDoctorBranches(id));
-            staffResponseWrapper.setDoctorMedicalSrvcList(doctorMedicalServiceRepository.getDoctorMedicalServices(id));
+            staffResponseWrapper.setDoctorServiceComission(doctorMedicalServiceRepository.getDocServicesAndComissions(id));
             return staffResponseWrapper;
         }
         if (userType.equalsIgnoreCase("NURSE")) {
@@ -597,7 +608,6 @@ public class StaffService {
     }
 
     public List<StaffWrapper> findAllStaffWithoutPagination() {
-
         List<StaffWrapper> drStaffList = doctorRepository.findAllByActive();
         List<StaffWrapper> crStaffList = cashierRepository.findAllByActive();
         List<StaffWrapper> rtStaffList = receptionistRepository.findAllByActive();
@@ -609,7 +619,6 @@ public class StaffService {
     }
 
     public int countAllStaff() {
-        logger.info("size:o" + finalStaffList.size());
         return finalStaffList.size();
     }
 
@@ -646,15 +655,20 @@ public class StaffService {
                 }
                 doctor.setDepartment(selectedDocDept);
                 doctorRepository.save(doctor);
-                //doctor visit branches
-                List<MedicalService> medicalServiceList = medicalServiceRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedServices()));
+                //doctor medical services
+                List<Long> selectedServces = createRequest.getServiceComission().stream().map(x->x.getId()).collect(Collectors.toList());
+                List<MedicalService> medicalServiceList = medicalServiceRepository.findAllByIdIn(selectedServces);
                 List<DoctorMedicalService> doctorMedicalServiceList = new ArrayList<>();
                 if (!HISCoreUtil.isListEmpty(medicalServiceList)) {
                     doctorMedicalServiceRepository.deleteDoctorMedicalServiceByDoctor_Id(doctor.getId());
+                    Optional<String> serviceCom =null;
                     for (MedicalService ms : medicalServiceList) {
                         DoctorMedicalService dms = new DoctorMedicalService();
                         dms.setDoctor(doctor);
                         dms.setMedicalService(ms);
+                        serviceCom = this.getComissionOfServices(createRequest.getServiceComission(),ms.getId());
+                        if(serviceCom.isPresent())
+                            dms.setComission(serviceCom.get());
                         doctorMedicalServiceList.add(dms);
                     }
                 }

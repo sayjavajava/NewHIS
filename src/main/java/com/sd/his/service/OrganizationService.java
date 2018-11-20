@@ -74,7 +74,7 @@ public class OrganizationService {
 
 
     public List<Zone> getAllZone() {
-       // List<Zone> lst=zoneRepository.findAll();
+        List<Zone> lst=zoneRepository.findAll();
         return zoneRepository.findAll();
     }
 

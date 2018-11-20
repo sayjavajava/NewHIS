@@ -44,6 +44,7 @@ public class MedicalServiceWrapper {
     private long checkedBranchCount;
     private long value;
     private String label;
+    private String comissionService;
 
     private List<BranchWrapperPart> branches;
     private List<BranchWrapperPart> checkedBranches;
@@ -63,6 +64,17 @@ public class MedicalServiceWrapper {
         this.status = medicalServiceWrapper.isStatus();
         this.description = medicalServiceWrapper.getDescription();
         this.duration = medicalServiceWrapper.getDuration();
+    }
+    public MedicalServiceWrapper(MedicalService ms,String comissionService,long medDocID){
+        this.id = ms.getId();
+        this.name = ms.getName();
+        this.name = ms.getName();
+        this.fee = ms.getFee();
+        this.cost = ms.getCost();
+        this.status = ms.getStatus();
+        this.description = ms.getDescription();
+        this.comissionService =comissionService;
+
     }
 
     public MedicalServiceWrapper(long id, String name, String description) {
@@ -117,6 +129,15 @@ public class MedicalServiceWrapper {
                 ms.getAppointment() != null && ms.getAppointment().size() > 0) {
             this.hasChild = true;
         }
+    }
+
+
+    public String getComissionService() {
+        return comissionService;
+    }
+
+    public void setComissionService(String comissionService) {
+        this.comissionService = comissionService;
     }
 
     public long getValue() {
