@@ -6,6 +6,7 @@ public class ICDVersionWrapper {
 
     private long id;
     private String name;
+    private String description;
     private boolean status;
     private long updatedOn;
     private long createdOn;
@@ -25,6 +26,7 @@ public class ICDVersionWrapper {
     public ICDVersionWrapper(ICDVersion iCDVersion) {
         this.id = iCDVersion.getId();
         this.name = iCDVersion.getName();
+        this.description = iCDVersion.getDescription();
         this.status = iCDVersion.isStatus();
         this.updatedOn = iCDVersion.getUpdatedOn().getTime();
         this.createdOn = iCDVersion.getCreatedOn().getTime();
@@ -116,5 +118,13 @@ public class ICDVersionWrapper {
 
     public void setSelectedVersion(boolean selectedVersion) {
         this.selectedVersion = selectedVersion;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

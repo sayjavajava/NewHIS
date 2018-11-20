@@ -6,6 +6,7 @@ import com.sd.his.model.Doctor;
 import com.sd.his.model.Organization;
 import com.sd.his.repository.OrganizationRepository;
 import com.sd.his.service.BranchService;
+import com.sd.his.service.OrganizationService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
 import com.sd.his.wrapper.request.BranchRequestWrapper;
@@ -54,6 +55,9 @@ public class BranchAPI {
     private BranchService branchService;
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     private final Logger logger = LoggerFactory.getLogger(BranchAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
@@ -188,6 +192,9 @@ public class BranchAPI {
                 logger.error("Branch already exist with the same name...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
+
+
+
             Branch savedBranch = branchService.saveBranch(branchRequestWrapper);
             if (HISCoreUtil.isValidObject(savedBranch)) {
                 response.setResponseData(savedBranch);

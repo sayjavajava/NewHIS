@@ -24,6 +24,7 @@ package com.sd.his.repository;/*
 import com.sd.his.model.Organization;
 
 
+import com.sd.his.model.PaymentType;
 import com.sd.his.wrapper.response.OrganizationResponseWrapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -48,5 +49,8 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 
     @Query("SELECT o FROM Organization o  WHERE o.id=:id")
     Organization findByIdContains(@Param("id") Long id);
+
+   // @Query("SELECT com.sd.his.wrapper.response.OrganizationChecker(org.dateFormat,org.timeFormat,org.zone) FROM Organization org")
+    List<Organization> findAll();
 
 }

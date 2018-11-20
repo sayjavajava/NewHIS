@@ -57,8 +57,9 @@ public class ICDVersion extends BaseEntity implements Serializable {
     }
 
     public ICDVersion(ICDVersionWrapper createRequest) {
-      this.name=createRequest.getName();
-      this.status =createRequest.isStatus();
+        this.name = createRequest.getName();
+        this.description = createRequest.getDescription();
+        this.status = createRequest.isStatus();
     }
 
 
@@ -85,5 +86,21 @@ public class ICDVersion extends BaseEntity implements Serializable {
 
     public void setVersions(List<ICDCodeVersion> versions) {
         this.versions = versions;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Problem> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(List<Problem> problems) {
+        this.problems = problems;
     }
 }

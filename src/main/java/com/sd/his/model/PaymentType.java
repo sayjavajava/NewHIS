@@ -49,10 +49,26 @@ public class PaymentType extends BaseEntity implements Serializable {
     private  String paymentPurpose;
 
     @Column(name="payment_servicecharges")
-    private String serviceCharges;
+    private Double serviceCharges;
+
+    public Double getServiceCharges() {
+        return serviceCharges;
+    }
+
+    public void setServiceCharges(Double serviceCharges) {
+        this.serviceCharges = serviceCharges;
+    }
+
+    public Double getMaxCardCharges() {
+        return maxCardCharges;
+    }
+
+    public void setMaxCardCharges(Double maxCardCharges) {
+        this.maxCardCharges = maxCardCharges;
+    }
 
     @Column(name="payment_maxCardCharges")
-    private String maxCardCharges;
+    private Double maxCardCharges;
 
     @Column(name="payment_payCredit")
     private String payCredit;
@@ -60,7 +76,16 @@ public class PaymentType extends BaseEntity implements Serializable {
     /*@Column(name="payment_bankGlCharges")
     private String bankGlCharges;*/
 
+    public Boolean getPatient() {
+        return isPatient;
+    }
 
+    public void setPatient(Boolean patient) {
+        isPatient = patient;
+    }
+
+    @Column(name = "is_patient", columnDefinition = "boolean default true")
+    private Boolean isPatient;
 
     @ManyToOne
     @JoinColumn(name = "payment_bankGlCharges")
@@ -75,21 +100,7 @@ public class PaymentType extends BaseEntity implements Serializable {
         this.paymentMode = paymentMode;
     }
 
-    public String getServiceCharges() {
-        return serviceCharges;
-    }
 
-    public void setServiceCharges(String serviceCharges) {
-        this.serviceCharges = serviceCharges;
-    }
-
-    public String getMaxCardCharges() {
-        return maxCardCharges;
-    }
-
-    public void setMaxCardCharges(String maxCardCharges) {
-        this.maxCardCharges = maxCardCharges;
-    }
 
     public String getPayCredit() {
         return payCredit;

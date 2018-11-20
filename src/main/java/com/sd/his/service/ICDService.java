@@ -271,6 +271,7 @@ public class ICDService {
         ICDVersion icdVersion = versionRepository.findOne(request.getId());
         if (HISCoreUtil.isValidObject(icdVersion)) {
             icdVersion.setName(request.getName());
+            icdVersion.setDescription(request.getDescription());
             icdVersion.setStatus(request.isStatus());
         }
         return icdVersion;
