@@ -1,5 +1,6 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.Appointment;
 import com.sd.his.model.Insurance;
 //import com.sd.his.model.Profile;
 import com.sd.his.model.SmokingStatus;
@@ -9,7 +10,9 @@ import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.RaceWrapper;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,37 +30,31 @@ public class PatientWrapper {
     private String firstName = "";
     private String middleName = "";
     private String lastName = "";
-    private String foreignName = "";
     private byte[] profileImg;
     private String homePhone = "";
     private String cellPhone = "";
     private boolean disableSMSTxt = true;
     private String officePhone = "";
-    private String officeExtension = "";
     private String email = "";
     private String userName = "";
-    private String preferredCommunication = "ENGLISH";
-    private String reminderLanguage = "ENGLISH";
-    private boolean statusUser = false;
+    private String preferredCommunication = "";
+    private boolean status = true;
     /////// DEMOGRAPHY
     //private long profileId;
     private String patientSSN = "";
     private String dob = "";
-    private String gender = "MALE";
-    List<RaceWrapper> races = new ArrayList();
-    List<RaceWrapper> selectedRaces = new ArrayList();//patient selected races
-    private String racesString;
-    private String country = "SAUDI ARAB";
+    private String gender = "";
+    private String country = "";
+    private Long countryId;
     private String streetAddress = "";
-    private String zipCode = "";
     private String city = "";
-    private String state = "SAUDI ARAB";
-    private String formattedAddress = "";
-    private String marital = "SINGLE";
+    private Long cityId;
+    private String state = "";
+    private Long stateId;
+    private String marital = "";
     private String emergencyContactName = "";
     private String emergencyContactPhone = "";
     private String emergencyContactRelation = "";
-    private boolean signatureOnFile = false;
     private boolean profileStatus = true;
 
     ///////////////// INSURANCE
@@ -87,18 +84,67 @@ public class PatientWrapper {
 
     public PatientWrapper() {
     }
-    public PatientWrapper(Long id, String firstName,String lastName,String email,String city,String address,String cellPhone){
-        this.id =id;
+
+    public PatientWrapper(Long id, String patientId, String patientSSN, String firstName, String lastName, String email, com.sd.his.model.City city, String address, String cellPhone) {
+        this.id = id;
+        this.patientId = patientId;
+        this.patientSSN = patientSSN;
         this.firstName = firstName;
-        this.lastName =lastName;
-        this.email =email;
-        this.city =city;
-        this.formattedAddress =address;
-        this.cellPhone =cellPhone;
+        this.lastName = lastName;
+        this.email = email;
+        this.streetAddress = address;
+        this.cellPhone = cellPhone;
         this.label = firstName;
         this.value = id;
 
+        if (city != null) {
+            this.city = city.getName();
+            this.cityId = city.getId();
+
+            this.state = city.getState().getName();
+            this.stateId = city.getState().getId();
+
+            this.country = city.getCountry().getName();
+            this.countryId = city.getCountry().getId();
+        }
+
     }
+
+   /* public PatientWrapper(Long id, String patientId, String firstName, String lastName, String email,
+                          com.sd.his.model.City city, String address, String cellPhone, List<Appointment> appointments) {
+        this.id = id;
+        this.patientId = patientId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.streetAddress = address;
+        this.cellPhone = cellPhone;
+        this.label = firstName;
+        this.value = id;
+
+        if (city != null) {
+            this.city = city.getName();
+            this.cityId = city.getId();
+
+            this.state = city.getState().getName();
+            this.stateId = city.getState().getId();
+
+            this.country = city.getCountry().getName();
+            this.countryId = city.getCountry().getId();
+        }
+
+        if(appointments.size()>0){
+//            for(int i=0; i<appointments.size(); i++){
+//                AppointmentWrapper futureAppointmentWrapper = new AppointmentWrapper();
+//                AppointmentWrapper pastAppointmentWrapper = new AppointmentWrapper();
+//                Appointment appointment = appointments.get(i);
+//                if(appointment.getSchdeulledDate().after(LocalDateTime.now()));{
+//                    futureAppointmentWrapper = new AppointmentWrapper(appointment);
+//                }
+//            }
+        }
+
+    }*/
 
     /*public PatientWrapper(User user, Profile profile, Insurance insurance) {
         this.userId = user.getId();
@@ -211,6 +257,7 @@ public class PatientWrapper {
     public void setPrimaryDoctorLastName(String primaryDoctorLastName) {
         this.primaryDoctorLastName = primaryDoctorLastName;
     }
+
     public List<AppointmentWrapper> getFutureAppointments() {
         return futureAppointments;
     }
@@ -291,14 +338,6 @@ public class PatientWrapper {
         this.lastName = lastName;
     }
 
-    public String getForeignName() {
-        return foreignName;
-    }
-
-    public void setForeignName(String foreignName) {
-        this.foreignName = foreignName;
-    }
-
     /*public File getPatientPhoto() {
         return patientPhoto;
     }*/
@@ -339,14 +378,6 @@ public class PatientWrapper {
         this.officePhone = officePhone;
     }
 
-    public String getOfficeExtension() {
-        return officeExtension;
-    }
-
-    public void setOfficeExtension(String officeExtension) {
-        this.officeExtension = officeExtension;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -371,20 +402,12 @@ public class PatientWrapper {
         this.preferredCommunication = preferredCommunication;
     }
 
-    public String getReminderLanguage() {
-        return reminderLanguage;
+    public boolean getStatus() {
+        return status;
     }
 
-    public void setReminderLanguage(String reminderLanguage) {
-        this.reminderLanguage = reminderLanguage;
-    }
-
-    public boolean isStatusUser() {
-        return statusUser;
-    }
-
-    public void setStatusUser(boolean statusUser) {
-        this.statusUser = statusUser;
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     /*public long getProfileId() {
@@ -419,22 +442,6 @@ public class PatientWrapper {
         this.gender = gender;
     }
 
-    public List<RaceWrapper> getRaces() {
-        return races;
-    }
-
-    public void setRaces(List<RaceWrapper> races) {
-        this.races = races;
-    }
-
-    public List<RaceWrapper> getSelectedRaces() {
-        return selectedRaces;
-    }
-
-    public void setSelectedRaces(List<RaceWrapper> selectedRaces) {
-        this.selectedRaces = selectedRaces;
-    }
-
     public String getCountry() {
         return country;
     }
@@ -451,14 +458,6 @@ public class PatientWrapper {
         this.streetAddress = streetAddress;
     }
 
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
     public String getCity() {
         return city;
     }
@@ -473,14 +472,6 @@ public class PatientWrapper {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public String getFormattedAddress() {
-        return formattedAddress;
-    }
-
-    public void setFormattedAddress(String formattedAddress) {
-        this.formattedAddress = formattedAddress;
     }
 
     public String getMarital() {
@@ -513,14 +504,6 @@ public class PatientWrapper {
 
     public void setEmergencyContactRelation(String emergencyContactRelation) {
         this.emergencyContactRelation = emergencyContactRelation;
-    }
-
-    public boolean isSignatureOnFile() {
-        return signatureOnFile;
-    }
-
-    public void setSignatureOnFile(boolean signatureOnFile) {
-        this.signatureOnFile = signatureOnFile;
     }
 
     public String getCompany() {
@@ -611,14 +594,6 @@ public class PatientWrapper {
         this.profileStatus = profileStatus;
     }
 
-    public String getRacesString() {
-        return racesString;
-    }
-
-    public void setRacesString(String racesString) {
-        this.racesString = racesString;
-    }
-
     public byte[] getProfileImg() {
         return profileImg;
     }
@@ -649,5 +624,29 @@ public class PatientWrapper {
 
     public void setHasChild(boolean hasChild) {
         this.hasChild = hasChild;
+    }
+
+    public Long getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(Long countryId) {
+        this.countryId = countryId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public Long getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(Long stateId) {
+        this.stateId = stateId;
     }
 }
