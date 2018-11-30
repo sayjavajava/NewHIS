@@ -9,6 +9,7 @@ public class MedicalServicesDoctorWrapper {
     private String docFirstName;
     private String docLastName;
     private Long duration;
+    private String comission;
 
     public MedicalServicesDoctorWrapper(Long dmsId, Long drId, String docFirstName, String docLastName, Long msId, String msName, String msDescription,Long duration ){
         this.doctorMedicalServiceId =dmsId;
@@ -20,6 +21,14 @@ public class MedicalServicesDoctorWrapper {
         this.mServiceDescription=msDescription;
         this.duration = duration;
 
+    }
+
+    public String getComission() {
+        return comission;
+    }
+
+    public void setComission(String comission) {
+        this.comission = comission;
     }
 
     public Long getDuration() {

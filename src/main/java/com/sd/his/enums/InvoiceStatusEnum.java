@@ -23,5 +23,5 @@ package com.sd.his.enums;
  * All rights reserved.
  */
 public enum InvoiceStatusEnum {
-    PENDING,CLOSE,CANCEL;
+    PENDING,CLOSE,CANCEL, REFUND;
 }

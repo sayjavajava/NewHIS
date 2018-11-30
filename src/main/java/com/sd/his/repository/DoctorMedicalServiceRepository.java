@@ -2,6 +2,7 @@ package com.sd.his.repository;
 
 import com.sd.his.model.DoctorMedicalService;
 import com.sd.his.model.MedicalService;
+import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.response.MedicalServicesDoctorWrapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface DoctorMedicalServiceRepository extends JpaRepository<DoctorMedicalService, Long> {
-    @Query("SELECT dms.medicalService FROM DoctorMedicalService dms inner join dms.doctor d where dms.doctor.id=:id")
+    @Query("SELECT dms.medicalService,dms.comission FROM DoctorMedicalService dms inner join dms.doctor d where dms.doctor.id=:id")
     List<MedicalService> getDoctorMedicalServices(@Param("id") Long id);
 
    // (Long dmsId, Long drId, String docFirstName, String docLastName, Long msId, String msName, String msDescription )
@@ -20,4 +21,9 @@ public interface DoctorMedicalServiceRepository extends JpaRepository<DoctorMedi
     List<MedicalServicesDoctorWrapper> findAllByDoctorAndServices();
 
     void deleteDoctorMedicalServiceByDoctor_Id(Long doctorId);
+    @Query("SELECT dms.comission FROM DoctorMedicalService dms inner join dms.doctor d where dms.doctor.id=:id")
+    String getServicesComission(@Param("id") Long id);
+
+    @Query("SELECT NEW com.sd.his.wrapper.MedicalServiceWrapper(dms.medicalService,dms.comission,dms.id) FROM DoctorMedicalService dms inner join dms.doctor d where dms.doctor.id=:id")
+    List<MedicalServiceWrapper> getDocServicesAndComissions(@Param("id") Long id);
 }

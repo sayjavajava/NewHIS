@@ -2,6 +2,8 @@ package com.sd.his.wrapper.response;
 
 import com.sd.his.model.*;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.MedicalServiceWrapper;
+import com.sd.his.wrapper.ServiceComission;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,17 +68,14 @@ public class StaffResponseWrapper{
     String naturalId;
     long value;
     String label;
-
     Long docDepartmentId;
     List<Department> nurseDepartmentList;
-     // List<ClinicalDepartment> clinicalDepartments;
-    // List<DutyWithDoctor> dutyWithDoctors;
-
     List<Branch> staffBranches = new ArrayList();
-    List<BranchResponseWrapper> staffBranches2 = new ArrayList();
     List<Doctor> dutyWithDoctors;
     boolean checkedDoc;
     List<MedicalService> doctorMedicalSrvcList = new ArrayList();
+    List<MedicalServiceWrapper> doctorServiceComission = new ArrayList();
+    List<ServiceComission> comissionServices;
 
     public StaffResponseWrapper() {
     }
@@ -255,12 +254,20 @@ public class StaffResponseWrapper{
         }
     }
 
-    public List<BranchResponseWrapper> getStaffBranches2() {
-        return staffBranches2;
+    public List<MedicalServiceWrapper> getDoctorServiceComission() {
+        return doctorServiceComission;
     }
 
-    public void setStaffBranches2(List<BranchResponseWrapper> staffBranches2) {
-        this.staffBranches2 = staffBranches2;
+    public void setDoctorServiceComission(List<MedicalServiceWrapper> doctorServiceComission) {
+        this.doctorServiceComission = doctorServiceComission;
+    }
+
+    public List<ServiceComission> getComissionServices() {
+        return comissionServices;
+    }
+
+    public void setComissionServices(List<ServiceComission> comissionServices) {
+        this.comissionServices = comissionServices;
     }
 
     public long getValue() {

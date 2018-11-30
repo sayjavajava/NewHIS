@@ -9,10 +9,7 @@ import com.sd.his.model.Room;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.CityWrapper;
-import com.sd.his.wrapper.CountryWrapper;
-import com.sd.his.wrapper.ExamRooms;
-import com.sd.his.wrapper.StateWrapper;
+import com.sd.his.wrapper.*;
 import com.sd.his.wrapper.request.BranchRequestWrapper;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.apache.commons.lang.RandomStringUtils;
@@ -24,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /*
@@ -88,6 +87,9 @@ public class BranchService {
     @Autowired
     private  CityRepository cityRepository;
 
+    @Autowired
+    private OrganizationService organizationService;
+
     /*private BranchUserRepository branchUserRepository;
     private UserRepository userRepository;
     private RoomRepository roomRepository;
@@ -107,7 +109,21 @@ public class BranchService {
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setSystemBranch(false);
         branch.setOfficePhone(branchRequestWrapper.getOfficePhone());
-       // branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
+        /*Organization dbOrganization=organizationService.getAllOrgizationData();
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        Date dte=new Date();
+    //    String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
+        String currentTime=HISCoreUtil.getCurrentTimeByzone(Zone);
+        System.out.println("Time"+currentTime);
+        String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+        System.out.println("Read Date"+readDate);
+        Date allDate=HISCoreUtil.convertToAPPDate(readDate);
+        System.out.println("Date with Time Zone"+allDate);*/
+
+
+      //  branch.setCreatedOn(allDate);
+      //  branch.setUpdatedOn(allDate);
         branch.setOfficeStartTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursStart()));
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
         branch.setFax(branchRequestWrapper.getFax());
@@ -128,14 +144,7 @@ public class BranchService {
             room.setActive(true);
             roomRepository.save(room);
         }
-        /*User drUser= userRepository.findOne(branchRequestWrapper.getPrimaryDoctor());
-        Doctor doctor = doctorRepository.findByUser(drUser);
-        BranchDoctor branchDoctor =new BranchDoctor();
-        branchDoctor.setBranch(branch);
-        branchDoctor.setDoctor(doctor);
-        branchDoctor.setPrimaryBranch(true);
-        branchDoctorRepository.save(branchDoctor);
-        */
+
         return branch;
 
     }
@@ -313,6 +322,14 @@ public class BranchService {
 
     public List<BranchResponseWrapper> getAllActiveBranches() {
         return branchRepository.findAllByActiveTrue();
+    }
+
+    public List<BranchWrapperPart> getActiveBranches() {
+        return branchRepository.findAllByActive();
+    }
+
+    public List<BranchWrapperPart> getAllBranches() {
+        return branchRepository.findAllByActive();
     }
 
     public Set<BranchResponseWrapper> getAllActiveBranchesWithDoctors() {

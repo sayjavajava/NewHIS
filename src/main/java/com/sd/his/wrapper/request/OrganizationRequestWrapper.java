@@ -56,15 +56,24 @@ public class OrganizationRequestWrapper {
     String dateFormat;
     String timeFormat;
 
-    public String getZoneFormat() {
+    public String getSelectedTimeZoneFormat() {
+        return selectedTimeZoneFormat;
+    }
+
+    public void setSelectedTimeZoneFormat(String selectedTimeZoneFormat) {
+        this.selectedTimeZoneFormat = selectedTimeZoneFormat;
+    }
+
+    String selectedTimeZoneFormat;
+    public Zone getZoneFormat() {
         return zoneFormat;
     }
 
-    public void setZoneFormat(String zoneFormat) {
+    public void setZoneFormat(Zone zoneFormat) {
         this.zoneFormat = zoneFormat;
     }
 
-    String zoneFormat;
+    Zone zoneFormat;
 
     public String getDateFormat() {
         return dateFormat;

@@ -31,6 +31,7 @@ import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.TimezoneWrapper;
 import com.sd.his.wrapper.request.OrganizationRequestWrapper;
+import com.sd.his.wrapper.response.OrganizationChecker;
 import com.sd.his.wrapper.response.OrganizationResponseWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -255,17 +256,20 @@ public class OrganizationAPI {
         response.setResponseData(null);
 
         try {
+
             OrganizationResponseWrapper dbOrganization = this.organizationService.getOrganizationByIdWithResponse(id);
             Organization addInfo  =  this.organizationService.getOrganizationByIdWithResponseAdditionalInfo(id);
             Map<String, Object> orgCity;
             orgCity = new HashMap<>();
             orgCity.put("cityId", addInfo.getCity().getId());
             orgCity.put("city", addInfo.getCity().getName());
-            orgCity.put("stateId", addInfo.getCity().getState().getId());
-            orgCity.put("state", addInfo.getCity().getState().getName());
-            orgCity.put("countryId", addInfo.getCity().getState().getCountry().getId());
-            orgCity.put("country", addInfo.getCity().getState().getCountry().getName());
-            orgCity.put("Currency",addInfo.getCity().getState().getCountry().getCurrency());
+            orgCity.put("stateId", addInfo.getState().getId());
+            orgCity.put("state", addInfo.getState().getName());
+            orgCity.put("countryId", addInfo.getCountry().getId());
+            orgCity.put("country", addInfo.getCountry().getName());
+            orgCity.put("Currency",addInfo.getCountry().getCurrency());
+            orgCity.put("zoneFormat",addInfo.getZone().getName()+""+addInfo.getZone().getZoneTime());
+
             dbOrganization.setAddInfo(orgCity);
             dbOrganization.setDateFormat(addInfo.getDateFormat());
             dbOrganization.setTimeFormat(addInfo.getTimeFormat());
@@ -396,6 +400,59 @@ public class OrganizationAPI {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Organization API -  exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // Fetch   Organization Data For Every Create and Update and Read Only purpose
+
+    @ApiOperation(httpMethod = "GET", value = "All Organization Data",
+            notes = "This method will return all Organization",
+            produces = "application/json", nickname = "All Orgaanization",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All Organization Data fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/OrganizationData", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllOrganizationData(HttpServletRequest request) {
+
+        logger.error("get All Organization  API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("organization.not.found"));
+        response.setResponseCode(ResponseEnum.ORGANIZATIONDATA_FETCH_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("get All Organization API - Organization fetching from DB");
+            Organization organizationsData = organizationService.getAllOrgizationData();
+            OrganizationChecker orgChecker=new OrganizationChecker(organizationsData.getId(),organizationsData.getDateFormat(),organizationsData.getTimeFormat(),organizationsData.getZone().getName().replaceAll("\\s",""),organizationsData.getZone().getZoneTime(),organizationsData.getCountry().getCurrency());
+
+            if (HISCoreUtil.isValidObject(orgChecker)) {
+
+                response.setResponseMessage(messageBundle.getString("organization.fetched.success"));
+                response.setResponseCode(ResponseEnum.ORGANIZATIONDATA_FETCH_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(orgChecker);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            response.setResponseMessage(messageBundle.getString("organization.not.found"));
+            response.setResponseCode(ResponseEnum.ORGANIZATIONDATA_FETCH_FAILED.getValue());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseData(null);
+            logger.error("Organization  API - Organization  not found");
+
+
+            logger.error("get All Organization  API - Organization successfully fetched.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("get All Organization  API -  exception..", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));

@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 @RestController
@@ -65,10 +67,13 @@ public class PaymentTypeAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", paymentType);
+
             response.setResponseMessage(messageBundle.getString("paymentType.fetched.success"));
             response.setResponseCode(ResponseEnum.PAYMENTTYPE_FETCHED_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(paymentType);
+            response.setResponseData(returnValues);
 
             logger.error("Payment Type  API - Payment Type successfully fetched.");
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -169,7 +174,9 @@ public class PaymentTypeAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-
+            if(paymentType.getPatient()==null){
+                paymentType.setPatient(true);
+            }
             PaymentType paymentTypeSave = paymentServiceType.savePaymentAPI(paymentType);
             if (HISCoreUtil.isValidObject(paymentTypeSave)) {
                 response.setResponseMessage(messageBundle.getString("paymentType.save.success"));

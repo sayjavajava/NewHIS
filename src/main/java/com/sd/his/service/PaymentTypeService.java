@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -47,9 +49,9 @@ public class PaymentTypeService {
         paymentEntity.setPaymentPurpose(paymentType.getPaymentPurpose());
         paymentEntity.setPaymentTitle(paymentType.getPaymentTitle());
         paymentEntity.setPaymentMode(paymentType.getPaymentMode());
-        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.ENGLISH);
-        String dateString = format.format(new Date());
-        paymentEntity.setUpdatedOn(HISCoreUtil.convertToDate(dateString));
+       // SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.ENGLISH);
+      //  String dateString = format.format(new Date());
+     //   paymentEntity.setUpdatedOn(HISCoreUtil.convertToDate(dateString));
         paymentEntity.setActive(paymentType.getActive());
         if(paymentType.getPaymentMode().equalsIgnoreCase("Card")){
 
@@ -62,5 +64,7 @@ public class PaymentTypeService {
         return paymentRepository.save(paymentEntity);
     }
 
-
+    public static  Double makeDecimalFormat(Double val) {
+        return new BigDecimal(val.toString()).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
 }

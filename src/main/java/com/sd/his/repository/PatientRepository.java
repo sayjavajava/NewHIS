@@ -16,6 +16,9 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     @Query("SELECT new com.sd.his.wrapper.PatientWrapper(p.id, p.patientId, p.patientSSN, p.firstName,p.lastName,p.email,p.city,p.formattedAddress,p.cellPhone) FROM Patient p ")
     List<PatientWrapper> getAllByStatusTrue();
 
+    @Query("SELECT new com.sd.his.wrapper.PatientWrapper(p) FROM Patient p ")
+    List<PatientWrapper> getAll();
+
     @Query("SELECT p FROM com.sd.his.model.Patient p")
     List<Patient> getAllPaginatedPatients(Pageable pageable);
 
@@ -23,4 +26,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     List<Patient> searchPatientByNameOrCellNbr(Pageable pageable, @Param("searchString") String searchString);
 
     Optional<Patient> findById(Long id);
+
+
 }

@@ -28,5 +28,5 @@ public interface StateRepository extends JpaRepository<State, Long> {
 
 
     @Query("SELECT t FROM State t where t.name = :name")
-    State findTitleById(@Param("name") String id);
+    State findTitleById(@Param("name") String paraName);
 }

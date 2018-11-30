@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /*
  * @author    :Tahir Mehmood
@@ -107,6 +108,14 @@ public class DateTimeUtil {
     public static String getFormattedDateFromDate(Date date, String dateFormat) {
         SimpleDateFormat format = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         return format.format(date);
+    }
+
+    public static String convertDateFromTimeZoneToGMT(Date date, TimeZone timeZone, String toDateFormat) throws ParseException {
+        SimpleDateFormat dateFormatGmt = new SimpleDateFormat(toDateFormat);
+        dateFormatGmt.setTimeZone(timeZone);
+
+//        return dateFormatGmt.parse(dateFormatGmt.format(date));
+        return dateFormatGmt.format(date);
     }
 
     public static int convertAppointmentTime(String time) {

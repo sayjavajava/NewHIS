@@ -40,7 +40,7 @@ public class ChartOfAccountController {
     public ResponseEntity<?> getAllAccountsConfigurations() {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            response.setResponseData(generalLedgerService.getAll());
+       //     response.setResponseData(generalLedgerService.getAll());
 
             HashMap<String, Object> hashMap = new HashMap<String, Object>();
             hashMap.put("accountList", generalLedgerService.getAll());
@@ -269,6 +269,38 @@ public class ChartOfAccountController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @ApiOperation(httpMethod = "GET", value = "get chart of accounts Configurations",
+            notes = "This method will get chart of accounts Configurations",
+            produces = "application/json", nickname = "Get All chart of accounts Configurations",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/getAllForPaymentType", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllForPaymentType(){
+        GenericAPIResponse response = new GenericAPIResponse();
+        try
+        {
+            response.setResponseData(generalLedgerService.getAll());
+
+            response.setResponseMessage(messageBundle.getString("chart.of.account.configuration.fetched.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Chart of accounts List data fetch successfully");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Chart of accounts List data  not fetched successfully/ Failed.", ex.fillInStackTrace());
+            System.out.println("Exception : " + ex.getStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("chart.of.account.configuration.fetch.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 
     @ApiOperation(httpMethod = "POST", value = "Get latest account code",

@@ -112,7 +112,11 @@ public class PatientAPI {
                 logger.error("savePatient API - user already found.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }*/
+            patientWrapper.setDob( patientService.convertDateToGMT( patientWrapper.getDob().trim() ) );
+            patientWrapper.setCardIssuedDate( patientService.convertDateToGMT( patientWrapper.getCardIssuedDate().trim() ) );
+            patientWrapper.setCardExpiryDate( patientService.convertDateToGMT( patientWrapper.getCardExpiryDate().trim() ) );
             patientService.savePatient(patientWrapper);
+//            patientService.convertDateToGMT(patientWrapper.getDob().trim());
 
             response.setResponseMessage(messageBundle.getString("patient.save.success"));
             response.setResponseCode(ResponseEnum.PATIENT_SAVE_SUCCESS.getValue());
@@ -281,6 +285,24 @@ public class PatientAPI {
                 response.setResponseData(null);
                 logger.error("updatePatient API - Please select proper user, userId not available with request patientRequest.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            if (patientRequest.getDob().trim().length() == 10) {
+                patientRequest.setDob( patientService.convertDateToGMT( patientRequest.getDob().trim(), "yyyy-MM-dd" ) );
+            } else {
+                patientRequest.setDob( patientService.convertDateToGMT( patientRequest.getDob().trim(), "E MMM dd yyyy HH:mm:ss" ) );
+            }
+
+            if (patientRequest.getCardIssuedDate().trim().length() == 10) {
+                patientRequest.setCardIssuedDate( patientService.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "yyyy-MM-dd" ) );
+            } else {
+                patientRequest.setCardIssuedDate( patientService.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
+            }
+
+            if (patientRequest.getCardExpiryDate().trim().length() == 10) {
+                patientRequest.setCardExpiryDate( patientService.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "yyyy-MM-dd" ) );
+            } else {
+                patientRequest.setCardExpiryDate( patientService.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
             }
 
             patientService.savePatient(patientRequest);

@@ -24,8 +24,10 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -54,7 +56,6 @@ public class PatientService {
     @Autowired
     private CityRepository cityRepository;
 
-
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
         patientWrapper.setId(patient.getId());//patient pk
@@ -64,30 +65,37 @@ public class PatientService {
         patientWrapper.setFirstName(patient.getFirstName());
         patientWrapper.setMiddleName(patient.getMiddleName());
         patientWrapper.setLastName(patient.getLastName());
-        if (patient.getDob() != null)
+
+        if (patient.getDob() != null) {
             patientWrapper.setDob(patient.getDob() + "");
+        }
 
         patientWrapper.setHomePhone(patient.getHomePhone());
         patientWrapper.setCellPhone(patient.getCellPhone());
         patientWrapper.setOfficePhone(patient.getOfficePhone());
-        patientWrapper.setGender(patient.getGender().name());
+        if (patient.getGender() != null && !patient.getGender().name().trim().equals(""))
+            patientWrapper.setGender(patient.getGender().name());
+
         //image profile
-        patientWrapper.setCountry(patient.getCountry());
-        patientWrapper.setCountryId(patient.getCity().getCountry().getId());
         patientWrapper.setEmail(patient.getEmail());
-        patientWrapper.setMarital(patient.getMaritalStatus().name());
-
+        if (patient.getMaritalStatus() != null && !patient.getMaritalStatus().name().trim().equals(""))
+            patientWrapper.setMarital(patient.getMaritalStatus().name());
         patientWrapper.setStatus(patient.getStatus() == PatientStatusTypeEnum.ACTIVE);
-
         //patientWrapper.setProfileStatus( patient.getStatus().name().equalsIgnoreCase("ACTIVE") );
         patientWrapper.setDisableSMSTxt(patient.getDisableSMSText() == null ? false : patient.getDisableSMSText());
         patientWrapper.setPreferredCommunication(patient.getPreferredCommunication());
 //        patientWrapper.setReminderLanguage(patient.getReminderLanguage());
         patientWrapper.setStreetAddress(patient.getStreetAddress());
-        patientWrapper.setCity(patient.getCity().getName());
-        patientWrapper.setCityId(patient.getCity().getId());
-        patientWrapper.setState(patient.getState());
-        patientWrapper.setStateId(patient.getCity().getState().getId());
+
+        if (patient.getCity() != null) {
+            patientWrapper.setCity(patient.getCity().getName());
+            patientWrapper.setCityId(patient.getCity().getId());
+            patientWrapper.setState(patient.getCity().getState().getName());
+            patientWrapper.setStateId(patient.getCity().getState().getId());
+            patientWrapper.setCountry(patient.getCity().getCountry().getName());
+            patientWrapper.setCountryId(patient.getCity().getCountry().getId());
+        }
+
         patientWrapper.setEmergencyContactName(patient.getEmergencyContactName());
         patientWrapper.setProfileImgURL(patient.getProfileImgURL());
 
@@ -141,27 +149,30 @@ public class PatientService {
         patient.setMiddleName(patientWrapper.getMiddleName());
         patient.setLastName(patientWrapper.getLastName());
         if (!patientWrapper.getDob().isEmpty())
-            patient.setDob(DateTimeUtil.getDateFromString(patientWrapper.getDob(), HISConstants.DATE_FORMATE_ONE));
+            patient.setDob(DateTimeUtil.getDateFromString(patientWrapper.getDob(), HISConstants.DATE_FORMATE_THREE));
         patient.setHomePhone(patientWrapper.getHomePhone());
         patient.setCellPhone(patientWrapper.getCellPhone());
         patient.setOfficePhone(patientWrapper.getOfficePhone());
-        patient.setGender(GenderTypeEnum.valueOf(patientWrapper.getGender().toUpperCase()));
+        if (patientWrapper.getGender() != null && !patientWrapper.getGender().trim().equals(""))
+            patient.setGender(GenderTypeEnum.valueOf(patientWrapper.getGender().toUpperCase()));
+
         //image profile
-        patient.setCountry(patientWrapper.getCountry());
         patient.setEmail(patientWrapper.getEmail());
-        patient.setMaritalStatus(MaritalStatusTypeEnum.valueOf(patientWrapper.getMarital().toUpperCase()));
-
+        if (patientWrapper.getMarital() != null && !patientWrapper.getMarital().trim().equals(""))
+            patient.setMaritalStatus(MaritalStatusTypeEnum.valueOf(patientWrapper.getMarital().toUpperCase()));
         patient.setStatus(patientWrapper.getStatus() ? PatientStatusTypeEnum.ACTIVE : PatientStatusTypeEnum.INACTIVE);
-
 //        patient.setStatus(patientWrapper.getStatus());
         patient.setDisableSMSText(patientWrapper.isDisableSMSTxt());
         patient.setPreferredCommunication(patientWrapper.getPreferredCommunication());
 //        patient.setReminderLanguage(patientWrapper.getReminderLanguage());
         patient.setStreetAddress(patientWrapper.getStreetAddress());
-        if (patientWrapper.getCityId() != null) {
+
+        if(patientWrapper.getCityId()!=null) {
             patient.setCity(cityRepository.findOne(patientWrapper.getCityId()));
+            patient.setCountry(patient.getCity().getCountry().getName());
+            patient.setState(patient.getCity().getState().getName());
         }
-        patient.setState(patientWrapper.getState());
+
         patient.setEmergencyContactName(patientWrapper.getEmergencyContactName());
         patient.setEmergencyContactPhone(patientWrapper.getEmergencyContactPhone());
         patient.setEmergencyContactRelation(patientWrapper.getEmergencyContactRelation());
@@ -391,8 +402,10 @@ public class PatientService {
 
     public PatientWrapper getPatientById(long id) {
         Patient patient = patientRepository.findOne(id);
-        patient.setState(patient.getCity().getState().getName());
-        patient.setCountry(patient.getCity().getCountry().getName());
+        if (patient.getCity() != null) {
+            patient.setState(patient.getCity().getState().getName());
+            patient.setCountry(patient.getCity().getCountry().getName());
+        }
         PatientWrapper patientWrapper = new PatientWrapper();
         this.populatePatientWrapper(patientWrapper, patient);
         if (patient.getPrimaryDoctor() != null) {
@@ -446,7 +459,8 @@ public class PatientService {
     }
 
     public List<PatientWrapper> getAllPatient() {
-        return patientRepository.getAllByStatusTrue();
+        return patientRepository.getAll();
+//        return patientRepository.getAllByStatusTrue();
     }
 
     //Lab Order work
@@ -660,5 +674,17 @@ public class PatientService {
         // Closing the workbook
         workBook.close();
         return records.get();
+    }
+
+    public String convertDateToGMT(String date) throws ParseException {
+        if (date == null || date.trim().equals("")) return "";
+        Date localDate = DateTimeUtil.getDateFromString(date, "E MMM dd yyyy HH:mm:ss");
+        return DateTimeUtil.convertDateFromTimeZoneToGMT(localDate, TimeZone.getTimeZone("GMT"), HISConstants.DATE_FORMATE_THREE);
+    }
+
+    public String convertDateToGMT(String date, String thisDateFormat) throws ParseException {
+        if (date == null || date.trim().equals("")) return "";
+        Date localDate = DateTimeUtil.getDateFromString(date, thisDateFormat);
+        return DateTimeUtil.convertDateFromTimeZoneToGMT(localDate, TimeZone.getTimeZone("GMT"), HISConstants.DATE_FORMATE_THREE);
     }
 }

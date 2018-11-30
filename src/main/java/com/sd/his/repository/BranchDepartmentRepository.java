@@ -1,6 +1,7 @@
 package com.sd.his.repository;
 
 import com.sd.his.model.*;
+import com.sd.his.wrapper.BranchWrapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,5 +41,10 @@ public interface BranchDepartmentRepository extends JpaRepository<BranchDepartme
     @Query("select b from BranchDepartment as bd inner join bd.department b where bd.branch.id=:id")
     List<Department> findByBranch(@Param("id") Long id);//write query here
 
+
+
+    // List<Department> findAllByIdIn(List<Long> ids);
+    List<BranchDepartment> getAllByBranch_id(Long  branchId);
+//    List<BranchDepartment> getAllByBranch_idIn(List<Long>  branchId);
 }
 

@@ -1,16 +1,11 @@
 package com.sd.his.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "zone")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Zone implements Serializable {
     @Id
     @Column(name = "zone_id")

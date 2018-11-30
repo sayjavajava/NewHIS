@@ -10,6 +10,8 @@ public class InvoiceResponseWrapper {
 
     Double paidAmount;
     Double invoiceAmount;
+    Double taxAmount;
+    Double discountAmount;
     String status;
 
     private Double balance;
@@ -24,6 +26,9 @@ public class InvoiceResponseWrapper {
         this.paidAmount = invoice.getPaidAmount();
         this.invoiceAmount = invoice.getInvoiceAmount();
         this.status = invoice.getStatus();
+        this.taxAmount = invoice.getTaxAmount();
+        this.discountAmount = invoice.getDiscountAmount();
+
     }
 
     public InvoiceResponseWrapper(Double balance, Double totalBill, Double totalPaid, Double advBalance){
@@ -32,6 +37,7 @@ public class InvoiceResponseWrapper {
         this.totalPaid = totalPaid;
         this.advanceBalance = advBalance;
     }
+
 
     public long getId() {
         return id;
@@ -111,5 +117,21 @@ public class InvoiceResponseWrapper {
 
     public void setAdvanceBalance(Double advanceBalance) {
         this.advanceBalance = advanceBalance;
+    }
+
+    public Double getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(Double taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
+    public Double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        this.discountAmount = discountAmount;
     }
 }

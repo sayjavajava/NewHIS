@@ -1,10 +1,7 @@
 package com.sd.his.wrapper;
 
-import com.sd.his.model.Appointment;
-import com.sd.his.model.Insurance;
+import com.sd.his.model.*;
 //import com.sd.his.model.Profile;
-import com.sd.his.model.SmokingStatus;
-import com.sd.his.model.User;
 //import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.RaceWrapper;
@@ -106,6 +103,31 @@ public class PatientWrapper {
 
             this.country = city.getCountry().getName();
             this.countryId = city.getCountry().getId();
+        }
+
+    }
+
+    public PatientWrapper(Patient patient) {
+        this.id = patient.getId();
+        this.patientId = patient.getPatientId();
+        this.patientSSN = patient.getPatientSSN();
+        this.firstName = patient.getFirstName();
+        this.lastName = patient.getLastName();
+        this.email = patient.getEmail();
+        this.streetAddress = patient.getStreetAddress();
+        this.cellPhone = patient.getCellPhone();
+        this.label = patient.getFirstName();
+        this.value = patient.getId();
+
+        if (patient.getCity() != null) {
+            this.city = patient.getCity().getName();
+            this.cityId = patient.getCity().getId();
+
+            this.state = patient.getCity().getState().getName();
+            this.stateId = patient.getCity().getState().getId();
+
+            this.country = patient.getCity().getCountry().getName();
+            this.countryId = patient.getCity().getCountry().getId();
         }
 
     }

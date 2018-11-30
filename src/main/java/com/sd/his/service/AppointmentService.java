@@ -92,7 +92,7 @@ public class AppointmentService {
 
 
     public AppointmentWrapper findAppointmentById(long id) {
-        return appointmentRepository.findAppointmentById(id);
+        return null; //appointmentRepository.findAppointmentById(id);
     }
 
     public int countAllAppointments() {

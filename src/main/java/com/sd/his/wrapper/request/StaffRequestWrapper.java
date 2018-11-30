@@ -22,6 +22,9 @@ package com.sd.his.wrapper.request;/*
  */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sd.his.wrapper.ServiceComission;
+
+import java.util.List;
 
 
 public class StaffRequestWrapper {
@@ -62,6 +65,15 @@ public class StaffRequestWrapper {
     Long createdOn;
     Long updatedOn;
     String otherDashboard;
+    List<ServiceComission> serviceComission;
+
+    public List<ServiceComission> getServiceComission() {
+        return serviceComission;
+    }
+
+    public void setServiceComission(List<ServiceComission> serviceComission) {
+        this.serviceComission = serviceComission;
+    }
 
     public Long[] getSelectedRoles() {
         return selectedRoles;
