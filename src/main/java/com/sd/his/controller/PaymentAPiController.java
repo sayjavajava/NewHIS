@@ -6,6 +6,7 @@ import com.sd.his.service.PatientInvoiceService;
 import com.sd.his.service.PatientService;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.request.AdvancePaymentRequestWrapper;
+import com.sd.his.wrapper.request.BulkReceitRequestWrapper;
 import com.sd.his.wrapper.request.GenerateInvoiceRequestWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -69,6 +70,42 @@ public class PaymentAPiController {
    //     return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+    @ApiOperation(httpMethod = "POST", value = "Create patient Invoice",
+            notes = "This method will Create  patient Invoices",
+            produces = "application/json", nickname = " patient Invoice",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/saveBulkReceit", method = RequestMethod.POST)
+    public ResponseEntity<?> saveBulkReceit(@RequestBody BulkReceitRequestWrapper bulkReceitRequestWrapper) {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.add.error"));
+        response.setResponseCode(InvoiceMessageEnum.ERROR.getValue());
+        response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try
+        {
+        //    patientInvoiceService.saveBulkPayment(bulkReceitRequestWrapper);
+
+            response.setResponseMessage(messageBundle.getString("user.add.success"));
+            response.setResponseCode(InvoiceMessageEnum.SUCCESS.getValue());
+            response.setResponseStatus(InvoiceMessageEnum.SUCCESS.getValue());
+            logger.info("User created successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Create User Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
+            response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        //     return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 
     @ApiOperation(httpMethod = "GET", value = "Get Invoice List By patient Id",

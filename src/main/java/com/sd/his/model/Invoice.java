@@ -47,10 +47,16 @@ public class Invoice extends BaseEntity implements Serializable
     @Column(name = "INVOICE_AMOUNT")
     private Double invoiceAmount;
 
+
+    @Column(name = "TOTAL_INVOICE_AMOUNT")
+    private Double totalInvoiceAmount;
+
+
     @Column(name = "STATUS")
     private String status;
 
-
+    @Column(name = "COMPLETED")
+    private Boolean completed;
 
     public String getInvoiceId() {
         return invoiceId;
@@ -130,5 +136,23 @@ public class Invoice extends BaseEntity implements Serializable
 
     public void setDiscountAmount(Double discountAmount) {
         this.discountAmount = discountAmount;
+    }
+
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
+
+
+    public Double getTotalInvoiceAmount() {
+        return totalInvoiceAmount;
+    }
+
+    public void setTotalInvoiceAmount(Double totalInvoiceAmount) {
+        this.totalInvoiceAmount = totalInvoiceAmount;
     }
 }
