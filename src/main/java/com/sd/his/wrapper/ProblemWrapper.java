@@ -41,6 +41,26 @@ public class ProblemWrapper extends BaseWrapper {
     private String status = "ACTIVE";
     private long patientId;
 
+    public Date getDatePrescribedDate() {
+        return datePrescribedDate;
+    }
+
+    public void setDatePrescribedDate(Date datePrescribedDate) {
+        this.datePrescribedDate = datePrescribedDate;
+    }
+
+    private Date datePrescribedDate;
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    private  String info;
+
     public ProblemWrapper() {
     }
 
@@ -56,14 +76,16 @@ public class ProblemWrapper extends BaseWrapper {
         this.dateDiagnosis = problemWrapper.getDateDiagnosis();
         this.note = problemWrapper.getNote();
         this.status = problemWrapper.getStatus();
+        this.info=problemWrapper.getInfo();
         this.patientId = problemWrapper.getPatientId();
+
     }
 
     public ProblemWrapper(Long id, Date createdOn, Date updatedOn,
                           long appointmentId,
                           long selectedCodeId, String codeName,
                           long selectedICDVersionId, String versionName,
-                          Date dateDiagnosis, String note, String status,
+                          Date dateDiagnosis, String note, String status,String info,
                           long patientId) {
         super(id,
                 HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM),
@@ -73,9 +95,10 @@ public class ProblemWrapper extends BaseWrapper {
         this.codeName = codeName;
         this.selectedICDVersionId = selectedICDVersionId;
         this.versionName = versionName;
-        this.dateDiagnosis = HISCoreUtil.convertDateToString(dateDiagnosis, HISConstants.DATE_FORMATE_ONE);
+        this.dateDiagnosis = HISCoreUtil.convertDateToString(dateDiagnosis, HISConstants.DATE_FORMAT_APP);
         this.note = note;
         this.status = status;
+        this.info=info;
         this.patientId = patientId;
     }
 

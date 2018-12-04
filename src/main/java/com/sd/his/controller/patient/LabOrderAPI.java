@@ -1,8 +1,11 @@
 package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Appointment;
 import com.sd.his.model.LabOrder;
+import com.sd.his.model.Organization;
 import com.sd.his.repository.LabOrderProjection;
+import com.sd.his.service.OrganizationService;
 import com.sd.his.service.PatientService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -18,10 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @RestController
@@ -30,7 +30,8 @@ public class LabOrderAPI {
 
     @Autowired
     private PatientService patientService;
-
+    @Autowired
+    private OrganizationService organizationService;
     private final Logger logger = LoggerFactory.getLogger(LabOrderAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
@@ -112,6 +113,14 @@ public class LabOrderAPI {
 
         try {
             List<LabOrderProjection> labordersdata = patientService.getAllLabOrders(page,pageSize);
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String stdDateTime=dbOrganization.getDateFormat()+" "+dbOrganization.getTimeFormat();
+            for(int i=0;i<labordersdata.size();i++){
+             String readDate=HISCoreUtil.convertDateToString(labordersdata.get(i).getDateTest(),stdDateTime);
+
+                labordersdata.get(i).setDateTest(HISCoreUtil.convertToDate(readDate));
+
+            }
             int countOrders = patientService.totaLabOrders();
 
             if (!HISCoreUtil.isListEmpty(labordersdata)) {
@@ -334,6 +343,17 @@ public class LabOrderAPI {
 
         try {
             List<LabOrderProjection> labordersdata = patientService.getAllLabOrdersByPatient(page,pageSize, Long.valueOf(patientId));
+            List<String>  objappoiment = new ArrayList<>();
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String stdDateTime=dbOrganization.getDateFormat()+" "+dbOrganization.getTimeFormat();
+            for(int i=0;i<labordersdata.size();i++){
+               String readDate=HISCoreUtil.convertDateToString(labordersdata.get(i).getDateTest(),stdDateTime);
+            //    labordersdata.get(i).setDateTestString(readDate);
+                labordersdata.get(i).setDateTest(HISCoreUtil.convertToDateString(readDate,stdDateTime));
+           //     String doctorFirstName=labordersdata.get(i).getAppointment().get(i).getDoctor().getFirstName();
+            //    String doctorLastName=labordersdata.get(i).getAppointment().get(i).getDoctor().getLastName();
+           //     objappoiment.add(doctorFirstName+""+doctorLastName);
+            }
             int countOrders = patientService.totaLabOrders();
 
             if (!HISCoreUtil.isListEmpty(labordersdata)) {
@@ -365,7 +385,7 @@ public class LabOrderAPI {
                 returnValues.put("currPage", currPage);
                 returnValues.put("pages", pages);
                 returnValues.put("data", labordersdata);
-
+             //   returnValues.put("doctors",objappoiment);
                 response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
                 response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());

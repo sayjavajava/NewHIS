@@ -42,4 +42,10 @@ public interface MedicationRepository extends JpaRepository<Medication, Long> {
             "WHERE m.patient.id=:patientId AND m.status=:status")
     List<MedicationWrapper> countPaginatedMedicationsByStatusAndPatientId(@Param("status") String status, @Param("patientId") Long patientId);
 
+
+    @Query("SELECT medication " +
+            "FROM Medication medication " +
+            "WHERE medication.patient.id=:patientId" +
+            " order by medication.createdOn desc ")
+    List<Medication> getPaginatedMedicationsAt(Pageable pageable, @Param("patientId") Long patientId);
 }

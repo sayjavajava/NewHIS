@@ -56,14 +56,14 @@ public class AllergyAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
 
-            if (allergyWrapper.getAppointmentId() <= 0) {
+           /* if (allergyWrapper.getAppointmentId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("allergy.save.appointment.required"));
                 response.setResponseCode(ResponseEnum.ALLERGY_SAVE_APPOINTMENT_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
                 logger.error("saveAllergy API - Required appointment id ?.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+            }*/
 
             if (allergyWrapper.getPatientId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("allergy.patient.required"));
@@ -248,14 +248,14 @@ public class AllergyAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
 
-            if (allergyWrapper.getAppointmentId() <= 0) {
+           /* if (allergyWrapper.getAppointmentId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("allergy.save.appointment.required"));
                 response.setResponseCode(ResponseEnum.ALLERGY_SAVE_APPOINTMENT_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
                 logger.error("updateAllergy API - Required version ?.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+            }*/
 
             if (allergyWrapper.getPatientId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("allergy.patient.required"));

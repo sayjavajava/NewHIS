@@ -95,6 +95,61 @@ public class Medication extends BaseEntity implements Serializable {
     @Column(name = "ORDER_STATUS")
     private String orderStatus;
 
+    @Column(name = "FREQUENCY")
+    private String frequency;
+
+    @Column(name="ROUTE")
+    private String route;
+
+    @Column(name="STRENGTHS")
+    private String strengths;
+    @Column(name="DURATION")
+    private String duration;
+    @Column(name="DURATIONPEROID")
+    private String durationPeriod;
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
+    public void setRoute(String route) {
+        this.route = route;
+    }
+
+    public String getStrengths() {
+        return strengths;
+    }
+
+    public void setStrengths(String strengths) {
+        this.strengths = strengths;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getDurationPeriod() {
+        return durationPeriod;
+    }
+
+    public void setDurationPeriod(String durationPeriod) {
+        this.durationPeriod = durationPeriod;
+    }
+
+
+
     public Medication() {
     }
 
@@ -105,9 +160,12 @@ public class Medication extends BaseEntity implements Serializable {
         this.indication = medicationWrapper.getIndication();
         this.status = medicationWrapper.getStatus();
 
-        this.datePrescribed = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDatePrescribedString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
-        this.dateStartedTaking = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDateStartedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
-        this.dateStoppedTaking = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDateStoppedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        this.datePrescribed = medicationWrapper.getDatePrescribedDate();
+                //HISCoreUtil.convertDateToString(medicationWrapper.getDatePrescribedDate(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        this.dateStartedTaking = medicationWrapper.getDateStartedTakingDate();
+                //HISCoreUtil.convertDateToString(medicationWrapper.getDateStartedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        this.dateStoppedTaking = medicationWrapper.getDateStoppedTakingDate();
+                //HISCoreUtil.convertDateToString(medicationWrapper.getDateStoppedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
 
         this.dispenseQuantity = medicationWrapper.getDispenseQuantity();
         this.dispensePackage = medicationWrapper.getDispensePackage();
@@ -116,6 +174,12 @@ public class Medication extends BaseEntity implements Serializable {
         this.pharmacyNote = medicationWrapper.getPharmacyNote();
         this.note = medicationWrapper.getNote();
         this.orderStatus = medicationWrapper.getOrderStatus();
+        this.duration=medicationWrapper.getDuration();
+        this.frequency=medicationWrapper.getFrequency();
+        this.durationPeriod=medicationWrapper.getDurationPeriod();
+        this.route=medicationWrapper.getRoute();
+        this.strengths=medicationWrapper.getStrengths();
+
     }
 
     public Medication(Medication medication, MedicationWrapper medicationWrapper) throws ParseException {

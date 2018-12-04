@@ -44,7 +44,7 @@ public class LabOrder extends BaseEntity implements Serializable {
     @Column(name = "COMMENTS")
     private String comments;
 
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATE_TEST")
     private Date dateTest;
 

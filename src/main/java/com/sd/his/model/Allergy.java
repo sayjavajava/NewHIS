@@ -55,9 +55,9 @@ public class Allergy extends BaseEntity implements Serializable {
     @JoinColumn(name = "PATIENT_ID")
     private Patient patient;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "APPOINTMENT_ID")
-    private Appointment appointment;
+    private Appointment appointment;*/
 
 
     public Allergy() {
@@ -131,11 +131,11 @@ public class Allergy extends BaseEntity implements Serializable {
         this.patient = patient;
     }
 
-    public Appointment getAppointment() {
+   /* public Appointment getAppointment() {
         return appointment;
     }
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
-    }
+    }*/
 }
