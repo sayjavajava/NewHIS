@@ -10,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ResourceBundle;
@@ -65,7 +62,6 @@ public class VitalSetupController {
             notes = "This method will get Vital Setup Configurations",
             produces = "application/json", nickname = "Get Vital Setup Configurations",
             response = GenericAPIResponse.class, protocols = "https")
-
     @RequestMapping(value = "/getSetup", method = RequestMethod.GET)
     public ResponseEntity<?> getSetup(){
         GenericAPIResponse response = new GenericAPIResponse();
@@ -87,6 +83,35 @@ public class VitalSetupController {
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("vital.setup.configuration.fetch.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "DELETE", value = "Save Vital Setup Configuration",
+            notes = "This method will save Vital Setup Configuration",
+            produces = "application/json", nickname = "Save Vital Setup Configuration",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteVitalSetup(HttpServletRequest request, @PathVariable("id") Long configurationId) {
+
+        logger.error("Delete Vital Setup Configuration API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try
+        {
+            vitalSetupServices.deleteConfiguration(configurationId);
+            response.setResponseMessage(messageBundle.getString("vital.setup.configuration.delete.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Vital Setup Configuration Deleted successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Vital Setup Configuration Delete Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("vital.setup.configuration.delete.error"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

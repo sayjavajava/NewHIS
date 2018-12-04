@@ -42,4 +42,6 @@ public interface PatientGroupRepository extends JpaRepository<PatientGroup, Long
             "WHERE pg.name LIKE CONCAT('%',:name,'%') ")
     List<PatientGroupWrapper> searchPatientGroupByParams(Pageable pageable, @Param("name") String name);
 
+    @Query("SELECT new com.sd.his.wrapper.PatientGroupWrapper(pg) FROM PatientGroup pg")
+    List<PatientGroupWrapper> findAllGroups();
 }

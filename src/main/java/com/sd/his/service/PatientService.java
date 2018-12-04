@@ -53,11 +53,14 @@ public class PatientService {
     private SmokingStatusRepository smokingStatusRepository;
     @Autowired
     private InsuranceService insuranceService;
-    @Autowired
+
+
 
     private OrganizationService organizationService;
-
+    @Autowired
     private CityRepository cityRepository;
+    @Autowired
+    private PatientGroupRepository patientGroupRepository;
 
 
     //response populate
@@ -113,6 +116,11 @@ public class PatientService {
 
         if (patient.getAppointments() != null && patient.getAppointments().size() > 0) {
             patientWrapper.setHasChild(true);
+        }
+
+        if (patient.getPatientGroup() != null) {
+            patientWrapper.setPatientGroup(patient.getPatientGroup().getName());
+            patientWrapper.setPatientGroupId(patient.getPatientGroup().getId());
         }
         /*if (patient.getAllergies() != null && patient.getAllergies().size() > 0) {
             patientWrapper.setHasChild(true);
@@ -182,6 +190,10 @@ public class PatientService {
         patient.setEmergencyContactRelation(patientWrapper.getEmergencyContactRelation());
         if (patient.getId() == null)
             patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+
+        if (patientWrapper.getPatientGroupId() != null) {
+            patient.setPatientGroup(patientGroupRepository.findOne(patientWrapper.getPatientGroupId()));
+        }
     }
 
     private void populateInsurance(Insurance insurance, PatientWrapper patientWrapper) throws ParseException {
