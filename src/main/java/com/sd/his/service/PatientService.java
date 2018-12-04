@@ -54,11 +54,11 @@ public class PatientService {
     @Autowired
     private InsuranceService insuranceService;
     @Autowired
-<<<<<<< HEAD
+
     private OrganizationService organizationService;
-=======
+
     private CityRepository cityRepository;
->>>>>>> 17a0dd4ca1b48a921bba69f1627e5af2669141ea
+
 
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
