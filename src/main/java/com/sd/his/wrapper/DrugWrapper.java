@@ -1,11 +1,13 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.Country;
 import com.sd.his.model.Drug;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jamal on 10/22/2018.
@@ -20,18 +22,72 @@ public class DrugWrapper extends BaseWrapper {
     private List<String> strengths;
     private String strength = "";
     private String uOM;
-    private String origin;
+
+    public String getCountryView() {
+        return countryView;
+    }
+
+    public void setCountryView(String country) {
+        this.countryView = country;
+    }
+
+    private String countryView;
+    public String getDrugInfo() {
+        return drugInfo;
+    }
+
+    public void setDrugInfo(String drugInfo) {
+        this.drugInfo = drugInfo;
+    }
+
+    private String drugInfo;
+
+
+   public String getSelectedCountry() {
+        return selectedCountry;
+    }
+
+
+    public void setSelectedCountry(String selectedCountry) {
+        this.selectedCountry = selectedCountry;
+    }
+
+    private String selectedCountry;
+
+   /* public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    // private String origin;
+    private Country country;*/
     private boolean active = true;
     private boolean hasChild;
 
+    public Map<String, Object> getAddInfo() {
+        return addInfo;
+    }
+
+    public void setAddInfo(Map<String, Object> addInfo) {
+        this.addInfo = addInfo;
+    }
+
+    Map<String, Object> addInfo;
 
     public DrugWrapper() {
     }
 
+    public DrugWrapper(String drugName,String route) {
+        this.drugName = drugName;
+        this.route=route;
+    }
 
     public DrugWrapper(Long id, Date createdOn, Date updatedOn,
                        String drugNaturalId, String drugName, String genericName, String companyName, String route,
-                       List<String> strengths, String uOM, String origin, boolean active, boolean hasChild) {
+                       List<String> strengths, String uOM, Country origin, boolean active, boolean hasChild) {
         super(id,
                 HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_dd),
                 HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMATE_YYY_MM_dd));
@@ -40,7 +96,7 @@ public class DrugWrapper extends BaseWrapper {
         this.genericName = genericName;
         this.companyName = companyName;
         this.route = route;
-        this.strengths = strengths;
+       this.strengths = strengths;
 
         if (strengths != null && strengths.size() > 0) {
             for (String s : strengths) {
@@ -48,7 +104,7 @@ public class DrugWrapper extends BaseWrapper {
             }
         }
         this.uOM = uOM;
-        this.origin = origin;
+    //    this.selectedCountry = origin;
         this.active = active;
         this.hasChild = hasChild;
     }
@@ -61,6 +117,7 @@ public class DrugWrapper extends BaseWrapper {
         this.drugName = drug.getDrugName();
         this.genericName = drug.getGenericName();
         this.companyName = drug.getCompanyName();
+        this.countryView=drug.getCountry().getName();
         this.route = drug.getRoute();
         this.strengths = drug.getStrengths();
 
@@ -71,7 +128,8 @@ public class DrugWrapper extends BaseWrapper {
             this.strength = this.strength.substring(0, this.getStrength().length() - 1);
         }
         this.uOM = drug.getuOM();
-        this.origin = drug.getOrigin();
+       // this.origin = drug.getOrigin();
+   //     this.selectedCountry=drug.getCountry();
         this.active = drug.isActive();
         this.hasChild = false;
     }
@@ -116,7 +174,7 @@ public class DrugWrapper extends BaseWrapper {
         this.route = route;
     }
 
-    public List<String> getStrengths() {
+   public List<String> getStrengths() {
         return strengths;
     }
 
@@ -132,13 +190,13 @@ public class DrugWrapper extends BaseWrapper {
         this.uOM = uOM;
     }
 
-    public String getOrigin() {
+   /* public String getOrigin() {
         return origin;
     }
 
     public void setOrigin(String origin) {
         this.origin = origin;
-    }
+    }*/
 
     public boolean isActive() {
         return active;

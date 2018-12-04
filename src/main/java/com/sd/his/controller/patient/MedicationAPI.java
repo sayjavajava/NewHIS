@@ -2,7 +2,12 @@ package com.sd.his.controller.patient;
 
 import com.sd.his.controller.AppointmentAPI;
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Drug;
+import com.sd.his.model.Medication;
+import com.sd.his.model.Organization;
+import com.sd.his.service.DrugService;
 import com.sd.his.service.MedicationService;
+import com.sd.his.service.OrganizationService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.MedicationWrapper;
@@ -19,10 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /**
@@ -39,6 +41,12 @@ public class MedicationAPI {
     @Autowired
     private MedicationService medicationService;
 
+    @Autowired
+    private OrganizationService organizationService;
+
+
+    @Autowired
+    private DrugService drugService;
     @ApiOperation(httpMethod = "POST", value = "Save Medication ",
             notes = "This method will save the Medication .",
             produces = "application/json", nickname = "Save Medication ",
@@ -132,8 +140,11 @@ public class MedicationAPI {
 
 
             Pageable pageable = new PageRequest(page, pageSize);
-            List<MedicationWrapper> medicationWrappers = this.medicationService.getPaginatedMedications(pageable,Long.valueOf(selectedPatientId));
-            int medicationWrappersCount = this.medicationService.countPaginatedMedications(Long.valueOf(selectedPatientId));
+      //      List<Medication> medication = this.medicationService.getPaginatedMedicationsData(pageable,Long.valueOf(selectedPatientId));
+
+               List<MedicationWrapper> medicationWrappers = this.medicationService.getPaginatedMedications(pageable,Long.valueOf(selectedPatientId));
+
+               int medicationWrappersCount = this.medicationService.countPaginatedMedications(Long.valueOf(selectedPatientId));
 
             logger.error("getPaginatedMedicationByPatient - fetched successfully");
 
@@ -201,6 +212,30 @@ public class MedicationAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             MedicationWrapper medicationWrapper = this.medicationService.getMedication(id);
+        //    Drug drugObj=this.drugService.searchByDrugNameAutoCompleteDetail(medicationWrapper.getDrugName());
+        //    medicationWrapper.setRoute(drugObj.getRoute());
+            medicationWrapper.setRoute(this.drugService.searchByDrugNameAutoCompleteDetail(medicationWrapper.getDrugName()));
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            Date dte=new Date();
+            String prescribedDate="";
+            String prescribedStartedDate="";
+        //    String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String systemtimeFormat=dbOrganization.getTimeFormat();
+         //   System.out.println("Time"+currentTime);
+            String standardFormatDateTime=systemDateFormat+""+systemtimeFormat;
+
+            prescribedDate = HISCoreUtil.convertDateToString(HISCoreUtil.convertToDate(medicationWrapper.getDatePrescribedString()),standardFormatDateTime);
+          //  prescribedStartedDate = HISCoreUtil.convertDateToString(medicationWrapper.getDateStartedTakingDate(),standardFormatDateTime);
+            Date prescribedDateFormat=HISCoreUtil.convertToAPPDate(prescribedDate);
+            medicationWrapper.setDatePrescribedDate(HISCoreUtil.convertToDate(medicationWrapper.getDatePrescribedString()));
+            medicationWrapper.setDateStartedTakingDate(HISCoreUtil.convertToDate(medicationWrapper.getDateStartedTakingString()));
+            medicationWrapper.setDateStoppedTakingDate(HISCoreUtil.convertToDate(medicationWrapper.getDateStoppedTakingString()));
+            medicationWrapper.setDatePrescribedDate(prescribedDateFormat);
+            medicationWrapper.setStatus(medicationWrapper.getStatus());
+
+
             if (HISCoreUtil.isValidObject(medicationWrapper)) {
                 response.setResponseData(medicationWrapper);
                 response.setResponseMessage(messageBundle.getString("medication.get.success"));

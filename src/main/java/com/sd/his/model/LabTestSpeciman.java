@@ -31,6 +31,13 @@ public class LabTestSpeciman extends BaseEntity implements Serializable {
     private String description;
 
 
+
+    @Column(name = "UNIT")
+    private String unit;
+
+
+
+
     public LabTestSpeciman() {
     }
 
@@ -41,6 +48,7 @@ public class LabTestSpeciman extends BaseEntity implements Serializable {
         this.maxNormalRange = labTestSpeciman.getMaxNormalRange();
         this.minNormalRange = labTestSpeciman.getMinNormalRange();
         this.description = labTestSpeciman.getDescription();
+        this.unit=labTestSpeciman.getUnit();
     }
 
     public String getTestCode() {
@@ -81,5 +89,14 @@ public class LabTestSpeciman extends BaseEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

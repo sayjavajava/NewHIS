@@ -24,4 +24,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     List<Patient> searchPatientByNameOrCellNbr(Pageable pageable, @Param("searchString") String searchString);
 
     Optional<Patient> findById(Long id);
+
+   // Patient (Long id);
 }

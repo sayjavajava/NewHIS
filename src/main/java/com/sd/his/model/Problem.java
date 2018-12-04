@@ -3,6 +3,7 @@ package com.sd.his.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
+import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.ProblemWrapper;
 
 import javax.persistence.*;
@@ -48,7 +49,7 @@ public class Problem extends BaseEntity implements Serializable {
     @JoinColumn(name = "ICD_CODE_ID")
     private ICDCode icdCode;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATE_DIAGNOSIS")
     private Date dateDiagnosis;
 
@@ -66,18 +67,35 @@ public class Problem extends BaseEntity implements Serializable {
     @JoinColumn(name = "PATIENT_ID")
     private Patient patient;
 
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    @Column(name = "URL")
+    private String info;
+
+
     public Problem() {
     }
 
     public Problem(ProblemWrapper problemWrapper) throws ParseException {
-        if (problemWrapper.getDateDiagnosis() != null) {
-            this.dateDiagnosis = DateTimeUtil.getDateFromString(problemWrapper.getDateDiagnosis(), HISConstants.DATE_FORMATE_THREE);
-        }
+       /* if (problemWrapper.getDatePrescribedDate() != null) {
+         //   this.dateDiagnosis = HISCoreUtil.convertToDateZone(problemWrapper.getDateDiagnosis());
+                    //problemWrapper.getDatePrescribedDate();
+                    //DateTimeUtil.getDateFromString(problemWrapper.getDateDiagnosis(), HISConstants.DATE_FORMATE_THREE);
+        }*/
         if (problemWrapper.getStatus() != null) {
             this.status = problemWrapper.getStatus();
         }
         if (problemWrapper.getNote() != null) {
             this.note = problemWrapper.getNote();
+        }
+        if(problemWrapper.getInfo() != null){
+            this.info=problemWrapper.getInfo();
         }
     }
 

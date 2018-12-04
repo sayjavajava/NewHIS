@@ -26,9 +26,9 @@ public class AllergyWrapper extends BaseWrapper {
         if (allergy.getPatient() != null) {
             this.patientId = allergy.getPatient().getId();
         }
-        if (allergy.getAppointment() != null){
+       /* if (allergy.getAppointment() != null){
             this.appointmentId = allergy.getAppointment().getId();
-        }
+        }*/
         this.setId(allergy.getId());
         this.name = allergy.getName();
         this.allergyType = allergy.getAllergyType();
@@ -104,11 +104,12 @@ public class AllergyWrapper extends BaseWrapper {
         this.patientId = patientId;
     }
 
-    public long getAppointmentId() {
+   /* public long getAppointmentId() {
         return appointmentId;
     }
+    */
 
-    public void setAppointmentId(long appointmentId) {
+  /* public void setAppointmentId(long appointmentId) {
         this.appointmentId = appointmentId;
-    }
+    }*/
 }

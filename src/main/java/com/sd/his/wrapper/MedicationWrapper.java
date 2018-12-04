@@ -1,9 +1,14 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.Appointment;
 import com.sd.his.model.Medication;
+import com.sd.his.repository.AppointmentRepository;
+import com.sd.his.repository.MedicalServiceRepository;
+import com.sd.his.service.AppointmentService;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -13,6 +18,8 @@ import java.util.Date;
  */
 public class MedicationWrapper extends BaseWrapper {
 
+    @Autowired
+    private AppointmentRepository appointmentService;
 
     private String drugName;
     private boolean prn;
@@ -42,6 +49,69 @@ public class MedicationWrapper extends BaseWrapper {
     private String note;
     private String orderStatus;
 
+    // New Values Changes
+    private String frequency;
+    private String route;
+    private String strengths;
+    private String duration;
+    private String durationPeriod;
+
+    public String getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    private String appointmentDate;
+
+
+    public void setAppointmentDate(String appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+
+
+
+
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
+    public void setRoute(String route) {
+        this.route = route;
+    }
+
+    public String getStrengths() {
+        return strengths;
+    }
+
+    public void setStrengths(String strengths) {
+        this.strengths = strengths;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getDurationPeriod() {
+        return durationPeriod;
+    }
+
+    public void setDurationPeriod(String durationPeriod) {
+        this.durationPeriod = durationPeriod;
+    }
+
+
 
     public MedicationWrapper() {
     }
@@ -61,13 +131,14 @@ public class MedicationWrapper extends BaseWrapper {
         }
         if (medication.getAppointment() != null) {
             this.appointmentId = medication.getAppointment().getId();
+
         }
 
-        this.datePrescribedString = DateTimeUtil.getFormattedDateFromDate(medication.getDatePrescribed(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        this.datePrescribedString = DateTimeUtil.getFormattedDateFromDate(medication.getDatePrescribed(), HISConstants.DATE_FORMAT_APP);
 
-        this.dateStartedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStartedTaking(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        this.dateStartedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStartedTaking(), HISConstants.DATE_FORMAT_APP);
 
-        this.dateStoppedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStoppedTaking(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+        this.dateStoppedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStoppedTaking(), HISConstants.DATE_FORMAT_APP);
 
         this.dispenseQuantity = medication.getDispenseQuantity();
         this.dispensePackage = medication.getDispensePackage();
@@ -76,6 +147,11 @@ public class MedicationWrapper extends BaseWrapper {
         this.pharmacyNote = medication.getPharmacyNote();
         this.note = medication.getNote();
         this.orderStatus = medication.getOrderStatus();
+        this.duration=medication.getDuration();
+        this.frequency=medication.getFrequency();
+        this.durationPeriod=medication.getDurationPeriod();
+        this.route=medication.getRoute();
+        this.strengths=medication.getStrengths();
     }
 
     public MedicationWrapper(Long id, String createdOn, String updatedOn) {

@@ -2,11 +2,68 @@ package com.sd.his.wrapper;
 
 
 public class LabTest {
-    String loincCode;
+    String id;
     String description ;
     String resultValue;
     String units;
     String normalRange;
+    String loincCode;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTestCode() {
+        return testCode;
+    }
+
+    public void setTestCode(String testCode) {
+        this.testCode = testCode;
+    }
+
+    public String getTestName() {
+        return testName;
+    }
+
+    public void setTestName(String testName) {
+        this.testName = testName;
+    }
+
+    public String getMaxNormalRange() {
+        return maxNormalRange;
+    }
+
+    public void setMaxNormalRange(String maxNormalRange) {
+        this.maxNormalRange = maxNormalRange;
+    }
+
+    public String getMinNormalRange() {
+        return minNormalRange;
+    }
+
+    public void setMinNormalRange(String minNormalRange) {
+        this.minNormalRange = minNormalRange;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    String testCode;
+    String testName;
+    String maxNormalRange;
+    String minNormalRange;
+    String unit;
+
+
+
 
     public LabTest() {
     }

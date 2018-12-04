@@ -3,10 +3,7 @@ package com.sd.his.model;
 import com.sd.his.wrapper.DrugWrapper;
 import org.hibernate.annotations.NaturalId;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -27,10 +24,25 @@ public class Drug extends BaseEntity {
     private String companyName;
     private String route;
     @ElementCollection
+    @Column(name = "STRENGTHS")
     private List<String> strengths;
     private String uOM;
-    private String origin;
+   // private String origin;
     private boolean active;
+    @Column(name = "Drug_info")
+    private String druginfo;
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "Country_id")
+    private Country country;
 
     public Drug() {
     }
@@ -46,7 +58,8 @@ public class Drug extends BaseEntity {
         this.route = drugWrapper.getRoute();
         this.strengths = drugWrapper.getStrengths();
         this.uOM = drugWrapper.getuOM();
-        this.origin = drugWrapper.getOrigin();
+      //  this.country = drugWrapper.getSelectedCountry();
+        this.druginfo=drugWrapper.getDrugInfo();
         this.active = drugWrapper.isActive();
     }
     /**
@@ -58,9 +71,9 @@ public class Drug extends BaseEntity {
         drug.GenericName = drugWrapper.getGenericName();
         drug.companyName = drugWrapper.getCompanyName();
         drug.route = drugWrapper.getRoute();
-        drug.strengths = drugWrapper.getStrengths();
+     //   drug.strengths = drugWrapper.getStrengths();
         drug.uOM = drugWrapper.getuOM();
-        drug.origin = drugWrapper.getOrigin();
+   //     drug.country = drugWrapper.getSelectedCountry();
         drug.active = drugWrapper.isActive();
     }
 
@@ -119,14 +132,14 @@ public class Drug extends BaseEntity {
     public void setuOM(String uOM) {
         this.uOM = uOM;
     }
-
+/*
     public String getOrigin() {
         return origin;
     }
 
     public void setOrigin(String origin) {
         this.origin = origin;
-    }
+    }*/
 
     public boolean isActive() {
         return active;
@@ -134,5 +147,13 @@ public class Drug extends BaseEntity {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getDruginfo() {
+        return druginfo;
+    }
+
+    public void setDruginfo(String druginfo) {
+        this.druginfo = druginfo;
     }
 }

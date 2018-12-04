@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jamal on 10/22/2018.
@@ -47,4 +49,19 @@ public interface DrugRepository extends JpaRepository<Drug, Long> {
     @Query("SELECT new com.sd.his.wrapper.DrugWrapper(drug) " +
             "FROM Drug drug ")
     List<DrugWrapper> getAllDrugWrappers();
+
+    @Query("SELECT drug FROM Drug drug " +
+            "WHERE drug.drugName=:name ")
+    Drug  searchDrugByParamsBy(@Param("name") String drugName);
+
+
+    @Query("SELECT drug.route  as route  FROM Drug drug " +
+            "WHERE drug.drugName=:name ")
+    String searchDrugByDifferentParams(@Param("name") String drugName);
+
+
+    @Query("SELECT drug  FROM Drug drug " +
+            "WHERE drug.drugName=:name ")
+    Drug searchDrugStrengthsByDifferentParams(@Param("name") String drugName);
+
 }
