@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 @RestController
@@ -87,7 +89,14 @@ public class PaymentAPiController {
 
         try
         {
-        //    patientInvoiceService.saveBulkPayment(bulkReceitRequestWrapper);
+          /*  if (bulkReceitRequestWrapper.getDate().trim().length() == 10){
+                bulkReceitRequestWrapper.setDate(patientService.convertDateToGMT(bulkReceitRequestWrapper.getDate(), "yyyy-MM-dd" ));
+            }
+            else{
+                bulkReceitRequestWrapper.setDate(patientService.convertDateToGMT(bulkReceitRequestWrapper.getDate(), "E MMM dd yyyy HH:mm:ss" ));
+            }*/
+
+            patientInvoiceService.saveBulkPayment(bulkReceitRequestWrapper);
 
             response.setResponseMessage(messageBundle.getString("user.add.success"));
             response.setResponseCode(InvoiceMessageEnum.SUCCESS.getValue());
@@ -120,12 +129,17 @@ public class PaymentAPiController {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/getPatientInvoiceListById/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getPatientInvoiceListById(HttpServletRequest request, @PathVariable("id") long  patientID) {
+    public ResponseEntity<?> getPatientInvoiceListById(@PathVariable("id") long  patientID) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         try
         {
-            response.setResponseData(patientInvoiceService.getInvoiceListByPatientId(patientID));
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", patientInvoiceService.getInvoiceListByPatientId(patientID));
+            returnValues.put("cuAdvanceBalance", patientService.findPatientByID(patientID).getAdvanceBalance());
+            response.setResponseData(returnValues);
+
+    //        response.setResponseData(patientInvoiceService.getInvoiceListByPatientId(patientID));
 
             response.setResponseMessage(messageBundle.getString("paymentApi.invoice.list.fetched.success"));
             response.setResponseCode(InvoiceMessageEnum.SUCCESS.getValue());
@@ -143,4 +157,41 @@ public class PaymentAPiController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @ApiOperation(httpMethod = "GET", value = "Get Receipt List",
+            notes = "This method will Get Receipt List",
+            produces = "application/json", nickname = " patients Receipt List",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Receipt List data found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/getReceiptList", method = RequestMethod.GET)
+    public ResponseEntity<?> getReceiptList() {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        try
+        {
+            response.setResponseData(patientInvoiceService.getReceiptList());
+
+            response.setResponseMessage(messageBundle.getString("paymentApi.receipt.list.fetched.success"));
+            response.setResponseCode(InvoiceMessageEnum.SUCCESS.getValue());
+            response.setResponseStatus(InvoiceMessageEnum.SUCCESS.getValue());
+            logger.info("receipt List data fetched successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("receipt List Fetched Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
+            response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

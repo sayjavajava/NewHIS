@@ -14,6 +14,8 @@ public class InvoiceResponseWrapper {
     Double discountAmount;
     String status;
 
+    private boolean selected = false;
+    private boolean useAdvancedBal = false;
     private Double balance;
     private Double totalBill;
     private Double totalPaid;
@@ -173,5 +175,21 @@ public class InvoiceResponseWrapper {
 
     public void setDueAmount(Double dueAmount) {
         this.dueAmount = dueAmount;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public boolean isUseAdvancedBal() {
+        return useAdvancedBal;
+    }
+
+    public void setUseAdvancedBal(boolean useAdvancedBal) {
+        this.useAdvancedBal = useAdvancedBal;
     }
 }
