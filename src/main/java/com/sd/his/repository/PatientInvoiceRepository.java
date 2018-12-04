@@ -14,11 +14,16 @@ public interface PatientInvoiceRepository  extends JpaRepository<Invoice, Long> 
 
     Invoice findByAppointmentId(Long id);
 
-    @Query(" SELECT NEW com.sd.his.wrapper.response.InvoiceResponseWrapper(invc) " +
-           " FROM Invoice invc ")
+    @Query(" SELECT NEW com.sd.his.wrapper.response.InvoiceResponseWrapper(invc) FROM Invoice invc ")
     List<InvoiceResponseWrapper> findAllInvoices();
 
     @Query("SELECT NEW com.sd.his.wrapper.response.InvoiceResponseWrapper( ( SUM(invc.invoiceAmount)-SUM(invc.paidAmount) ), SUM(invc.invoiceAmount), SUM(invc.paidAmount), SUM(p.advanceBalance) ) "+
             "FROM Invoice invc inner join invc.patient p WHERE p.id=:patientId ")
     InvoiceResponseWrapper getPatientInvoicesBalance(@Param("patientId") Long patientId);
+
+
+
+    @Query("SELECT NEW com.sd.his.wrapper.response.InvoiceResponseWrapper( invc ) "+
+            "FROM Invoice invc WHERE invc.patient.id=:id ")
+    List<InvoiceResponseWrapper> findAllByPatientId(@Param("id") long id);
 }

@@ -315,11 +315,11 @@ public class ChartOfAccountController {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             GeneralLedger generalLedger = generalLedgerService.getById(accountId);
-            response.setResponseData(null);
-            response.setResponseMessage(messageBundle.getString("account.not.found.error"));
-            response.setResponseCode(ResponseEnum.GENERAL_LEDGER_NOT_FOUND_ERROR.getValue());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            logger.info("General LEDGER not Found ...");
+//            response.setResponseData(null);
+//            response.setResponseMessage(messageBundle.getString("account.not.found.error"));
+//            response.setResponseCode(ResponseEnum.GENERAL_LEDGER_NOT_FOUND_ERROR.getValue());
+//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+//            logger.info("General LEDGER not Found ...");
 
             if (HISCoreUtil.isValidObject(generalLedger)) {
                 generalLedgerService.deleteLedger(accountId);
@@ -334,7 +334,7 @@ public class ChartOfAccountController {
                 }
             }
         } catch (DataIntegrityViolationException ex) {
-            logger.error("Account Delete Process Failed.", ex.fillInStackTrace());
+            logger.error("Account Delete Process Failed due to foreign key constraint.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("account.delete.foreign.key.error"));

@@ -24,8 +24,8 @@ public class CityService  {
         return this.cityRepository.getAllCitiesByStateId(stateId);
     }
 
-    public List<City> getCitiesById(long stateId){
-        return this.cityRepository.getAllCitiesById(stateId);
+    public City getCityById(long cityId){
+        return this.cityRepository.getOne(cityId);
     }
 
     public List<City> getCities(){

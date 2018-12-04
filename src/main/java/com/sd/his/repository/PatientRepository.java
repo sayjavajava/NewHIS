@@ -13,9 +13,11 @@ import java.util.Optional;
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     Patient findAllByEmail(String email);
 
-    @Query("SELECT new com.sd.his.wrapper.PatientWrapper(p.id, p.firstName,p.lastName,p.email,p.city,p.formattedAddress,p.cellPhone) " +
-            "FROM Patient p ")
+    @Query("SELECT new com.sd.his.wrapper.PatientWrapper(p.id, p.patientId, p.patientSSN, p.firstName,p.lastName,p.email,p.city,p.formattedAddress,p.cellPhone) FROM Patient p ")
     List<PatientWrapper> getAllByStatusTrue();
+
+    @Query("SELECT new com.sd.his.wrapper.PatientWrapper(p) FROM Patient p ")
+    List<PatientWrapper> getAll();
 
     @Query("SELECT p FROM com.sd.his.model.Patient p")
     List<Patient> getAllPaginatedPatients(Pageable pageable);
@@ -25,5 +27,5 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     Optional<Patient> findById(Long id);
 
-   // Patient (Long id);
+
 }

@@ -85,8 +85,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT NEW com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.status, " +
             " a.schdeulledDate,  " +
             " a.patient.firstName,a.patient.lastName,a.doctor.firstName,a.doctor.lastName, a.patient.id, invc.invoiceId, invc.completed) " +
-            "FROM  Invoice invc inner join invc.appointment a  WHERE a.id =?1  AND  invc.appointment.id=?1")
-    AppointmentWrapper findAppointmentById(Long apptId);
+            "FROM  Invoice invc inner join invc.appointment a  WHERE a.id =:apptId  AND  invc.appointment.id=:apptId")
+    AppointmentWrapper findAppointmentById(@Param("apptId") Long apptId);
 
 
 /*    @Query("SELECT apt from Appointment apt where apt.schdeulledDate between  apt.schdeulledDate =?1 AND apt.endedOn=?2")*/

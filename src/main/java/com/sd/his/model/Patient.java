@@ -1,5 +1,6 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.his.enums.GenderTypeEnum;
@@ -99,7 +100,7 @@ public class Patient extends BaseEntity implements Serializable {
     private String zipCode;
 
     @Column(name = "CITY")
-    private String city;
+    private String cityName;
 
     @Column(name = "STATE")
     private String state;
@@ -171,6 +172,11 @@ public class Patient extends BaseEntity implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "patient")
     private List<SmokingStatus> smokingStatusList;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CITY_ID")
+    @JsonBackReference
+    private City city;
 
     public List<LabOrder> getLabOrders() {
         return labOrders;
@@ -388,11 +394,11 @@ public class Patient extends BaseEntity implements Serializable {
         this.zipCode = zipCode;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
