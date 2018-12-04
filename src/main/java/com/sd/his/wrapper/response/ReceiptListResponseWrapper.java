@@ -22,26 +22,28 @@ public class ReceiptListResponseWrapper {
 
     public ReceiptListResponseWrapper(Payment pmt) {
         this.paymentId=pmt.getPaymentId();
-        this.patientName=pmt.getPatientInvoicePayment().get(0).getPatient().getFirstName();
         this.paymontAmount=pmt.getPaymentAmount();
-        this.discountAmount=getDiscountOnPayment(pmt.getPatientInvoicePayment());
-        this.advanceUsedAmount=getAdvancedUsed(pmt.getPatientInvoicePayment());
+        if (pmt.getPatientInvoicePayment().size() > 0) {
+            this.patientName = pmt.getPatientInvoicePayment().get(0).getPatient().getFirstName();
+            this.discountAmount=getDiscountOnPayment(pmt.getPatientInvoicePayment());
+            this.advanceUsedAmount=getAdvancedUsed(pmt.getPatientInvoicePayment());
+        }
 /*      this.paymentType=*/
     }
 
 
-    private double getDiscountOnPayment(List<PatientInvoicePayment> patientInvoicePayment){
+    private double getDiscountOnPayment(List<PatientInvoicePayment> patientInvoicePayment) {
         double discountTotal = 0.00;
-        for(PatientInvoicePayment pip:patientInvoicePayment){
-            discountTotal += pip.getDiscountAmount();
+        for (PatientInvoicePayment pip : patientInvoicePayment) {
+            discountTotal += (pip.getDiscountAmount() == null ? 0 : pip.getDiscountAmount());
         }
         return discountTotal;
     }
 
-    private double getAdvancedUsed(List<PatientInvoicePayment> patientInvoicePayment){
+    private double getAdvancedUsed(List<PatientInvoicePayment> patientInvoicePayment) {
         double advUsedTotal = 0.00;
-        for(PatientInvoicePayment pip:patientInvoicePayment){
-            advUsedTotal += pip.getAdvanceAmount();
+        for (PatientInvoicePayment pip : patientInvoicePayment) {
+            advUsedTotal += (pip.getAdvanceAmount() == null ? 0 : pip.getAdvanceAmount());
         }
         return advUsedTotal;
     }

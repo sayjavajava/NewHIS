@@ -21,4 +21,8 @@ public class VitalSetupServices {
     public void saveConfiguration(VitalSetup vitalSetup){
         vitalSetupRepository.save(vitalSetup);
     }
+
+    public void deleteConfiguration(Long id){
+        vitalSetupRepository.delete(id);
+    }
 }

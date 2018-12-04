@@ -31,6 +31,10 @@ public class PatientGroupService {
         return "";
     }
 
+    public List<PatientGroupWrapper> getAllPatientGroups() {
+        return this.patientGroupRepository.findAllGroups();
+    }
+
     public List<PatientGroupWrapper> getAllPaginatedPatientGroup(Pageable pageable) {
         return this.patientGroupRepository.findAllByCreatedOn(pageable);
     }

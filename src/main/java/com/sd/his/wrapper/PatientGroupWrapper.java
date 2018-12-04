@@ -1,5 +1,6 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.PatientGroup;
 import com.sd.his.utill.HISCoreUtil;
 
 import java.util.Date;
@@ -25,6 +26,17 @@ public class PatientGroupWrapper extends BaseWrapper {
         this.description = description;
         this.status = status;
         this.hasChild = hasChild;
+    }
+
+    public PatientGroupWrapper(PatientGroup patientGroup) {
+        super(patientGroup.getId(),
+                HISCoreUtil.convertDateToString(patientGroup.getCreatedOn()),
+                HISCoreUtil.convertDateToString(patientGroup.getUpdatedOn()));
+        this.name = patientGroup.getName();
+        this.description = patientGroup.getDescription();
+        this.status = patientGroup.isStatus();
+        this.patientCount = patientGroup.getPatients().size();
+        this.hasChild = this.patientCount > 0;      //if(size>0) then true else false;
     }
 
     public String getName() {
