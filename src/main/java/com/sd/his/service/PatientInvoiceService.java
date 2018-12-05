@@ -8,6 +8,7 @@ import com.sd.his.wrapper.request.*;
 import com.sd.his.wrapper.response.InvoiceItemsResponseWrapper;
 import com.sd.his.wrapper.response.InvoiceResponseWrapper;
 import com.sd.his.wrapper.response.ReceiptListResponseWrapper;
+import com.sd.his.wrapper.response.RefundListResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,13 @@ public class PatientInvoiceService {
 
     @Autowired
     private MedicalServiceRepository medicalServiceRepository;
+
+    @Autowired
+    private PatientRefundRepository patientRefundRepository;
+
+    @Autowired
+    PaymentTypeRepository  paymentTypeRepository;
+
 
 
     public Invoice getInvoiceById(Long id){
@@ -209,6 +217,37 @@ public class PatientInvoiceService {
     }
 
 
+    public void refundPayment(RefundPaymentRequestWrapper refundPaymentRequestWrapper)
+    {
+        double advanceDeposit = 0.00;
+
+        PatientRefund patientRefund = new PatientRefund();
+        Patient patient = patientRepository.findOne(refundPaymentRequestWrapper.getPatientId());
+        if(refundPaymentRequestWrapper.getRefundType().equalsIgnoreCase("Advance")){
+            advanceDeposit = patient.getAdvanceBalance() - refundPaymentRequestWrapper.getRefundAmount();
+            patient.setAdvanceBalance(advanceDeposit);
+            patientRepository.save(patient);
+        }else{
+            Invoice invoice = patientInvoiceRepository.findOne(Long.parseLong(refundPaymentRequestWrapper.getInvoiceId()));
+            invoice.setStatus(InvoiceStatusEnum.REFUND.toString());  // #TODO
+            patientInvoiceRepository.save(invoice);
+
+            patientRefund.setInvoice(invoice);
+        }
+
+
+        patientRefund.setRefundId(refundPaymentRequestWrapper.getRefundId());
+        patientRefund.setCreatedOn(new Date());
+        patientRefund.setUpdatedOn(new Date());
+        patientRefund.setPatient(patient);
+        patientRefund.setRefundType(refundPaymentRequestWrapper.getRefundType());
+        patientRefund.setPaymentType(paymentTypeRepository.findOne(Long.parseLong(refundPaymentRequestWrapper.getPaymentTypeId())));
+
+        patientRefund.setDescription(refundPaymentRequestWrapper.getDescription());
+        patientRefund.setRefundAmount(refundPaymentRequestWrapper.getRefundAmount());
+        patientRefundRepository.save(patientRefund);
+
+    }
 
     // Save Bulk Payment
     @Transactional
@@ -290,6 +329,9 @@ public class PatientInvoiceService {
     }
 
 
+    public List<RefundListResponseWrapper> getRefundList(){
+        return patientRefundRepository.findAllRefund();
+    }
 
 
     public void generateInvoiceOnCheckIn(long id)

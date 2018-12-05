@@ -23,6 +23,9 @@ public class Payment  extends BaseEntity implements Serializable {
     @Column(name = "PAYMENT_AMOUNT")
     private  Double paymentAmount;
 
+    @Column(name = "REFUND_TYPE")
+    private  String refundType;
+
 
     @OneToMany(mappedBy = "payment")
     private List<PatientInvoicePayment> patientInvoicePayment;
@@ -42,6 +45,14 @@ public class Payment  extends BaseEntity implements Serializable {
 
     public void setPaymentAmount(Double paymentAmount) {
         this.paymentAmount = paymentAmount;
+    }
+
+    public String getRefundType() {
+        return refundType;
+    }
+
+    public void setRefundType(String refundType) {
+        this.refundType = refundType;
     }
 
     public List<PatientInvoicePayment> getPatientInvoicePayment() {
