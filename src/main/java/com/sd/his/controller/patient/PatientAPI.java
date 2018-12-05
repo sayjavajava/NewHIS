@@ -289,18 +289,24 @@ public class PatientAPI {
 
             if (patientRequest.getDob().trim().length() == 10) {
                 patientRequest.setDob( patientService.convertDateToGMT( patientRequest.getDob().trim(), "yyyy-MM-dd" ) );
+            } else if(patientRequest.getDob().trim().length() == 15){            // Tue Dec 04 2018
+                patientRequest.setDob( patientService.convertDateToGMT( patientRequest.getDob().trim(), "E MMM dd yyyy" ) );
             } else {
                 patientRequest.setDob( patientService.convertDateToGMT( patientRequest.getDob().trim(), "E MMM dd yyyy HH:mm:ss" ) );
             }
 
             if (patientRequest.getCardIssuedDate().trim().length() == 10) {
                 patientRequest.setCardIssuedDate( patientService.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "yyyy-MM-dd" ) );
+            } else if(patientRequest.getCardIssuedDate().trim().length() == 15){            // Tue Dec 04 2018
+                patientRequest.setCardIssuedDate( patientService.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "E MMM dd yyyy" ) );
             } else {
                 patientRequest.setCardIssuedDate( patientService.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
             }
 
             if (patientRequest.getCardExpiryDate().trim().length() == 10) {
                 patientRequest.setCardExpiryDate( patientService.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "yyyy-MM-dd" ) );
+            } else if(patientRequest.getCardExpiryDate().trim().length() == 15){            // Tue Dec 04 2018
+                patientRequest.setCardExpiryDate( patientService.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "E MMM dd yyyy" ) );
             } else {
                 patientRequest.setCardExpiryDate( patientService.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
             }

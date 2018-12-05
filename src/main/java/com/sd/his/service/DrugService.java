@@ -1,8 +1,10 @@
 package com.sd.his.service;
 
 import com.sd.his.enums.ModuleEnum;
+import com.sd.his.model.Country;
 import com.sd.his.model.Drug;
 import com.sd.his.model.Prefix;
+import com.sd.his.repository.CountryRepository;
 import com.sd.his.repository.DrugRepository;
 import com.sd.his.repository.PrefixRepository;
 import com.sd.his.wrapper.DrugWrapper;
@@ -24,6 +26,9 @@ public class DrugService {
     @Autowired
     private PrefixRepository prefixRepository;
 
+    @Autowired
+    private CountryRepository countryRepository;
+
     public boolean isNameDrugDuplicateByName(String name) {
         return this.drugRepository.getDrugByDrugName(name);
     }
@@ -35,7 +40,19 @@ public class DrugService {
     @Transactional
     public String saveDrug(DrugWrapper drugWrapper) {
         Drug drug = new Drug(drugWrapper);
-        Prefix pr = this.prefixRepository.findByName(ModuleEnum.DRUG.name());
+        drug.setStrengths(drugWrapper.getStrengths());
+        boolean chkStatusCountry=containsDigit(drugWrapper.getSelectedCountry());
+        long numCountry;
+        if(chkStatusCountry==true){
+            numCountry = Long.parseLong(drugWrapper.getSelectedCountry());
+        }else{
+            Country countryObj=countryRepository.findTitleById(drugWrapper.getSelectedCountry());
+            numCountry=countryObj.getId();
+
+        }
+        Country countryObj=countryRepository.findOne(Long.valueOf(numCountry));
+        drug.setCountry(countryObj);
+        Prefix pr = this.prefixRepository.findByModule(ModuleEnum.DRUG.name());
         pr.setCurrentValue(pr.getCurrentValue() + 1L);
         this.prefixRepository.save(pr);
         this.drugRepository.save(drug);
@@ -67,6 +84,16 @@ public class DrugService {
     @Transactional
     public String updateDrug(DrugWrapper drugWrapper) {
         Drug drug = this.drugRepository.findOne(drugWrapper.getId());
+        boolean chkStatusCountry=containsDigit(drugWrapper.getSelectedCountry());
+        long numCountry;
+        if(chkStatusCountry==true){
+            numCountry = Long.parseLong(drugWrapper.getSelectedCountry());
+        }else{
+            Country countryObj=countryRepository.findTitleById(drugWrapper.getSelectedCountry());
+            numCountry=countryObj.getId();
+
+        }
+        drugWrapper.setSelectedCountry(String.valueOf(numCountry));
         new Drug(drug, drugWrapper);
         this.drugRepository.save(drug);
         return "";
@@ -77,7 +104,7 @@ public class DrugService {
     }
 
     public String getDrugNaturalId() {
-        Prefix prefix = prefixRepository.findByName(ModuleEnum.DRUG.name());
+        Prefix prefix = prefixRepository.findByModule(ModuleEnum.DRUG.name());
         String currentPrefix = prefix.getName() + "-" + prefix.getCurrentValue();
         return currentPrefix;
     }
@@ -88,5 +115,37 @@ public class DrugService {
 
     public List<DrugWrapper> getAllDrugWrappers() {
         return this.drugRepository.getAllDrugWrappers();
+    }
+
+    public Drug getDrugById(long id) {
+        return this.drugRepository.findOne(id);
+    }
+
+
+    public final boolean containsDigit(String s) {
+        boolean containsDigit = false;
+
+        if (s != null && !s.isEmpty()) {
+            for (char c : s.toCharArray()) {
+                if (containsDigit = Character.isDigit(c)) {
+                    break;
+                }
+            }
+        }
+
+        return containsDigit;
+    }
+
+    public String searchByDrugNameAutoCompleteDetail(String text) {
+        return  this.drugRepository.searchDrugByDifferentParams(text);
+    }
+
+
+    /*public List<String> searchByDrugNameAuto(String text) {
+        return this.drugRepository.searchDrugByParamsNames(text);
+    }*/
+
+    public Drug searchByDrugNameAutoCompleteStrengths(String text) {
+        return this.drugRepository.searchDrugStrengthsByDifferentParams(text);
     }
 }

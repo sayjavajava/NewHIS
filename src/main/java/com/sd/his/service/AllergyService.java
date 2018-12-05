@@ -34,18 +34,18 @@ public class AllergyService {
     public void saveAllergy(AllergyWrapper allergyWrapper) throws Exception {
         Allergy allergy = new Allergy(allergyWrapper);
         Patient patient = this.patientRepository.findOne(allergyWrapper.getPatientId());
-        Appointment appointment = this.appointmentRepository.findOne(allergyWrapper.getAppointmentId());
+      //  Appointment appointment = this.appointmentRepository.findOne(allergyWrapper.getAppointmentId());
 
         if (patient != null) {
             allergy.setPatient(patient);
         } else {
             throw new Exception("patient not found");
         }
-        if (appointment != null) {
+        /*if (appointment != null) {
             allergy.setAppointment(appointment);
         } else {
             throw new Exception("Appoint not found");
-        }
+        }*/
         this.allergyRepository.save(allergy);
     }
 
@@ -54,10 +54,10 @@ public class AllergyService {
         if (allergy != null){
             new Allergy(allergy, allergyWrapper);
             Patient patient = this.patientRepository.findOne(allergyWrapper.getPatientId());
-            Appointment appointment = this.appointmentRepository.findOne(allergyWrapper.getAppointmentId());
+       //     Appointment appointment = this.appointmentRepository.findOne(allergyWrapper.getAppointmentId());
 
             allergy.setPatient(patient);
-            allergy.setAppointment(appointment);
+         //   allergy.setAppointment(appointment);
 
             this.allergyRepository.save(allergy);
             return true;

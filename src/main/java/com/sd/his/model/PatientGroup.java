@@ -1,11 +1,14 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sd.his.wrapper.DrugWrapper;
 import com.sd.his.wrapper.PatientGroupWrapper;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Created by jamal on 10/23/2018.
@@ -14,14 +17,21 @@ import javax.persistence.Table;
 @Table(name = "patient_group")
 public class PatientGroup extends BaseEntity {
 
+    @Column(name = "NAME", length = 255)
     private String name;
-    @Column(name = "description", length = 4000)
+
+    @Column(name = "DESCRIPTION", length = 4000)
     private String description;
+
+    @Column(name = "STATUS")
     private boolean status;
+
+    @OneToMany(targetEntity = Patient.class, mappedBy = "patientGroup")
+    @JsonBackReference
+    private List<Patient> patients;
 
     public PatientGroup() {
     }
-
 
     public PatientGroup(PatientGroupWrapper patientGroupWrapper) {
         this.name = patientGroupWrapper.getName();
@@ -57,5 +67,13 @@ public class PatientGroup extends BaseEntity {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public List<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
     }
 }

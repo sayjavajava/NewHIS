@@ -182,6 +182,10 @@ public class Patient extends BaseEntity implements Serializable {
     @JsonBackReference
     private City city;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PATIENT_GROUP_ID")
+    private PatientGroup patientGroup;
+
     public List<LabOrder> getLabOrders() {
         return labOrders;
     }
@@ -550,5 +554,12 @@ public class Patient extends BaseEntity implements Serializable {
         this.patientRefunds = patientRefunds;
     }
 
+    public PatientGroup getPatientGroup() {
+        return patientGroup;
+    }
+
+    public void setPatientGroup(PatientGroup patientGroup) {
+        this.patientGroup = patientGroup;
+    }
 
 }

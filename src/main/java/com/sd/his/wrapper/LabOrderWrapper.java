@@ -1,5 +1,6 @@
 package com.sd.his.wrapper;
 
+import java.util.Date;
 import java.util.List;
 
 public class LabOrderWrapper {
@@ -12,6 +13,18 @@ public class LabOrderWrapper {
     private String orderTestDate;
     private Long patientId;
     private Long appointmentId;
+
+    public Date getTestDate() {
+        return testDate;
+    }
+
+    public void setTestDate(Date testDate) {
+        this.testDate = testDate;
+    }
+
+    private Date testDate;
+
+
 
     public LabOrderWrapper() {
     }

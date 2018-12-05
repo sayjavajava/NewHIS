@@ -312,4 +312,79 @@ public class HISCoreUtil {
         }
         return date;
     }
+
+    public static Date convertToAPPDateZone(String str,String format) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
+
+    public static Date convertToDateString(String str,String format) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
+
+    public static Date convertToDateNew(String str) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
+    public static Date  convertStringDateObject(String dateinString) {
+
+        Date dte = new Date();
+        if (dateinString != null) {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                dte = formatter.parse(dateinString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        return dte;
+    }
+
+    public static Date convertToDateDetail(String str) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
 }
