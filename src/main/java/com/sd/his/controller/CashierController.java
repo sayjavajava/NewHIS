@@ -140,7 +140,7 @@ public class CashierController {
             response = GenericAPIResponse.class, protocols = "https")
 
     @RequestMapping(value = "/savePayment", method = RequestMethod.POST)
-    public ResponseEntity<?> savePayment(HttpServletRequest request, @RequestBody PaymentRequestWrapper paymentRequestWrapper) {
+    public ResponseEntity<?> savePayment(@RequestBody PaymentRequestWrapper paymentRequestWrapper) {
 
         long date = System.currentTimeMillis();
 
@@ -152,7 +152,7 @@ public class CashierController {
 
         try
         {
-            if(paymentRequestWrapper.getPaidAmount()>0 || (paymentRequestWrapper.getUseAdvancedBal() && paymentRequestWrapper.getPatientAdvanceDeposit() > 0)){
+            if(paymentRequestWrapper.getPaidAmount()>0 || (paymentRequestWrapper.getUseAdvancedBal() && paymentRequestWrapper.getUsedAdvanceDeposit() > 0)){
                 patientInvoiceService.savePayment(paymentRequestWrapper);
             }
 

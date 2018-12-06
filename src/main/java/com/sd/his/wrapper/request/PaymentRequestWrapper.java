@@ -10,7 +10,11 @@ public class PaymentRequestWrapper {
     String status;
 
     Boolean useAdvancedBal;
-    Double  patientAdvanceDeposit;
+    Double  patientAdvanceDeposit;  // Patient Advanced amount/balance
+
+    Double  usedAdvanceDeposit;  // use from advanced amount
+    Double  discountAmount;
+    long paymentTypeId;
 
     public PaymentRequestWrapper() {
     }
@@ -69,5 +73,29 @@ public class PaymentRequestWrapper {
 
     public void setPatientAdvanceDeposit(Double patientAdvanceDeposit) {
         this.patientAdvanceDeposit = patientAdvanceDeposit;
+    }
+
+    public Double getUsedAdvanceDeposit() {
+        return usedAdvanceDeposit;
+    }
+
+    public void setUsedAdvanceDeposit(Double usedAdvanceDeposit) {
+        this.usedAdvanceDeposit = usedAdvanceDeposit;
+    }
+
+    public Double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public long getPaymentTypeId() {
+        return paymentTypeId;
+    }
+
+    public void setPaymentTypeId(long paymentTypeId) {
+        this.paymentTypeId = paymentTypeId;
     }
 }

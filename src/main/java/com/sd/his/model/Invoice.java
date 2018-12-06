@@ -25,7 +25,7 @@ public class Invoice extends BaseEntity implements Serializable
     private Patient patient;
 
     @OneToOne
-    @JoinColumn(name="APPOINTMENT_ID", unique= true)
+    @JoinColumn(name="APPOINTMENT_ID")
     private Appointment appointment;
 
     @JsonIgnore
