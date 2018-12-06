@@ -227,9 +227,11 @@ public class PatientInvoiceService {
             patientRepository.save(patient);
         }else{
             Invoice invoice = patientInvoiceRepository.findOne(Long.parseLong(refundPaymentRequestWrapper.getInvoiceId()));
-            invoice.setStatus(InvoiceStatusEnum.REFUND.toString());  // #TODO
+            invoice.setPaidAmount(invoice.getPaidAmount() - refundPaymentRequestWrapper.getRefundAmount());
+            if(invoice.getPaidAmount()<1){
+                invoice.setStatus(InvoiceStatusEnum.REFUND.toString());
+            }
             patientInvoiceRepository.save(invoice);
-
             patientRefund.setInvoice(invoice);
         }
 

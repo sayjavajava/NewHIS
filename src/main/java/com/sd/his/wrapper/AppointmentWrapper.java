@@ -93,6 +93,8 @@ public class AppointmentWrapper {
     private String label;
     private Long value;
 
+    private Double refundAmount;
+
     public AppointmentWrapper() {
     }
 
@@ -681,5 +683,13 @@ public class AppointmentWrapper {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public Double getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(Double refundAmount) {
+        this.refundAmount = refundAmount;
     }
 }

@@ -104,6 +104,8 @@ public class CashierController {
             AppointmentWrapper dbAppointment = this.appointmentService.findAppointmentById(invoice.getAppointment().getId());    // this.appointmentService.findById(id);
             dbAppointment.setReceivedAmount(invoice.getPaidAmount());
             dbAppointment.setPatientAdvanceDeposit(invoice.getPatient().getAdvanceBalance());
+            // invoice.getPatientRefunds().stream().mapToDouble(i -> i.getRefundAmount()).sum();
+            dbAppointment.setRefundAmount(invoice.getPatientRefunds().stream().mapToDouble(i -> i.getRefundAmount()).sum());
 
             if (HISCoreUtil.isValidObject(dbAppointment)) {
                 response.setResponseData(dbAppointment);
