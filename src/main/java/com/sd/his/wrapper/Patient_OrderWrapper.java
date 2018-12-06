@@ -1,6 +1,8 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.Patient;
 import com.sd.his.model.PatientImageSetup;
+import com.sd.his.model.Patient_Order;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,11 +14,16 @@ import java.util.List;
 
 public class Patient_OrderWrapper extends BaseWrapper {
 
+
     private long patientId;
     private String order;
     private String type;
     private String description;
     private String doctorComment;
+
+
+
+
 
 
 
@@ -36,15 +43,7 @@ public class Patient_OrderWrapper extends BaseWrapper {
     public void setListOfFiles(MultipartFile[] listOfFiles) {
         this.listOfFiles = listOfFiles;
     }
-  //  private File[] file;
 
-  //  public File[] getFile() {
- //       return file;
-  //  }
-
-  //  public void setFile(File[] file) {
-  //      this.file = file;
-  //  }
 
     public String getStatus() {
         return status;
@@ -74,13 +73,34 @@ public class Patient_OrderWrapper extends BaseWrapper {
     }*/
 
 
+    public Patient_OrderWrapper(Patient_Order order) {
+        super(order.getId(),HISCoreUtil.convertDateToString(order.getCreatedOn(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM),
+                HISCoreUtil.convertDateToString(order.getUpdatedOn(), HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM));
+        this.patientId = order.getPatient().getId();
+        this.orderObj = order.getOrder();
+        this.type = order.getType();
+        this.description = order.getDescription();
+        this.doctorComment=order.getDoctorComment();
+        this.url = order.getUrl();
+        this.status=order.getStatus();
 
 
-    public Patient_OrderWrapper(Long id, Date createdOn, Date updatedOn, PatientImageSetup  name, String type, String description, List<String> url, long patientId) {
-        super(id,HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM),
-                HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM));
+    }
+
+
+    public Patient_OrderWrapper(long id, List<String> url) {
+
+        this.patientId = id;
+        this.url = url;
+
+    }
+
+
+    public Patient_OrderWrapper(Long id, PatientImageSetup  order, String type, String description, List<String> url, long patientId) {
+       /* super(id,HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM),
+                HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM));*/
         this.patientId = patientId;
-        this.orderObj = name;
+        this.orderObj = order;
         this.type = type;
         this.description = description;
         this.url = url;
@@ -93,7 +113,6 @@ public class Patient_OrderWrapper extends BaseWrapper {
         this.type = type;
         this.description = description;
         this.doctorComment = doctorComment;
-       // this.file = file;
         this.status=status;
 
     }
@@ -192,4 +211,8 @@ public class Patient_OrderWrapper extends BaseWrapper {
     public void setUrl(List<String> url) {
         this.url = url;
     }
+
+
+
+
 }

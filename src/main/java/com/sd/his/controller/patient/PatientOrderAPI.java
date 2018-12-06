@@ -77,14 +77,9 @@ public class PatientOrderAPI {
         logger.info("saveDocument API - initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
 
-        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-        List<String> tempFileNames = new ArrayList<>();
-        String tempFileName;
-      //  FileOutputStream fo;
 
         try {
-        //    List<MultipartFile> files;
-        //    List<String> fileNames = new ArrayList<String>();
+
             if (orderWrapper != null) {
                 if (null != file && file.length > 0) {
                     for (MultipartFile multipartFile : file) {
@@ -95,8 +90,7 @@ public class PatientOrderAPI {
                   //      fileNames.add(fileName);
 
                 }
-
-            //    orderWrapper.setLstOfFiles(fileNames);
+                    //    orderWrapper.setLstOfFiles(fileNames);
                 }
 
                 orderWrapper.setListOfFiles(file);
@@ -160,17 +154,17 @@ public class PatientOrderAPI {
                                                        @RequestParam(value = "pageSize",
                                                                required = false, defaultValue = "10") int pageSize) {
 
-        logger.error("getPaginatedDocumentation API initiated");
+        logger.error("API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
 
         try {
 
-            logger.error("getPaginatedDocumentation -  fetching from DB");
+            logger.error("Fetching from DB");
             if (patientId == null || Long.valueOf(patientId) <= 0) {
                 response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_PATIENT_REQUIRED.getValue());
                 response.setResponseMessage(messageBundle.getString("document.patient.required"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.error("getPaginatedDocumentation API - patient required");
+                logger.error(" API - patient required");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             Pageable pageable = new PageRequest(page, pageSize);
@@ -242,7 +236,7 @@ public class PatientOrderAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/get", method = RequestMethod.GET)//, consumes = "multipart/form-data"
     public ResponseEntity<?> getOrderById(HttpServletRequest request,
-                                             @RequestParam("orderId") int orderId) {
+                                             @RequestParam("orderId") long orderId) {
         logger.info(" API - initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
@@ -289,8 +283,8 @@ public class PatientOrderAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             if (orderWrapper.getPatientId() <= 0) {
-                response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_PATIENT_REQUIRED.getValue());
-                response.setResponseMessage(messageBundle.getString("document.patient.required"));
+                response.setResponseCode(ResponseEnum.ORDER_UPDATE_ID_REQUIRED.getValue());
+                response.setResponseMessage(messageBundle.getString("patient.image.patient.required"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.error("updateDocument API - successfully saved.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -298,18 +292,12 @@ public class PatientOrderAPI {
 
             if (orderWrapper.getId() <= 0) {
                 response.setResponseCode(ResponseEnum.DOCUMENT_UPDATE_ID_REQUIRED.getValue());
-                response.setResponseMessage(messageBundle.getString("document.update.id.required"));
+                response.setResponseMessage(messageBundle.getString("patient.image.delete.id.required"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.error("updateDocument API - successfully saved.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            if (this.patientOrderService.isNameDocumentAvailableAgainstDocumentIdAndPatientId(orderWrapper.getOrder(), orderWrapper.getId(), orderWrapper.getPatientId())) {
-                response.setResponseCode(ResponseEnum.DOCUMENT_SAVE_NAME_DUBPLUCATE.getValue());
-                response.setResponseMessage(messageBundle.getString("document.save.name.duplicate"));
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.error("updateDocument API - name of document was duplicate.");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }
+
 
             this.patientOrderService.updateDocument(orderWrapper);
             response.setResponseMessage(messageBundle.getString("document.update.success"));
@@ -344,24 +332,24 @@ public class PatientOrderAPI {
         logger.info("deleteDocumentById API - Called..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("document.delete.error"));
-        response.setResponseCode(ResponseEnum.PATIENT_DELETE_ERROR.getValue());
+        response.setResponseCode(ResponseEnum.ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
 
         try {
             if (orderId <= 0) {
-                response.setResponseMessage(messageBundle.getString("document.delete.id.required"));
-                response.setResponseCode(ResponseEnum.DOCUMENT_DELETE_ERR.getValue());
+                response.setResponseMessage(messageBundle.getString("patient.image.delete.id.required"));
+                response.setResponseCode(ResponseEnum.ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseData(null);
-                logger.error("deleteDocumentById API - insufficient params.");
+                logger.error(" API - insufficient params.");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             this.patientOrderService.deleteDocument(orderId);
-            response.setResponseMessage(messageBundle.getString("document.delete.success"));
-            response.setResponseCode(ResponseEnum.DOCUMENT_DELETE_SUCCESS.getValue());
+            response.setResponseMessage(messageBundle.getString("patient.image.Order.delete.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(null);
             logger.info(" API - Deleted Successfully...");
@@ -377,6 +365,47 @@ public class PatientOrderAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @ApiOperation(httpMethod = "GET", value = "Get Order",
+            notes = "This method will Get the Order.",
+            produces = "application/json", nickname = "Get ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Get Order successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/getImages", method = RequestMethod.GET)//, consumes = "multipart/form-data"
+    public ResponseEntity<?> getOrderImageById(HttpServletRequest request,
+                                          @RequestParam("orderId") long orderId) {
+        logger.info(" API - initiated..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            if (orderId <= 0) {
+                response.setResponseMessage(messageBundle.getString("document.get.id.required"));
+                response.setResponseCode(ResponseEnum.DOCUMENT_GET_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.error(" API - successfully saved.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            response.setResponseData(this.patientOrderService.getOrderImageById(orderId));
+            response.setResponseMessage(messageBundle.getString("document.get.success"));
+            response.setResponseCode(ResponseEnum.DOCUMENT_GET_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.error("getDocumentById API - successfully saved.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("getDocumentById exception.", e.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 
 }

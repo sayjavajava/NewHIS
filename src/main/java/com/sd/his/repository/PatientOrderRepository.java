@@ -27,14 +27,14 @@ import java.util.List;
 public interface PatientOrderRepository extends JpaRepository<Patient_Order, Long> {
 
 
-    /*@Query("SELECT new com.sd.his.wrapper.Patient_OrderWrapper(po.id,po.createdOn,po.updatedOn,po.order,po.type,po.description,po.url,po.patient.id) " +
+    @Query("SELECT new com.sd.his.wrapper.Patient_OrderWrapper(po) " +
             "FROM com.sd.his.model.Patient_Order po where po.id=:id")
-    Patient_OrderWrapper findOrderById(@Param("id") long poId);*/
+    Patient_OrderWrapper findOrderById(@Param("id") long poId);
 
-   /* @Query("SELECT new com.sd.his.wrapper.Patient_OrderWrapper(po.id,po.createdOn,po.updatedOn,po.order,po.type,po.description,po.url,po.patient.id) " +
+   @Query("SELECT new com.sd.his.wrapper.Patient_OrderWrapper(po) " +
             "FROM com.sd.his.model.Patient_Order po " +
             "WHERE po.patient.id=:patientId")
-    List<Patient_OrderWrapper> getPaginatedOrder(Pageable pageable, @Param("patientId") Long patientId);*/
+    List<Patient_OrderWrapper> getPaginatedOrder(Pageable pageable, @Param("patientId") Long patientId);
 
 
     @Query("SELECT CASE WHEN COUNT (po) > 0 THEN true ELSE false END " +
@@ -46,4 +46,9 @@ public interface PatientOrderRepository extends JpaRepository<Patient_Order, Lon
             "FROM com.sd.his.model.Patient_Order po " +
             "WHERE po.order=:name AND po.id <>:id AND po.patient.id=:patientId")
     boolean isNameExistsAgainstId(@Param("name") String orderName, @Param("id") Long id, @Param("patientId") Long patientId);
+
+
+    @Query("SELECT new com.sd.his.wrapper.Patient_OrderWrapper(po) " +
+            "FROM com.sd.his.model.Patient_Order po where po.id=:id")
+    Patient_OrderWrapper findOrderImageById(@Param("id") long poId);
 }

@@ -35,6 +35,12 @@ public class Patient_Order extends BaseEntity implements Serializable {
         @JoinColumn(name = "Order_ID", nullable = false)
         private PatientImageSetup order;
 
+
+
+
+    @Column(name = "STATUS")
+    private String status;
+
         public Patient_Order() {
         }
 
@@ -45,6 +51,7 @@ public class Patient_Order extends BaseEntity implements Serializable {
             this.description = odrderWrapper.getDescription();
             this.url = odrderWrapper.getUrl();
             this.doctorComment=odrderWrapper.getDoctorComment();
+            this.status=odrderWrapper.getStatus();
         }
 
         public Patient_Order(PatientImageSetup code, String type, String description, List<String> url,String doctorComment, Patient patient) {
@@ -119,6 +126,15 @@ public class Patient_Order extends BaseEntity implements Serializable {
 
         public void setUrl(List<String> url) {
         this.url = url;
+        }
+
+
+        public String getStatus() {
+        return status;
+        }
+
+        public void setStatus(String status) {
+        this.status = status;
         }
     }
 

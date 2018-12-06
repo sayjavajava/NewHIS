@@ -4,7 +4,6 @@ import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.DocumentWrapper;
 import com.sd.his.wrapper.Patient_OrderWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.sd.his.model.Patient;
@@ -31,6 +31,9 @@ public class PatientOrderService {
     private UserService userService;
     @Autowired
     PatientImageRepository patientImageRepository;
+
+    @Autowired
+    AWSService awsService;
 
     @Transactional
     public String saveOrder(Patient_OrderWrapper orderWrapper) {
@@ -59,29 +62,35 @@ public class PatientOrderService {
                         patientOrder.setType(tokens[1].toString());
 
                         byte[] bteObj = multipartFile.getBytes();
+                        if(tokens[1].toString().equalsIgnoreCase("PNG") || tokens[1].toString().equalsIgnoreCase("JPG")   || tokens[1].toString().equalsIgnoreCase("JPEG") || tokens[1].toString().equalsIgnoreCase("GIF") || tokens[1].toString().equalsIgnoreCase("BMP") ) {
+                            url = userService.saveImageByOrder(bteObj,
+                                    HISConstants.S3_USER_ORDER_DIRECTORY_PATH,
+                                    orderWrapper.getPatientId()
+                                            + "_"
+                                            + HISCoreUtil.convertDateToStringUpload(new Date())//patientImageSetup.getId()
+                                            + "_"
+                                            + HISConstants.S3_USER_ORDER_DIRECTORY_PATH,
+                                    orderWrapper.getPatientId()
+                                            + "_"
+                                            + HISCoreUtil.convertDateToStringUpload(new Date())
+                                            + "_"
+                                            + HISConstants.S3_USER_ORDER_GRAPHIC_NAME,
+                                    "/"
+                                            + HISConstants.S3_USER_ORDER_DIRECTORY_PATH
+                                            + orderWrapper.getPatientId()
+                                            + "_"
+                                            + HISCoreUtil.convertDateToStringUpload(new Date())
+                                            + "_"
+                                            + HISConstants.S3_USER_ORDER_THUMBNAIL_GRAPHIC_NAME);
 
-                        url = userService.saveImage(bteObj,
-                                HISConstants.S3_USER_DOCUMENT_DIRECTORY_PATH,
-                                orderWrapper.getPatientId()
-                                        + "_"
-                                        + patientImageSetup.getId()
-                                        + "_"
-                                        + HISConstants.S3_USER_DOCUMENT_DIRECTORY_PATH,
-                                orderWrapper.getPatientId()
-                                        + "_"
-                                        + patientImageSetup.getId()
-                                        + "_"
-                                        + HISConstants.S3_USER_DOCUMENT_GRAPHIC_NAME,
-                                "/"
-                                        + HISConstants.S3_USER_DOCUMENT_DIRECTORY_PATH
-                                        + orderWrapper.getPatientId()
-                                        + "_"
-                                        + patientImageSetup.getId()
-                                        + "_"
-                                        + HISConstants.S3_USER_DOCUMENT_THUMBNAIL_GRAPHIC_NAME);
+
+                        }else{
+
+                           url =    awsService.uploadFile(multipartFile);
+
+                        }
 
                         imageUrls.add(url);
-
                     }
                     System.out.println(url);
                 if (!HISCoreUtil.isListEmpty(imageUrls)) {
@@ -110,39 +119,11 @@ public class PatientOrderService {
                 } else {
                     return "patient not found";
                 }
-
+                patientOrder.setDescription(orderWrapper.getDescription());
+                patientOrder.setStatus(orderWrapper.getStatus());
+                patientOrder.setDoctorComment(orderWrapper.getDoctorComment());
                 this.patientOrderRepository.save(patientOrder);
 
-               /* String url = null;
-                if (orderWrapper.getImage() != null) {
-                    url = userService.saveImage(orderWrapper.getImage(),
-                            HISConstants.S3_USER_DOCUMENT_DIRECTORY_PATH,
-                            orderWrapper.getPatientId()
-                                    + "_"
-                                    + patientOrder.getId()
-                                    + "_"
-                                    + HISConstants.S3_USER_DOCUMENT_THUMBNAIL_GRAPHIC_NAME,
-                            orderWrapper.getPatientId()
-                                    + "_"
-                                    + patientOrder.getId()
-                                    + "_"
-                                    + HISConstants.S3_USER_DOCUMENT_GRAPHIC_NAME,
-                            "/"
-                                    + HISConstants.S3_USER_DOCUMENT_DIRECTORY_PATH
-                                    + orderWrapper.getPatientId()
-                                    + "_"
-                                    + patientOrder.getId()
-                                    + "_"
-                                    + HISConstants.S3_USER_DOCUMENT_THUMBNAIL_GRAPHIC_NAME);
-
-
-                    if (HISCoreUtil.isValidObject(url)) {
-                        patientOrder.setUrl(url);
-                        this.patientOrderRepository.save(patientOrder);
-                        url = null;
-                    }
-                }*/
-                return "";
             }
             return "Order  not found";
         } catch (Exception ex) {
@@ -162,24 +143,24 @@ public class PatientOrderService {
     }
 
     public Patient_OrderWrapper  getOrderById(long Id) {
-      //  return this.patientOrderRepository.findOrderById(Id);
-        return null;
+       return this.patientOrderRepository.findOrderById(Id);
+       // return null;
     }
 
     public List<Patient_OrderWrapper> getPaginatedOrder(Pageable pageable, Long patientId) {
-       // List<Patient_OrderWrapper> order=this.patientOrderRepository.getPaginatedOrder(pageable,patientId);
-        /*List<Patient_OrderWrapper> orderWrapperLst=new ArrayList<Patient_OrderWrapper>();
+       List<Patient_OrderWrapper> order=this.patientOrderRepository.getPaginatedOrder(pageable,patientId);
+        List<Patient_OrderWrapper> orderWrapperLst=new ArrayList<Patient_OrderWrapper>();
         for(int i=0;i<order.size();i++){
             Patient_OrderWrapper orderWrapper=new Patient_OrderWrapper();
-            orderWrapper.setPatientId(order.get(i).getId());
+            orderWrapper.setId(order.get(i).getId());
             orderWrapper.setDescription(order.get(i).getDescription());
             orderWrapper.setUrl(order.get(i).getUrl());
             orderWrapper.setDoctorComment(order.get(i).getDoctorComment());
             orderWrapper.setOrderObj(order.get(i).getOrderObj());
             orderWrapperLst.add(orderWrapper);
-        }*/
-      //  return orderWrapperLst;
-        return null;
+        }
+       return orderWrapperLst;
+
     }
 
     public int countPaginatedDocuments() {
@@ -193,4 +174,12 @@ public class PatientOrderService {
     public boolean isNameDocumentAvailableAgainstDocumentIdAndPatientId(String nameDocument, Long documentId, Long patientId) {
         return this.patientOrderRepository.isNameExistsAgainstId(nameDocument, documentId,patientId);
     }
+
+
+    public Patient_OrderWrapper  getOrderImageById(long Id) {
+        return this.patientOrderRepository.findOrderImageById(Id);
+        // return null;
+    }
+
+
 }

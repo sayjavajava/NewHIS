@@ -1,17 +1,29 @@
 package com.sd.his.service;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.sd.his.configuration.AWSS3;
 import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.enums.S3ContentTypes;
+import com.sd.his.model.S3Bucket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.Date;
+
+import static com.sd.his.utill.HISConstants.S3_USER_ORDER_DIRECTORY_PATH;
 
 /*
  * @author    : irfan Nasim
@@ -39,11 +51,16 @@ import java.io.InputStream;
 public class AWSService {
     private static int IMG_WIDTH = 100;
     private static int IMG_HEIGHT = 100;
-
+    public static final Logger logger = LoggerFactory.getLogger(AWSService.class);
     @Autowired
     S3KeyGen s3KeyGen;
     @Autowired
     AWSS3 awss3;
+
+    @Autowired
+    S3BucketService s3BucketService;
+
+    private AmazonS3 s3client;
 
     public boolean saveProfileImage(InputStream inputStream, Long id) {
 
@@ -170,4 +187,92 @@ public class AWSService {
     public String getThumbnailImageUrl(long id,String fullPathAndThumbnailGraphicName) {
         return s3KeyGen.getThumbnailGraphicPublicUserId(id,fullPathAndThumbnailGraphicName, false);
     }
+
+
+
+    public File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convFile = new File(file.getOriginalFilename());
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
+    }
+
+    public String generateFileName(MultipartFile multiPart) {
+        return new Date().getTime() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
+    }
+
+
+
+    public String uploadFile(MultipartFile multipartFile) {
+
+        String fileUrl = "";
+        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+        try {
+            File file = convertMultiPartToFile(multipartFile);
+           // String fileName =generateFileName(multipartFile);
+            String fileName=multipartFile.getOriginalFilename();
+            fileUrl = s3Bucket.getAccessProtocol()+s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+fileName;
+            uploadFileTos3bucket(multipartFile, true);
+          //  file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileUrl;
+    }
+
+
+
+   /* private void uploadFileTos3bucket(String fileName, File file,String url) {
+
+        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+
+        try{s3client.putObject(new PutObjectRequest(s3Bucket.getName(), url+fileName.toString(), file)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+        }catch (AmazonServiceException ase) {
+        logger.error("Error response from AWS while putting object", ase);
+        throw ase;
+        } catch (AmazonClientException ace) {
+        logger.error("Error response from AWS while listing object", ace);
+        throw ace;
+        } catch (Exception e) {
+        logger.error("Unknown Error whilst putting object to S3", e);
+        throw e;
+        }
+}*/
+
+    private void uploadFileTos3bucket(MultipartFile multipartFile, boolean enablePublicReadAccess) {
+
+
+        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+        String fileName = multipartFile.getOriginalFilename();
+        String fileUrl = "";
+        try {
+            //creating the file in the server (temporarily)
+            File file = new File(fileName);
+            FileOutputStream fos = new FileOutputStream(file);
+            FileInputStream fis = new FileInputStream(file);
+            fos.write(multipartFile.getBytes());
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(multipartFile.getSize());
+            metadata.setContentType(multipartFile.getContentType());
+            fileUrl = s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+fileName;
+            String bucketName=S3_USER_ORDER_DIRECTORY_PATH+fileName;
+            fos.close();
+
+            try {
+                PutObjectResult result = this.awss3.putObject(bucketName, fis, metadata, CannedAccessControlList.PublicRead);
+                System.out.println("Etag:" + result.getETag() + "-->" + result);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (IOException | AmazonServiceException ex) {
+            logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
+        }
+    }
+
+
+
+
 }

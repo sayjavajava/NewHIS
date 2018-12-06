@@ -387,4 +387,15 @@ public class HISCoreUtil {
         }
         return date;
     }
+
+
+
+    public static String convertDateToStringUpload(Date date) {
+        String formatedDate = null;
+        if (date != null) {
+            SimpleDateFormat form = new SimpleDateFormat("ddMMMMyyyyhhss");
+            formatedDate = form.format(date);
+        }
+        return formatedDate;
+    }
 }
