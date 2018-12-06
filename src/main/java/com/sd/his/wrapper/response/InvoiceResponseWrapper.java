@@ -41,7 +41,7 @@ public class InvoiceResponseWrapper {
         this.discountAmount = invoice.getDiscountAmount();
         this.totalInvoiceAmount = invoice.getTotalInvoiceAmount();
         this.dueAmount = invoice.getTotalInvoiceAmount() - invoice.getPaidAmount();
-        this.refundAmount = invoice.getPatientRefunds().stream().filter(i ->i.getRefundType()=="Invoice").mapToDouble(i-> i.getRefundAmount()).sum();
+        this.refundAmount = invoice.getPatientRefunds().stream().filter(i ->i.getRefundType().equalsIgnoreCase("Invoice")).mapToDouble(i-> i.getRefundAmount()).sum();
     }
 
     public InvoiceResponseWrapper(Double balance, Double totalBill, Double totalPaid, Double advBalance){
