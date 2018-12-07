@@ -161,7 +161,7 @@ public class HISCoreUtil {
         else{
         return null;
         }
-    } 
+    }
     public static Date convertToDateViaLocalDateTime(LocalDateTime dateToConvert) {
         Date dateFromLocalDateTime =null;
         if(dateToConvert !=null)
@@ -425,8 +425,6 @@ public class HISCoreUtil {
         return date;
     }
 
-
-
     public static String convertDateToStringUpload(Date date) {
         String formatedDate = null;
         if (date != null) {
@@ -435,4 +433,6 @@ public class HISCoreUtil {
         }
         return formatedDate;
     }
+
+
 }
