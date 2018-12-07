@@ -1,6 +1,5 @@
 package com.sd.his.wrapper.response;
 
-import com.sd.his.enums.AppointmentStatusTypeEnum;
 import com.sd.his.utill.HISCoreUtil;
 
 import java.util.Date;
@@ -23,9 +22,10 @@ public class DashboardResponseWrapper {
     private String patientFirstName;
     private String patientLastName;
     private Long patientId;
+    private Long statusId;
 
 
-    public DashboardResponseWrapper(Long appointmentId,String apptNaturalId,Long patientId ,String patientFirstName, String patientLastName, Date inTime, String doctorFirstName, String doctorLastName, String branch, String group, Date scheduleAt, String examRoom, AppointmentStatusTypeEnum status, Long branchId, Long doctorId, Long roomId) {
+    public DashboardResponseWrapper(Long appointmentId,String apptNaturalId,Long patientId ,String patientFirstName, String patientLastName,String statuName,Long statusId ,Date inTime, String doctorFirstName, String doctorLastName, String branch, String group, Date scheduleAt, String examRoom, Long branchId, Long doctorId, Long roomId) {
         this.appointmentId=appointmentId;
         this.inTime = HISCoreUtil.convertDateAndTimeToString(scheduleAt);
         this.patientFirstName =patientFirstName;
@@ -37,13 +37,23 @@ public class DashboardResponseWrapper {
         this.doctorFirstName = doctorFirstName;
         this.doctorLastName =doctorLastName;
         this.examRoom = examRoom;http:
-        this.status = status.name();
+        this.status = statuName;
+        this.statusId =statusId;
         this.branchId = branchId;
         this.doctorId = doctorId;
         this.roomId = roomId;
         this.apptNaturalId =apptNaturalId;
         this.patientId=patientId;
 
+
+    }
+
+    public Long getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Long statusId) {
+        this.statusId = statusId;
     }
 
     public Long getPatientId() {

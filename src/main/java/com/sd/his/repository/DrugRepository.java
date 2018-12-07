@@ -64,4 +64,6 @@ public interface DrugRepository extends JpaRepository<Drug, Long> {
             "WHERE drug.drugName=:name ")
     Drug searchDrugStrengthsByDifferentParams(@Param("name") String drugName);
 
+    @Query("SELECT drug  FROM Drug drug WHERE upper(drug.drugName) like upper(:name) ")
+    Drug findDrugByBrandName(@Param("name") String drugName);
 }

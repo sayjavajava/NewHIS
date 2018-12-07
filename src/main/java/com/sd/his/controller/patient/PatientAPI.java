@@ -6,6 +6,7 @@ import com.sd.his.model.Insurance;
 import com.sd.his.model.Patient;
 import com.sd.his.model.SmokingStatus;
 import com.sd.his.service.*;
+import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -17,6 +18,7 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,6 +75,9 @@ public class PatientAPI {
     @Autowired
     CityService cityService;
 
+    @Value("${spring.http.multipart.location}")
+    private String tmpFilePath;
+
     @ApiOperation(httpMethod = "POST", value = "Save patient",
             notes = "This method will save the patient.",
             produces = "application/json", nickname = "Save patient",
@@ -112,9 +117,9 @@ public class PatientAPI {
                 logger.error("savePatient API - user already found.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }*/
-            patientWrapper.setDob( patientService.convertDateToGMT( patientWrapper.getDob().trim() ) );
-            patientWrapper.setCardIssuedDate( patientService.convertDateToGMT( patientWrapper.getCardIssuedDate().trim() ) );
-            patientWrapper.setCardExpiryDate( patientService.convertDateToGMT( patientWrapper.getCardExpiryDate().trim() ) );
+            patientWrapper.setDob( DateTimeUtil.convertDateToGMT( patientWrapper.getDob().trim() ) );
+            patientWrapper.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientWrapper.getCardIssuedDate().trim() ) );
+            patientWrapper.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientWrapper.getCardExpiryDate().trim() ) );
             patientService.savePatient(patientWrapper);
 //            patientService.convertDateToGMT(patientWrapper.getDob().trim());
 
@@ -288,27 +293,27 @@ public class PatientAPI {
             }
 
             if (patientRequest.getDob().trim().length() == 10) {
-                patientRequest.setDob( patientService.convertDateToGMT( patientRequest.getDob().trim(), "yyyy-MM-dd" ) );
+                patientRequest.setDob( DateTimeUtil.convertDateToGMT( patientRequest.getDob().trim(), "yyyy-MM-dd" ) );
             } else if(patientRequest.getDob().trim().length() == 15){            // Tue Dec 04 2018
-                patientRequest.setDob( patientService.convertDateToGMT( patientRequest.getDob().trim(), "E MMM dd yyyy" ) );
+                patientRequest.setDob( DateTimeUtil.convertDateToGMT( patientRequest.getDob().trim(), "E MMM dd yyyy" ) );
             } else {
-                patientRequest.setDob( patientService.convertDateToGMT( patientRequest.getDob().trim(), "E MMM dd yyyy HH:mm:ss" ) );
+                patientRequest.setDob( DateTimeUtil.convertDateToGMT( patientRequest.getDob().trim(), "E MMM dd yyyy HH:mm:ss" ) );
             }
 
             if (patientRequest.getCardIssuedDate().trim().length() == 10) {
-                patientRequest.setCardIssuedDate( patientService.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "yyyy-MM-dd" ) );
+                patientRequest.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "yyyy-MM-dd" ) );
             } else if(patientRequest.getCardIssuedDate().trim().length() == 15){            // Tue Dec 04 2018
-                patientRequest.setCardIssuedDate( patientService.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "E MMM dd yyyy" ) );
+                patientRequest.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "E MMM dd yyyy" ) );
             } else {
-                patientRequest.setCardIssuedDate( patientService.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
+                patientRequest.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
             }
 
             if (patientRequest.getCardExpiryDate().trim().length() == 10) {
-                patientRequest.setCardExpiryDate( patientService.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "yyyy-MM-dd" ) );
+                patientRequest.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "yyyy-MM-dd" ) );
             } else if(patientRequest.getCardExpiryDate().trim().length() == 15){            // Tue Dec 04 2018
-                patientRequest.setCardExpiryDate( patientService.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "E MMM dd yyyy" ) );
+                patientRequest.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "E MMM dd yyyy" ) );
             } else {
-                patientRequest.setCardExpiryDate( patientService.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
+                patientRequest.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
             }
 
             patientService.savePatient(patientRequest);
@@ -917,11 +922,19 @@ public class PatientAPI {
         logger.error("importPatientRecords API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            File file = patientService.multipartToFile(dataFile);
-            int records = patientService.readExcel( dataFile );
-//            int records = patientService.readExcel( file );
+            String fileName = dataFile.getOriginalFilename();
+            File file = HISCoreUtil.multipartToFile(dataFile);
+            int records = patientService.readExcel( this.tmpFilePath + fileName );
 
-            response.setResponseMessage(messageBundle.getString("patient.records.import.success"));
+//            File file = HISCoreUtil.multipartToFile(dataFile);
+//            int records = patientService.readExcel( dataFile );
+
+            if (records > 0) {
+                response.setResponseMessage(messageBundle.getString("patient.records.import.success"));
+            } else {
+                response.setResponseMessage(messageBundle.getString("patient.no.record.import.success"));
+            }
+
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             logger.info(records + " - Patient records imported successfully...");

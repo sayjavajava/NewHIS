@@ -41,10 +41,7 @@ import java.util.List;
 public class Branch extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-
-
-
-    @Column(name = "NAME")
+  @Column(name = "NAME")
     private String name;
 //
 //    @Column(name = "NO_OF_ROOMS")

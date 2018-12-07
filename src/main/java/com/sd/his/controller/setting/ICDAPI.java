@@ -16,13 +16,17 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -56,6 +60,8 @@ public class ICDAPI {
     private ICDService icdService;
     private final Logger logger = LoggerFactory.getLogger(ICDAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
+    @Value("${spring.http.multipart.location}")
+    private String tmpFilePath;
 
     @ApiOperation(httpMethod = "GET", value = "versions",
             notes = "This method will return   Versions ",
@@ -1443,6 +1449,45 @@ public class ICDAPI {
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
 
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Import ICD Data",
+            notes = "This method will import icd data",
+            produces = "application/json", nickname = "Import ICD",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/importRecords", method = RequestMethod.POST)
+    public ResponseEntity<?> importICDcodeAndVersion(@RequestParam("dataFile") MultipartFile dataFile ) {
+
+        logger.info("importICD codes and versions API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            String fileName = dataFile.getOriginalFilename();
+            File file = HISCoreUtil.multipartToFile(dataFile);
+//            int records = drugService.readExcel( dataFile );
+            int records = icdService.readExcel( this.tmpFilePath + fileName );
+            if (records > 0) {
+                response.setResponseMessage(messageBundle.getString("icd.code.records.import.success"));
+            } else {
+                response.setResponseMessage(messageBundle.getString("icd.code.no.record.import"));
+            }
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info(records + " - Appointment records imported successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (FileNotFoundException fnfe) {
+            logger.error("importICD codes and versions File not found.", fnfe.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("icd.code.import.file.not.found"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            logger.error("importICD codes and versions Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("icd.code.records.import.failed"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

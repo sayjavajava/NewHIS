@@ -9,6 +9,7 @@ import com.sd.his.wrapper.TaxWrapper;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -52,10 +53,21 @@ public class Status extends BaseEntity implements Serializable {
     @Column(name = "HASHCOLOR")
     private String hashColor;
 
+    @OneToMany(mappedBy = "status")
+    public List<Appointment> appointments ;
+
+
+
 
     public Status() {
     }
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
 
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
     public String getName() {
         return name;
     }

@@ -53,11 +53,18 @@ public class Room extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "room")
     private List<Appointment> appointments;
 
+    @Transient
+    public String label;
+    @Transient
+    public Long value;
+
     public Room() {
     }
 
     public Room(Long id,String roomName, Boolean allowOnlineScheduling) {
         this.roomName = roomName;
+        this.label = roomName;
+        this.value =id;
         this.setId(id);
         this.allowOnlineScheduling = allowOnlineScheduling;
     }
@@ -67,6 +74,22 @@ public class Room extends BaseEntity implements Serializable {
         this.branch = branch;
         this.active = active;
         this.allowOnlineScheduling = allowOnlineScheduling;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
     }
 
     public String getRoomName() {

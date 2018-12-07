@@ -55,7 +55,7 @@ public class StatusService {
         return statusWrapper;
     }
 
-     public List<StatusWrapper> getAllStatuses(int offset, int limit) {
+     public List<StatusWrapper> getAllStatusesWithPagination(int offset, int limit) {
             Pageable pageable = new PageRequest(offset, limit);
             List<Status> list = statusRepository.findBy(pageable);
             return list.stream().map(
@@ -63,6 +63,13 @@ public class StatusService {
                     new StatusWrapper(x.getId(),x.getName(),x.getAbbreviation(),x.isStatus(),x.getHashColor()))
                     .collect(Collectors.toList());
      }
+    public List<StatusWrapper> getAllStatuses() {
+        List<Status> list = statusRepository.findAll();
+        return list.stream().map(
+                x ->
+                        new StatusWrapper(x.getId(),x.getName(),x.getAbbreviation(),x.isStatus(),x.getHashColor()))
+                .collect(Collectors.toList());
+    }
 
      public int statusesCount(){
          return statusRepository.countByStatusTrue();

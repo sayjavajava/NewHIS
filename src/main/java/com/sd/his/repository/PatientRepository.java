@@ -1,5 +1,6 @@
 package com.sd.his.repository;
 
+import com.sd.his.enums.GenderTypeEnum;
 import com.sd.his.model.Patient;
 import com.sd.his.wrapper.PatientWrapper;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,5 +29,11 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     Optional<Patient> findById(Long id);
 
+    @Query("SELECT p FROM Patient p WHERE p.patientId = :EMR ")
+    Patient getByEMR(@Param("EMR") String patientEMR);
 
+    @Query("SELECT p FROM Patient p WHERE ( lower( p.firstName ) LIKE lower(:firstName) and lower( p.lastName ) LIKE lower(:lastName) " +
+            " and p.cellPhone LIKE :cellPhone and  DATE(p.dob) = DATE_FORMAT(:dob, '%Y-%m-%d') ) ")
+    Patient findDuplicatePatientForBulkImport(@Param("firstName") String firstName, @Param("lastName") String lastName,
+                                              @Param("cellPhone") String cellPhone, @Param("dob") Date dob);
 }

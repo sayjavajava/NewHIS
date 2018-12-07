@@ -43,50 +43,50 @@ import java.util.List;
  */
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes, a.reason, a.color, a.status, a.type," +
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes,a.status.name,a.status.id ,a.reason, a.color, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id ,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
             "FROM Appointment a")
         List<AppointmentWrapper> findAllPaginatedAppointments(Pageable pageable);
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes, a.reason, a.color, a.status, a.type," +
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes,a.status.name,a.status.id,a.reason, a.color, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id ,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
             "FROM Appointment a")
     List<AppointmentWrapper> findAllAppointments();
 
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes, a.reason, a.color, a.status, a.type," +
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes,a.status.name,a.status.id, a.reason, a.color, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
             "FROM Appointment a WHERE a.doctor.id =?1 or a.branch.id =?2")
     List<AppointmentWrapper> findAllAppointmentsByDoctor(Long doctorId, Long branchId);
 
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes, a.reason, a.color, a.status, a.type," +
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes,a.status.name,a.status.id, a.reason, a.color, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
             "FROM Appointment a WHERE a.patient.firstName =?1 or a.patient.lastName =?1")
     List<AppointmentWrapper> searchAllAppointmentsByPatients(String patientName,Pageable pageable);
 
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes, a.reason, a.color, a.status, a.type," +
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes,a.status.name,a.status.id, a.reason, a.color, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
             "FROM Appointment a WHERE a.patient.id =?1 ")
     List<AppointmentWrapper> findAllAppointmentsByPatient(Long patientId);
 
-    @Query("SELECT NEW  com.sd.his.wrapper.response.DashboardResponseWrapper(a.id,a.appointmentId,a.patient.id,a.patient.firstName,a.patient.lastName,a.schdeulledDate ,a.doctor.firstName,a.doctor.lastName,a.branch.name,a.reason,a.schdeulledDate,a.room.roomName, a.status, a.branch.id,a.doctor.id,a.room.id )" +
+    @Query("SELECT NEW  com.sd.his.wrapper.response.DashboardResponseWrapper(a.id,a.appointmentId,a.patient.id,a.patient.firstName,a.patient.lastName,a.status.name,a.status.id,a.schdeulledDate ,a.doctor.firstName,a.doctor.lastName,a.branch.name,a.reason,a.schdeulledDate,a.room.roomName, a.branch.id,a.doctor.id,a.room.id )" +
             "FROM Appointment a")
     List<DashboardResponseWrapper> findAllAppointmentsByPatientAndDoctor();
 
-    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes, a.reason, a.color, a.status, a.type," +
+    @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes,a.status.name,a.status.id,a.reason, a.color, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, a.createdOn, a.updatedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.room.roomName,a.doctor.firstName,a.doctor.lastName,a.doctor.id,a.followUpDate ,a.medicalService.id,a.medicalService.name) " +
             "FROM Appointment a WHERE a.id =?1 ")
     AppointmentWrapper findAllAppointmentById(Long apptId);
 
-    @Query("SELECT NEW com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.status, " +
+    @Query("SELECT NEW com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, " +
             " a.schdeulledDate,  " +
             " a.patient.firstName,a.patient.lastName,a.doctor.firstName,a.doctor.lastName, a.patient.id, invc.invoiceId, invc.completed) " +
             "FROM  Invoice invc inner join invc.appointment a  WHERE a.id =:apptId  AND  invc.appointment.id=:apptId")
-    AppointmentWrapper findAppointmentById(@Param("apptId") Long apptId);
+    AppointmentWrapper findAppointmentById(@Param("apptId") long apptId);
 
 
 /*    @Query("SELECT apt from Appointment apt where apt.schdeulledDate between  apt.schdeulledDate =?1 AND apt.endedOn=?2")*/
@@ -102,5 +102,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByDoctorAndBranch(Doctor doctor, Branch branch);
     int countAllByPatientFirstName(String patientName);
 
+    @Query(" SELECT apt FROM Appointment apt WHERE DATE(apt.schdeulledDate) = DATE_FORMAT(:date, '%Y-%m-%d') " +
+            " AND apt.doctor.profileId =:doctorId AND ( DATE_FORMAT(:time, '%H:%m:%s') between apt.startedOn  and apt.endedOn ) AND apt.branch.branchId = :branchId ")
+    Appointment findConflictInAppointment(@Param("doctorId") String doctorId, @Param("branchId") String branchId, @Param("date") Date date, @Param("time") String time);
 }
 

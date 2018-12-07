@@ -3,7 +3,6 @@ package com.sd.his.controller.patient;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Country;
 import com.sd.his.model.Drug;
-import com.sd.his.model.Organization;
 import com.sd.his.repository.CountryRepository;
 import com.sd.his.service.DrugService;
 import com.sd.his.utill.HISCoreUtil;
@@ -14,12 +13,16 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -39,6 +42,9 @@ public class DrugAPI {
 
     @Autowired
     private CountryRepository countryRepository;
+
+    @Value("${spring.http.multipart.location}")
+    private String tmpFilePath;
 
     @ApiOperation(httpMethod = "GET", value = "Drug Natural Id",
             notes = "This method will return drug Natural Id",
@@ -417,7 +423,11 @@ public class DrugAPI {
 
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            response.setResponseData(this.drugService.getAllDrugWrappers());
+
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", this.drugService.getAllDrugWrappers());
+
+            response.setResponseData(returnValues);
             response.setResponseMessage(messageBundle.getString("drug.get.success"));
             response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -506,6 +516,45 @@ public class DrugAPI {
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Import Drug Data",
+            notes = "This method will import drugs' data",
+            produces = "application/json", nickname = "Import Durgs",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/importRecords", method = RequestMethod.POST)
+    public ResponseEntity<?> importDrugRecords(@RequestParam("dataFile") MultipartFile dataFile ) {
+
+        logger.info("importDrugRecords API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            String fileName = dataFile.getOriginalFilename();
+            File file = HISCoreUtil.multipartToFile(dataFile);
+            int records = drugService.readExcel( this.tmpFilePath + fileName );
+
+            if (records > 0) {
+                response.setResponseMessage(messageBundle.getString("drug.records.import.success"));
+            } else {
+                response.setResponseMessage(messageBundle.getString("drug.no.records.import"));
+            }
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info(records + " - Drug records imported successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (FileNotFoundException fnfe) {
+            logger.error("importDrugRecords File not found.", fnfe.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("drug.records.import.file.not.found"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            logger.error("importDrugRecords Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("drug.records.import.failed"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

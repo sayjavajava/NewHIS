@@ -117,7 +117,8 @@ public class DrugWrapper extends BaseWrapper {
         this.drugName = drug.getDrugName();
         this.genericName = drug.getGenericName();
         this.companyName = drug.getCompanyName();
-        this.countryView=drug.getCountry().getName();
+        if (drug.getCountry() != null)
+            this.countryView = drug.getCountry().getName();
         this.route = drug.getRoute();
         this.strengths = drug.getStrengths();
 

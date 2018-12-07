@@ -133,7 +133,6 @@ public class BranchService {
         branch.setFlow(branchRequestWrapper.getFlow());
         Organization organization = organizationRepository.findOne(1L);
         branch.setOrganization(organization);
-        branch.setBranchId(String.valueOf(branchRepository.getMaxBranchId() + 1));          //TODO: Unable to set it to auto
         branchRepository.save(branch);
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
         for (ExamRooms ex : exRooms) {
