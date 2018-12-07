@@ -77,6 +77,8 @@ public class StaffResponseWrapper{
     List<MedicalServiceWrapper> doctorServiceComission = new ArrayList();
     List<ServiceComission> comissionServices;
 
+    Double balance;
+
     public StaffResponseWrapper() {
     }
 //du.id,nr.id,du.userType,nr.firstName,nr.lastName,du.username,nr.email,br.name,nr.homePhone,nr.cellPhone,du.active,br.id,nr.accountExpiry
@@ -118,6 +120,21 @@ public class StaffResponseWrapper{
         this.id = id;
         this.label=firstName ;
         this.value=id ;
+
+    }
+
+    //constructor for doctor balance and generarl list
+    public StaffResponseWrapper(Long uid, String pId, String email, String userName, String firstName, String lastName,  Long id, Double balance) {
+        this.uid = uid;
+        this.naturalId = pId;
+        this.email = email;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.id = id;
+        this.label=firstName ;
+        this.value=id ;
+        this.balance = balance;
 
     }
 
@@ -580,5 +597,13 @@ public class StaffResponseWrapper{
 
     public void setDoctorMedicalSrvcList(List<MedicalService> doctorMedicalSrvcList) {
         this.doctorMedicalSrvcList = doctorMedicalSrvcList;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
     }
 }

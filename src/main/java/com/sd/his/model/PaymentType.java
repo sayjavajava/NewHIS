@@ -56,6 +56,12 @@ public class PaymentType extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "paymentType")
     private List<PatientRefund> patientRefunds;
 
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "paymentType")
+    private List<StaffPayment> staffPayment;
+
+
     public Double getServiceCharges() {
         return serviceCharges;
     }
@@ -170,5 +176,13 @@ public class PaymentType extends BaseEntity implements Serializable {
 
     public void setPatientRefunds(List<PatientRefund> patientRefunds) {
         this.patientRefunds = patientRefunds;
+    }
+
+    public List<StaffPayment> getStaffPayment() {
+        return staffPayment;
+    }
+
+    public void setStaffPayment(List<StaffPayment> staffPayment) {
+        this.staffPayment = staffPayment;
     }
 }
