@@ -28,5 +28,4 @@ public enum GenderTypeEnum {
     GenderTypeEnum(String value) {
     }
 
-
 }

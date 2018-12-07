@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /*
  * @author    :Tahir Mehmood
@@ -109,6 +110,14 @@ public class DateTimeUtil {
         return format.format(date);
     }
 
+    public static String convertDateFromTimeZoneToGMT(Date date, TimeZone timeZone, String toDateFormat) throws ParseException {
+        SimpleDateFormat dateFormatGmt = new SimpleDateFormat(toDateFormat);
+        dateFormatGmt.setTimeZone(timeZone);
+
+//        return dateFormatGmt.parse(dateFormatGmt.format(date));
+        return dateFormatGmt.format(date);
+    }
+
     public static int convertAppointmentTime(String time) {
         int temp = 0;
         if (time != null) {
@@ -124,5 +133,17 @@ public class DateTimeUtil {
             }
         }
         return temp;
+    }
+
+    public static String convertDateToGMT(String date) throws ParseException {
+        if (date == null || date.trim().equals("")) return "";
+        Date localDate = DateTimeUtil.getDateFromString(date, "E MMM dd yyyy HH:mm:ss");
+        return DateTimeUtil.convertDateFromTimeZoneToGMT(localDate, TimeZone.getTimeZone("GMT"), HISConstants.DATE_FORMATE_THREE);
+    }
+
+    public static String convertDateToGMT(String date, String thisDateFormat) throws ParseException {
+        if (date == null || date.trim().equals("")) return "";
+        Date localDate = DateTimeUtil.getDateFromString(date, thisDateFormat);
+        return DateTimeUtil.convertDateFromTimeZoneToGMT(localDate, TimeZone.getTimeZone("GMT"), HISConstants.DATE_FORMATE_THREE);
     }
 }

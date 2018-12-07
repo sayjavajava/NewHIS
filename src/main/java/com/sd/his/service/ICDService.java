@@ -1,8 +1,7 @@
 package com.sd.his.service;
 
-import com.sd.his.model.ICDCode;
-import com.sd.his.model.ICDCodeVersion;
-import com.sd.his.model.ICDVersion;
+import com.sd.his.enums.ModuleEnum;
+import com.sd.his.model.*;
 import com.sd.his.repository.ICDCodeRepository;
 import com.sd.his.repository.ICDCodeVersionRepository;
 import com.sd.his.repository.ICDVersionRepository;
@@ -11,14 +10,24 @@ import com.sd.his.wrapper.ICDCodeVersionWrapper;
 import com.sd.his.wrapper.ICDCodeWrapper;
 import com.sd.his.wrapper.ICDVersionWrapper;
 import com.sd.his.wrapper.ICDCodeCreateRequest;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Transactional
@@ -374,5 +383,87 @@ public class ICDService {
             return codeWrapper;
         }
         return null;
+    }
+
+    @Transactional(rollbackOn = Throwable.class)
+    public int readExcel(String dataFilePath) throws IllegalStateException, org.apache.poi.openxml4j.exceptions.InvalidFormatException, IOException, ParseException {
+        File file = new File(dataFilePath);
+        AtomicInteger records = new AtomicInteger(0);
+        Workbook workBook = WorkbookFactory.create(file);
+
+        //Read sheet inside the workbook by its Index
+        Sheet excelSheet = workBook.getSheetAt(0);
+        ICDCode icdCode = null;
+        ICDVersion icdVersion = null;
+        ICDCodeVersion icdCodeVersion = null;
+
+        for (Row row : excelSheet) {
+            if (row != null && row.getRowNum() > 0 && row.getCell(0) != null) {
+                if (row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null)
+                    continue;
+
+                List<ICDVersion> oldVersions = new ArrayList<>();
+                List<ICDVersion> newVersions = new ArrayList<>();
+
+                ICDCode oldIcdCode = codeRepository.findByCode(row.getCell(1).getStringCellValue() + "");
+                ICDVersion oldIcdVersion = null;
+                String[] arrSplit = row.getCell(0).getStringCellValue().split("[,]");
+
+                for (int a = 0; a < arrSplit.length; a++) {
+                    String versionName = arrSplit[a].trim();
+                    oldIcdVersion = versionRepository.findByName(versionName);
+                    if (oldIcdVersion != null) {
+                        oldVersions.add(oldIcdVersion);
+                    } else {
+                        icdVersion = new ICDVersion();
+                        icdVersion.setName(versionName);
+                        icdVersion.setStatus(true);
+                        versionRepository.save(icdVersion);
+                        newVersions.add(icdVersion);
+                    }
+                }
+
+                if (oldIcdCode != null && oldVersions.size() == arrSplit.length && newVersions.size() < 1) {
+                    continue;
+                }
+                icdCode = new ICDCode();
+                for (int j = 1; j < row.getLastCellNum(); j++) {
+                    switch (j) {
+                        case 1:
+                            icdCode.setCode(row.getCell(j).getStringCellValue());
+                            break;
+                        case 2:
+                            icdCode.setProblem(row.getCell(j).getStringCellValue());
+                            break;
+                    }
+                }
+
+                icdCode.setStatus(true);
+                codeRepository.save(icdCode);
+
+                List<ICDVersion> allVersions = new ArrayList<ICDVersion>();
+                allVersions.addAll(oldVersions);
+                allVersions.addAll(newVersions);
+
+                List<ICDCodeVersion> codeVersionsList = new ArrayList<>();
+
+                for (int y = 0; y < allVersions.size(); y++) {
+                    icdCodeVersion = new ICDCodeVersion();
+                    icdCodeVersion.setIcd(icdCode);
+                    icdCodeVersion.setVersion(allVersions.get(y));
+                    codeVersionRepository.save(icdCodeVersion);
+
+                    codeVersionsList.add(icdCodeVersion);
+                }
+
+                icdCode.setVersions(codeVersionsList);
+                codeRepository.save(icdCode);
+
+                System.out.println();
+
+            }
+        }
+        workBook.close();
+        return records.get();
     }
 }

@@ -1,6 +1,9 @@
 package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Country;
+import com.sd.his.model.Drug;
+import com.sd.his.repository.CountryRepository;
 import com.sd.his.service.DrugService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DrugWrapper;
@@ -10,16 +13,17 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 import java.util.stream.IntStream;
 
 /**
@@ -35,6 +39,12 @@ public class DrugAPI {
 
     @Autowired
     private DrugService drugService;
+
+    @Autowired
+    private CountryRepository countryRepository;
+
+    @Value("${spring.http.multipart.location}")
+    private String tmpFilePath;
 
     @ApiOperation(httpMethod = "GET", value = "Drug Natural Id",
             notes = "This method will return drug Natural Id",
@@ -56,7 +66,6 @@ public class DrugAPI {
             response.setResponseCode(ResponseEnum.DRUG_GET_NATURAL_ID_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             logger.info("getDrugNaturalId Found successfully...");
-
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("getDrugNaturalId Exception..", ex.fillInStackTrace());
@@ -267,7 +276,10 @@ public class DrugAPI {
 
         try {
             logger.error("getMedicationByNameAutocomplete -  fetching from DB");
+           // Drug listObj= this.drugService.searchByDrugNameAutoCompleteDetail(drugName);
             response.setResponseData(this.drugService.searchByDrugNameAutoComplete(drugName));
+      //      response.setResponseMessage(this.searchByDrugNameAutoCompleteDetail(drugName));
+
             response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());//(""),
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
 
@@ -299,6 +311,15 @@ public class DrugAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             DrugWrapper drugWrapper = this.drugService.getDrugWrapper(id);
+            Drug drug=this.drugService.getDrugById(id);
+            Country addInfo  =  countryRepository.findOne(Long.valueOf(drug.getCountry().getId()));
+            Map<String, Object> countryInfo;
+            countryInfo = new HashMap<>();
+            drugWrapper.setSelectedCountry(drug.getCountry().getName());
+            drugWrapper.setDrugInfo(drug.getDruginfo());
+            countryInfo.put("countryId", drug.getCountry().getId());
+            countryInfo.put("country", drug.getCountry().getName());
+            drugWrapper.setAddInfo(countryInfo);
             if (HISCoreUtil.isValidObject(drugWrapper)) {
                 response.setResponseData(drugWrapper);
                 response.setResponseMessage(messageBundle.getString("drug.get.success"));
@@ -402,7 +423,11 @@ public class DrugAPI {
 
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            response.setResponseData(this.drugService.getAllDrugWrappers());
+
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", this.drugService.getAllDrugWrappers());
+
+            response.setResponseData(returnValues);
             response.setResponseMessage(messageBundle.getString("drug.get.success"));
             response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -420,4 +445,117 @@ public class DrugAPI {
         }
     }
 
+
+    @ApiOperation(httpMethod = "GET", value = "GET Paginated Medications",
+            notes = "This method will return Paginated  Medications",
+            produces = "application/json", nickname = "GET Paginated Medications",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated  Medications fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/searchName", method = RequestMethod.GET)
+    public ResponseEntity<?> getDrugsByNameSearch(@RequestParam(value = "drugName", required = false) String drugName) {
+
+        logger.error("getMedicationByNameAutocomplete API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+
+        try {
+            logger.error("getMedicationByNameAutocomplete -  fetching from DB");
+            // Drug listObj= this.drugService.searchByDrugNameAutoCompleteDetail(drugName);
+            response.setResponseData(this.drugService.searchByDrugNameAutoCompleteDetail(drugName));
+
+
+            response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());//(""),
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+
+            logger.error("getMedicationByNameAutocomplete API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getDrugByNameAutocomplete exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    @ApiOperation(httpMethod = "GET", value = "GET Paginated Medications",
+            notes = "This method will return Paginated  Medications",
+            produces = "application/json", nickname = "GET Paginated Medications",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated  Medications fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/searchStrengths", method = RequestMethod.GET)
+    public ResponseEntity<?> getDrugsByNameSearchStrengths(@RequestParam(value = "drugName", required = false) String drugName) {
+
+        logger.error("getMedicationByNameAutocomplete API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+
+        try {
+            logger.error("getMedicationByNameAutocomplete -  fetching from DB");
+
+            response.setResponseData(this.drugService.searchByDrugNameAutoCompleteStrengths(drugName));
+
+
+            response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());//(""),
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+
+            logger.error("getMedicationByNameAutocomplete API successfully executed.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getDrugByNameAutocomplete exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Import Drug Data",
+            notes = "This method will import drugs' data",
+            produces = "application/json", nickname = "Import Durgs",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/importRecords", method = RequestMethod.POST)
+    public ResponseEntity<?> importDrugRecords(@RequestParam("dataFile") MultipartFile dataFile ) {
+
+        logger.info("importDrugRecords API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            String fileName = dataFile.getOriginalFilename();
+            File file = HISCoreUtil.multipartToFile(dataFile);
+            int records = drugService.readExcel( this.tmpFilePath + fileName );
+
+            if (records > 0) {
+                response.setResponseMessage(messageBundle.getString("drug.records.import.success"));
+            } else {
+                response.setResponseMessage(messageBundle.getString("drug.no.records.import"));
+            }
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info(records + " - Drug records imported successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (FileNotFoundException fnfe) {
+            logger.error("importDrugRecords File not found.", fnfe.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("drug.records.import.file.not.found"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            logger.error("importDrugRecords Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("drug.records.import.failed"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

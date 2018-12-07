@@ -11,15 +11,25 @@ import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +54,14 @@ public class PatientService {
     private SmokingStatusRepository smokingStatusRepository;
     @Autowired
     private InsuranceService insuranceService;
-
+    @Autowired
+    private OrganizationService organizationService;
+    @Autowired
+    private CityRepository cityRepository;
+    @Autowired
+    private PatientGroupRepository patientGroupRepository;
+    @Autowired
+    private CountryRepository countryRepository;
 
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
@@ -55,31 +72,37 @@ public class PatientService {
         patientWrapper.setFirstName(patient.getFirstName());
         patientWrapper.setMiddleName(patient.getMiddleName());
         patientWrapper.setLastName(patient.getLastName());
-        patientWrapper.setForeignName(patient.getForeignName());
-        if (patient.getDob() != null)
+
+        if (patient.getDob() != null) {
             patientWrapper.setDob(patient.getDob() + "");
+        }
 
         patientWrapper.setHomePhone(patient.getHomePhone());
         patientWrapper.setCellPhone(patient.getCellPhone());
         patientWrapper.setOfficePhone(patient.getOfficePhone());
-        patientWrapper.setOfficeExtension(patient.getOfficeExtension());
-        patientWrapper.setGender(patient.getGender().name());
+        if (patient.getGender() != null && !patient.getGender().name().trim().equals(""))
+            patientWrapper.setGender(patient.getGender().name());
+
         //image profile
-        patientWrapper.setCountry(patient.getCountry());
         patientWrapper.setEmail(patient.getEmail());
-        patientWrapper.setMarital(patient.getMaritalStatus().name());
-
-        patientWrapper.setStatusUser(patient.getStatus().name().equalsIgnoreCase("ACTIVE"));
-
+        if (patient.getMaritalStatus() != null && !patient.getMaritalStatus().name().trim().equals(""))
+            patientWrapper.setMarital(patient.getMaritalStatus().name());
+        patientWrapper.setStatus(patient.getStatus() == PatientStatusTypeEnum.ACTIVE);
         //patientWrapper.setProfileStatus( patient.getStatus().name().equalsIgnoreCase("ACTIVE") );
         patientWrapper.setDisableSMSTxt(patient.getDisableSMSText() == null ? false : patient.getDisableSMSText());
         patientWrapper.setPreferredCommunication(patient.getPreferredCommunication());
-        patientWrapper.setReminderLanguage(patient.getReminderLanguage());
+//        patientWrapper.setReminderLanguage(patient.getReminderLanguage());
         patientWrapper.setStreetAddress(patient.getStreetAddress());
-        patientWrapper.setZipCode(patient.getZipCode());
-        patientWrapper.setCity(patient.getCity());
-        patientWrapper.setState(patient.getState());
-        patientWrapper.setFormattedAddress(patient.getFormattedAddress());
+
+        if (patient.getCity() != null) {
+            patientWrapper.setCity(patient.getCity().getName());
+            patientWrapper.setCityId(patient.getCity().getId());
+            patientWrapper.setState(patient.getCity().getState().getName());
+            patientWrapper.setStateId(patient.getCity().getState().getId());
+            patientWrapper.setCountry(patient.getCity().getCountry().getName());
+            patientWrapper.setCountryId(patient.getCity().getCountry().getId());
+        }
+
         patientWrapper.setEmergencyContactName(patient.getEmergencyContactName());
         patientWrapper.setProfileImgURL(patient.getProfileImgURL());
 
@@ -87,14 +110,17 @@ public class PatientService {
             patientWrapper.setEmergencyContactPhone(patient.getEmergencyContactPhone());
         if (patient.getEmergencyContactRelation() != null)
             patientWrapper.setEmergencyContactRelation(patient.getEmergencyContactRelation());
-        if (patient.getSignatureOnFile() != null)
-            patientWrapper.setSignatureOnFile(patient.getSignatureOnFile());
-           // patientWrapper.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
-           patientWrapper.setPatientId(patient.getPatientId());
+        // patientWrapper.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+        patientWrapper.setPatientId(patient.getPatientId());
 
 
         if (patient.getAppointments() != null && patient.getAppointments().size() > 0) {
             patientWrapper.setHasChild(true);
+        }
+
+        if (patient.getPatientGroup() != null) {
+            patientWrapper.setPatientGroup(patient.getPatientGroup().getName());
+            patientWrapper.setPatientGroupId(patient.getPatientGroup().getId());
         }
         /*if (patient.getAllergies() != null && patient.getAllergies().size() > 0) {
             patientWrapper.setHasChild(true);
@@ -134,33 +160,40 @@ public class PatientService {
         patient.setFirstName(patientWrapper.getFirstName());
         patient.setMiddleName(patientWrapper.getMiddleName());
         patient.setLastName(patientWrapper.getLastName());
-        patient.setForeignName(patientWrapper.getForeignName());
         if (!patientWrapper.getDob().isEmpty())
-            patient.setDob(DateTimeUtil.getDateFromString(patientWrapper.getDob(), HISConstants.DATE_FORMATE_ONE));
+            patient.setDob(DateTimeUtil.getDateFromString(patientWrapper.getDob(), HISConstants.DATE_FORMATE_THREE));
         patient.setHomePhone(patientWrapper.getHomePhone());
         patient.setCellPhone(patientWrapper.getCellPhone());
         patient.setOfficePhone(patientWrapper.getOfficePhone());
-        patient.setOfficeExtension(patientWrapper.getOfficeExtension());
-        patient.setGender(GenderTypeEnum.valueOf(patientWrapper.getGender().toUpperCase()));
+        if (patientWrapper.getGender() != null && !patientWrapper.getGender().trim().equals(""))
+            patient.setGender(GenderTypeEnum.valueOf(patientWrapper.getGender().toUpperCase()));
+
         //image profile
-        patient.setCountry(patientWrapper.getCountry());
         patient.setEmail(patientWrapper.getEmail());
-        patient.setMaritalStatus(MaritalStatusTypeEnum.valueOf(patientWrapper.getMarital().toUpperCase()));
-        patient.setStatus(patientWrapper.isStatusUser() ? PatientStatusTypeEnum.ACTIVE : PatientStatusTypeEnum.INACTIVE);
+        if (patientWrapper.getMarital() != null && !patientWrapper.getMarital().trim().equals(""))
+            patient.setMaritalStatus(MaritalStatusTypeEnum.valueOf(patientWrapper.getMarital().toUpperCase()));
+        patient.setStatus(patientWrapper.getStatus() ? PatientStatusTypeEnum.ACTIVE : PatientStatusTypeEnum.INACTIVE);
+//        patient.setStatus(patientWrapper.getStatus());
         patient.setDisableSMSText(patientWrapper.isDisableSMSTxt());
         patient.setPreferredCommunication(patientWrapper.getPreferredCommunication());
-        patient.setReminderLanguage(patientWrapper.getReminderLanguage());
+//        patient.setReminderLanguage(patientWrapper.getReminderLanguage());
         patient.setStreetAddress(patientWrapper.getStreetAddress());
-        patient.setZipCode(patientWrapper.getZipCode());
-        patient.setCity(patientWrapper.getCity());
-        patient.setState(patientWrapper.getState());
-        patient.setFormattedAddress(patientWrapper.getFormattedAddress());
+
+        if(patientWrapper.getCityId()!=null) {
+            patient.setCity(cityRepository.findOne(patientWrapper.getCityId()));
+            patient.setCountry(patient.getCity().getCountry().getName());
+            patient.setState(patient.getCity().getState().getName());
+        }
+
         patient.setEmergencyContactName(patientWrapper.getEmergencyContactName());
         patient.setEmergencyContactPhone(patientWrapper.getEmergencyContactPhone());
         patient.setEmergencyContactRelation(patientWrapper.getEmergencyContactRelation());
-        patient.setSignatureOnFile(patientWrapper.isSignatureOnFile());
         if (patient.getId() == null)
             patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+
+        if (patientWrapper.getPatientGroupId() != null) {
+            patient.setPatientGroup(patientGroupRepository.findOne(patientWrapper.getPatientGroupId()));
+        }
     }
 
     private void populateInsurance(Insurance insurance, PatientWrapper patientWrapper) throws ParseException {
@@ -225,9 +258,6 @@ public class PatientService {
         }
         Doctor doctor = doctorRepository.findOne(patientWrapper.getSelectedDoctor());
         patient.setPrimaryDoctor(doctor);
-        List<String> racesList = patientWrapper.getRaces().stream().filter(ps -> ps.isSelected())
-                .map(x -> x.getNameRace()).collect(Collectors.toList());
-        patient.setRaces(racesList);
 
         patient = patientRepository.save(patient);
         //patientWrapper.
@@ -388,6 +418,10 @@ public class PatientService {
 
     public PatientWrapper getPatientById(long id) {
         Patient patient = patientRepository.findOne(id);
+        if (patient.getCity() != null) {
+            patient.setState(patient.getCity().getState().getName());
+            patient.setCountry(patient.getCity().getCountry().getName());
+        }
         PatientWrapper patientWrapper = new PatientWrapper();
         this.populatePatientWrapper(patientWrapper, patient);
         if (patient.getPrimaryDoctor() != null) {
@@ -396,7 +430,6 @@ public class PatientService {
             patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
         }
         patientWrapper.setSmokingStatuses(patient.getSmokingStatusList() != null ? patient.getSmokingStatusList() : null);
-        this.populateRaces(patientWrapper, patient);
         this.populateAppointments(patientWrapper, patient);
         this.populateInsurance(patientWrapper, patient);
         return patientWrapper;
@@ -404,18 +437,6 @@ public class PatientService {
 
     public Patient getPatientByIdForHistory(Long id) {
         return patientRepository.findOne(id);
-    }
-
-    private void populateRaces(PatientWrapper patientWrapper, Patient patient) {
-        List<RaceWrapper> raceWrapperList = new ArrayList<>();
-        RaceWrapper raceWrapper = null;
-        for (String raceName : patient.getRaces()) {
-            raceWrapper = new RaceWrapper();
-            raceWrapper.setNameRace(raceName);
-            raceWrapper.setSelected(true);
-            raceWrapperList.add(raceWrapper);
-        }
-        patientWrapper.setRaces(raceWrapperList);
     }
 
     private void populateAppointments(PatientWrapper patientWrapper, Patient patient) {
@@ -454,7 +475,8 @@ public class PatientService {
     }
 
     public List<PatientWrapper> getAllPatient() {
-        return patientRepository.getAllByStatusTrue();
+        return patientRepository.getAll();
+//        return patientRepository.getAllByStatusTrue();
     }
 
     //Lab Order work
@@ -463,7 +485,18 @@ public class PatientService {
 
         labOrder.setComments(labOrderWrapper.getComments());
         labOrder.setStatus(labOrderWrapper.getOrderStatus());
-        labOrder.setDateTest(HISCoreUtil.convertToDate(labOrderWrapper.getOrderTestDate()));
+        // Time Zone Logic
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        Date dte=labOrderWrapper.getTestDate();
+        String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        System.out.println("Time"+currentTime);
+        String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+        //  System.out.println("Read Date"+readDate);
+        Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+        labOrder.setDateTest(scheduledDate);
         Optional<Patient> patient = patientRepository.findById(labOrderWrapper.getPatientId());
         patient.ifPresent(labOrder::setPatient);
         Appointment appointment = appointmentRepository.findOne(labOrderWrapper.getAppointmentId());
@@ -473,11 +506,11 @@ public class PatientService {
         for (com.sd.his.wrapper.LabTest labOrder1 : list) {
             LabTest labTest = new LabTest();
             labTest.setDescription(labOrder1.getDescription());
-            labTest.setNormalRange(labOrder1.getResultValue());
-            labTest.setUnits(labOrder1.getUnits());
+            labTest.setNormalRange(labOrder1.getMinNormalRange());
+            labTest.setUnits(labOrder1.getUnit());
             labTest.setResultValue(labOrder1.getResultValue());
             labTest.setLabOrder(labOrder);
-            labTest.setLoincCode(labOrder1.getLoincCode());
+            labTest.setLoincCode(labOrder1.getTestCode());
             labTestRepository.save(labTest);
         }
         return labOrderWrapper;
@@ -510,25 +543,42 @@ public class PatientService {
     public LabOrderWrapper updateLabOrder(LabOrderWrapper labOrderWrapper, LabOrder labOrder) {
         labOrder.setComments(labOrderWrapper.getComments());
         labOrder.setStatus(labOrderWrapper.getOrderStatus());
-        labOrder.setDateTest(HISCoreUtil.convertToDate(labOrderWrapper.getOrderTestDate()));
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        Date dte=labOrderWrapper.getTestDate();
+        String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        System.out.println("Time"+currentTime);
+        String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+        //  System.out.println("Read Date"+readDate);
+        Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+        labOrder.setDateTest(scheduledDate);
+      //  labOrder.setDateTest(HISCoreUtil.convertToDate(labOrderWrapper.getOrderTestDate()));
         Optional<Patient> patient = patientRepository.findById(labOrderWrapper.getPatientId());
         patient.ifPresent(labOrder::setPatient);
         Appointment appointment = appointmentRepository.findOne(labOrderWrapper.getAppointmentId());
         labOrder.setAppointment(appointment);
+
         List<com.sd.his.wrapper.LabTest> list = Arrays.stream(labOrderWrapper.getLabTest()).collect(Collectors.toList());
-        List<String> lionicCodeList = list.stream().map(x -> x.getLoincCode()).collect(Collectors.toList());
+      //  List<String> lionicCodeList = list.stream().map(x -> x.getLoincCode()).collect(Collectors.toList());
         labOrderRepository.save(labOrder);
-        List<LabTest> labTests = labTestRepository.findAllByLoincCodeIn(lionicCodeList);
+        List<String> alistCode=new ArrayList<>();
+        for(int i=0;i<alistCode.size();i++){
+            alistCode.add(labOrder.getLabTests().get(i).getLoincCode());
+        }
+
+        List<LabTest> labTests = labTestRepository.findAllByLoincCodeIn(alistCode);
         if (!HISCoreUtil.isListEmpty(labTests))
             labTestRepository.delete(labTests);
         for (com.sd.his.wrapper.LabTest labOrder1 : list) {
             LabTest labTest = new LabTest();
             labTest.setDescription(labOrder1.getDescription());
-            labTest.setNormalRange(labOrder1.getResultValue());
-            labTest.setUnits(labOrder1.getUnits());
+            labTest.setNormalRange(labOrder1.getMinNormalRange());
+            labTest.setUnits(labOrder1.getUnit());
             labTest.setResultValue(labOrder1.getResultValue());
             labTest.setLabOrder(labOrder);
-            labTest.setLoincCode(labOrder1.getLoincCode());
+            labTest.setLoincCode(labOrder1.getTestCode());
             labTestRepository.save(labTest);
         }
         return labOrderWrapper;
@@ -634,6 +684,87 @@ public class PatientService {
         if (patient != null && patient.getAppointments() != null && patient.getAppointments().size() > 0){
             return true;
         }
-            return false;
+        return false;
     }
+
+    public int readExcel(String dataFilePath) throws IllegalStateException, org.apache.poi.openxml4j.exceptions.InvalidFormatException, IOException, ParseException {
+        // Creating a Workbook from an Excel file (.xls or .xlsx)
+        File file = new File(dataFilePath);
+        AtomicInteger records = new AtomicInteger(0);
+        Workbook workBook = WorkbookFactory.create(file);
+        Sheet excelSheet = workBook.getSheetAt(0);
+
+        Patient patient = null;
+        Doctor doctor = null;
+        Country country = null;
+        for (Row row : excelSheet) {
+            if (row != null && row.getRowNum() > 0 && row.getCell(0) != null) {
+                if ( row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null
+                        || row.getCell(3) == null || row.getCell(4) == null || row.getCell(5) == null
+                        || row.getCell(6) == null || row.getCell(7) == null )
+                    continue;
+                Patient oldPatient = patientRepository.findDuplicatePatientForBulkImport(row.getCell(2).getStringCellValue()+"",
+                        row.getCell(3).getStringCellValue()+"", row.getCell(4).getStringCellValue()+"", row.getCell(5).getDateCellValue());
+                if (oldPatient != null)
+                    continue;
+
+                doctor = doctorRepository.findOne((long) row.getCell(0).getNumericCellValue());
+                if (doctor == null)
+                    continue;
+
+                country = countryRepository.findOne((long) row.getCell(7).getNumericCellValue());
+                if (country == null) {
+//                    continue;
+                }
+                patient = new Patient();
+                for (int j = 0; j < row.getLastCellNum(); j++) {
+                    switch (j) {
+                        case 0:
+                            patient.setPrimaryDoctor(doctor);
+                            break;
+                        case 1:
+                            patient.setTitle(row.getCell(j).getStringCellValue());
+                            break;
+                        case 2:
+                            patient.setFirstName(row.getCell(j).getStringCellValue());
+                            break;
+                        case 3:
+                            patient.setLastName(row.getCell(j).getStringCellValue());
+                            break;
+                        case 4:
+                            patient.setCellPhone(row.getCell(j).getStringCellValue());
+                            break;
+                        case 5:
+                            String date = new SimpleDateFormat("yyyy-MM-dd").format(row.getCell(j).getDateCellValue());
+                            patient.setDob(new SimpleDateFormat("yyyy-MM-dd").parse(date));
+                            break;
+                        case 6:
+                            if (row.getCell(j).getStringCellValue().trim().toUpperCase().equals(GenderTypeEnum.MALE.name())) {
+                                patient.setGender(GenderTypeEnum.MALE);
+                            } else {
+                                patient.setGender(GenderTypeEnum.FEMALE);
+                            }
+                            break;
+                        case 7:
+                            if (country != null) {
+                                patient.setCountry(country.getName());
+                            }
+                            break;
+                    }
+                }
+                patient.setStatus(PatientStatusTypeEnum.ACTIVE);
+                patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+                patientRepository.save(patient);
+                records.incrementAndGet();
+                System.out.println();
+
+            }
+        }
+
+        // Closing the workbook
+        workBook.close();
+        return records.get();
+    }
+
+
 }

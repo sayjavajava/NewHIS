@@ -3,7 +3,10 @@ package com.sd.his.utill;
 
 import com.sd.his.model.Branch;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -272,8 +275,7 @@ public class HISCoreUtil {
         return currentTime;
     }
 
-    public static String formatDateToString(Date date, String format,
-                                            String timeZone) {
+    public static String formatDateToString(Date date, String format, String timeZone) {
 
         if (date == null)
             return null;
@@ -303,7 +305,6 @@ public class HISCoreUtil {
         }
         return date;
     }
-
 
     public static String convertToTimeFormat(String str,String timeFormat) {
 
@@ -337,5 +338,38 @@ public class HISCoreUtil {
 
         }
         return date;
+    }
+
+    public static Date convertToDateString(String str,String format) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
+    public static Date  convertStringDateObject(String dateinString) {
+        Date dte = new Date();
+        if (dateinString != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                dte = formatter.parse(dateinString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return dte;
+    }
+
+    public static File multipartToFile(MultipartFile multipart) throws IllegalStateException, IOException {
+        File convFile = new File( multipart.getOriginalFilename());
+        multipart.transferTo(convFile);
+        return convFile;
     }
 }

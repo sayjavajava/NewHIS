@@ -145,7 +145,7 @@ public class AppointmentWrapper {
         this.followUpDateResponse = HISCoreUtil.convertDateToString(followUpDate);
         this.serviceId=serviceId;
         this.serviceName=serviceName;
-        this.label = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
+        this.label = appointmentId+","+HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
         this.value = id;
 
     }

@@ -2,10 +2,14 @@ package com.sd.his.service;
 
 import com.sd.his.model.Appointment;
 import com.sd.his.model.Medication;
+import com.sd.his.model.Organization;
 import com.sd.his.model.Patient;
 import com.sd.his.repository.AppointmentRepository;
 import com.sd.his.repository.MedicationRepository;
+import com.sd.his.repository.OrganizationRepository;
 import com.sd.his.repository.PatientRepository;
+import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.AppointmentWrapper;
 import com.sd.his.wrapper.MedicationWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +17,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
+
+
 
 /**
  * Created by jamal on 8/28/2018.
@@ -28,8 +35,35 @@ public class MedicationService {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private OrganizationService organizationService;
+
     @Transactional
     public void saveMedication(MedicationWrapper medicationWrapper) throws Exception {
+
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        Date dte=new Date();
+        String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        System.out.println("Time"+currentTime);
+        String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+      //  System.out.println("Read Date"+readDate);
+        Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+     //   Date scheduledDate1=HISCoreUtil.convertStringDateObject(readDate);
+     //   Date scheduledDate1=HISCoreUtil.convertStringDateObject(readDate);
+    //    Date scheduledDate=HISCoreUtil.convertToAPPDate(readDate);
+       // System.out.println("Date with Time Zone"+scheduledDate);
+
+
+        medicationWrapper.setDateStartedTakingDate(scheduledDate);
+        medicationWrapper.setDateStoppedTakingDate(scheduledDate);
+        medicationWrapper.setDatePrescribedDate(scheduledDate);
+
         Medication medication = new Medication(medicationWrapper);
 
         Patient patient = this.patientRepository.findOne(medicationWrapper.getPatientId());
@@ -46,6 +80,35 @@ public class MedicationService {
         Medication medication = this.medicationRepository.findOne(medicationWrapper.getId());
         if (medication != null) {
             Patient patient = this.patientRepository.findOne(medicationWrapper.getPatientId());
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            Date dte=new Date();
+            Date dteStarted=new Date();
+            Date dteStoped=new Date();
+            String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+            System.out.println("Time"+currentTime);
+
+            // sample purpose
+            dte =medicationWrapper.getDatePrescribedDate();
+            String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+            //  System.out.println("Read Date"+readDate);
+            Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+            // System.out.println("Date with Time Zone"+scheduledDate);
+
+            // Started Date Time
+            dteStarted =medicationWrapper.getDateStartedTakingDate();
+            String readDateStarted=HISCoreUtil.convertDateToTimeZone(dteStarted,"YYYY-MM-dd hh:mm:ss",Zone);
+            //  System.out.println("Read Date"+readDate);
+            Date scheduledDateStarted=HISCoreUtil.convertStringDateObject(readDateStarted);
+
+            dteStoped =medicationWrapper.getDateStoppedTakingDate();
+            String readDateStoped=HISCoreUtil.convertDateToTimeZone(dteStoped,"YYYY-MM-dd hh:mm:ss",Zone);
+            //  System.out.println("Read Date"+readDate);
+            Date scheduledDateStoped=HISCoreUtil.convertStringDateObject(readDateStoped);
+
+            medicationWrapper.setDateStartedTakingDate(scheduledDateStarted);
+            medicationWrapper.setDateStoppedTakingDate(scheduledDateStoped);
+            medicationWrapper.setDatePrescribedDate(scheduledDate);
             new Medication(medication, medicationWrapper);
             medication.setPatient(patient);
 
@@ -70,10 +133,28 @@ public class MedicationService {
 
     public MedicationWrapper getMedication(long medicationId) {
         return this.medicationRepository.getMedicationById(medicationId);
+        ///
+
     }
 
     public List<MedicationWrapper> getPaginatedMedications(Pageable pageable, Long patientId) {
-        return this.medicationRepository.getPaginatedMedications(pageable, patientId);
+        List<MedicationWrapper> objWrapperMedication= this.medicationRepository.getPaginatedMedications(pageable, patientId);
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+     //   String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+       // String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        String stdDateTime=dbOrganization.getDateFormat()+" "+dbOrganization.getTimeFormat();
+        for(int i=0;i<objWrapperMedication.size();i++){
+        Appointment appointment=appointmentRepository.findOne(objWrapperMedication.get(i).getAppointmentId());
+          //  objWrapperMedication.get(i).setAppoint(appointment);
+
+            String readDate=HISCoreUtil.convertDateToString(appointment.getSchdeulledDate(),stdDateTime);
+         //   Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);objWrapperMedication.
+            String prescribedDate=HISCoreUtil.convertDateToString(HISCoreUtil.convertStringDateObject(objWrapperMedication.get(i).getDatePrescribedString()),stdDateTime);
+
+            objWrapperMedication.get(i).setAppointmentDate(readDate);
+            objWrapperMedication.get(i).setDatePrescribedString(prescribedDate);
+        }
+        return objWrapperMedication;
     }
 
     public int countPaginatedMedications(Long patientId) {
@@ -87,6 +168,10 @@ public class MedicationService {
 
     public int countPaginatedMedicationsByStatusAndPatientId(String status, Long aLong) {
         return this.medicationRepository.countPaginatedMedicationsByStatusAndPatientId(status, aLong).size();
+    }
+
+    public List<Medication> getPaginatedMedicationsData(Pageable pageable, Long patientId) {
+        return this.medicationRepository.getPaginatedMedicationsAt(pageable, patientId);
     }
 
 }

@@ -5,9 +5,8 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Insurance;
 import com.sd.his.model.Patient;
 import com.sd.his.model.SmokingStatus;
-import com.sd.his.service.AWSService;
-import com.sd.his.service.PatientService;
-import com.sd.his.service.UserService;
+import com.sd.his.service.*;
+import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -19,16 +18,16 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +68,15 @@ public class PatientAPI {
     AWSService awsService;
     @Autowired
     UserService userService;
+    @Autowired
+    CountryService countryService;
+    @Autowired
+    StateService stateService;
+    @Autowired
+    CityService cityService;
+
+    @Value("${spring.http.multipart.location}")
+    private String tmpFilePath;
 
     @ApiOperation(httpMethod = "POST", value = "Save patient",
             notes = "This method will save the patient.",
@@ -109,7 +117,11 @@ public class PatientAPI {
                 logger.error("savePatient API - user already found.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }*/
+            patientWrapper.setDob( DateTimeUtil.convertDateToGMT( patientWrapper.getDob().trim() ) );
+            patientWrapper.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientWrapper.getCardIssuedDate().trim() ) );
+            patientWrapper.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientWrapper.getCardExpiryDate().trim() ) );
             patientService.savePatient(patientWrapper);
+//            patientService.convertDateToGMT(patientWrapper.getDob().trim());
 
             response.setResponseMessage(messageBundle.getString("patient.save.success"));
             response.setResponseCode(ResponseEnum.PATIENT_SAVE_SUCCESS.getValue());
@@ -260,17 +272,17 @@ public class PatientAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/update", method = RequestMethod.POST )
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public ResponseEntity<?> updatePatient(@RequestPart PatientWrapper patientRequest,
                                            @RequestPart(name = "profileImg", required = false) MultipartFile profileImg,
                                            @RequestPart(name = "photoFront", required = false) MultipartFile photoFront,
-                                           @RequestPart(name = "photoBack", required = false)  MultipartFile photoBack) {
+                                           @RequestPart(name = "photoBack", required = false) MultipartFile photoBack) {
         logger.info("updatePatient API - initiated.");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            if(profileImg != null) patientRequest.setProfileImg(profileImg.getBytes());
-            if(photoFront != null) patientRequest.setPhotoFront(photoFront.getBytes());
-            if(photoBack != null) patientRequest.setPhotoBack(photoBack.getBytes());
+            if (profileImg != null) patientRequest.setProfileImg(profileImg.getBytes());
+            if (photoFront != null) patientRequest.setPhotoFront(photoFront.getBytes());
+            if (photoBack != null) patientRequest.setPhotoBack(photoBack.getBytes());
             if (patientRequest.getId() <= 0) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
@@ -279,6 +291,31 @@ public class PatientAPI {
                 logger.error("updatePatient API - Please select proper user, userId not available with request patientRequest.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
+
+            if (patientRequest.getDob().trim().length() == 10) {
+                patientRequest.setDob( DateTimeUtil.convertDateToGMT( patientRequest.getDob().trim(), "yyyy-MM-dd" ) );
+            } else if(patientRequest.getDob().trim().length() == 15){            // Tue Dec 04 2018
+                patientRequest.setDob( DateTimeUtil.convertDateToGMT( patientRequest.getDob().trim(), "E MMM dd yyyy" ) );
+            } else {
+                patientRequest.setDob( DateTimeUtil.convertDateToGMT( patientRequest.getDob().trim(), "E MMM dd yyyy HH:mm:ss" ) );
+            }
+
+            if (patientRequest.getCardIssuedDate().trim().length() == 10) {
+                patientRequest.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "yyyy-MM-dd" ) );
+            } else if(patientRequest.getCardIssuedDate().trim().length() == 15){            // Tue Dec 04 2018
+                patientRequest.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "E MMM dd yyyy" ) );
+            } else {
+                patientRequest.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardIssuedDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
+            }
+
+            if (patientRequest.getCardExpiryDate().trim().length() == 10) {
+                patientRequest.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "yyyy-MM-dd" ) );
+            } else if(patientRequest.getCardExpiryDate().trim().length() == 15){            // Tue Dec 04 2018
+                patientRequest.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "E MMM dd yyyy" ) );
+            } else {
+                patientRequest.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientRequest.getCardExpiryDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
+            }
+
             patientService.savePatient(patientRequest);
             response.setResponseMessage(messageBundle.getString("patient.update.success"));
             response.setResponseCode(ResponseEnum.PATIENT_UPDATE_SUCCESS.getValue());
@@ -357,7 +394,7 @@ public class PatientAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/smokeStatus/delete/{smokingId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteSmokingStatus(HttpServletRequest request,
-                                           @PathVariable("smokingId") Long smokingId) {
+                                                 @PathVariable("smokingId") Long smokingId) {
         logger.info("deleteSmokingStatus API - Called..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("patient.delete.error"));
@@ -564,6 +601,7 @@ public class PatientAPI {
         try {
             logger.error("getALL Patients API - Patients fetching from DB");
             List<PatientWrapper> patientList = patientService.getAllPatient();
+
             if (HISCoreUtil.isListEmpty(patientList)) {
                 response.setResponseMessage(messageBundle.getString("patient.not.found"));
                 response.setResponseCode(ResponseEnum.PATIENT_NOT_FOUND_ERROR.getValue());
@@ -574,10 +612,13 @@ public class PatientAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", patientList);
+
             response.setResponseMessage(messageBundle.getString("patient.fetched.success"));
             response.setResponseCode(ResponseEnum.PATIENT_FETCHED_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(patientList);
+            response.setResponseData(returnValues);
 
             logger.error("getAllPatients API - Patients successfully fetched.");
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -600,11 +641,8 @@ public class PatientAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/uploadProfileImg/{id}", method = RequestMethod.POST,
-            headers = ("content-type=multipart/*"))
-    public ResponseEntity<?> uploadProfileImage(HttpServletRequest request,
-                                                @PathVariable("id") long id,
-                                                @RequestParam("file") MultipartFile file) {
+    @RequestMapping(value = "/uploadProfileImg/{id}", method = RequestMethod.POST, headers = ("content-type=multipart/*"))
+    public ResponseEntity<?> uploadProfileImage(HttpServletRequest request, @PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
         logger.info("uploadProfileImage API called for user: " + id);
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.error"));
@@ -614,33 +652,33 @@ public class PatientAPI {
         try {
             String imgURL = null;
             Patient patient = patientService.findPatientByID(id);
-        //    if (HISCoreUtil.isValidObject(user)) {
-                if (HISCoreUtil.isValidObject(file)) {
-                    byte[] byteArr = new byte[0];
-                    try {
-                        byteArr = file.getBytes();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //InputStream is = new ByteArrayInputStream(byteArr);
-                    //Boolean isSaved = awsService.uploadImage(is, id);
-                    imgURL = userService.saveImage(byteArr,HISConstants.S3_USER_PATIENT_PROFILE_DIRECTORY_PATH,patient.getId()+"_"+patient.getId()
-                                                    +"_"
-                                                    +HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME,+patient.getId()
-                                                    +"_"+patient.getId()
-                                                    +"_"
-                                                    + patient.getId()
-                                                    + "_"
-                                                    + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME,
-                                            "/"
-                                                    + HISConstants.S3_USER_PATIENT_PROFILE_DIRECTORY_PATH
-                                                    + patient.getId()
-                                                    + "_"
-                                                    + patient.getId()
-                                                    + "_"
-                                                    + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME);
-                    if ( HISCoreUtil.isValidObject(imgURL) ) {
-                        //String imgURL = awsService.getProfileImageUrl(id);
+            //    if (HISCoreUtil.isValidObject(user)) {
+            if (HISCoreUtil.isValidObject(file)) {
+                byte[] byteArr = new byte[0];
+                try {
+                    byteArr = file.getBytes();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //InputStream is = new ByteArrayInputStream(byteArr);
+                //Boolean isSaved = awsService.uploadImage(is, id);
+                imgURL = userService.saveImage(byteArr, HISConstants.S3_USER_PATIENT_PROFILE_DIRECTORY_PATH, patient.getId() + "_" + patient.getId()
+                                + "_"
+                                + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME, +patient.getId()
+                                + "_" + patient.getId()
+                                + "_"
+                                + patient.getId()
+                                + "_"
+                                + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME,
+                        "/"
+                                + HISConstants.S3_USER_PATIENT_PROFILE_DIRECTORY_PATH
+                                + patient.getId()
+                                + "_"
+                                + patient.getId()
+                                + "_"
+                                + HISConstants.S3_USER_PROFILE_THUMBNAIL_GRAPHIC_NAME);
+                if (HISCoreUtil.isValidObject(imgURL)) {
+                    //String imgURL = awsService.getProfileImageUrl(id);
                     //    user.getProfile().setProfileImgURL(imgURL);
                     patient.setProfileImgURL(imgURL);
                     patientService.savePatientUpadtedImage(patient);
@@ -699,14 +737,14 @@ public class PatientAPI {
         response.setResponseData(null);
         try {
             Insurance insurance = null;
-            boolean validInsuranceIdFlag  = false;
+            boolean validInsuranceIdFlag = false;
             String imgURL = null;
             Patient patient = patientService.findPatientByID(id);
-            if(patient!=null){
+            if (patient != null) {
                 insurance = patient.getInsurance();
-                validInsuranceIdFlag = insurance!=null && insurance.getId()==insuranceId;
+                validInsuranceIdFlag = insurance != null && insurance.getId() == insuranceId;
             }
-            if(validInsuranceIdFlag) {
+            if (validInsuranceIdFlag) {
                 if (HISCoreUtil.isValidObject(file)) {
                     byte[] byteArr = new byte[0];
                     try {
@@ -738,7 +776,7 @@ public class PatientAPI {
                     if (HISCoreUtil.isValidObject(imgURL)) {
                         insurance.setPhotoFrontURL(imgURL);
                         patientService.saveUpdatePatientInsuranceImage(insurance);
-                        response.setResponseMessage(messageBundle.getString("insurance.image.upload.success"));
+                        response.setResponseMessage(messageBundle.getString("patient.records.import.success"));
                         response.setResponseCode(ResponseEnum.INSURANCE_IMG_UPLOAD_SUCCESS.getValue());
                         response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                         response.setResponseData(imgURL);
@@ -759,7 +797,7 @@ public class PatientAPI {
                     //  }
                     //   userService.updateUser(user);
                 }
-            }else{
+            } else {
                 logger.error("Patient insurance front image update failed.");
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -797,14 +835,14 @@ public class PatientAPI {
         response.setResponseData(null);
         try {
             Insurance insurance = null;
-            boolean validInsuranceIdFlag  = false;
+            boolean validInsuranceIdFlag = false;
             String imgURL = null;
             Patient patient = patientService.findPatientByID(id);
-            if(patient!=null){
+            if (patient != null) {
                 insurance = patient.getInsurance();
-                validInsuranceIdFlag = insurance!=null && insurance.getId()==insuranceId;
+                validInsuranceIdFlag = insurance != null && insurance.getId() == insuranceId;
             }
-            if(validInsuranceIdFlag) {
+            if (validInsuranceIdFlag) {
                 if (HISCoreUtil.isValidObject(file)) {
                     byte[] byteArr = new byte[0];
                     try {
@@ -857,7 +895,7 @@ public class PatientAPI {
                     //  }
                     //   userService.updateUser(user);
                 }
-            }else{
+            } else {
                 logger.error("Patient insurance back image update failed.");
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
                 response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
@@ -873,4 +911,49 @@ public class PatientAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @ApiOperation(httpMethod = "POST", value = "Import Patients Data",
+            notes = "This method will import patients data",
+            produces = "application/json", nickname = "Import Patients Data",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/importPatientRecords", method = RequestMethod.POST)
+    public ResponseEntity<?> importPatientRecords(@RequestParam("dataFile") MultipartFile dataFile ) {
+
+        logger.error("importPatientRecords API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            String fileName = dataFile.getOriginalFilename();
+            File file = HISCoreUtil.multipartToFile(dataFile);
+            int records = patientService.readExcel( this.tmpFilePath + fileName );
+
+//            File file = HISCoreUtil.multipartToFile(dataFile);
+//            int records = patientService.readExcel( dataFile );
+
+            if (records > 0) {
+                response.setResponseMessage(messageBundle.getString("patient.records.import.success"));
+            } else {
+                response.setResponseMessage(messageBundle.getString("patient.no.record.import.success"));
+            }
+
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info(records + " - Patient records imported successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (FileNotFoundException fnfe) {
+            logger.error("importPatientRecords File not found.", fnfe.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("patient.records.import.file.not.found"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            logger.error("importPatientRecords Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("patient.records.import.failed"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

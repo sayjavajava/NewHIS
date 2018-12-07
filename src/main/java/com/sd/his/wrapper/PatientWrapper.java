@@ -1,15 +1,15 @@
 package com.sd.his.wrapper;
 
-import com.sd.his.model.Insurance;
+import com.sd.his.model.*;
 //import com.sd.his.model.Profile;
-import com.sd.his.model.SmokingStatus;
-import com.sd.his.model.User;
 //import com.sd.his.utill.DateUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.RaceWrapper;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,37 +27,34 @@ public class PatientWrapper {
     private String firstName = "";
     private String middleName = "";
     private String lastName = "";
-    private String foreignName = "";
     private byte[] profileImg;
     private String homePhone = "";
     private String cellPhone = "";
     private boolean disableSMSTxt = true;
     private String officePhone = "";
-    private String officeExtension = "";
     private String email = "";
     private String userName = "";
-    private String preferredCommunication = "ENGLISH";
-    private String reminderLanguage = "ENGLISH";
-    private boolean statusUser = false;
+    private String preferredCommunication = "";
+    private boolean status = true;
+    private String patientGroup;
+    private Long patientGroupId;
+
     /////// DEMOGRAPHY
     //private long profileId;
     private String patientSSN = "";
     private String dob = "";
-    private String gender = "MALE";
-    List<RaceWrapper> races = new ArrayList();
-    List<RaceWrapper> selectedRaces = new ArrayList();//patient selected races
-    private String racesString;
-    private String country = "SAUDI ARAB";
+    private String gender = "";
+    private String country = "";
+    private Long countryId;
     private String streetAddress = "";
-    private String zipCode = "";
     private String city = "";
-    private String state = "SAUDI ARAB";
-    private String formattedAddress = "";
-    private String marital = "SINGLE";
+    private Long cityId;
+    private String state = "";
+    private Long stateId;
+    private String marital = "";
     private String emergencyContactName = "";
     private String emergencyContactPhone = "";
     private String emergencyContactRelation = "";
-    private boolean signatureOnFile = false;
     private boolean profileStatus = true;
 
     ///////////////// INSURANCE
@@ -75,9 +72,10 @@ public class PatientWrapper {
     private String profileImgURL;
     private String photoFrontURL;
     private String photoBackURL;
+
     ////////////Appointment
-    List<AppointmentWrapper> futureAppointments;
-    List<AppointmentWrapper> pastAppointments;
+    private List<AppointmentWrapper> futureAppointments;
+    private List<AppointmentWrapper> pastAppointments;
     private String label;
     private long value;
 
@@ -87,74 +85,67 @@ public class PatientWrapper {
 
     public PatientWrapper() {
     }
-    public PatientWrapper(Long id, String firstName,String lastName,String email,String city,String address,String cellPhone){
-        this.id =id;
+
+    public PatientWrapper(Long id, String patientId, String patientSSN, String firstName, String lastName, String email,
+                          City city, String address, String cellPhone, PatientGroup patientGroup) {
+        this.id = id;
+        this.patientId = patientId;
+        this.patientSSN = patientSSN;
         this.firstName = firstName;
-        this.lastName =lastName;
-        this.email =email;
-        this.city =city;
-        this.formattedAddress =address;
-        this.cellPhone =cellPhone;
+        this.lastName = lastName;
+        this.email = email;
+        this.streetAddress = address;
+        this.cellPhone = cellPhone;
         this.label = firstName;
         this.value = id;
 
-    }
+        if (city != null) {
+            this.city = city.getName();
+            this.cityId = city.getId();
 
-    /*public PatientWrapper(User user, Profile profile, Insurance insurance) {
-        this.userId = user.getId();
-        this.userName = user.getUsername();
-        this.statusUser = user.isActive();
-//        this.deleted = user.isDeleted();
-        this.email = user.getEmail();
-//        this.Type = user.getUserType();
+            this.state = city.getState().getName();
+            this.stateId = city.getState().getId();
 
-        this.profileId = profile.getId();
-        this.patientSSN = profile.getPatientSSN();
-        this.firstName = profile.getFirstName();
-        this.middleName = profile.getMiddleName();
-        this.lastName = profile.getLastName() == null ? "" : profile.getLastName();
-        this.foreignName = profile.getForeignName();
-        this.homePhone = profile.getHomePhone() == null ? "" : profile.getHomePhone();
-        this.cellPhone = profile.getCellPhone() == null ? "" : profile.getCellPhone();
-        this.officePhone = profile.getOfficePhone();
-        this.officeExtension = profile.getOfficeExtension();
-        this.preferredCommunication = profile.getPreferredCommunication();
-        this.reminderLanguage = profile.getReminderLanguage();
-        this.emergencyContactName = profile.getEmergencyContactName();
-        this.emergencyContactPhone = profile.getEmergencyContactPhone();
-        this.emergencyContactRelation = profile.getEmergencyContactRelation();
-        this.disableSMSTxt = profile.getDisableSMSText();
-        this.formattedAddress = profile.getFormattedAddress();
-        this.streetAddress = profile.getStreetAddress();
-        this.marital = profile.getMaritalStatus();
-        this.zipCode = profile.getZipCode();
-        this.signatureOnFile = profile.getSignatureOnFile();
-
-        this.gender = profile.getGender() == null ? null : profile.getGender();
-        this.profileImg = profile.getProfileImg() == null ? "" : profile.getProfileImg();
-        this.city = profile.getCity() == null ? "" : profile.getCity();
-        this.state = profile.getState() == null ? "" : profile.getState();
-        this.country = profile.getCountry() == null ? "" : profile.getCountry();
-        this.racesString = profile.getRaces();
-        this.dob = profile.getDob() == null ? "" : DateUtil.getFormattedDateFromDate(profile.getDob(), HISConstants.DATE_FORMATE_THREE);
-
-        this.titlePrefix = profile.getTitlePrefix();
-        if (user.getPrimaryDoctor() != null) {
-            this.selectedDoctor = user.getPrimaryDoctor().getId();
+            this.country = city.getCountry().getName();
+            this.countryId = city.getCountry().getId();
         }
 
-        this.insuranceId = insurance.getId();
-        this.company = insurance.getCompany();
-        this.insuranceIdNumber = insurance.getInsuranceIDNumber();
-        this.groupNumber = insurance.getGroupNumber();
-        this.planName = insurance.getPlanName();
-        this.planType = insurance.getPlanType();
-        this.cardIssuedDate = insurance.getCardIssuedDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardIssuedDate(), HISConstants.DATE_FORMATE_THREE);
-        this.cardExpiryDate = insurance.getCardExpiryDate() == null ? "" : DateUtil.getFormattedDateFromDate(insurance.getCardExpiryDate(), HISConstants.DATE_FORMATE_THREE);
-        this.primaryInsuranceNotes = insurance.getPrimaryInsuranceNotes();
-        *//*this.photoFront = insurance.getPhotoFront();
-        this.photoBack = insurance.getPhotoBack();*//*
-    }*/
+        if (patientGroup != null) {
+            this.patientGroup = patientGroup.getName();
+            this.patientGroupId = patientGroup.getId();
+        }
+
+    }
+
+    public PatientWrapper(Patient patient) {
+        this.id = patient.getId();
+        this.patientId = patient.getPatientId();
+        this.patientSSN = patient.getPatientSSN();
+        this.firstName = patient.getFirstName();
+        this.lastName = patient.getLastName();
+        this.email = patient.getEmail();
+        this.streetAddress = patient.getStreetAddress();
+        this.cellPhone = patient.getCellPhone();
+        this.label = patient.getFirstName();
+        this.value = patient.getId();
+
+        if (patient.getCity() != null) {
+            this.city = patient.getCity().getName();
+            this.cityId = patient.getCity().getId();
+
+            this.state = patient.getCity().getState().getName();
+            this.stateId = patient.getCity().getState().getId();
+
+            this.country = patient.getCity().getCountry().getName();
+            this.countryId = patient.getCity().getCountry().getId();
+        }
+
+        if (patient.getPatientGroup() != null) {
+            this.patientGroup = patient.getPatientGroup().getName();
+            this.patientGroupId = patient.getPatientGroup().getId();
+        }
+
+    }
 
     public String getLabel() {
         return label;
@@ -291,14 +282,6 @@ public class PatientWrapper {
         this.lastName = lastName;
     }
 
-    public String getForeignName() {
-        return foreignName;
-    }
-
-    public void setForeignName(String foreignName) {
-        this.foreignName = foreignName;
-    }
-
     /*public File getPatientPhoto() {
         return patientPhoto;
     }*/
@@ -339,14 +322,6 @@ public class PatientWrapper {
         this.officePhone = officePhone;
     }
 
-    public String getOfficeExtension() {
-        return officeExtension;
-    }
-
-    public void setOfficeExtension(String officeExtension) {
-        this.officeExtension = officeExtension;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -371,20 +346,12 @@ public class PatientWrapper {
         this.preferredCommunication = preferredCommunication;
     }
 
-    public String getReminderLanguage() {
-        return reminderLanguage;
+    public boolean getStatus() {
+        return status;
     }
 
-    public void setReminderLanguage(String reminderLanguage) {
-        this.reminderLanguage = reminderLanguage;
-    }
-
-    public boolean isStatusUser() {
-        return statusUser;
-    }
-
-    public void setStatusUser(boolean statusUser) {
-        this.statusUser = statusUser;
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     /*public long getProfileId() {
@@ -419,22 +386,6 @@ public class PatientWrapper {
         this.gender = gender;
     }
 
-    public List<RaceWrapper> getRaces() {
-        return races;
-    }
-
-    public void setRaces(List<RaceWrapper> races) {
-        this.races = races;
-    }
-
-    public List<RaceWrapper> getSelectedRaces() {
-        return selectedRaces;
-    }
-
-    public void setSelectedRaces(List<RaceWrapper> selectedRaces) {
-        this.selectedRaces = selectedRaces;
-    }
-
     public String getCountry() {
         return country;
     }
@@ -451,14 +402,6 @@ public class PatientWrapper {
         this.streetAddress = streetAddress;
     }
 
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
     public String getCity() {
         return city;
     }
@@ -473,14 +416,6 @@ public class PatientWrapper {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public String getFormattedAddress() {
-        return formattedAddress;
-    }
-
-    public void setFormattedAddress(String formattedAddress) {
-        this.formattedAddress = formattedAddress;
     }
 
     public String getMarital() {
@@ -513,14 +448,6 @@ public class PatientWrapper {
 
     public void setEmergencyContactRelation(String emergencyContactRelation) {
         this.emergencyContactRelation = emergencyContactRelation;
-    }
-
-    public boolean isSignatureOnFile() {
-        return signatureOnFile;
-    }
-
-    public void setSignatureOnFile(boolean signatureOnFile) {
-        this.signatureOnFile = signatureOnFile;
     }
 
     public String getCompany() {
@@ -611,14 +538,6 @@ public class PatientWrapper {
         this.profileStatus = profileStatus;
     }
 
-    public String getRacesString() {
-        return racesString;
-    }
-
-    public void setRacesString(String racesString) {
-        this.racesString = racesString;
-    }
-
     public byte[] getProfileImg() {
         return profileImg;
     }
@@ -649,5 +568,53 @@ public class PatientWrapper {
 
     public void setHasChild(boolean hasChild) {
         this.hasChild = hasChild;
+    }
+
+    public Long getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(Long countryId) {
+        this.countryId = countryId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public Long getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(Long stateId) {
+        this.stateId = stateId;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public String getPatientGroup() {
+        return patientGroup;
+    }
+
+    public void setPatientGroup(String patientGroup) {
+        this.patientGroup = patientGroup;
+    }
+
+    public List<SmokingStatus> getSmokingStatuses() {
+        return smokingStatuses;
+    }
+
+    public Long getPatientGroupId() {
+        return patientGroupId;
+    }
+
+    public void setPatientGroupId(Long patientGroupId) {
+        this.patientGroupId = patientGroupId;
     }
 }
