@@ -86,7 +86,7 @@ public class PatientOrderService {
 
                         }else{
 
-                           url =    awsService.uploadFile(multipartFile);
+                           url =    awsService.uploadFile(multipartFile,orderWrapper.getPatientId() );
 
                         }
 

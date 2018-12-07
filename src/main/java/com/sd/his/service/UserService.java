@@ -802,7 +802,8 @@ public class UserService implements UserDetailsService {
                 fullThumbName,
                 fullImgName);
         if (isSaved) {
-            imgURL = this.s3KeyGen.getImagePublicURLOrder(fullPathAndThumbNailGraphicName);
+            String dbUrl=directoryPath+fullImgName;
+            imgURL = this.s3KeyGen.getImagePublicURLOrder(dbUrl);
         }
 
         return imgURL;

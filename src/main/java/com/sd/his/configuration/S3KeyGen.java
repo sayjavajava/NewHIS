@@ -337,7 +337,7 @@ public class S3KeyGen {
             url = s3Bucket.getAccessProtocol()
                     + s3Bucket.getPublicBaseURL()
                     + "/"
-                    + s3Bucket.getName()
+                    + s3Bucket.getName()+"/"
                     + FULL_PATH_THUMBNAIL_GRAPHIC_NAME;
 
             if (!ResourceCheckUtil.urlExists(url)) {

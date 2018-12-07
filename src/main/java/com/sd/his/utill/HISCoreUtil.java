@@ -393,7 +393,7 @@ public class HISCoreUtil {
     public static String convertDateToStringUpload(Date date) {
         String formatedDate = null;
         if (date != null) {
-            SimpleDateFormat form = new SimpleDateFormat("ddMMMMyyyyhhss");
+            SimpleDateFormat form = new SimpleDateFormat("ddMMyyyyHHss");
             formatedDate = form.format(date);
         }
         return formatedDate;

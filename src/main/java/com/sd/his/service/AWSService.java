@@ -11,6 +11,7 @@ import com.sd.his.configuration.AWSS3;
 import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.enums.S3ContentTypes;
 import com.sd.his.model.S3Bucket;
+import com.sd.his.utill.HISCoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,7 +205,7 @@ public class AWSService {
 
 
 
-    public String uploadFile(MultipartFile multipartFile) {
+    public String uploadFile(MultipartFile multipartFile,long patientId) {
 
         String fileUrl = "";
         S3Bucket s3Bucket = s3BucketService.findActiveBucket();
@@ -212,8 +213,9 @@ public class AWSService {
             File file = convertMultiPartToFile(multipartFile);
            // String fileName =generateFileName(multipartFile);
             String fileName=multipartFile.getOriginalFilename();
-            fileUrl = s3Bucket.getAccessProtocol()+s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+fileName;
-            uploadFileTos3bucket(multipartFile, true);
+            fileUrl = s3Bucket.getAccessProtocol()+s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+patientId+"_"+fileName;
+            String fileNameIrl=uploadFileTos3bucket(multipartFile, true,patientId,fileUrl);
+            fileUrl=s3Bucket.getAccessProtocol()+s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+fileNameIrl;
           //  file.delete();
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,11 +243,11 @@ public class AWSService {
         }
 }*/
 
-    private void uploadFileTos3bucket(MultipartFile multipartFile, boolean enablePublicReadAccess) {
+    private String uploadFileTos3bucket(MultipartFile multipartFile, boolean enablePublicReadAccess,long Id,String fileurl) {
 
 
         S3Bucket s3Bucket = s3BucketService.findActiveBucket();
-        String fileName = multipartFile.getOriginalFilename();
+        String fileName = Id+"_"+HISCoreUtil.convertDateToStringUpload(new Date())+"_"+multipartFile.getOriginalFilename();
         String fileUrl = "";
         try {
             //creating the file in the server (temporarily)
@@ -270,6 +272,7 @@ public class AWSService {
         } catch (IOException | AmazonServiceException ex) {
             logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
         }
+        return fileName;
     }
 
 
