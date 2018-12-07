@@ -97,6 +97,8 @@ public class BranchResponseWrapper {
         this.value = branch.getId();
         this.label = branch.getName();
         this.flow = branch.getFlow();
+        this.label = branch.getName();
+        this.value =branch.getId();
 
     }
 
@@ -118,6 +120,8 @@ public class BranchResponseWrapper {
         this.examRooms = branch.getRooms().stream().filter(x -> x.getRoomName() != null)
                 .map(x -> new Room(x.getId(), x.getRoomName(), x.getAllowOnlineScheduling()))
                 .collect(Collectors.toList());
+        this.label =branch.getName();
+        this.value =branch.getId();
     }
 
     public BranchResponseWrapper(long id, String name, String firstName) {

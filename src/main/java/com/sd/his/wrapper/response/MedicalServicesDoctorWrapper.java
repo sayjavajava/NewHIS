@@ -10,6 +10,8 @@ public class MedicalServicesDoctorWrapper {
     private String docLastName;
     private Long duration;
     private String comission;
+    private Long value;
+    private String label;
 
     public MedicalServicesDoctorWrapper(Long dmsId, Long drId, String docFirstName, String docLastName, Long msId, String msName, String msDescription,Long duration ){
         this.doctorMedicalServiceId =dmsId;
@@ -20,7 +22,25 @@ public class MedicalServicesDoctorWrapper {
         this.mServiceName=msName;
         this.mServiceDescription=msDescription;
         this.duration = duration;
+        this.label =msName;
+        this.value = msId;
 
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getComission() {

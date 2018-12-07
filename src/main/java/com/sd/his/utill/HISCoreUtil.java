@@ -3,7 +3,10 @@ package com.sd.his.utill;
 
 import com.sd.his.model.Branch;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -150,6 +153,21 @@ public class HISCoreUtil {
         }
         return date;
     }
+  public static LocalDateTime convertToLocalDateTimeViaSqlTimestamp(Date dateToConvert) {
+        if(dateToConvert !=null){
+        return new java.sql.Timestamp(
+                dateToConvert.getTime()).toLocalDateTime();
+        }
+        else{
+        return null;
+        }
+    }
+    public static Date convertToDateViaLocalDateTime(LocalDateTime dateToConvert) {
+        Date dateFromLocalDateTime =null;
+        if(dateToConvert !=null)
+            dateFromLocalDateTime = java.sql.Timestamp.valueOf(dateToConvert);
+        return dateFromLocalDateTime;
+    }
 
     public static Date convertToDateWithTime(String strDate, String formateDate) {
         Date date = null;
@@ -257,8 +275,7 @@ public class HISCoreUtil {
         return currentTime;
     }
 
-    public static String formatDateToString(Date date, String format,
-                                            String timeZone) {
+    public static String formatDateToString(Date date, String format, String timeZone) {
 
         if (date == null)
             return null;
@@ -289,7 +306,6 @@ public class HISCoreUtil {
         return date;
     }
 
-
     public static String convertToTimeFormat(String str,String timeFormat) {
 
         LocalTime time = LocalTime.parse(str);
@@ -298,7 +314,18 @@ public class HISCoreUtil {
         System.out.println(formatter.format(time));
         return  formatter.format(time);
     }
+    public static LocalDate convertDateToLocalDate(Date date) {
+        Instant instant = Instant.ofEpochMilli(date.getTime());
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+                .toLocalDate();
+    }
 
+    public static Date convertLocalDateToDate(LocalDate dateToConvert) {
+        if (dateToConvert != null) {
+            return java.sql.Date.valueOf(dateToConvert);
+        } else
+            return null;
+    }
     public static Date convertToAPPDate(String str) {
         Date date = null;
         if (str != null) {
@@ -311,6 +338,16 @@ public class HISCoreUtil {
 
         }
         return date;
+    }
+
+
+
+
+
+    public static File multipartToFile(MultipartFile multipart) throws IllegalStateException, IOException {
+        File convFile = new File( multipart.getOriginalFilename());
+        multipart.transferTo(convFile);
+        return convFile;
     }
 
     public static Date convertToAPPDateZone(String str,String format) {

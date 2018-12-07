@@ -134,4 +134,16 @@ public class DateTimeUtil {
         }
         return temp;
     }
+
+    public static String convertDateToGMT(String date) throws ParseException {
+        if (date == null || date.trim().equals("")) return "";
+        Date localDate = DateTimeUtil.getDateFromString(date, "E MMM dd yyyy HH:mm:ss");
+        return DateTimeUtil.convertDateFromTimeZoneToGMT(localDate, TimeZone.getTimeZone("GMT"), HISConstants.DATE_FORMATE_THREE);
+    }
+
+    public static String convertDateToGMT(String date, String thisDateFormat) throws ParseException {
+        if (date == null || date.trim().equals("")) return "";
+        Date localDate = DateTimeUtil.getDateFromString(date, thisDateFormat);
+        return DateTimeUtil.convertDateFromTimeZoneToGMT(localDate, TimeZone.getTimeZone("GMT"), HISConstants.DATE_FORMATE_THREE);
+    }
 }

@@ -11,6 +11,7 @@ import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -53,15 +55,14 @@ public class PatientService {
     private SmokingStatusRepository smokingStatusRepository;
     @Autowired
     private InsuranceService insuranceService;
-
-
-
+    @Autowired
     private OrganizationService organizationService;
     @Autowired
     private CityRepository cityRepository;
     @Autowired
     private PatientGroupRepository patientGroupRepository;
-
+    @Autowired
+    private CountryRepository countryRepository;
 
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
@@ -687,48 +688,87 @@ public class PatientService {
         return false;
     }
 
-    public File multipartToFile(MultipartFile multipart) throws IllegalStateException, IOException  {
-        File convFile = new File( multipart.getOriginalFilename());
-        multipart.transferTo(convFile);
-        return convFile;
-    }
-
-    public int readExcel(MultipartFile dataFile) throws IllegalStateException, org.apache.poi.openxml4j.exceptions.InvalidFormatException, IOException {
-//    public int readExcel(File dataFile) throws IllegalStateException, org.apache.poi.openxml4j.exceptions.InvalidFormatException, IOException {
+    public int readExcel(String dataFilePath) throws IllegalStateException, org.apache.poi.openxml4j.exceptions.InvalidFormatException, IOException, ParseException {
         // Creating a Workbook from an Excel file (.xls or .xlsx)
-
+        File file = new File(dataFilePath);
         AtomicInteger records = new AtomicInteger(0);
-        Workbook workBook = WorkbookFactory.create(dataFile.getInputStream());
-//        Workbook workBook = WorkbookFactory.create(dataFile);
-
-        //Read sheet inside the workbook by its Index
+        Workbook workBook = WorkbookFactory.create(file);
         Sheet excelSheet = workBook.getSheetAt(0);
 
-        System.out.println("\n\nIterating over Rows and Columns using forEach with lambda\n");
-        excelSheet.forEach(row -> {
-            row.forEach(cell -> {
-//                String cellValue = dataFormatter.formatCellValue(cell);
-                System.out.print(cell + "\t");
+        Patient patient = null;
+        Doctor doctor = null;
+        Country country = null;
+        for (Row row : excelSheet) {
+            if (row != null && row.getRowNum() > 0 && row.getCell(0) != null) {
+                if ( row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null
+                        || row.getCell(3) == null || row.getCell(4) == null || row.getCell(5) == null
+                        || row.getCell(6) == null || row.getCell(7) == null )
+                    continue;
+                Patient oldPatient = patientRepository.findDuplicatePatientForBulkImport(row.getCell(2).getStringCellValue()+"",
+                        row.getCell(3).getStringCellValue()+"", row.getCell(4).getStringCellValue()+"", row.getCell(5).getDateCellValue());
+                if (oldPatient != null)
+                    continue;
 
-            });
-            System.out.println();
-            records.getAndIncrement();
-        });
+                doctor = doctorRepository.findOne((long) row.getCell(0).getNumericCellValue());
+                if (doctor == null)
+                    continue;
+
+                country = countryRepository.findOne((long) row.getCell(7).getNumericCellValue());
+                if (country == null) {
+//                    continue;
+                }
+                patient = new Patient();
+                for (int j = 0; j < row.getLastCellNum(); j++) {
+                    switch (j) {
+                        case 0:
+                            patient.setPrimaryDoctor(doctor);
+                            break;
+                        case 1:
+                            patient.setTitle(row.getCell(j).getStringCellValue());
+                            break;
+                        case 2:
+                            patient.setFirstName(row.getCell(j).getStringCellValue());
+                            break;
+                        case 3:
+                            patient.setLastName(row.getCell(j).getStringCellValue());
+                            break;
+                        case 4:
+                            patient.setCellPhone(row.getCell(j).getStringCellValue());
+                            break;
+                        case 5:
+                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            String date = dateFormat.format(row.getCell(j).getDateCellValue());
+                            patient.setDob(dateFormat.parse(date));
+                            break;
+                        case 6:
+                            if (row.getCell(j).getStringCellValue().trim().toUpperCase().equals(GenderTypeEnum.MALE.name())) {
+                                patient.setGender(GenderTypeEnum.MALE);
+                            } else {
+                                patient.setGender(GenderTypeEnum.FEMALE);
+                            }
+                            break;
+                        case 7:
+                            if (country != null) {
+                                patient.setCountry(country.getName());
+                            }
+                            break;
+                    }
+                }
+                patient.setStatus(PatientStatusTypeEnum.ACTIVE);
+                patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+                patientRepository.save(patient);
+                records.incrementAndGet();
+                System.out.println();
+
+            }
+        }
 
         // Closing the workbook
         workBook.close();
         return records.get();
     }
 
-    public String convertDateToGMT(String date) throws ParseException {
-        if (date == null || date.trim().equals("")) return "";
-        Date localDate = DateTimeUtil.getDateFromString(date, "E MMM dd yyyy HH:mm:ss");
-        return DateTimeUtil.convertDateFromTimeZoneToGMT(localDate, TimeZone.getTimeZone("GMT"), HISConstants.DATE_FORMATE_THREE);
-    }
 
-    public String convertDateToGMT(String date, String thisDateFormat) throws ParseException {
-        if (date == null || date.trim().equals("")) return "";
-        Date localDate = DateTimeUtil.getDateFromString(date, thisDateFormat);
-        return DateTimeUtil.convertDateFromTimeZoneToGMT(localDate, TimeZone.getTimeZone("GMT"), HISConstants.DATE_FORMATE_THREE);
-    }
+
+
 }

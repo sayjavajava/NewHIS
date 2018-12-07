@@ -88,8 +88,8 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     @Query("SELECT new com.sd.his.wrapper.CountryWrapper(cntry) FROM Branch b JOIN b.city cty JOIN cty.country cntry WHERE b.id = :branchId")
     CountryWrapper findCountryByBranchId(@Param("branchId") Long branchId);
 
-    @Query("SELECT MAX(br.id) from Branch br")
-    Long getMaxBranchId();
+    @Query("SELECT br from Branch br WHERE br.branchId=:branchId ")
+    Branch getByBranchId(@Param("branchId") String stringCellValue);
 
 
  /*   Branch findByIdAndDeletedFalse(long id);

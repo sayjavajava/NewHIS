@@ -133,8 +133,6 @@ public class MedicationService {
 
     public MedicationWrapper getMedication(long medicationId) {
         return this.medicationRepository.getMedicationById(medicationId);
-        ///
-
     }
 
     public List<MedicationWrapper> getPaginatedMedications(Pageable pageable, Long patientId) {
@@ -149,7 +147,7 @@ public class MedicationService {
 
             String readDate=HISCoreUtil.convertDateToString(appointment.getSchdeulledDate(),stdDateTime);
          //   Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);objWrapperMedication.
-            String prescribedDate=HISCoreUtil.convertDateToString(HISCoreUtil.convertToDateDetail(objWrapperMedication.get(i).getDatePrescribedString()),stdDateTime);
+            String prescribedDate=HISCoreUtil.convertDateToString(HISCoreUtil.convertStringDateObject(objWrapperMedication.get(i).getDatePrescribedString()),stdDateTime);
 
             objWrapperMedication.get(i).setAppointmentDate(readDate);
             objWrapperMedication.get(i).setDatePrescribedString(prescribedDate);

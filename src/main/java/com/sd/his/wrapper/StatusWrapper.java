@@ -6,6 +6,9 @@ public class StatusWrapper {
     private String abbreviation;
     private boolean active;
     private String colorHash;
+    private String label;
+    private Long value;
+
 
     public StatusWrapper() {
     }
@@ -16,6 +19,24 @@ public class StatusWrapper {
         this.abbreviation = abbreviation;
         this.active = active;
         this.colorHash = colorHash;
+        this.label =name;
+        this.value = id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public Long getValue() {
+        return value;
+    }
+
+    public void setValue(Long value) {
+        this.value = value;
     }
 
     public Long getId() {

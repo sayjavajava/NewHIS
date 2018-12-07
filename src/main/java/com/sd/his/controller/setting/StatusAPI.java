@@ -130,7 +130,7 @@ public class StatusAPI {
         response.setResponseData(null);
 
         try {
-            List<StatusWrapper> fhistoryData = statusService.getAllStatuses(page,pageSize);
+            List<StatusWrapper> fhistoryData = statusService.getAllStatusesWithPagination(page,pageSize);
             int countStatues = statusService.statusesCount();
 
             if (!HISCoreUtil.isListEmpty(fhistoryData)) {
@@ -378,6 +378,56 @@ public class StatusAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @ApiOperation(httpMethod = "GET", value = "All Statuses",
+            notes = "This method will return all Statuses",
+            produces = "application/json", nickname = "All Statuses",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All Statuses fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/allStatus", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllStatuses(HttpServletRequest request) {
+
+        logger.info("getAllStatuses API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("status.fetch.error"));
+        response.setResponseCode(ResponseEnum.STATUS_FETCHED_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            logger.error("getAllStatus API - status fetching from DB");
+            List<StatusWrapper> branches = statusService.getAllStatuses();
+            if (HISCoreUtil.isListEmpty(branches)) {
+                response.setResponseMessage(messageBundle.getString("status.not.found"));
+                response.setResponseCode(ResponseEnum.STATUS_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.info("getAllStatuses API - Statuses not found");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            response.setResponseMessage(messageBundle.getString("status.fetch.success"));
+            response.setResponseCode(ResponseEnum.STATUS_FETCHED_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(branches);
+
+            logger.info("getAllStatuses API - Statuses successfully fetched.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("getAllStatus API -  exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
 
