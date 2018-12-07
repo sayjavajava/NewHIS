@@ -161,7 +161,7 @@ public class HISCoreUtil {
         else{
         return null;
         }
-    }
+    } 
     public static Date convertToDateViaLocalDateTime(LocalDateTime dateToConvert) {
         Date dateFromLocalDateTime =null;
         if(dateToConvert !=null)
