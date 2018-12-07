@@ -11,6 +11,7 @@ public class BulkReceitRequestWrapper {
     private String date;
 
     private double paymentAmount;
+    private double useAdvanceTotal;
     private boolean useAdvance;
 
     List<InvoiceResponseWrapper> invoiceListPaymentRequest;
@@ -63,5 +64,13 @@ public class BulkReceitRequestWrapper {
 
     public void setInvoiceListPaymentRequest(List<InvoiceResponseWrapper> invoiceListPaymentRequest) {
         this.invoiceListPaymentRequest = invoiceListPaymentRequest;
+    }
+
+    public double getUseAdvanceTotal() {
+        return useAdvanceTotal;
+    }
+
+    public void setUseAdvanceTotal(double useAdvanceTotal) {
+        this.useAdvanceTotal = useAdvanceTotal;
     }
 }

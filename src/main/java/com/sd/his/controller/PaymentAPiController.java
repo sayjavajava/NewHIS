@@ -47,11 +47,11 @@ public class PaymentAPiController {
         GenericAPIResponse response = new GenericAPIResponse();
         try
         {
-            if (createAdvancePaymentRequest.getDate().trim().length() == 10) {
+        /*    if (createAdvancePaymentRequest.getDate().trim().length() == 10) {
                 createAdvancePaymentRequest.setDate( patientService.convertDateToGMT( createAdvancePaymentRequest.getDate().trim(), "yyyy-MM-dd" ) );
             } else {
                 createAdvancePaymentRequest.setDate( patientService.convertDateToGMT( createAdvancePaymentRequest.getDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
-            }
+            }*/
             patientInvoiceService.saveAdvancePayment(createAdvancePaymentRequest);
 
             response.setResponseMessage(messageBundle.getString("paymentApi.save.success"));

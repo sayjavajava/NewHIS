@@ -24,6 +24,8 @@ public class InvoiceResponseWrapper {
     private Double appliedAmount = 0.00;
     private Double dueAmount = 0.00;
 
+    private Double refundAmount = 0.00;
+
     private Double totalInvoiceAmount;
 
     public InvoiceResponseWrapper() {    }
@@ -39,6 +41,7 @@ public class InvoiceResponseWrapper {
         this.discountAmount = invoice.getDiscountAmount();
         this.totalInvoiceAmount = invoice.getTotalInvoiceAmount();
         this.dueAmount = invoice.getTotalInvoiceAmount() - invoice.getPaidAmount();
+        this.refundAmount = invoice.getPatientRefunds().stream().filter(i ->i.getRefundType().equalsIgnoreCase("Invoice")).mapToDouble(i-> i.getRefundAmount()).sum();
     }
 
     public InvoiceResponseWrapper(Double balance, Double totalBill, Double totalPaid, Double advBalance){
@@ -191,5 +194,13 @@ public class InvoiceResponseWrapper {
 
     public void setUseAdvancedBal(boolean useAdvancedBal) {
         this.useAdvancedBal = useAdvancedBal;
+    }
+
+    public Double getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(Double refundAmount) {
+        this.refundAmount = refundAmount;
     }
 }
