@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -735,8 +736,9 @@ public class PatientService {
                             patient.setCellPhone(row.getCell(j).getStringCellValue());
                             break;
                         case 5:
-                            String date = new SimpleDateFormat("yyyy-MM-dd").format(row.getCell(j).getDateCellValue());
-                            patient.setDob(new SimpleDateFormat("yyyy-MM-dd").parse(date));
+                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            String date = dateFormat.format(row.getCell(j).getDateCellValue());
+                            patient.setDob(dateFormat.parse(date));
                             break;
                         case 6:
                             if (row.getCell(j).getStringCellValue().trim().toUpperCase().equals(GenderTypeEnum.MALE.name())) {
@@ -765,6 +767,8 @@ public class PatientService {
         workBook.close();
         return records.get();
     }
+
+
 
 
 }
