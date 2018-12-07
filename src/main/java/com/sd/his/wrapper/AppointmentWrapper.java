@@ -1,6 +1,6 @@
 package com.sd.his.wrapper;
 
-import com.sd.his.enums.AppointmentStatusTypeEnum;
+
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.utill.JSONUtil;
@@ -57,9 +57,10 @@ public class AppointmentWrapper {
     private String gender;
     private String age;
     private String cellPhone;
-    private String firstAppointment;
-    private String lastAppointment;
-    private String followUpDate;
+    private Date firstAppointment;
+    private Date lastAppointment;
+    private Date followUpDate;
+    private String followUpDateResponse;
     private Long patientId;
     private String patientFirstName;
     private String patientLastName;
@@ -76,6 +77,7 @@ public class AppointmentWrapper {
     private Long branchId;
     private String scheduleDate;
     private String scheduleDateAndTime;
+   // private Date scheduleDateAndTime2;
     private String docFirstName;
     private String docLastName;
     private int appointmentConvertedTime;
@@ -92,6 +94,8 @@ public class AppointmentWrapper {
     private boolean completed;
     private String label;
     private Long value;
+    private Date dateSchedule;
+    private Long statusId;
 
     public AppointmentWrapper() {
     }
@@ -99,7 +103,7 @@ public class AppointmentWrapper {
     public AppointmentWrapper(Long id, String name, String notes) {
     }
 
-    public AppointmentWrapper(Long id,String appointmentId, String title, String notes, String reason, String color, AppointmentStatusTypeEnum status, String appointmentType, Integer duration,
+    public AppointmentWrapper(Long id,String appointmentId, String title, String notes,String statusName,Long statusId, String reason, String color, String appointmentType, Integer duration,
                               Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
                               Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, Long patientId,
                               Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId,Date followUpDate,Long serviceId,String serviceName
@@ -120,7 +124,8 @@ public class AppointmentWrapper {
         this.docFirstName = docFirstName;
         this.docLastName = docLastName;
         this.doctorId = docId;
-        this.status = status.name();
+        this.status = statusName;
+        this.statusId =statusId;
         this.followUpReminder = followUpReminder;
         this.duration = duration;
         this.compareDate = scheduleDate;
@@ -137,16 +142,14 @@ public class AppointmentWrapper {
         this.examName = roomName;
         this.branchName = branchName;
         this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
-        this.followUpDate =HISCoreUtil.convertDateAndTimeToString(followUpDate);
+        this.followUpDateResponse = HISCoreUtil.convertDateToString(followUpDate);
         this.serviceId=serviceId;
         this.serviceName=serviceName;
         this.label = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
         this.value = id;
+
     }
-
-
-
-    public AppointmentWrapper(Long id,String appointmentId, String title, AppointmentStatusTypeEnum status,Date scheduleDate, String firstName, String lastName, String docFirstName, String docLastName, Long patientId, String invPrefix, boolean completed)
+    public AppointmentWrapper(Long id,String appointmentId, String title,Date scheduleDate, String firstName, String lastName, String docFirstName, String docLastName, Long patientId, String invPrefix, boolean completed)
     {
         //Long patientId,Long branchId, String branchName, Long roomId,
         this.id = id;
@@ -161,7 +164,7 @@ public class AppointmentWrapper {
         this.docFirstName = docFirstName;
         this.docLastName = docLastName;
 
-        this.status = status.name();
+       // this.status = status.name();
         this.followUpReminder = followUpReminder;
         this.duration = duration;
         this.compareDate = scheduleDate;
@@ -181,8 +184,6 @@ public class AppointmentWrapper {
         this.value = id;
     }
 
-
-
     @Override
     public String toString() {
         return "AppointmentWrapper{" +
@@ -190,10 +191,41 @@ public class AppointmentWrapper {
                 ", name='" + title + '\'' +
                 ", notes='" + notes + '\'' +
                 ", reason='" + reason + '\'' +
-                ", status='" + status + '\'' +
                 ", type='" + type + '\'' +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public String getFollowUpDateResponse() {
+        return followUpDateResponse;
+    }
+
+    public void setFollowUpDateResponse(String followUpDateResponse) {
+        this.followUpDateResponse = followUpDateResponse;
+    }
+
+    public Date getFollowUpDate() {
+        return followUpDate;
+    }
+
+    public void setFollowUpDate(Date followUpDate) {
+        this.followUpDate = followUpDate;
+    }
+
+    public Long getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Long statusId) {
+        this.statusId = statusId;
+    }
+
+    public Date getDateSchedule() {
+        return dateSchedule;
+    }
+
+    public void setDateSchedule(Date dateSchedule) {
+        this.dateSchedule = dateSchedule;
     }
 
     public String getLabel() {
@@ -384,13 +416,6 @@ public class AppointmentWrapper {
         this.branchName = branchName;
     }
 
-    public String getFollowUpDate() {
-        return followUpDate;
-    }
-
-    public void setFollowUpDate(String followUpDate) {
-        this.followUpDate = followUpDate;
-    }
 
     public String getGender() {
         return gender;
@@ -562,19 +587,19 @@ public class AppointmentWrapper {
         this.recurringPeriod = recurringPeriod;
     }
 
-    public String getFirstAppointment() {
+    public Date getFirstAppointment() {
         return firstAppointment;
     }
 
-    public void setFirstAppointment(String firstAppointment) {
+    public void setFirstAppointment(Date firstAppointment) {
         this.firstAppointment = firstAppointment;
     }
 
-    public String getLastAppointment() {
+    public Date getLastAppointment() {
         return lastAppointment;
     }
 
-    public void setLastAppointment(String lastAppointment) {
+    public void setLastAppointment(Date lastAppointment) {
         this.lastAppointment = lastAppointment;
     }
 

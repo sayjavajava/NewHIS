@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -519,6 +520,71 @@ public class AppointmentAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @ApiOperation(httpMethod = "PUT", value = "Update Appointment ",
+            notes = "This method will Update Appointment",
+            produces = "application/json", nickname = "Update Appointment",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Appointment successfully updated", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/update/room/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateAppointmentRoom(HttpServletRequest request,
+                                                   @PathVariable("id") long id,
+                                                   @RequestParam(value = "status") String currentStatus) {
+
+        logger.info("update Appointment API called...");
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("appointment.update.error"));
+        response.setResponseCode(ResponseEnum.APPT_UPDATE_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            Appointment alreadyExistAppointment = appointmentService.findById(id);
+            if (HISCoreUtil.isValidObject(alreadyExistAppointment)) {
+                logger.info("Appointment founded...");
+                String savedAppointment = appointmentService.updateAppointmentRoom(currentStatus, alreadyExistAppointment);
+                if (savedAppointment.equalsIgnoreCase("success")) {
+                    logger.info("Appointment Updated...");
+                    response.setResponseData(null);
+                    response.setResponseMessage(messageBundle.getString("appointment.update.success"));
+                    response.setResponseCode(ResponseEnum.APPT_UPDATE_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("Appointment updated successfully...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else if (savedAppointment.equalsIgnoreCase("already")) {
+                    response.setResponseMessage(messageBundle.getString("appointment.already.exist"));
+                    response.setResponseCode(ResponseEnum.APPT_ALREADY_EXISTS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("Appointment Already Exists...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+                logger.info("Appointment not found...");
+                response.setResponseMessage(messageBundle.getString("appointment.not-found"));
+                response.setResponseCode(ResponseEnum.APPT_NOT_FOUND_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Appointment not updated...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+        } catch (Exception ex) {
+            logger.error("Update Appointment Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
    /* @ApiOperation(httpMethod = "DELETE", value = "Delete Appointment ",
             notes = "This method will Delete Appointment on base of id",
             produces = "application/json", nickname = "Appointment Delete ",

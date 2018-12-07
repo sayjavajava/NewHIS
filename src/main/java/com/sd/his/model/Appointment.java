@@ -53,10 +53,10 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "COLOR")
     private String color;
 
-    @Enumerated(EnumType.STRING)
+    /*@Enumerated(EnumType.STRING)
     @Column(name = "STATUS")
     private AppointmentStatusTypeEnum status;
-
+*/
     @ManyToOne
     @JoinColumn(name = "PATIENT_ID")
     private Patient patient;
@@ -128,6 +128,19 @@ public class Appointment extends BaseEntity implements Serializable {
     private Date lastAppointmentOn;
 
 
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity=Status.class)
+    @JoinColumn(name = "STATUS_ID")
+    private Status status;
+
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public MedicalService getMedicalService() {
         return medicalService;
     }
@@ -192,13 +205,13 @@ public class Appointment extends BaseEntity implements Serializable {
         this.color = color;
     }
 
-    public AppointmentStatusTypeEnum getStatus() {
+   /* public AppointmentStatusTypeEnum getStatus() {
         return status;
     }
 
     public void setStatus(AppointmentStatusTypeEnum status) {
         this.status = status;
-    }
+    }*/
 
     public String getType() {
         return type;

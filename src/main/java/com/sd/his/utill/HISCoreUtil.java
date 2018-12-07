@@ -150,6 +150,21 @@ public class HISCoreUtil {
         }
         return date;
     }
+  public static LocalDateTime convertToLocalDateTimeViaSqlTimestamp(Date dateToConvert) {
+        if(dateToConvert !=null){
+        return new java.sql.Timestamp(
+                dateToConvert.getTime()).toLocalDateTime();
+        }
+        else{
+        return null;
+        }
+    }
+    public static Date convertToDateViaLocalDateTime(LocalDateTime dateToConvert) {
+        Date dateFromLocalDateTime =null;
+        if(dateToConvert !=null)
+            dateFromLocalDateTime = java.sql.Timestamp.valueOf(dateToConvert);
+        return dateFromLocalDateTime;
+    }
 
     public static Date convertToDateWithTime(String strDate, String formateDate) {
         Date date = null;
@@ -298,7 +313,18 @@ public class HISCoreUtil {
         System.out.println(formatter.format(time));
         return  formatter.format(time);
     }
+    public static LocalDate convertDateToLocalDate(Date date) {
+        Instant instant = Instant.ofEpochMilli(date.getTime());
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+                .toLocalDate();
+    }
 
+    public static Date convertLocalDateToDate(LocalDate dateToConvert) {
+        if (dateToConvert != null) {
+            return java.sql.Date.valueOf(dateToConvert);
+        } else
+            return null;
+    }
     public static Date convertToAPPDate(String str) {
         Date date = null;
         if (str != null) {
