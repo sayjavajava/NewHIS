@@ -13,6 +13,14 @@ public class PatientInvoicePayment extends BaseEntity implements Serializable {
     @Column(name = "PAYMENT_AMOUNT")
     private Double paymentAmount;
 
+// -----------------------------------------
+    @Column(name = "DISCOUNT_AMOUNT")
+    private Double discountAmount;
+
+    @Column(name = "ADVANCE_AMOUNT")
+    private Double advanceAmount;
+// -----------------------------------------
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PAYMENT_ID", nullable = false)
     private Payment payment;
@@ -57,5 +65,22 @@ public class PatientInvoicePayment extends BaseEntity implements Serializable {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+
+    public Double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public Double getAdvanceAmount() {
+        return advanceAmount;
+    }
+
+    public void setAdvanceAmount(Double advanceAmount) {
+        this.advanceAmount = advanceAmount;
     }
 }

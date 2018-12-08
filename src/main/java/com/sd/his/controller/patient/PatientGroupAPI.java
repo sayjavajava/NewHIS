@@ -3,6 +3,7 @@ package com.sd.his.controller.patient;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.service.PatientGroupService;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.CountryWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.PatientGroupWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -284,7 +285,7 @@ public class PatientGroupAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            if (patientGroupWrapper.getName() == "") {
+            if (patientGroupWrapper.getName().trim().equals("")) {
                 response.setResponseMessage(messageBundle.getString("patient.group.save.name.required"));
                 response.setResponseCode(ResponseEnum.PATIENT_GROUP_SAVE_ERROR.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());

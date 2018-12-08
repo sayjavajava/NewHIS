@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,12 +36,36 @@ public class ProblemService {
     @Autowired
     private PatientRepository patientRepository;
 
+    @Autowired
+    private OrganizationService organizationService;
+
     public void savePatientProblem(ProblemWrapper problemWrapper) throws Exception {
+
+
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String prescribedDate="";
+        Date dte=new Date();
+        String prescribedStartedDate="";
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String systemtimeFormat=dbOrganization.getTimeFormat();
+        String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        String standardFormatDateTime=systemDateFormat+" "+systemtimeFormat;
+        System.out.println("Time"+currentTime);
+        dte=problemWrapper.getDatePrescribedDate();
+        String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+        Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+
         Problem problem = new Problem(problemWrapper);
         Appointment appointment = null;
+
         Patient patient = null;
         ICDVersion icdVersion = null;
         ICDCode icdCode = null;
+
+
+
 
         if (problemWrapper.getAppointmentId() > 0) {
             appointment = this.appointmentRepository.findOne(problemWrapper.getAppointmentId());
@@ -69,7 +94,7 @@ public class ProblemService {
                 problem.setIcdCode(icdCode);
             }
         }
-
+        problem.setDateDiagnosis(scheduledDate);
         this.problemRepository.save(problem);
     }
 
@@ -81,7 +106,26 @@ public class ProblemService {
     }
 
     public void updatePatientProblem(ProblemWrapper problemWrapper) throws Exception {
+
         Problem problem = this.problemRepository.findOne(problemWrapper.getId());
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String prescribedDate="";
+        Date dte=new Date();
+        String prescribedStartedDate="";
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String systemtimeFormat=dbOrganization.getTimeFormat();
+        String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        String standardFormatDateTime=systemDateFormat+" "+systemtimeFormat;
+        System.out.println("Time"+currentTime);
+        dte=problemWrapper.getDatePrescribedDate();
+        String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+        Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+     //   String readDate=HISCoreUtil.convertDateToTimeZone(dte,HISConstants.DATE_FORMAT_APP,Zone);
+
+     //   Date scheduledDate=HISCoreUtil.convertToDateNew(readDate);
+
         if (problem != null) {
 
             new Problem(problem, problemWrapper);
@@ -118,7 +162,7 @@ public class ProblemService {
                     problem.setIcdCode(icdCode);
                 }
             }
-
+            problem.setDateDiagnosis(scheduledDate);
             this.problemRepository.save(problem);
 
         }

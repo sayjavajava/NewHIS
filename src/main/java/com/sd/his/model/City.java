@@ -33,6 +33,10 @@ public class City extends BaseEntity {
     @JsonBackReference
     private List<Branch> branches;
 
+    @OneToMany(targetEntity = Patient.class, mappedBy = "city")
+    @JsonBackReference
+    private List<Patient> patients;
+
     public City() {
     }
 

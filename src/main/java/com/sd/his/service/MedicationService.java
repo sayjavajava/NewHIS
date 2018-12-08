@@ -133,8 +133,6 @@ public class MedicationService {
 
     public MedicationWrapper getMedication(long medicationId) {
         return this.medicationRepository.getMedicationById(medicationId);
-        ///
-
     }
 
     public List<MedicationWrapper> getPaginatedMedications(Pageable pageable, Long patientId) {

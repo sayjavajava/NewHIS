@@ -23,8 +23,13 @@ public class CountryService {
     public List<CountryWrapper> getAllCountries() {
         return this.countryRepository.getAllCountries();
     }
+
     public Country getCountryById(Long id) {
         return this.countryRepository.findOne(id);
+    }
+
+    public Country getCountryByName(String name) {
+        return this.countryRepository.findByName("%"+name+"%");
     }
 
 

@@ -28,8 +28,8 @@ public class StateService {
     }
 
 
-    public List<State> getAllStatesById(long countryId){
-        return this.stateRepository.getAllStatesByCountryById(countryId);
+    public State getStateById(long stateId){
+        return this.stateRepository.getOne(stateId);
     }
 
 }

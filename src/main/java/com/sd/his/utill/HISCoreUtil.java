@@ -354,22 +354,60 @@ public class HISCoreUtil {
         return date;
     }
 
+
+    public static Date convertToDateNew(String str) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
     public static Date  convertStringDateObject(String dateinString) {
+
         Date dte = new Date();
         if (dateinString != null) {
+
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 dte = formatter.parse(dateinString);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+
+
         }
         return dte;
     }
 
-    public static File multipartToFile(MultipartFile multipart) throws IllegalStateException, IOException {
-        File convFile = new File( multipart.getOriginalFilename());
-        multipart.transferTo(convFile);
-        return convFile;
+    public static Date convertToDateDetail(String str) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
     }
+
+    public static String convertDateToStringUpload(Date date) {
+        String formatedDate = null;
+        if (date != null) {
+            SimpleDateFormat form = new SimpleDateFormat("ddMMyyyyHHss");
+            formatedDate = form.format(date);
+        }
+        return formatedDate;
+    }
+
+
 }

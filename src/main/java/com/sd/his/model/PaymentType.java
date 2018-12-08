@@ -1,5 +1,6 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.NaturalId;
 
@@ -50,6 +51,16 @@ public class PaymentType extends BaseEntity implements Serializable {
 
     @Column(name="payment_servicecharges")
     private Double serviceCharges;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "paymentType")
+    private List<PatientRefund> patientRefunds;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "paymentType")
+    private List<StaffPayment> staffPayment;
+
 
     public Double getServiceCharges() {
         return serviceCharges;
@@ -159,4 +170,19 @@ public class PaymentType extends BaseEntity implements Serializable {
         this.bankGlCharges = bankGlCharges;
     }
 
+    public List<PatientRefund> getPatientRefunds() {
+        return patientRefunds;
+    }
+
+    public void setPatientRefunds(List<PatientRefund> patientRefunds) {
+        this.patientRefunds = patientRefunds;
+    }
+
+    public List<StaffPayment> getStaffPayment() {
+        return staffPayment;
+    }
+
+    public void setStaffPayment(List<StaffPayment> staffPayment) {
+        this.staffPayment = staffPayment;
+    }
 }

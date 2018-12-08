@@ -147,6 +147,11 @@ public class MedicationWrapper extends BaseWrapper {
         this.pharmacyNote = medication.getPharmacyNote();
         this.note = medication.getNote();
         this.orderStatus = medication.getOrderStatus();
+        this.duration=medication.getDuration();
+        this.frequency=medication.getFrequency();
+        this.durationPeriod=medication.getDurationPeriod();
+        this.route=medication.getRoute();
+        this.strengths=medication.getStrengths();
     }
 
     public MedicationWrapper(Long id, String createdOn, String updatedOn) {

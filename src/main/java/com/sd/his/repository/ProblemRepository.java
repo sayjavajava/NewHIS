@@ -22,6 +22,7 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
             "problem.icdCode.id,problem.icdCode.code," +
             "problem.icdVersion.id,problem.icdVersion.name," +
             "problem.dateDiagnosis,problem.note,problem.status," +
+            "problem.info," +
             "problem.patient.id) " +
             "FROM Problem problem WHERE problem.patient.id=:patientId order by problem.createdOn desc ")
     Page<ProblemWrapper> findAllByPatient_idOrderByCreatedOnDesc(Pageable page, @Param("patientId") Long patientId);
@@ -31,6 +32,7 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
             "problem.icdCode.id,problem.icdCode.code," +
             "problem.icdVersion.id,problem.icdVersion.name," +
             "problem.dateDiagnosis,problem.note,problem.status," +
+            "problem.info," +
             "problem.patient.id) " +
             "FROM Problem problem WHERE problem.patient.id=:patientId AND problem.status=:status")
     Page<ProblemWrapper> findAllByStatusAndPatient_id(Pageable page, @Param("status") String status, @Param("patientId") Long patientId);
@@ -40,6 +42,7 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
             "problem.icdCode.id,problem.icdCode.code," +
             "problem.icdVersion.id,problem.icdVersion.name," +
             "problem.dateDiagnosis,problem.note,problem.status," +
+            "problem.info," +
             "problem.patient.id) " +
             "FROM Problem problem WHERE problem.id=:id ")
     ProblemWrapper getProblemById(@Param("id") long id);

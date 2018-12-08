@@ -16,9 +16,9 @@ public class PatientInvoiceRequestWrapper {
     Double discountRate;
     String invoiceId ;
 
-    Patient patient;
+ //   Patient patient;
     String patientId;
-    Appointment appointment;
+ //   Appointment appointment;
 
     String appointmentId;
 
@@ -95,21 +95,21 @@ public class PatientInvoiceRequestWrapper {
         this.invoiceId = invoiceId;
     }
 
-    public Patient getPatient() {
+/*    public Patient getPatient() {
         return patient;
     }
 
     public void setPatient(Patient patient) {
         this.patient = patient;
-    }
+    }*/
 
-    public Appointment getAppointment() {
+/*    public Appointment getAppointment() {
         return appointment;
     }
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
-    }
+    }*/
 
     public String getPatientId() {
         return patientId;

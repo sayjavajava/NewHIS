@@ -10,12 +10,25 @@ public class InvoiceResponseWrapper {
 
     Double paidAmount;
     Double invoiceAmount;
+    Double taxAmount;
+    Double discountAmount;
     String status;
 
+    private boolean selected = false;
+    private boolean useAdvancedBal = false;
     private Double balance;
     private Double totalBill;
     private Double totalPaid;
-    private Double advanceBalance;
+    private Double discountOnPayment =0.00;
+    private Double advanceBalance = 0.00;
+    private Double appliedAmount = 0.00;
+    private Double dueAmount = 0.00;
+
+    private Double refundAmount = 0.00;
+
+    private Double totalInvoiceAmount;
+
+    public InvoiceResponseWrapper() {    }
 
     public InvoiceResponseWrapper(Invoice invoice) {
         this.id = invoice.getId();
@@ -24,6 +37,11 @@ public class InvoiceResponseWrapper {
         this.paidAmount = invoice.getPaidAmount();
         this.invoiceAmount = invoice.getInvoiceAmount();
         this.status = invoice.getStatus();
+        this.taxAmount = invoice.getTaxAmount();
+        this.discountAmount = invoice.getDiscountAmount();
+        this.totalInvoiceAmount = invoice.getTotalInvoiceAmount();
+        this.dueAmount = invoice.getTotalInvoiceAmount() - invoice.getPaidAmount();
+        this.refundAmount = invoice.getPatientRefunds().stream().filter(i ->i.getRefundType().equalsIgnoreCase("Invoice")).mapToDouble(i-> i.getRefundAmount()).sum();
     }
 
     public InvoiceResponseWrapper(Double balance, Double totalBill, Double totalPaid, Double advBalance){
@@ -32,6 +50,7 @@ public class InvoiceResponseWrapper {
         this.totalPaid = totalPaid;
         this.advanceBalance = advBalance;
     }
+
 
     public long getId() {
         return id;
@@ -111,5 +130,77 @@ public class InvoiceResponseWrapper {
 
     public void setAdvanceBalance(Double advanceBalance) {
         this.advanceBalance = advanceBalance;
+    }
+
+    public Double getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(Double taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
+    public Double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public Double getTotalInvoiceAmount() {
+        return totalInvoiceAmount;
+    }
+
+    public void setTotalInvoiceAmount(Double totalInvoiceAmount) {
+        this.totalInvoiceAmount = totalInvoiceAmount;
+    }
+
+    public Double getAppliedAmount() {
+        return appliedAmount;
+    }
+
+    public void setAppliedAmount(Double appliedAmount) {
+        this.appliedAmount = appliedAmount;
+    }
+
+    public Double getDiscountOnPayment() {
+        return discountOnPayment;
+    }
+
+    public void setDiscountOnPayment(Double discountOnPayment) {
+        this.discountOnPayment = discountOnPayment;
+    }
+
+    public Double getDueAmount() {
+        return dueAmount;
+    }
+
+    public void setDueAmount(Double dueAmount) {
+        this.dueAmount = dueAmount;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public boolean isUseAdvancedBal() {
+        return useAdvancedBal;
+    }
+
+    public void setUseAdvancedBal(boolean useAdvancedBal) {
+        this.useAdvancedBal = useAdvancedBal;
+    }
+
+    public Double getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(Double refundAmount) {
+        this.refundAmount = refundAmount;
     }
 }

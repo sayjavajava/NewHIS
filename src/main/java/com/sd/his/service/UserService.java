@@ -784,7 +784,57 @@ public class UserService implements UserDetailsService {
 
         return imgURL;
     }
+
+
+
+    public String saveImageByOrder(byte[] byteArary,
+                            String directoryPath,
+                            String fullThumbName,
+                            String fullImgName,
+                            String fullPathAndThumbNailGraphicName) throws Exception {
+
+        String imgURL = null;
+
+        InputStream is = new ByteArrayInputStream(byteArary);
+        boolean isSaved = false;
+        isSaved = awsService.uploadImageByUserId(is,
+                directoryPath,
+                fullThumbName,
+                fullImgName);
+        if (isSaved) {
+            String dbUrl=directoryPath+fullImgName;
+            imgURL = this.s3KeyGen.getImagePublicURLOrder(dbUrl);
+        }
+
+        return imgURL;
+    }
+
+
+
+    public String saveOthersByOrder(byte[] byteArary,
+                                   String directoryPath,
+                                   String fullThumbName,
+                                   String fullImgName,
+                                   String fullPathAndThumbNailGraphicName) throws Exception {
+
+        String imgURL = null;
+
+        InputStream is = new ByteArrayInputStream(byteArary);
+        boolean isSaved = false;
+        isSaved = awsService.uploadImageByUserId(is,
+                directoryPath,
+                fullThumbName,
+                fullImgName);
+        if (isSaved) {
+            imgURL = this.s3KeyGen.getImagePublicURLOrder(fullPathAndThumbNailGraphicName);
+        }
+
+        return imgURL;
+    }
 //
+
+
+
 //    public boolean isUserNameAlreadyExists(String userName) {
 //        List<User> users = this.userRepository.findAllByUsername(userName);
 //        if (!HISCoreUtil.isListEmpty(users))

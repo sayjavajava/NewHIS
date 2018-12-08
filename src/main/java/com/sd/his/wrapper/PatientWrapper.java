@@ -202,6 +202,7 @@ public class PatientWrapper {
     public void setPrimaryDoctorLastName(String primaryDoctorLastName) {
         this.primaryDoctorLastName = primaryDoctorLastName;
     }
+
     public List<AppointmentWrapper> getFutureAppointments() {
         return futureAppointments;
     }

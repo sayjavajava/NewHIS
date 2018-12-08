@@ -147,6 +147,10 @@ public class Patient extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "patient")
     private List<PatientInvoicePayment> patientInvoicePayments;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "patient")
+    private List<PatientRefund> patientRefunds;
+
 
     @JsonIgnore
     @OneToMany(targetEntity = Problem.class, mappedBy = "patient")
@@ -542,6 +546,14 @@ public class Patient extends BaseEntity implements Serializable {
         this.cityName = cityName;
     }
 
+    public List<PatientRefund> getPatientRefunds() {
+        return patientRefunds;
+    }
+
+    public void setPatientRefunds(List<PatientRefund> patientRefunds) {
+        this.patientRefunds = patientRefunds;
+    }
+
     public PatientGroup getPatientGroup() {
         return patientGroup;
     }
@@ -549,4 +561,5 @@ public class Patient extends BaseEntity implements Serializable {
     public void setPatientGroup(PatientGroup patientGroup) {
         this.patientGroup = patientGroup;
     }
+
 }

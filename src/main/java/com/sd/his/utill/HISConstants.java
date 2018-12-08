@@ -32,7 +32,7 @@ public class HISConstants {
     public final static String DATE_FORMATE_THREE = "yyyy-MM-dd";
     public final static String DATE_FORMATE_YYY_MM_dd = "yyyy-MM-dd";
     public final static String DATE_FORMATE_YYY_MM_DD_T_HH_MM ="yyyy-MM-dd'T'HH:mm";
-    public final static  String DATE_FORMAT_APP="yyyy-MM-dd hh:mm:ss";
+    public final static  String DATE_FORMAT_APP="yyyy-M-dd HH:mm:ss";
 
     public final static String S3_USER_DIRECTORY = "users";
     public final static String S3_USER_PROFILE_DIRECTORY = "profile";
@@ -55,4 +55,7 @@ public class HISConstants {
     public final static String S3_USER_DOCUMENT_THUMBNAIL_GRAPHIC_NAME = "patient-document-thumbnail-image.jpg";
     public final static String S3_USER_DOCUMENT_GRAPHIC_NAME = "patient-document-image.jpg";
     /*document of patient*/
+    public final static String S3_USER_ORDER_DIRECTORY_PATH = "users/patient/history/order/";
+    public final static String S3_USER_ORDER_GRAPHIC_NAME = "patient-order-image.jpg";
+    public final static String S3_USER_ORDER_THUMBNAIL_GRAPHIC_NAME = "patient-order-thumbnail-image.jpg";
 }

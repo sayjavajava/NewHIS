@@ -25,7 +25,7 @@ public class Invoice extends BaseEntity implements Serializable
     private Patient patient;
 
     @OneToOne
-    @JoinColumn(name="APPOINTMENT_ID", unique= true)
+    @JoinColumn(name="APPOINTMENT_ID")
     private Appointment appointment;
 
     @JsonIgnore
@@ -35,11 +35,24 @@ public class Invoice extends BaseEntity implements Serializable
     @OneToMany(mappedBy = "invoice")
     private List<PatientInvoicePayment> patientInvoicePayments;
 
+    @OneToMany(mappedBy = "paymentType")
+    private List<PatientRefund> patientRefunds;
+
+    @Column(name = "TAX_AMOUNT")
+    private  Double taxAmount;
+
+    @Column(name = "DISCOUNT_AMOUNT")
+    private  Double discountAmount;
+
     @Column(name = "PAID_AMOUNT")
     private  Double paidAmount;
 
     @Column(name = "INVOICE_AMOUNT")
     private Double invoiceAmount;
+
+
+    @Column(name = "TOTAL_INVOICE_AMOUNT")
+    private Double totalInvoiceAmount;
 
 
     @Column(name = "STATUS")
@@ -112,11 +125,45 @@ public class Invoice extends BaseEntity implements Serializable
         this.patientInvoicePayments = patientInvoicePayments;
     }
 
+    public Double getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(Double taxAmount) {
+        this.taxAmount = taxAmount;
+    }
+
+    public Double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+
     public Boolean getCompleted() {
         return completed;
     }
 
     public void setCompleted(Boolean completed) {
         this.completed = completed;
+    }
+
+
+    public Double getTotalInvoiceAmount() {
+        return totalInvoiceAmount;
+    }
+
+    public void setTotalInvoiceAmount(Double totalInvoiceAmount) {
+        this.totalInvoiceAmount = totalInvoiceAmount;
+    }
+
+    public List<PatientRefund> getPatientRefunds() {
+        return patientRefunds;
+    }
+
+    public void setPatientRefunds(List<PatientRefund> patientRefunds) {
+        this.patientRefunds = patientRefunds;
     }
 }

@@ -1,6 +1,6 @@
 package com.sd.his.repository;
 
-
+import com.amazonaws.services.opsworks.model.App;
 import com.sd.his.model.Appointment;
 import com.sd.his.model.Branch;
 import com.sd.his.model.Doctor;

@@ -8,6 +8,7 @@ import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.ServiceComission;
+import com.sd.his.wrapper.request.DoctorPaymentRequestWrapper;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
@@ -74,6 +75,12 @@ public class StaffService {
     NurseDepartmentRepository nurseDepartmentRepository;
     @Autowired
     DepartmentRepository departmentRepository;
+
+    @Autowired
+    StaffPaymentRepository staffPaymentRepository;
+
+    @Autowired
+    PaymentTypeRepository paymentTypeRepository;
 
 
     List<StaffWrapper> finalStaffList = new ArrayList<>();
@@ -907,7 +914,7 @@ public class StaffService {
     public List<StaffResponseWrapper> findByRole(String role) {
         List<StaffResponseWrapper> staffRespWrapper = new ArrayList<>();
         List<User> userList = userRepository.findAllByUserRoles_role_name(role);
-        StaffResponseWrapper staffWraper = new StaffResponseWrapper();
+
         switch (role) {
             case "DOCTOR":
                 List<Doctor> doctorList = doctorRepository.findAllByUserIn(userList);
@@ -922,6 +929,27 @@ public class StaffService {
         }
         return staffRespWrapper;
     }
+
+// Added By : Naeem Saeed
+    public List<StaffResponseWrapper> findAllByRole(String role) {
+        List<StaffResponseWrapper> staffRespWrapper = new ArrayList<>();
+        List<User> userList = userRepository.findAllByUserRoles_role_name(role);
+        switch (role) {
+            case "DOCTOR":
+                List<Doctor> doctorList = doctorRepository.findAllByUserIn(userList);
+                for (Doctor doctor : doctorList) {
+                    StaffResponseWrapper staffRespWrapper1 = new StaffResponseWrapper(doctor.getUser().getId(), doctor.getProfileId(),
+                            doctor.getEmail(), doctor.getUser().getUsername(), doctor.getFirstName(), doctor.getLastName(), doctor.getId(), doctor.getBalance());
+                    staffRespWrapper.add(staffRespWrapper1);
+                }
+                break;
+            default:
+        }
+        return staffRespWrapper;
+    }
+
+
+
 
     public List<StaffWrapper> searchByNameOrRole(String name, String userType, int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
@@ -948,5 +976,34 @@ public class StaffService {
 
     }
 
+
+
+    // Save Doctor Payment
+    // Added By : Naeem Saeed
+    @Transactional
+    public void saveDoctorPayment(DoctorPaymentRequestWrapper paymentRequestWrapper)
+    {
+        double remainingBalance = 0.00;
+
+        Doctor doctor = doctorRepository.findOne(paymentRequestWrapper.getDoctorId());
+        remainingBalance = doctor.getBalance() - paymentRequestWrapper.getAmount();
+        doctor.setBalance(remainingBalance);
+        doctorRepository.save(doctor);
+
+        StaffPayment staffPayment = new StaffPayment();
+        staffPayment.setCreatedOn(new Date());
+        staffPayment.setUpdatedOn(new Date());
+        staffPayment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));  // To Do  (handle this from front end)
+        staffPayment.setPaymentAmount(paymentRequestWrapper.getAmount());
+        staffPayment.setDoctor(doctor);
+        staffPayment.setPaymentType(paymentTypeRepository.findOne(paymentRequestWrapper.getPaymentTypeId()));
+        staffPaymentRepository.save(staffPayment);
+    }
+
+    // Get Doctor ALL Payment List
+    // Added By : Naeem Saeed
+    public List<DoctorPaymentRequestWrapper> getDocPaymentList(){
+        return staffPaymentRepository.findAllList();
+    }
 
 }

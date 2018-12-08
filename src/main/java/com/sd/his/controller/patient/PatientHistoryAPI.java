@@ -108,7 +108,7 @@ public class PatientHistoryAPI {
                 logger.error("savePatientProblem API - Required code ?.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            if (problemWrapper.getDateDiagnosis() == null || problemWrapper.getDateDiagnosis().isEmpty()) {
+            if (problemWrapper.getDatePrescribedDate() == null) {
                 response.setResponseMessage(messageBundle.getString("patient.problem.save.diagnosis.required"));
                 response.setResponseCode(ResponseEnum.PATIENT_PROBLEM_SAVE_VERSION_REQUIRED.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());

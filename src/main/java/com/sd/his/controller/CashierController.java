@@ -104,6 +104,8 @@ public class CashierController {
             AppointmentWrapper dbAppointment = this.appointmentService.findAppointmentById(invoice.getAppointment().getId());    // this.appointmentService.findById(id);
             dbAppointment.setReceivedAmount(invoice.getPaidAmount());
             dbAppointment.setPatientAdvanceDeposit(invoice.getPatient().getAdvanceBalance());
+            // invoice.getPatientRefunds().stream().filter(i ->i.getRefundType()=="Invoice").mapToDouble(i-> i.getRefundAmount()).sum()
+            dbAppointment.setRefundAmount(invoice.getPatientRefunds().stream().filter(i ->i.getRefundType().equalsIgnoreCase("Invoice")).mapToDouble(i -> i.getRefundAmount()).sum());
 
             if (HISCoreUtil.isValidObject(dbAppointment)) {
                 response.setResponseData(dbAppointment);
@@ -140,7 +142,7 @@ public class CashierController {
             response = GenericAPIResponse.class, protocols = "https")
 
     @RequestMapping(value = "/savePayment", method = RequestMethod.POST)
-    public ResponseEntity<?> savePayment(HttpServletRequest request, @RequestBody PaymentRequestWrapper paymentRequestWrapper) {
+    public ResponseEntity<?> savePayment(@RequestBody PaymentRequestWrapper paymentRequestWrapper) {
 
         long date = System.currentTimeMillis();
 
@@ -152,7 +154,7 @@ public class CashierController {
 
         try
         {
-            if(paymentRequestWrapper.getPaidAmount()>0 || (paymentRequestWrapper.getUseAdvancedBal() && paymentRequestWrapper.getPatientAdvanceDeposit() > 0)){
+            if(paymentRequestWrapper.getPaidAmount()>0 || (paymentRequestWrapper.getUseAdvancedBal() && paymentRequestWrapper.getUsedAdvanceDeposit() > 0)){
                 patientInvoiceService.savePayment(paymentRequestWrapper);
             }
 
