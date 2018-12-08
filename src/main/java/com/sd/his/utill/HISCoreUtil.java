@@ -370,18 +370,14 @@ public class HISCoreUtil {
     }
 
     public static Date  convertStringDateObject(String dateinString) {
-
         Date dte = new Date();
         if (dateinString != null) {
-
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 dte = formatter.parse(dateinString);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-
-
         }
         return dte;
     }
@@ -409,5 +405,10 @@ public class HISCoreUtil {
         return formatedDate;
     }
 
+    public static File multipartToFile(MultipartFile multipart) throws IllegalStateException, IOException {
+        File convFile = new File( multipart.getOriginalFilename());
+        multipart.transferTo(convFile);
+        return convFile;
+    }
 
 }
