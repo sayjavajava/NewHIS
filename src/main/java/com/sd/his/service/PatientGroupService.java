@@ -19,7 +19,6 @@ public class PatientGroupService {
     @Autowired
     private PatientGroupRepository patientGroupRepository;
 
-
     public boolean isPatientGroupByNameExist(String name) {
         return this.patientGroupRepository.getPatientGroupByName(name);
     }
@@ -29,6 +28,10 @@ public class PatientGroupService {
         PatientGroup patientGroup = new PatientGroup(patientGroupWrapper);
         this.patientGroupRepository.save(patientGroup);
         return "";
+    }
+
+    public List<PatientGroupWrapper> getAllPatientGroups() {
+        return this.patientGroupRepository.findAllGroups();
     }
 
     public List<PatientGroupWrapper> getAllPaginatedPatientGroup(Pageable pageable) {

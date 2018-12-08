@@ -35,6 +35,52 @@ public class PatientGroupAPI {
     @Autowired
     private PatientGroupService patientGroupService;
 
+    @ApiOperation(httpMethod = "GET", value = "All Patient Groups",
+            notes = "This method will return all patient groups",
+            produces = "application/json", nickname = "Get All Patient Groups",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All patient groups found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "get/all", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllPatientGroups(HttpServletRequest request) {
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+
+            List<PatientGroupWrapper> patientGroupWrapper = this.patientGroupService.getAllPatientGroups();
+
+            if (HISCoreUtil.isValidObject(patientGroupWrapper)) {
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("data", patientGroupWrapper);
+                response.setResponseData(returnValues);
+                response.setResponseMessage(messageBundle.getString("patient.group.get.success"));
+                response.setResponseCode(ResponseEnum.PATIENT_GROUP_GET_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("All Patients groups found successfully...");
+            } else {
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("patient.group.deleted"));
+                response.setResponseCode(ResponseEnum.PATIENT_GROUP_GET_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                logger.info("All Patients groups Not Found Or deleted by other user before your click.");
+            }
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            logger.error("getAllPatientGroups Exception", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @ApiOperation(httpMethod = "POST", value = "Save Patient Group",
             notes = "This method will Save  Patient Group",
