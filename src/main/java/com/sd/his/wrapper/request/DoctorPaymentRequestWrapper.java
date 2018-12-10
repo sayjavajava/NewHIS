@@ -2,6 +2,8 @@ package com.sd.his.wrapper.request;
 
 import com.sd.his.model.StaffPayment;
 
+import java.util.Date;
+
 public class DoctorPaymentRequestWrapper {
     private String paymentId;
     private String date;
@@ -10,6 +12,8 @@ public class DoctorPaymentRequestWrapper {
     private long paymentTypeId;
     private String paymentTypeTitle;
     private Double amount;
+
+    private Date createdOn;
 
 
     public DoctorPaymentRequestWrapper()
@@ -24,6 +28,7 @@ public class DoctorPaymentRequestWrapper {
         this.doctorName = staffPayment.getDoctor().getFirstName() + " " + staffPayment.getDoctor().getLastName();
         this.paymentTypeTitle = staffPayment.getPaymentType().getPaymentTitle();
         this.amount = staffPayment.getPaymentAmount();
+        this.createdOn = staffPayment.getCreatedOn();
     }
 
 
@@ -81,5 +86,13 @@ public class DoctorPaymentRequestWrapper {
 
     public void setPaymentTypeTitle(String paymentTypeTitle) {
         this.paymentTypeTitle = paymentTypeTitle;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 }
