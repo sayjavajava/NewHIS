@@ -3,6 +3,7 @@ package com.sd.his.controller.setting;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.ICDCodeVersion;
 import com.sd.his.model.ICDVersion;
+import com.sd.his.service.BulkImportService;
 import com.sd.his.service.ICDService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.ICDCodeVersionWrapper;
@@ -58,10 +59,10 @@ public class ICDAPI {
 
     @Autowired
     private ICDService icdService;
+    @Autowired
+    private BulkImportService bulkImportService;
     private final Logger logger = LoggerFactory.getLogger(ICDAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
-    @Value("${spring.http.multipart.location}")
-    private String tmpFilePath;
 
     @ApiOperation(httpMethod = "GET", value = "versions",
             notes = "This method will return   Versions ",
@@ -1466,7 +1467,7 @@ public class ICDAPI {
             String fileName = dataFile.getOriginalFilename();
             File file = HISCoreUtil.multipartToFile(dataFile);
 //            int records = drugService.readExcel( dataFile );
-            int records = icdService.readExcel( this.tmpFilePath + fileName );
+            int records = bulkImportService.importIcdCodeRecords(fileName);
             if (records > 0) {
                 response.setResponseMessage(messageBundle.getString("icd.code.records.import.success"));
             } else {

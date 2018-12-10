@@ -4,6 +4,7 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Country;
 import com.sd.his.model.Drug;
 import com.sd.his.repository.CountryRepository;
+import com.sd.his.service.BulkImportService;
 import com.sd.his.service.DrugService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DrugWrapper;
@@ -39,12 +40,11 @@ public class DrugAPI {
 
     @Autowired
     private DrugService drugService;
+    @Autowired
+    private BulkImportService bulkImportService;
 
     @Autowired
     private CountryRepository countryRepository;
-
-    @Value("${spring.http.multipart.location}")
-    private String tmpFilePath;
 
     @ApiOperation(httpMethod = "GET", value = "Drug Natural Id",
             notes = "This method will return drug Natural Id",
@@ -532,7 +532,7 @@ public class DrugAPI {
         try {
             String fileName = dataFile.getOriginalFilename();
             File file = HISCoreUtil.multipartToFile(dataFile);
-            int records = drugService.readExcel( this.tmpFilePath + fileName );
+            int records = bulkImportService.importDrugRecords(fileName);
 
             if (records > 0) {
                 response.setResponseMessage(messageBundle.getString("drug.records.import.success"));

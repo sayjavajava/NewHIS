@@ -2,6 +2,7 @@ package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.LabTestSpeciman;
+import com.sd.his.service.BulkImportService;
 import com.sd.his.service.LabTestSpecimanService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -25,12 +26,12 @@ public class LabTestSpecimanController {
 
     @Autowired
     LabTestSpecimanService labTestSpecimanService;
+    @Autowired
+    BulkImportService bulkImportService;
 
     private final Logger logger = LoggerFactory.getLogger(SmsTemplateController.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
-    @Value("${spring.http.multipart.location}")
-    private String tmpFilePath;
 
     @ApiOperation(httpMethod = "GET", value = "get lab test speciman Configurations",
             notes = "This method will get lab test speciman Configurations",
@@ -106,7 +107,7 @@ public class LabTestSpecimanController {
         try {
             String fileName = dataFile.getOriginalFilename();
             File file = HISCoreUtil.multipartToFile(dataFile);
-            int records = labTestSpecimanService.readExcel( this.tmpFilePath + fileName );
+            int records = bulkImportService.importLabTestRecords(fileName);
 
             if (records > 0) {
                 response.setResponseMessage(messageBundle.getString("lab.test.records.import.success"));

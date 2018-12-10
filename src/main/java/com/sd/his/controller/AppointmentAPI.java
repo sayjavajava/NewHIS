@@ -3,6 +3,7 @@ package com.sd.his.controller;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Appointment;
 import com.sd.his.service.AppointmentService;
+import com.sd.his.service.BulkImportService;
 import com.sd.his.service.UserService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
@@ -62,9 +63,10 @@ public class AppointmentAPI {
 
     @Autowired
     AppointmentService appointmentService;
-
     @Autowired
     private UserService userService;
+    @Autowired
+    private BulkImportService bulkImportService;
 
     @Value("${spring.http.multipart.location}")
     private String tmpFilePath;
@@ -697,7 +699,7 @@ public class AppointmentAPI {
         try {
             String fileName = dataFile.getOriginalFilename();
             File file = HISCoreUtil.multipartToFile(dataFile);
-            int records = appointmentService.readExcel( this.tmpFilePath + fileName );
+            int records = bulkImportService.importAppointmentRecords(fileName);
 
             response.setResponseMessage(messageBundle.getString("appointment.records.import.success"));
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());

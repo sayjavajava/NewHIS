@@ -74,6 +74,8 @@ public class PatientAPI {
     StateService stateService;
     @Autowired
     CityService cityService;
+    @Autowired
+    private BulkImportService bulkImportService;
 
     @Value("${spring.http.multipart.location}")
     private String tmpFilePath;
@@ -924,7 +926,7 @@ public class PatientAPI {
         try {
             String fileName = dataFile.getOriginalFilename();
             File file = HISCoreUtil.multipartToFile(dataFile);
-            int records = patientService.readExcel( this.tmpFilePath + fileName );
+            int records = bulkImportService.importPatientRecords(fileName);
 
 //            File file = HISCoreUtil.multipartToFile(dataFile);
 //            int records = patientService.readExcel( dataFile );

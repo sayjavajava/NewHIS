@@ -428,85 +428,10 @@ public class AppointmentService {
         return doctorMedicalServiceRepository.findAllByDoctorAndServices();
     }
 
-  /*  public void deleteAppointment(Appointment appointment) {
+    /*
+    public void deleteAppointment(Appointment appointment) {
         appointment.setDeleted(true);
         appointmentRepository.save(appointment);
     }
-*/
-
-    public int readExcel(String dataFilePath) throws IllegalStateException, org.apache.poi.openxml4j.exceptions.InvalidFormatException, IOException, ParseException {
-        File file = new File(dataFilePath);
-        AtomicInteger records = new AtomicInteger(0);
-        Workbook workBook = WorkbookFactory.create(file);
-
-        //Read sheet inside the workbook by its Index
-        Sheet excelSheet = workBook.getSheetAt(0);
-        Appointment appointment = null;
-
-        for (Row row : excelSheet) {
-            if (row != null && row.getRowNum() > 0 && row.getCell(0) != null) {
-                if (row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null || row.getCell(3) == null || row.getCell(4) == null || row.getCell(5) == null)
-                    continue;
-
-                String time = new SimpleDateFormat("HH:mm:ss").format(row.getCell(4).getDateCellValue());
-                Appointment oldAppointment = appointmentRepository.findConflictInAppointment(row.getCell(1).getStringCellValue() + "",
-                        row.getCell(2).getStringCellValue() + "", row.getCell(3).getDateCellValue(), time );
-                if (oldAppointment != null)
-                    continue;
-                appointment = new Appointment();
-                for (int j = 0; j < row.getLastCellNum(); j++) {
-                    switch (j) {
-                        case 0:
-                            Patient patient = patientRepository.getByEMR(row.getCell(j).getStringCellValue() + "");
-                            if (patient == null) {
-                                j = row.getLastCellNum() + 1;
-                            } else {
-                                appointment.setPatient(patient);
-                            }
-                            break;
-                        case 1:
-                            Doctor doctor = doctorRepository.getByProfileId(row.getCell(j).getStringCellValue() + "");
-                            if (doctor == null) {
-                                j = row.getLastCellNum() + 1;
-                            } else {
-                                appointment.setDoctor(doctor);
-                            }
-                            break;
-                        case 2:
-                            Branch branch = branchRepository.getByBranchId(row.getCell(j).getStringCellValue() + "");
-                            if (branch == null) {
-                                j = row.getLastCellNum() + 1;
-                            } else {
-                                appointment.setBranch(branch);
-                            }
-                            break;
-                        case 3:
-                            String date = new SimpleDateFormat("yyyy-MM-dd").format(row.getCell(j).getDateCellValue());
-                            appointment.setSchdeulledDate(new SimpleDateFormat("yyyy-MM-dd").parse(date));
-                            break;
-                        case 4:
-                            appointment.setStartedOn(new SimpleDateFormat("HH:mm:ss").parse(time));
-                            break;
-                        case 5:
-                            long endTimeInMillis = (long) (new SimpleDateFormat("HH:mm:ss").parse(time).getTime() + (row.getCell(j).getNumericCellValue() * 60000));           // 1 MINUTE = 60000 MiliSeconds
-                            appointment.setEndedOn(new Date(endTimeInMillis));
-                            appointment.setDuration((int) row.getCell(j).getNumericCellValue());
-                            break;
-                        case 6:
-                            appointment.setType(row.getCell(j).getStringCellValue());
-                            break;
-                    }
-                }
-                if (appointment.getPatient() == null || appointment.getDoctor() == null || appointment.getBranch() == null) {
-                    continue;
-                } else {
-                    appointment.setAppointmentId(hisUtilService.getPrefixId(ModuleEnum.APPOINTMENT));
-                    appointmentRepository.save(appointment);
-                }
-                System.out.println();
-            }
-        }
-        workBook.close();
-        return records.get();
-    }
+    */
 }
