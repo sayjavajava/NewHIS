@@ -48,6 +48,10 @@ public class PatientInvoiceService {
     PaymentTypeRepository  paymentTypeRepository;
 
 
+    @Autowired
+    ReceiptPaymentTypeRepository receiptPaymentTypeRepository;
+
+
 
     public Invoice getInvoiceById(Long id){
        return patientInvoiceRepository.findOne(id);
@@ -192,28 +196,46 @@ public class PatientInvoiceService {
         double advanceDeposit = 0.00;
 
         Patient patient = patientRepository.findOne(advancePaymentRequestWrapper.getPatientId());
-        advanceDeposit = patient.getAdvanceBalance() + Double.parseDouble(advancePaymentRequestWrapper.getAmount());
+        advanceDeposit = patient.getAdvanceBalance() + advancePaymentRequestWrapper.getAmount();
         patient.setAdvanceBalance(advanceDeposit);
         patientRepository.save(patient);
 
         Payment payment = new Payment();
         payment.setCreatedOn(new Date());
         payment.setUpdatedOn(new Date());
-        payment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));  // To Do  (handle this from front end)
-        payment.setPaymentAmount(Double.parseDouble(advancePaymentRequestWrapper.getAmount()));
+        payment.setPaymentId(advancePaymentRequestWrapper.getPaymentId());
+    //    payment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));  // To Do  (handle this from front end)
+        payment.setPaymentAmount(advancePaymentRequestWrapper.getAmount());
+        payment.setTransactionType("Advance");
         paymentRepository.save(payment);
+
+
+        ReceiptPaymentType receiptPaymentType = new ReceiptPaymentType();
+        receiptPaymentType.setPayment(payment);
+        receiptPaymentType.setPaymentType(paymentTypeRepository.findOne(advancePaymentRequestWrapper.getPaymentTypeId()));
+        receiptPaymentType.setPaymentAmount(advancePaymentRequestWrapper.getAmount());
+        receiptPaymentTypeRepository.save(receiptPaymentType);
 
         PatientInvoicePayment patientInvoicePayment = new PatientInvoicePayment();
         patientInvoicePayment.setCreatedOn(new Date());
         patientInvoicePayment.setUpdatedOn(new Date());
-        patientInvoicePayment.setPaymentAmount(Double.parseDouble(advancePaymentRequestWrapper.getAmount())) ;
+        patientInvoicePayment.setPaymentAmount(advancePaymentRequestWrapper.getAmount()) ;
         patientInvoicePayment.setPayment(payment);
         patientInvoicePayment.setPatient(patient);
         patientInvoicePayment.setAdvanceAmount(0.00);
         patientInvoicePayment.setDiscountAmount(0.00);
         patientInvoicePaymentRepository.save(patientInvoicePayment);
+
     }
 
+    public String getPaymentPrefixId(){
+        return hisUtilService.getPrefixId(ModuleEnum.PAYMENT);
+    }
+
+
+    public String getRefundPrefixId(){
+        return hisUtilService.getPrefixId(ModuleEnum.REFUND);
+    }
 
     public void refundPayment(RefundPaymentRequestWrapper refundPaymentRequestWrapper)
     {
@@ -271,7 +293,15 @@ public class PatientInvoiceService {
             payment.setUpdatedOn(new Date());
             payment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));
             payment.setPaymentAmount(bulkReceitRequestWrapper.getPaymentAmount());
+            payment.setTransactionType("Invoice");
             paymentRepository.save(payment);
+
+
+            ReceiptPaymentType receiptPaymentType = new ReceiptPaymentType();
+            receiptPaymentType.setPayment(payment);
+            receiptPaymentType.setPaymentType(paymentTypeRepository.findOne(bulkReceitRequestWrapper.getPaymentTypeId()));
+            receiptPaymentType.setPaymentAmount(bulkReceitRequestWrapper.getPaymentAmount());
+            receiptPaymentTypeRepository.save(receiptPaymentType);
 
             for(InvoiceResponseWrapper iRW:bulkReceitRequestWrapper.getInvoiceListPaymentRequest())
             {
@@ -349,8 +379,10 @@ public class PatientInvoiceService {
             invoice.setCreatedOn(new Date());
             invoice.setUpdatedOn(new Date());
             invoice.setPaidAmount(0.0);
+            invoice.setDiscountAmount(0.0);
+            invoice.setTaxAmount(0.00);
             invoice.setStatus(InvoiceStatusEnum.PENDING.toString());
-//            invoice.setCompleted(false);
+            invoice.setCompleted(false);
 
             patientInvoiceRepository.save(invoice);
 
@@ -379,6 +411,7 @@ public class PatientInvoiceService {
                 discountAmount =(invItems.getQuantity() * invItems.getUnitFee()) * invItems.getDiscountRate()/100;
                 ivoiceTotal += amount + taxAmount - discountAmount;
 
+                invoice.setTotalInvoiceAmount(ivoiceTotal);
                 invoice.setInvoiceAmount(ivoiceTotal);
                 patientInvoiceRepository.save(invoice);
             }

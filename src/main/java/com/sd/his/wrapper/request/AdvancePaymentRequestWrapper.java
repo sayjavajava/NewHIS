@@ -7,9 +7,9 @@ public class AdvancePaymentRequestWrapper{
     private String paymentId;
     private String date;
     private long patientId;
-    private String paymentTypeId;
+    private long paymentTypeId;
     private String description;
-    private String amount;
+    private Double amount;
 
 
     public AdvancePaymentRequestWrapper()
@@ -41,11 +41,11 @@ public class AdvancePaymentRequestWrapper{
         this.patientId = patientId;
     }
 
-    public String getPaymentTypeId() {
+    public long getPaymentTypeId() {
         return paymentTypeId;
     }
 
-    public void setPaymentTypeId(String paymentTypeId) {
+    public void setPaymentTypeId(long paymentTypeId) {
         this.paymentTypeId = paymentTypeId;
     }
 
@@ -57,11 +57,11 @@ public class AdvancePaymentRequestWrapper{
         this.description = description;
     }
 
-    public String getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 }

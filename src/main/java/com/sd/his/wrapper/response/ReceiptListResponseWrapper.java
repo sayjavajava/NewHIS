@@ -7,13 +7,14 @@ import java.util.List;
 
 public class ReceiptListResponseWrapper {
 
-    long id;
-    String paymentId;
-    String patientName;
-    Double discountAmount;
-    Double advanceUsedAmount;
-    Double paymontAmount;
-    String paymentType;
+    private long id;
+    private String paymentId;
+    private String patientName;
+    private Double discountAmount;
+    private Double advanceUsedAmount;
+    private Double paymontAmount;
+    private String paymentType;
+    private String transactionType;
 
 
     public ReceiptListResponseWrapper() {
@@ -28,7 +29,8 @@ public class ReceiptListResponseWrapper {
             this.discountAmount=getDiscountOnPayment(pmt.getPatientInvoicePayment());
             this.advanceUsedAmount=getAdvancedUsed(pmt.getPatientInvoicePayment());
         }
-/*      this.paymentType=*/
+        this.transactionType = pmt.getTransactionType();
+      this.paymentType=  pmt.getReceiptPaymentType().size() >0 ? pmt.getReceiptPaymentType().get(0).getPaymentType().getPaymentTitle(): "N/A";
     }
 
 
@@ -103,5 +105,13 @@ public class ReceiptListResponseWrapper {
 
     public void setPaymentType(String paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
     }
 }

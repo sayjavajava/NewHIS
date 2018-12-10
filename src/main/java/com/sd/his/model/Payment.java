@@ -27,8 +27,17 @@ public class Payment  extends BaseEntity implements Serializable {
     private  String refundType;
 
 
+
+    @Column(name = "TRANSACTION_TYPE")
+    private  String transactionType;   // Advance / Invoice
+
+
     @OneToMany(mappedBy = "payment")
     private List<PatientInvoicePayment> patientInvoicePayment;
+
+
+    @OneToMany (mappedBy="payment")
+    private List<ReceiptPaymentType> ReceiptPaymentType;
 
 
     public String getPaymentId() {
@@ -61,5 +70,21 @@ public class Payment  extends BaseEntity implements Serializable {
 
     public void setPatientInvoicePayment(List<PatientInvoicePayment> patientInvoicePayment) {
         this.patientInvoicePayment = patientInvoicePayment;
+    }
+
+    public List<com.sd.his.model.ReceiptPaymentType> getReceiptPaymentType() {
+        return ReceiptPaymentType;
+    }
+
+    public void setReceiptPaymentType(List<com.sd.his.model.ReceiptPaymentType> receiptPaymentType) {
+        ReceiptPaymentType = receiptPaymentType;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
     }
 }
