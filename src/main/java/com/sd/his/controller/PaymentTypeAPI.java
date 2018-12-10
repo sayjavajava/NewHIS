@@ -6,6 +6,7 @@ import com.sd.his.model.PaymentType;
 import com.sd.his.service.PaymentTypeService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.response.PaymentTypeWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -48,10 +49,6 @@ public class PaymentTypeAPI {
 
         logger.error("getAll Payment Type API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("paymentType.fetch.error"));
-        response.setResponseCode(ResponseEnum.PAYMENTTYPE_FETCHED_ERROR.getValue());
-        response.setResponseStatus(ResponseEnum.ERROR.getValue());
-        response.setResponseData(null);
 
         try {
             logger.error("ALL Payment  API - Payment Type fetching from DB");
@@ -75,10 +72,59 @@ public class PaymentTypeAPI {
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(returnValues);
 
-            logger.error("Payment Type  API - Payment Type successfully fetched.");
+            logger.info("Payment Type  API - Payment Type successfully fetched.");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Payment Type   API -  exception..", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "List Payment Type",
+            notes = "This method will returns List Payment Type",
+            produces = "application/json", nickname = "Payment Type",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "List Payment Type fetched successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/getListPaymentType", method = RequestMethod.GET)
+    public ResponseEntity<?> getListPaymentType(HttpServletRequest request) {
+
+        logger.error("getAll Payment Type API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+
+        try {
+            logger.error("List Payment  API - Payment Type fetching from DB");
+            List<PaymentTypeWrapper> paymentType = paymentServiceType.getListPaymentType();
+
+            if (HISCoreUtil.isListEmpty(paymentType)) {
+                response.setResponseMessage(messageBundle.getString("paymentType.not.found"));
+                response.setResponseCode(ResponseEnum.PAYMENTTYPE_NOT_FOUND_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Payment Type API  - Payment  not found");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("data", paymentType);
+
+            response.setResponseMessage(messageBundle.getString("paymentType.fetched.success"));
+            response.setResponseCode(ResponseEnum.PAYMENTTYPE_FETCHED_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseData(returnValues);
+
+            logger.info("Payment Type  API - Payment Type List successfully fetched.");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("Payment Type List  API -  exception..", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("exception.occurs"));

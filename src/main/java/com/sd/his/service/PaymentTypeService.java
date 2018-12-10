@@ -3,6 +3,7 @@ package com.sd.his.service;
 import com.sd.his.model.PaymentType;
 import com.sd.his.repository.PaymentTypeRepository;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.response.PaymentTypeWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,11 @@ public class PaymentTypeService {
     public List<PaymentType> getAllPaymentType() {
         List<PaymentType> paymentType = paymentRepository.findAll();
         return paymentType;
+    }
+
+    // Fetch List Record
+    public List<PaymentTypeWrapper> getListPaymentType() {
+        return paymentRepository.getAllWithWrapper();
     }
 
     //Delete Record for Payment Delete

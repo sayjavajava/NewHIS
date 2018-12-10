@@ -54,7 +54,10 @@ public class DoctorPaymentController {
             } else {
                 doctorPaymentRequestWrapper.setDate( patientService.convertDateToGMT( doctorPaymentRequestWrapper.getDate().trim(), "E MMM dd yyyy HH:mm:ss" ) );
             }*/
-            staffService.saveDoctorPayment(doctorPaymentRequestWrapper);
+
+             if(doctorPaymentRequestWrapper.getAmount() > 0){
+                 staffService.saveDoctorPayment(doctorPaymentRequestWrapper);
+             }
 
             response.setResponseMessage(messageBundle.getString("doctorPayment.save.success"));
             response.setResponseCode(InvoiceMessageEnum.SUCCESS.getValue());

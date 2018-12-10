@@ -984,20 +984,23 @@ public class StaffService {
     public void saveDoctorPayment(DoctorPaymentRequestWrapper paymentRequestWrapper)
     {
         double remainingBalance = 0.00;
-
         Doctor doctor = doctorRepository.findOne(paymentRequestWrapper.getDoctorId());
-        remainingBalance = doctor.getBalance() - paymentRequestWrapper.getAmount();
-        doctor.setBalance(remainingBalance);
-        doctorRepository.save(doctor);
+        if(doctor != null){
+            remainingBalance = doctor.getBalance() - paymentRequestWrapper.getAmount();
+            doctor.setBalance(remainingBalance);
+            doctorRepository.save(doctor);
 
-        StaffPayment staffPayment = new StaffPayment();
-        staffPayment.setCreatedOn(new Date());
-        staffPayment.setUpdatedOn(new Date());
-        staffPayment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));  // To Do  (handle this from front end)
-        staffPayment.setPaymentAmount(paymentRequestWrapper.getAmount());
-        staffPayment.setDoctor(doctor);
-        staffPayment.setPaymentType(paymentTypeRepository.findOne(paymentRequestWrapper.getPaymentTypeId()));
-        staffPaymentRepository.save(staffPayment);
+            StaffPayment staffPayment = new StaffPayment();
+            staffPayment.setCreatedOn(new Date());
+            staffPayment.setUpdatedOn(new Date());
+            staffPayment.setPaymentId(paymentRequestWrapper.getPaymentId());
+        //    staffPayment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));
+            staffPayment.setPaymentId(paymentRequestWrapper.getPaymentId());
+            staffPayment.setPaymentAmount(paymentRequestWrapper.getAmount());
+            staffPayment.setDoctor(doctor);
+            staffPayment.setPaymentType(paymentTypeRepository.findOne(paymentRequestWrapper.getPaymentTypeId()));
+            staffPaymentRepository.save(staffPayment);
+        }
     }
 
     // Get Doctor ALL Payment List
