@@ -19,7 +19,6 @@ public class PatientGroupService {
     @Autowired
     private PatientGroupRepository patientGroupRepository;
 
-
     public boolean isPatientGroupByNameExist(String name) {
         return this.patientGroupRepository.getPatientGroupByName(name);
     }

@@ -252,15 +252,15 @@ public class AWSService {
         try {
             //creating the file in the server (temporarily)
             File file = new File(fileName);
-            FileOutputStream fos = new FileOutputStream(file);
+       //     FileOutputStream fos = new FileOutputStream(file);
             FileInputStream fis = new FileInputStream(file);
-            fos.write(multipartFile.getBytes());
+       //     fos.write(multipartFile.getBytes());
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(multipartFile.getSize());
             metadata.setContentType(multipartFile.getContentType());
             fileUrl = s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+fileName;
             String bucketName=S3_USER_ORDER_DIRECTORY_PATH+fileName;
-            fos.close();
+        //    fos.close();
 
             try {
                 PutObjectResult result = this.awss3.putObject(bucketName, fis, metadata, CannedAccessControlList.PublicRead);
