@@ -246,12 +246,12 @@ public class BulkImportService {
         Country country = null;
         for (Row row : excelSheet) {
             if (row != null && row.getRowNum() > 0 && row.getCell(0) != null) {
-                if ( row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null
+                if (row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null
                         || row.getCell(3) == null || row.getCell(4) == null || row.getCell(5) == null
-                        || row.getCell(6) == null || row.getCell(7) == null )
+                        || row.getCell(6) == null || row.getCell(7) == null)
                     continue;
-                Patient oldPatient = patientRepository.findDuplicatePatientForBulkImport(row.getCell(2).getStringCellValue()+"",
-                        row.getCell(3).getStringCellValue()+"", row.getCell(4).getStringCellValue()+"", row.getCell(5).getDateCellValue());
+                Patient oldPatient = patientRepository.findDuplicatePatientForBulkImport(row.getCell(2).getStringCellValue() + "",
+                        row.getCell(3).getStringCellValue() + "", row.getCell(4).getStringCellValue() + "", row.getCell(5).getDateCellValue());
                 if (oldPatient != null)
                     continue;
 
@@ -312,7 +312,7 @@ public class BulkImportService {
         return records.get();
     }
 
-    public int importAppointmentRecords(String fileName) throws IllegalStateException, org.apache.poi.openxml4j.exceptions.InvalidFormatException, IOException, ParseException {
+    public int importAppointmentRecords(String fileName) throws IllegalStateException, InvalidFormatException, IOException, ParseException {
         File file = new File(this.tmpFilePath + fileName);
         AtomicInteger records = new AtomicInteger(0);
         Workbook workBook = WorkbookFactory.create(file);
@@ -327,7 +327,7 @@ public class BulkImportService {
                     continue;
                 String time = new SimpleDateFormat("HH:mm:ss").format(row.getCell(4).getDateCellValue());
                 Appointment oldAppointment = appointmentRepository.findConflictInAppointment(row.getCell(1).getStringCellValue() + "",
-                        row.getCell(2).getStringCellValue() + "", row.getCell(3).getDateCellValue(), time );
+                        row.getCell(2).getStringCellValue() + "", row.getCell(3).getDateCellValue(), time);
                 if (oldAppointment != null)
                     continue;
                 appointment = new Appointment();
