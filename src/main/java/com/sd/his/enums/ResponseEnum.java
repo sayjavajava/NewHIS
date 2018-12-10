@@ -1,5 +1,7 @@
 package com.sd.his.enums;
 
+import com.sd.his.model.PatientImageSetup;
+
 /*
  * @author    : Irfan Nasim
  * @Date      : 18-Apr-17
@@ -411,6 +413,7 @@ public enum ResponseEnum {
     GENERAL_LEDGER_DELETE_ERROR("GL_DEL_ERR_02"),
     GENERAL_LEDGER_NOT_FOUND_ERROR("GL_DEL_ERR_03"),
     ORDER_UPDATE_ID_REQUIRED("ORD_SUC_45"),
+    PATIENTIMAGESETUP_DELETE_ERROR("IMAGE_ERR_02"),
     ;
 
 

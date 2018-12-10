@@ -81,17 +81,6 @@ public class PatientOrderAPI {
         try {
 
             if (orderWrapper != null) {
-                if (null != file && file.length > 0) {
-                    for (MultipartFile multipartFile : file) {
-
-                        String fileName = multipartFile.getOriginalFilename();
-
-                        byte[] bteObj=multipartFile.getBytes();
-                  //      fileNames.add(fileName);
-
-                }
-                    //    orderWrapper.setLstOfFiles(fileNames);
-                }
 
                 orderWrapper.setListOfFiles(file);
 

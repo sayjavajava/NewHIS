@@ -48,7 +48,7 @@ public class PatientImageSetupAPI {
         {
             patientImageService.save(imageSetupRequestWrapper);
             response.setResponseData(patientImageService.getAll());
-            response.setResponseMessage(messageBundle.getString("patient.image.setup.update.success"));
+            response.setResponseMessage(messageBundle.getString("patient.image.setup.success"));
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             logger.info("Setup Configuration save successfully...");
@@ -60,16 +60,16 @@ public class PatientImageSetupAPI {
             logger.error("Setup  Save Process Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("patient.image.setup.update.error"));
+            response.setResponseMessage(messageBundle.getString("patient.image.setup.success.error"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
 
-    @ApiOperation(httpMethod = "GET", value = "get Vital Setup Configurations",
-            notes = "This method will get Vital Setup Configurations",
-            produces = "application/json", nickname = "Get Vital Setup Configurations",
+    @ApiOperation(httpMethod = "GET", value = "get Setup",
+            notes = "This method will get  Setup ",
+            produces = "application/json", nickname = "Get  Setup ",
             response = GenericAPIResponse.class, protocols = "https")
 
     @RequestMapping(value = "/getSetup", method = RequestMethod.GET)
@@ -80,10 +80,10 @@ public class PatientImageSetupAPI {
             response.setResponseData(patientImageService.getAll());
 
 
-            response.setResponseMessage(messageBundle.getString("vital.setup.configuration.fetched.success"));
+            response.setResponseMessage(messageBundle.getString("patient.image.fetched.success"));
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            logger.info("Vital Setup data fetch successfully");
+            logger.info("Setup data fetch successfully");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -113,15 +113,15 @@ public class PatientImageSetupAPI {
     public ResponseEntity<?> deleteImage(HttpServletRequest request,
                                                @PathVariable("imgId")  long  imgId) {
 
-        logger.error("Delete Payment Type API initiated");
+        logger.error("Delete   API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("paymentType.delete.error"));
-        response.setResponseCode(ResponseEnum.PAYMENTTYPE_DELETE_ERROR.getValue());
+        response.setResponseMessage(messageBundle.getString("patient.image.delete.error"));
+        response.setResponseCode(ResponseEnum.ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
         try {
-            logger.error("Delete Customer  -  fetching from DB for existence");
+            logger.error("Delete   -  fetching from DB for existence");
 
             if (imgId <= 0) {
                 response.setResponseMessage(messageBundle.getString("patient.image.delete.error"));
@@ -171,7 +171,7 @@ public class PatientImageSetupAPI {
 
         logger.info("Update  - Update  id:" );
         GenericAPIResponse response = new GenericAPIResponse();
-        response.setResponseMessage(messageBundle.getString("paymentType.update.error"));
+        response.setResponseMessage(messageBundle.getString("patient.image.setup.update.error"));
         response.setResponseCode(ResponseEnum.PAYMENTTYPE_UPDATE_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);

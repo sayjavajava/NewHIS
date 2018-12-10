@@ -340,6 +340,27 @@ public class HISCoreUtil {
         return date;
     }
 
+
+
+
+
+
+
+    public static Date convertToAPPDateZone(String str,String format) {
+        Date date = null;
+        if (str != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            try {
+                date = formatter.parse(str);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return date;
+    }
+
+
     public static Date convertToDateString(String str,String format) {
         Date date = null;
         if (str != null) {

@@ -68,8 +68,7 @@ public class AppointmentAPI {
     @Autowired
     private BulkImportService bulkImportService;
 
-    @Value("${spring.http.multipart.location}")
-    private String tmpFilePath;
+
 
     @ApiOperation(httpMethod = "GET", value = "All Appointments",
             notes = "This method will return All Appointments",

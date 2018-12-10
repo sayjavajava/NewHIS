@@ -3,14 +3,10 @@ package com.sd.his.controller.patient;
 import com.sd.his.controller.setting.EmailConfigurationController;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.PatientVital;
-
 import com.sd.his.service.PatientVitalService;
-import com.sd.his.service.VitalSetupServices;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.DepartmentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.PatientVitalWrapper;
-import com.sd.his.wrapper.Patient_OrderWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -31,16 +27,9 @@ import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-
-
 @RestController
 @RequestMapping("/PatientVital")
-public class PatientVitalController {
+public class PatientVitalAPI {
 
     @Autowired
     PatientVitalService vitalServices;
@@ -61,7 +50,7 @@ public class PatientVitalController {
         try
         {
             vitalServices.save(vitalRequestWrapper);
-        //    response.setResponseData(vitalServices.getAll());
+            //    response.setResponseData(vitalServices.getAll());
             response.setResponseMessage(messageBundle.getString("vital.setup.save.success"));
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -232,13 +221,13 @@ public class PatientVitalController {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/get/{vitalId}", method = RequestMethod.GET)
     public ResponseEntity<?> getVitalById(HttpServletRequest request,
-                                                              @PathVariable("vitalId") long vitalId) {
+                                          @PathVariable("vitalId") long vitalId) {
 
         logger.error("getDepartmentsByMedicalServiceId API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             logger.error("Vital -  fetching from DB");
-            PatientVital  vital= vitalServices.getById(vitalId);
+            PatientVital vital= vitalServices.getById(vitalId);
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
 

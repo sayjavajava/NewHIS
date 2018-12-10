@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +60,7 @@ public class PatientOrderService {
 
                         String fileName = multipartFile.getOriginalFilename();
                         String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
-                        patientOrder.setType(tokens[1].toString());
+                      //  patientOrder.setType(tokens[1].toString());
 
                         byte[] bteObj = multipartFile.getBytes();
                         if(tokens[1].toString().equalsIgnoreCase("PNG") || tokens[1].toString().equalsIgnoreCase("JPG")   || tokens[1].toString().equalsIgnoreCase("JPEG") || tokens[1].toString().equalsIgnoreCase("GIF") || tokens[1].toString().equalsIgnoreCase("BMP") ) {
@@ -88,6 +89,8 @@ public class PatientOrderService {
 
                            url =    awsService.uploadFile(multipartFile,orderWrapper.getPatientId() );
 
+
+
                         }
 
                         imageUrls.add(url);
@@ -96,6 +99,7 @@ public class PatientOrderService {
                 if (!HISCoreUtil.isListEmpty(imageUrls)) {
                     patientOrder.setUrl(imageUrls);
                     this.patientOrderRepository.save(patientOrder);
+
                     url = null;
                 }
                     return "";

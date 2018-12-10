@@ -193,9 +193,9 @@ public class AWSService {
 
     public File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convFile = new File(file.getOriginalFilename());
-        FileOutputStream fos = new FileOutputStream(convFile);
+       /* FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
-        fos.close();
+        fos.close();*/
         return convFile;
     }
 
@@ -210,13 +210,16 @@ public class AWSService {
         String fileUrl = "";
         S3Bucket s3Bucket = s3BucketService.findActiveBucket();
         try {
-            File file = convertMultiPartToFile(multipartFile);
+         //   File file = HISCoreUtil.multipartToFile(multipartFile);//convertMultiPartToFile(multipartFile);
            // String fileName =generateFileName(multipartFile);
             String fileName=multipartFile.getOriginalFilename();
             fileUrl = s3Bucket.getAccessProtocol()+s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+patientId+"_"+fileName;
             String fileNameIrl=uploadFileTos3bucket(multipartFile, true,patientId,fileUrl);
             fileUrl=s3Bucket.getAccessProtocol()+s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+fileNameIrl;
-          //  file.delete();
+
+            /* if(file.exists()){
+            file.delete();
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -249,18 +252,21 @@ public class AWSService {
         S3Bucket s3Bucket = s3BucketService.findActiveBucket();
         String fileName = Id+"_"+HISCoreUtil.convertDateToStringUpload(new Date())+"_"+multipartFile.getOriginalFilename();
         String fileUrl = "";
+        File file = new File(fileName);
         try {
             //creating the file in the server (temporarily)
-            File file = new File(fileName);
-       //     FileOutputStream fos = new FileOutputStream(file);
+
+         //   FileOutputStream fos = new FileOutputStream(file);
             FileInputStream fis = new FileInputStream(file);
-       //     fos.write(multipartFile.getBytes());
+        //    fos.write(multipartFile.getBytes());
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(multipartFile.getSize());
             metadata.setContentType(multipartFile.getContentType());
             fileUrl = s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+fileName;
             String bucketName=S3_USER_ORDER_DIRECTORY_PATH+fileName;
-        //    fos.close();
+       //     fos.close();
+        //    File f = new File(fileName);
+
 
             try {
                 PutObjectResult result = this.awss3.putObject(bucketName, fis, metadata, CannedAccessControlList.PublicRead);
@@ -271,6 +277,13 @@ public class AWSService {
 
         } catch (IOException | AmazonServiceException ex) {
             logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
+        }finally {
+            if(file.exists()){
+                System.out.println("File existed");
+                file.delete();
+            }else{
+                System.out.println("File not found!");
+            }
         }
         return fileName;
     }
