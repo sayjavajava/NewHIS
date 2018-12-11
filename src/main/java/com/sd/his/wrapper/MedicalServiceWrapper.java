@@ -50,8 +50,8 @@ public class MedicalServiceWrapper {
     private List<BranchWrapperPart> checkedBranches;
     private List<DepartmentWrapper> departments;
     private List<DepartmentWrapper> checkedDepartments;
+    private List<Long> selectedBranchesMS;
     private boolean hasChild;
-
     public MedicalServiceWrapper() {
     }
 
@@ -131,6 +131,14 @@ public class MedicalServiceWrapper {
         }
     }
 
+
+    public List<Long> getSelectedBranchesMS() {
+        return selectedBranchesMS;
+    }
+
+    public void setSelectedBranchesMS(List<Long> selectedBranchesMS) {
+        this.selectedBranchesMS = selectedBranchesMS;
+    }
 
     public String getComissionService() {
         return comissionService;

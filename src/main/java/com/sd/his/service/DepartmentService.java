@@ -89,6 +89,28 @@ public class DepartmentService {
         return dptsWrappers;
     }
 
+    public List<DepartmentWrapper> getDepartmentsByBranchIds(List<Long> branchIds) {
+        List<DepartmentWrapper> departmentList = new ArrayList<>();
+
+        for (Long i : branchIds) {
+            List<BranchDepartment> branchDepartment = branchDepartmentRepository.getAllByBranch_id(i);
+            for (BranchDepartment bd : branchDepartment) {
+                boolean idFound = false;
+
+                for (DepartmentWrapper d : departmentList) {
+                    if (d.getId() == bd.getDepartment().getId()) {
+                        idFound = true;
+                        break;
+                    }
+                }
+                if (!idFound) {
+                    departmentList.add(new DepartmentWrapper(bd.getDepartment()));
+                }
+            }
+        }
+
+        return departmentList;
+    }
 
     public List<DepartmentWrapper> getPaginatedAllDepartments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
