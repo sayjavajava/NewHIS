@@ -2,7 +2,6 @@ package com.sd.his.service;
 
 import com.sd.his.model.PaymentType;
 import com.sd.his.repository.PaymentTypeRepository;
-import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.response.PaymentTypeWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,10 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class PaymentTypeService {
@@ -23,9 +19,9 @@ public class PaymentTypeService {
 
 
     // Fetch All Record
-    public List<PaymentType> getAllPaymentType() {
-        List<PaymentType> paymentType = paymentRepository.findAll();
-        return paymentType;
+    public List<PaymentTypeWrapper> getAllPaymentType() {
+//        List<PaymentType> paymentType = paymentRepository.findAll();
+        return paymentRepository.getAllWithWrapper();
     }
 
     // Fetch List Record
@@ -35,10 +31,8 @@ public class PaymentTypeService {
 
     //Delete Record for Payment Delete
     @Transactional(rollbackOn = Throwable.class)
-    public boolean deletePaymentType(long id) {
-
+    public void deletePaymentType(long id) {
         paymentRepository.delete(id);
-        return true;
     }
 
     //Save Record For Payment Type

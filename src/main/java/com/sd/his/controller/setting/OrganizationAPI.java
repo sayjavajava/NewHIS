@@ -274,8 +274,8 @@ public class OrganizationAPI {
             dbOrganization.setDateFormat(addInfo.getDateFormat());
             dbOrganization.setTimeFormat(addInfo.getTimeFormat());
             dbOrganization.setZoneFormat(String.valueOf(addInfo.getZone().getZoneId()));
-            for(int i=0;i<addInfo.getBranches().size();i++){
-                if(addInfo.getBranches().get(i).getSystemBranch()==true){
+            for (int i = 0; i < addInfo.getBranches().size(); i++) {
+                if (addInfo.getBranches().get(i).getSystemBranch()) {
                     dbOrganization.setDefaultBranch(addInfo.getBranches().get(i).getBranchId());
                 }
             }

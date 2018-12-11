@@ -52,7 +52,8 @@ public class PaymentTypeAPI {
 
         try {
             logger.error("ALL Payment  API - Payment Type fetching from DB");
-            List<PaymentType> paymentType = paymentServiceType.getAllPaymentType();
+//            List<PaymentType> paymentType = paymentServiceType.getAllPaymentType();
+            List<PaymentTypeWrapper> paymentType = paymentServiceType.getAllPaymentType();
 
             if (HISCoreUtil.isListEmpty(paymentType)) {
                 response.setResponseMessage(messageBundle.getString("paymentType.not.found"));
