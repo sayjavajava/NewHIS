@@ -7,10 +7,6 @@ import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
 import com.sd.his.wrapper.response.MedicalServicesDoctorWrapper;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -35,7 +27,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -428,10 +419,8 @@ public class AppointmentService {
         return doctorMedicalServiceRepository.findAllByDoctorAndServices();
     }
 
-    /*
-    public void deleteAppointment(Appointment appointment) {
-        appointment.setDeleted(true);
-        appointmentRepository.save(appointment);
+   public void deleteAppointment(Appointment appointment) {
+
     }
-    */
+
 }

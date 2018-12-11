@@ -1,10 +1,7 @@
 package com.sd.his.wrapper;
 
-import com.sd.his.model.Appointment;
 import com.sd.his.model.Medication;
 import com.sd.his.repository.AppointmentRepository;
-import com.sd.his.repository.MedicalServiceRepository;
-import com.sd.his.service.AppointmentService;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;

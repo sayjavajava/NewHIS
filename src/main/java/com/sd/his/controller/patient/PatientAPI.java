@@ -603,7 +603,6 @@ public class PatientAPI {
         try {
             logger.error("getALL Patients API - Patients fetching from DB");
             List<PatientWrapper> patientList = patientService.getAllPatient();
-
             if (HISCoreUtil.isListEmpty(patientList)) {
                 response.setResponseMessage(messageBundle.getString("patient.not.found"));
                 response.setResponseCode(ResponseEnum.PATIENT_NOT_FOUND_ERROR.getValue());
@@ -614,13 +613,10 @@ public class PatientAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            Map<String, Object> returnValues = new LinkedHashMap<>();
-            returnValues.put("data", patientList);
-
             response.setResponseMessage(messageBundle.getString("patient.fetched.success"));
             response.setResponseCode(ResponseEnum.PATIENT_FETCHED_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(returnValues);
+            response.setResponseData(patientList);
 
             logger.error("getAllPatients API - Patients successfully fetched.");
             return new ResponseEntity<>(response, HttpStatus.OK);
