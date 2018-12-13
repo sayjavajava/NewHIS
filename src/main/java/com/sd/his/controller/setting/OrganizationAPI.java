@@ -261,13 +261,19 @@ public class OrganizationAPI {
             Organization addInfo  =  this.organizationService.getOrganizationByIdWithResponseAdditionalInfo(id);
             Map<String, Object> orgCity;
             orgCity = new HashMap<>();
-            orgCity.put("cityId", addInfo.getCity().getId());
-            orgCity.put("city", addInfo.getCity().getName());
-            orgCity.put("stateId", addInfo.getState().getId());
-            orgCity.put("state", addInfo.getState().getName());
-            orgCity.put("countryId", addInfo.getCountry().getId());
-            orgCity.put("country", addInfo.getCountry().getName());
-            orgCity.put("Currency",addInfo.getCountry().getCurrency());
+            if (addInfo.getCity() != null) {
+                orgCity.put("cityId", addInfo.getCity().getId());
+                orgCity.put("city", addInfo.getCity().getName());
+            }
+            if (addInfo.getState() != null) {
+                orgCity.put("stateId", addInfo.getState().getId());
+                orgCity.put("state", addInfo.getState().getName());
+            }
+            if (addInfo.getCountry() != null) {
+                orgCity.put("countryId", addInfo.getCountry().getId());
+                orgCity.put("country", addInfo.getCountry().getName());
+                orgCity.put("Currency",addInfo.getCountry().getCurrency());
+            }
             orgCity.put("zoneFormat",addInfo.getZone().getName()+""+addInfo.getZone().getZoneTime());
 
             dbOrganization.setAddInfo(orgCity);

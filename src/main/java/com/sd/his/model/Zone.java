@@ -17,6 +17,9 @@ public class Zone implements Serializable {
     @Column(name="ZONE_TIME")
     private String zoneTime;
 
+    public Zone() {
+    }
+
     public Zone(String name, String zoneTime) {
         this.name = name;
         this.zoneTime = zoneTime;

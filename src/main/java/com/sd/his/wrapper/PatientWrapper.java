@@ -128,6 +128,7 @@ public class PatientWrapper {
         this.cellPhone = patient.getCellPhone();
         this.label = patient.getFirstName();
         this.value = patient.getId();
+        this.gender = patient.getGender().name();
 
         if (patient.getCity() != null) {
             this.city = patient.getCity().getName();

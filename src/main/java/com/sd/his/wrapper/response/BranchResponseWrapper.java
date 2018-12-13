@@ -87,13 +87,15 @@ public class BranchResponseWrapper {
                 .collect(Collectors.toList());
         this.rooms = Long.valueOf(this.examRooms.size());
         this.user = user;
-        this.city = branch.getCity().getName();
-        this.state = branch.getCity().getState().getName();
-        this.country = branch.getCity().getState().getCountry().getName();
-        // Update section
-        this.cityId = String.valueOf(branch.getCity().getId());
-        this.stateId = String.valueOf(branch.getCity().getState().getId());
-        this.countryId = String.valueOf(branch.getCity().getState().getCountry().getId());
+        if (branch.getCity() != null) {
+            this.city = branch.getCity().getName();
+            this.state = branch.getCity().getState().getName();
+            this.country = branch.getCity().getState().getCountry().getName();
+            // Update section
+            this.cityId = String.valueOf(branch.getCity().getId());
+            this.stateId = String.valueOf(branch.getCity().getState().getId());
+            this.countryId = String.valueOf(branch.getCity().getState().getCountry().getId());
+        }
         this.value = branch.getId();
         this.label = branch.getName();
         this.flow = branch.getFlow();
