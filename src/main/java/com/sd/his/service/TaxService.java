@@ -74,6 +74,7 @@ public class TaxService {
         Tax tax = new Tax(taxWrapper);
         tax.setTaxId(this.hisUtilService.generatePrefix(ModuleEnum.TAX));
         taxRepository.save(tax);
+        hisUtilService.updatePrefix(ModuleEnum.TAX);
     }
 
     public boolean isAlreadyExist(TaxWrapper taxWrapper) {

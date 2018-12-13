@@ -3,12 +3,9 @@ package com.sd.his.controller.setting;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Status;
 import com.sd.his.service.StatusService;
-import com.sd.his.service.TaxService;
-import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.StatusWrapper;
-import com.sd.his.wrapper.TaxWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -265,19 +262,19 @@ public class StatusAPI {
             if (HISCoreUtil.isValidObject(alreadyStatus)) {
                 logger.info("Status founded...");
                 StatusWrapper fmUpdated = statusService.updateStatus(statusWrapper, alreadyStatus);
-                if (statusService.isStatusNameOrIdExistsAlready(statusWrapper.getName(),id)) {
-                    response.setResponseMessage(messageBundle.getString("branch.add.already-found.error"));
-                    response.setResponseCode(ResponseEnum.BRANCH_ALREADY_EXIST_ERROR.getValue());
+                /*if (!statusService.isStatusNameOrIdExistsAlready(statusWrapper.getName(),id)) {
+                    response.setResponseMessage(messageBundle.getString("status.already.error"));
+                    response.setResponseCode(ResponseEnum.STATUS_ALREADY_EXIST_ERROR.getValue());
                     response.setResponseStatus(ResponseEnum.ERROR.getValue());
                     response.setResponseData(null);
-                    logger.error("Branch already exist with the same name...");
+                    logger.error("Status already exist with the same name...");
                     return new ResponseEntity<>(response, HttpStatus.OK);
-                }
+                }*/
                 if (HISCoreUtil.isValidObject(fmUpdated)) {
                     logger.info("Status Updated...");
                     response.setResponseData(fmUpdated);
                     response.setResponseMessage(messageBundle.getString("status.update.success"));
-                    response.setResponseCode(ResponseEnum.FAMILY_HISTORY_UPDATE_SUCCESS.getValue());
+                    response.setResponseCode(ResponseEnum.STATUS_UPDATE_SUCCESS.getValue());
                     response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                     logger.info("Status updated successfully...");
 

@@ -3,7 +3,6 @@ package com.sd.his.controller;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Appointment;
 import com.sd.his.service.AppointmentService;
-import com.sd.his.service.BulkImportService;
 import com.sd.his.service.UserService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
@@ -15,17 +14,11 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileNotFoundException;
-import javax.websocket.server.PathParam;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,12 +56,9 @@ public class AppointmentAPI {
 
     @Autowired
     AppointmentService appointmentService;
+
     @Autowired
     private UserService userService;
-    @Autowired
-    private BulkImportService bulkImportService;
-
-
 
     @ApiOperation(httpMethod = "GET", value = "All Appointments",
             notes = "This method will return All Appointments",
@@ -105,12 +95,10 @@ public class AppointmentAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            Map<String, Object> returnValues = new LinkedHashMap<>();
-            returnValues.put("data", appts);
             response.setResponseMessage(messageBundle.getString("appointment.fetched.success"));
             response.setResponseCode(ResponseEnum.APPT_FETCHED_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            response.setResponseData(returnValues);
+            response.setResponseData(appts);
 
             logger.error("getAllAppointments API successfully executed.");
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -595,7 +583,7 @@ public class AppointmentAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-   /* @ApiOperation(httpMethod = "DELETE", value = "Delete Appointment ",
+   @ApiOperation(httpMethod = "DELETE", value = "Delete Appointment ",
             notes = "This method will Delete Appointment on base of id",
             produces = "application/json", nickname = "Appointment Delete ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -646,7 +634,7 @@ public class AppointmentAPI {
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }*/
+    }
 
 
     @ApiOperation(httpMethod = "GET", value = "Doctor Medical Services",
@@ -684,41 +672,6 @@ public class AppointmentAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-    }
-
-    @ApiOperation(httpMethod = "POST", value = "Import Appointments Data",
-            notes = "This method will import appointments data",
-            produces = "application/json", nickname = "Import Appointments",
-            response = GenericAPIResponse.class, protocols = "https")
-    @RequestMapping(value = "/importRecords", method = RequestMethod.POST)
-    public ResponseEntity<?> importAppointments(@RequestParam("dataFile") MultipartFile dataFile ) {
-
-        logger.info("importAppointments API initiated");
-        GenericAPIResponse response = new GenericAPIResponse();
-        try {
-            String fileName = dataFile.getOriginalFilename();
-            File file = HISCoreUtil.multipartToFile(dataFile);
-            int records = bulkImportService.importAppointmentRecords(fileName);
-
-            response.setResponseMessage(messageBundle.getString("appointment.records.import.success"));
-            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            logger.info(records + " - Appointment records imported successfully...");
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (FileNotFoundException fnfe) {
-            logger.error("importAppointments File not found.", fnfe.fillInStackTrace());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("appointment.records.import.file.not.found"));
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception ex) {
-            logger.error("importAppointments Process Failed.", ex.fillInStackTrace());
-            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("appointment.records.import.failed"));
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
 

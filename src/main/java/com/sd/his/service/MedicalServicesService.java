@@ -114,12 +114,11 @@ public class MedicalServicesService {
         medicalServiceRepository.save(medicalService);
         if (HISCoreUtil.isListValid(createRequest.getBranches())) {
             List<BranchMedicalService> list = new ArrayList<>();
-            for (BranchWrapperPart branchWrapper : createRequest.getBranches()) {
-                if (branchWrapper.isCheckedBranch()) {
-                    Branch branch = this.branchRepository.findOne(branchWrapper.getId());
+            for (Long  branchWrapper : createRequest.getSelectedBranchesMS()) {
+                    Branch branch = this.branchRepository.findOne(branchWrapper);
                     BranchMedicalService branchMedicalService = new BranchMedicalService(branch, medicalService);
                     list.add(branchMedicalService);
-                }
+
             }
             if (HISCoreUtil.isListValid(list)) {
                 branchMedicalServiceRepository.save(list);

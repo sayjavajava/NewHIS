@@ -2,8 +2,6 @@ package com.sd.his.controller.patient;
 
 import com.sd.his.controller.AppointmentAPI;
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.Drug;
-import com.sd.his.model.Medication;
 import com.sd.his.model.Organization;
 import com.sd.his.service.DrugService;
 import com.sd.his.service.MedicationService;

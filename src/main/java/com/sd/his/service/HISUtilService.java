@@ -36,21 +36,22 @@ public class HISUtilService {
     private PrefixRepository prefixRepository;
 
     private final Logger logger = LoggerFactory.getLogger(HISUtilService.class);
-/*
-* this method used where you need to get current prefix and update sequence of that prefix
-* used where you need both operation
-* */
+
+    /*
+    * this method used where you need to get current prefix and update sequence of that prefix
+    * used where you need both operation
+    * */
     public String getPrefixId(ModuleEnum moduleName) {
-       String currentPrefix =  generatePrefix(moduleName);
+        String currentPrefix = generatePrefix(moduleName);
         updatePrefix(moduleName);
         return currentPrefix;
     }
 
-/*
-this method use for getting prefix on popup and will not update current sequence in database
-* */
+    /*
+    this method use for getting prefix on popup and will not update current sequence in database
+    * */
     public String generatePrefix(ModuleEnum moduleName) {
-        Prefix prefix= prefixRepository.findByModule(moduleName.name());
+        Prefix prefix = prefixRepository.findByModule(moduleName.name());
         String currentPrefix = prefix.getName() + prefix.getCurrentValue();
         return currentPrefix;
     }
@@ -59,13 +60,13 @@ this method use for getting prefix on popup and will not update current sequence
 this method use for update current sequence in database after saving new entity in database
 * */
     public void updatePrefix(ModuleEnum moduleName) {
-        Prefix prefix= prefixRepository.findByModule(moduleName.name());
-        prefix.setCurrentValue(prefix.getCurrentValue()+1L);
+        Prefix prefix = prefixRepository.findByModule(moduleName.name());
+        prefix.setCurrentValue(prefix.getCurrentValue() + 1L);
         prefixRepository.save(prefix);
     }
 
     // Get List of  ALL TimeZones from  Java 8 TimeZone API
-    public  Map<String, String> getListofTimeZone() {
+    public Map<String, String> getListofTimeZone() {
 
         List<String> zoneList = new ArrayList<>(ZoneId.getAvailableZoneIds());
         if (HISCoreUtil.isListValid(zoneList)) {
@@ -77,7 +78,7 @@ this method use for update current sequence in database after saving new entity 
     }
 
     // Using Map to Retrieve  TimeZone
-    public   Map<String, String> getAllZoneIds(List<String> zoneList) {
+    public Map<String, String> getAllZoneIds(List<String> zoneList) {
 
         Map<String, String> result = new HashMap<>();
         LocalDateTime dt = LocalDateTime.now();
@@ -102,8 +103,8 @@ this method use for update current sequence in database after saving new entity 
        Second Parameter timezone
 
      */
-    public  String converttoUTCDateTimeZone(Date date,
-                                            String timeZone) {
+    public String converttoUTCDateTimeZone(Date date,
+                                           String timeZone) {
 
         if (date == null)
             return null;
@@ -121,11 +122,11 @@ this method use for update current sequence in database after saving new entity 
     }
 
 
-    public  String  getCurrentTimeByzone(String tzName) {
+    public String getCurrentTimeByzone(String tzName) {
 
-        String currentTime="";
+        String currentTime = "";
 
-        if(HISCoreUtil.isNull(tzName)){
+        if (HISCoreUtil.isNull(tzName)) {
             return null;
         }
         Calendar time = new GregorianCalendar(java.util.TimeZone.getTimeZone(tzName));
@@ -134,14 +135,14 @@ this method use for update current sequence in database after saving new entity 
         int minute = time.get(Calendar.MINUTE);
         int second = time.get(Calendar.SECOND);
         int year = time.get(Calendar.YEAR);
-        currentTime=hour+":"+minute+":"+second;
+        currentTime = hour + ":" + minute + ":" + second;
         return currentTime;
     }
 
     // This Method  get Current Date time of Specific TimeZone
     //
-    public  String getDateTimefromTimeZone(Date date, String format,
-                                           String timeZone) {
+    public String getDateTimefromTimeZone(Date date, String format,
+                                          String timeZone) {
 
         if (date == null)
             return null;
@@ -158,8 +159,7 @@ this method use for update current sequence in database after saving new entity 
     }
 
 
-    private Date combineDateTime(Date date, Date time)
-    {
+    private Date combineDateTime(Date date, Date time) {
         Calendar calendarA = Calendar.getInstance();
         calendarA.setTime(date);
         Calendar calendarB = Calendar.getInstance();
@@ -174,25 +174,25 @@ this method use for update current sequence in database after saving new entity 
         return result;
     }
 
-    public  List<DateFormatEnum> getDateFormatList() {
+    public List<DateFormatEnum> getDateFormatList() {
 
 
-        List<DateFormatEnum>   dateFormatList =
+        List<DateFormatEnum> dateFormatList =
                 new ArrayList<DateFormatEnum>(EnumSet.allOf(DateFormatEnum.class));
 
 
-        if(null == dateFormatList || dateFormatList.isEmpty()){
+        if (null == dateFormatList || dateFormatList.isEmpty()) {
             return null;
-        }else{
-            return  dateFormatList;
+        } else {
+            return dateFormatList;
         }
 
 
     }
 
 
-    public  String convertDateToTimeZone(Date date, String format,
-                                               String timeZone) {
+    public String convertDateToTimeZone(Date date, String format,
+                                        String timeZone) {
 
         if (date == null)
             return null;
@@ -208,8 +208,6 @@ this method use for update current sequence in database after saving new entity 
 
         return sdf.format(date);
     }
-
-
 
 
 }

@@ -5,18 +5,22 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "zone")
+@Table(name = "ZONE")
 public class Zone implements Serializable {
     @Id
-    @Column(name = "zone_id")
+    @Column(name = "ZONE_ID")
     private long zoneId;
 
-    @Column(name = "zone_name")
+    @Column(name = "ZONE_NAME")
     private String name;
 
-    @Column(name="zone_time")
+    @Column(name="ZONE_TIME")
     private String zoneTime;
 
+    public Zone(String name, String zoneTime) {
+        this.name = name;
+        this.zoneTime = zoneTime;
+    }
 
     public long getZoneId() {
         return zoneId;

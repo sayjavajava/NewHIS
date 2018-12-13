@@ -1,18 +1,11 @@
 package com.sd.his.service;
 
-import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.CustomerEntity;
-import com.sd.his.model.Department;
-import com.sd.his.model.Patient;
 import com.sd.his.repository.CustomerRepository;
-import com.sd.his.repository.DepartmentRepository;
-import com.sd.his.wrapper.DepartmentWrapper;
-import com.sd.his.wrapper.PatientWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

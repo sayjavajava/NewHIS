@@ -7,7 +7,6 @@ import com.sd.his.service.DepartmentService;
 import com.sd.his.service.MedicalServicesService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
-import com.sd.his.wrapper.response.BranchResponseWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
