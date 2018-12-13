@@ -25,14 +25,11 @@ package com.sd.his.enums;
 public enum AppointmentStatusTypeEnum {
 
 
-    IN_ROOM,
+    PENDING,
     IN_SESSION,
     COMPLETE,
     CONFIRMED,
-    NOT_CONFIRMED,
-    RE_SCHEDULED,
     CANCELLED,
-    CHECK_IN,
-    REGULAR
+    CHECK_IN
 
 }

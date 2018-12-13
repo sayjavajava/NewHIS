@@ -61,6 +61,14 @@ public class Status extends BaseEntity implements Serializable {
 
     public Status() {
     }
+
+    public Status(String name, String abbreviation, boolean status, String hashColor) {
+        this.name = name;
+        this.abbreviation = abbreviation;
+        this.status = status;
+        this.hashColor = hashColor;
+    }
+
     public List<Appointment> getAppointments() {
         return appointments;
     }
