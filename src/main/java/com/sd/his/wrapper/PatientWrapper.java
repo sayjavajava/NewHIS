@@ -35,7 +35,7 @@ public class PatientWrapper {
     private String email = "";
     private String userName = "";
     private String preferredCommunication = "";
-    private boolean status = true;
+    private boolean status;
     private String patientGroup;
     private Long patientGroupId;
 
@@ -129,6 +129,8 @@ public class PatientWrapper {
         this.label = patient.getFirstName();
         this.value = patient.getId();
         this.gender = patient.getGender().name();
+        this.status = patient.getStatus().name().equalsIgnoreCase("ACTIVE");
+        this.hasChild = !(patient.getAppointments() == null || patient.getAppointments().size() < 1);         // if null then false else true;
 
         if (patient.getCity() != null) {
             this.city = patient.getCity().getName();
