@@ -59,6 +59,8 @@ public class DepartmentWrapper {
         this.name = departmentWrapper.getName();
         this.description = departmentWrapper.description;
         this.active = departmentWrapper.isActive();
+        this.label =departmentWrapper.getName();
+        this.value =departmentWrapper.getId();
     }
 
     public DepartmentWrapper(Department dpt) {
@@ -73,6 +75,7 @@ public class DepartmentWrapper {
         } else {
             this.hasChild = false;
         }
+
 
     }
 

@@ -242,16 +242,11 @@ public class HISCoreUtil {
             return null;
 
         SimpleDateFormat sdf = new SimpleDateFormat(format);
-
-
         if (timeZone == null || "".equalsIgnoreCase(timeZone.trim())) {
             return null;
         }
-
         sdf.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
-
-
-                return  sdf.format(date);
+        return  sdf.format(date);
 
             //    return
 
@@ -339,13 +334,6 @@ public class HISCoreUtil {
         }
         return date;
     }
-
-
-
-
-
-
-
     public static Date convertToAPPDateZone(String str,String format) {
         Date date = null;
         if (str != null) {

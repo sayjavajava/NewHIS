@@ -18,7 +18,7 @@ public class DoctorMedicalService extends BaseEntity implements Serializable{
     private MedicalService medicalService;
 
     @Column
-    private String comission;
+    private Double comission;
 
     public DoctorMedicalService(Doctor doctor, MedicalService medicalService) {
         this.doctor = doctor;
@@ -28,11 +28,11 @@ public class DoctorMedicalService extends BaseEntity implements Serializable{
     public DoctorMedicalService() {
     }
 
-    public String getComission() {
+    public Double getComission() {
         return comission;
     }
 
-    public void setComission(String comission) {
+    public void setComission(Double comission) {
         this.comission = comission;
     }
 

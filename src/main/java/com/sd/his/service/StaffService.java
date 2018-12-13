@@ -435,7 +435,7 @@ public class StaffService {
             List<Long> selectedServces = createRequest.getServiceComission().stream().map(x->x.getId()).collect(Collectors.toList());
             List<MedicalService> medicalServicesList = medicalServiceRepository.findAllByIdIn(selectedServces);
             List<DoctorMedicalService> doctorMedicalServiceList = new ArrayList<>();
-            Optional<String> serviceCom =null;
+            Optional<Double> serviceCom =null;
             if (!HISCoreUtil.isListEmpty(medicalServicesList)) {
             for (MedicalService ms : medicalServicesList) {
                 DoctorMedicalService dms = new DoctorMedicalService();
@@ -483,7 +483,7 @@ public class StaffService {
         }
         return null;
     }
-    private Optional<String> getComissionOfServices(List<ServiceComission> list, long id){
+    private Optional<Double> getComissionOfServices(List<ServiceComission> list, long id){
         return list.stream().filter(x-> x.getId() == id).map(x->x.getComission()).findFirst();
     }
 
@@ -668,7 +668,7 @@ public class StaffService {
                 List<DoctorMedicalService> doctorMedicalServiceList = new ArrayList<>();
                 if (!HISCoreUtil.isListEmpty(medicalServiceList)) {
                     doctorMedicalServiceRepository.deleteDoctorMedicalServiceByDoctor_Id(doctor.getId());
-                    Optional<String> serviceCom =null;
+                    Optional<Double> serviceCom =null;
                     for (MedicalService ms : medicalServiceList) {
                         DoctorMedicalService dms = new DoctorMedicalService();
                         dms.setDoctor(doctor);

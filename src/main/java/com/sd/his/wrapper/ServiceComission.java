@@ -4,9 +4,9 @@ public class ServiceComission {
 
     private long id;
     private boolean checked ;
-    private String comission;
+    private Double comission;
 
-    public ServiceComission(long id, boolean checked, String comission) {
+    public ServiceComission(long id, boolean checked, Double comission) {
         this.id = id;
         this.checked = checked;
         this.comission = comission;
@@ -31,11 +31,11 @@ public class ServiceComission {
         this.checked = checked;
     }
 
-    public String getComission() {
+    public Double getComission() {
         return comission;
     }
 
-    public void setComission(String comission) {
+    public void setComission(Double comission) {
         this.comission = comission;
     }
 }

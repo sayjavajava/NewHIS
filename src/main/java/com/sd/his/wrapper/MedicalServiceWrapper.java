@@ -44,7 +44,7 @@ public class MedicalServiceWrapper {
     private long checkedBranchCount;
     private long value;
     private String label;
-    private String comissionService;
+    private Double comissionService;
 
     private List<BranchWrapperPart> branches;
     private List<BranchWrapperPart> checkedBranches;
@@ -65,7 +65,7 @@ public class MedicalServiceWrapper {
         this.description = medicalServiceWrapper.getDescription();
         this.duration = medicalServiceWrapper.getDuration();
     }
-    public MedicalServiceWrapper(MedicalService ms,String comissionService,long medDocID){
+    public MedicalServiceWrapper(MedicalService ms,double comissionService,long medDocID){
         this.id = ms.getId();
         this.name = ms.getName();
         this.name = ms.getName();
@@ -73,7 +73,7 @@ public class MedicalServiceWrapper {
         this.cost = ms.getCost();
         this.status = ms.getStatus();
         this.description = ms.getDescription();
-        this.comissionService =comissionService;
+        this.comissionService = comissionService;
 
     }
 
@@ -102,7 +102,6 @@ public class MedicalServiceWrapper {
         this.duration = ms.getDuration();
         this.checkedBranchCount = ms.getBranchMedicalServices() == null ? 0 : ms.getBranchMedicalServices().size();
         this.checkedDepartmentCount = ms.getDepartmentMedicalServices() == null ? 0 : ms.getDepartmentMedicalServices().size();
-
         if (ms.getDoctorMedicalServices() != null && ms.getDoctorMedicalServices().size() > 0 ||
                 ms.getAppointment() != null && ms.getAppointment().size() > 0) {
             this.hasChild = true;
@@ -140,11 +139,11 @@ public class MedicalServiceWrapper {
         this.selectedBranchesMS = selectedBranchesMS;
     }
 
-    public String getComissionService() {
+    public Double getComissionService() {
         return comissionService;
     }
 
-    public void setComissionService(String comissionService) {
+    public void setComissionService(Double comissionService) {
         this.comissionService = comissionService;
     }
 

@@ -78,13 +78,15 @@ public class AppointmentService {
     private DoctorMedicalServiceRepository doctorMedicalServiceRepository;
     @Autowired
     private StatusRepository statusRepository;
+    @Autowired
+    private OrganizationService organizationService;
 
 
     Logger logger = LoggerFactory.getLogger(AppointmentService.class);
 
     public List<AppointmentWrapper> findAllPaginatedAppointments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-        List<AppointmentWrapper> list = appointmentRepository.findAllPaginatedAppointments(pageable);
+    //    List<AppointmentWrapper> list = appointmentRepository.findAllPaginatedAppointments(pageable);
         return appointmentRepository.findAllPaginatedAppointments(pageable);
     }
 
@@ -120,20 +122,19 @@ public class AppointmentService {
         Appointment appointmentObj2;
         String result = "success";
         Patient patient = null;
-        /*Optional<String> patientType = appointmentWrapper.getAppointmentType().stream()
-                .filter(x -> x.equalsIgnoreCase("NewPatient")).findFirst();*/
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+
         if (appointmentWrapper.getStateOfPatientBox()) {
             patient = this.buildPatient(appointmentWrapper);
             appointment.setPatient(patient);
         }
-        appointment = this.buildAppointment(appointmentWrapper, appointment);
+        appointment = this.buildAppointment(appointmentWrapper, appointment,zone);
 
         if (appointmentWrapper.isRecurringAppointment()) {
-            //  LocalDate start = LocalDate.parse( new SimpleDateFormat("dd-MM-yyyy").format(appointmentWrapper.getFirstAppointment()));
             LocalDate start = HISCoreUtil.convertDateToLocalDate(appointmentWrapper.getFirstAppointment());
             LocalDate end = HISCoreUtil.convertDateToLocalDate(appointmentWrapper.getLastAppointment());
             List<LocalDate> listOfDates = new ArrayList<>();
-            //  LocalDate testEnd = LocalDate.of(2018,12,07);
             List<LocalDate> dates = Stream.iterate(start, date -> date.plusDays(1))
                     .limit(ChronoUnit.DAYS.between(start, end))
                     .collect(Collectors.toList());
@@ -147,10 +148,12 @@ public class AppointmentService {
 
             if (!HISCoreUtil.isListEmpty(listOfDates)) {
                 for (LocalDate localDate1 : listOfDates) {
-                    boolean isAlreadyExist = this.checkTimeAndDateAlreadyExist(HISCoreUtil.convertLocalDateToDate(localDate1), appointment.getStartedOn(), appointment.getEndedOn(), appointmentWrapper.getDoctorId());
+                    String readDate=HISCoreUtil.convertDateToTimeZone(HISCoreUtil.convertLocalDateToDate(localDate1),"YYYY-MM-dd hh:mm:ss",zone);
+                    Date zoneScheduleDate=HISCoreUtil.convertStringDateObject(readDate);
+                    boolean isAlreadyExist = this.checkTimeAndDateAlreadyExist(zoneScheduleDate, appointment.getStartedOn(), appointment.getEndedOn(), appointmentWrapper.getDoctorId());
                     if (!isAlreadyExist) {
                         appointmentObj = new Appointment();
-                        appointmentObj2 = this.buildAppointment(appointmentWrapper, appointmentObj);
+                        appointmentObj2 = this.buildAppointment(appointmentWrapper, appointmentObj,zone);
                         appointmentObj2.setSchdeulledDate(HISCoreUtil.convertLocalDateToDate(localDate1));
                         appointmentRepository.save(appointmentObj2);
                     }
@@ -181,26 +184,26 @@ public class AppointmentService {
             patient.setPrimaryDoctor(doctorRepository.findOne(1L));*/
         patient.setLastName(appointmentWrapper.getNewPatient());
         patient.setMiddleName(appointmentWrapper.getNewPatient());
-        // patient.setLastName(appointmentWrapper.getNewPatient());
         patient.setCellPhone(appointmentWrapper.getCellPhone());
-        //  patient.setDob(appointmentWrapper.getDateOfBirth());
         patientRepository.save(patient);
         return patient;
     }
 
-    private Appointment buildAppointment(AppointmentWrapper appointmentWrapper, Appointment appointment) {
+    private Appointment buildAppointment(AppointmentWrapper appointmentWrapper, Appointment appointment,String zone) {
         Patient patient = new Patient();
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
-        // appointment.setRecurringDays(new Gson().toJson(appointmentWrapper.getSelectedRecurringDays()));
-        Date scheduleDate = appointmentWrapper.getDateSchedule();
-        appointment.setSchdeulledDate(scheduleDate);
+       // Date scheduleDate = appointmentWrapper.getDateSchedule();
+       // appointment.setSchdeulledDate(scheduleDate); // old working sc date without zone
+        String readDate=HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(),"YYYY-MM-dd hh:mm:ss",zone);
+        Date zoneScheduleDate=HISCoreUtil.convertStringDateObject(readDate);
 
         //Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDateAndTime()));
-        LocalDateTime date2 = HISCoreUtil.convertToLocalDateTimeViaSqlTimestamp(appointment.getSchdeulledDate());
+        LocalDateTime date2 = HISCoreUtil.convertToLocalDateTimeViaSqlTimestamp(zoneScheduleDate);
 
+        appointment.setSchdeulledDate(zoneScheduleDate);
+        logger.info("zone date .."+ zoneScheduleDate);
         appointment.setStartedOn(HISCoreUtil.convertToDateViaLocalDateTime(date2));
-        //  appointment.setStartedOn(HISCoreUtil.convertToTime(scheduleDate));
-        Date ended = HISCoreUtil.addTimetoDate(scheduleDate, appointmentWrapper.getDuration());
+        Date ended = HISCoreUtil.addTimetoDate(appointment.getSchdeulledDate(), appointmentWrapper.getDuration());
         appointment.setEndedOn(ended);
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setNotes(appointmentWrapper.getNotes());
@@ -238,17 +241,28 @@ public class AppointmentService {
     @Transactional
     public String updateAppointment(AppointmentWrapper appointmentWrapper, Appointment alreadyExistAppointment) {
         String result = "success";
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String zone=dbOrganization.getZone().getName().replaceAll("\\s","");
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
 
-        Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
-        alreadyExistAppointment.setSchdeulledDate(scheduleDate);
+        String readDate=HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(),"YYYY-MM-dd hh:mm:ss",zone);
+        Date zoneScheduleDate=HISCoreUtil.convertStringDateObject(readDate);
+
+        //Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
+        /*alreadyExistAppointment.setSchdeulledDate(zoneScheduleDate);
         Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
         alreadyExistAppointment.setStartedOn(date2);
         Date ended = HISCoreUtil.addTimetoDate(scheduleDate, appointmentWrapper.getDuration());
+        alreadyExistAppointment.setEndedOn(ended);*/
+
+        LocalDateTime date2 = HISCoreUtil.convertToLocalDateTimeViaSqlTimestamp(zoneScheduleDate);
+
+        alreadyExistAppointment.setSchdeulledDate(zoneScheduleDate);
+        logger.info("zone date .."+ zoneScheduleDate);
+        alreadyExistAppointment.setStartedOn(HISCoreUtil.convertToDateViaLocalDateTime(date2));
+        Date ended = HISCoreUtil.addTimetoDate(alreadyExistAppointment.getSchdeulledDate(), appointmentWrapper.getDuration());
         alreadyExistAppointment.setEndedOn(ended);
-      /*  Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
-        alreadyExistAppointment.setSchdeulledDate(scheduleDate);
-        alreadyExistAppointment.setEndedOn(HISCoreUtil.addTimetoDate(scheduleDate,appointmentWrapper.getDuration()));*/
+
         alreadyExistAppointment.setReason(appointmentWrapper.getReason());
         alreadyExistAppointment.setNotes(appointmentWrapper.getNotes());
         alreadyExistAppointment.setColor(appointmentWrapper.getColor());
@@ -275,7 +289,7 @@ public class AppointmentService {
             Status apptStatus = statusRepository.findOne(appointmentWrapper.getStatusId());
             alreadyExistAppointment.setStatus(apptStatus);
         }
-        if (!checkTimeAndDateAlreadyExistForUpdate(scheduleDate, date2, ended, appointmentWrapper.getDoctorId(), appointmentWrapper.getAppointmentId())) {
+        if (!checkTimeAndDateAlreadyExistForUpdate(alreadyExistAppointment.getSchdeulledDate(), alreadyExistAppointment.getStartedOn(), ended, appointmentWrapper.getDoctorId(), appointmentWrapper.getAppointmentId())) {
             appointmentRepository.save(alreadyExistAppointment);
 
         } else {

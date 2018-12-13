@@ -63,7 +63,6 @@ public class DepartmentService {
     public List<DepartmentWrapper> getDepartmentsActive() {
         List<Department> dpts = departmentRepository.findAll();
         List<DepartmentWrapper> dptsWrappers = new ArrayList<>();
-
         for (Department cd : dpts) {
             if (cd.getStatus()) {
                 DepartmentWrapper dpt = new DepartmentWrapper(cd);
@@ -91,7 +90,6 @@ public class DepartmentService {
 
     public List<DepartmentWrapper> getDepartmentsByBranchIds(List<Long> branchIds) {
         List<DepartmentWrapper> departmentList = new ArrayList<>();
-
         for (Long i : branchIds) {
             List<BranchDepartment> branchDepartment = branchDepartmentRepository.getAllByBranch_id(i);
             for (BranchDepartment bd : branchDepartment) {
@@ -175,7 +173,7 @@ public class DepartmentService {
          branchDepartmentRepository.save(branchDepartmentList);
          hisUtilService.updatePrefix(ModuleEnum.DEPARTMENT);
         }
-        return dpt ;
+        return dpt;
     }
 
     @Transactional(rollbackOn = Throwable.class)

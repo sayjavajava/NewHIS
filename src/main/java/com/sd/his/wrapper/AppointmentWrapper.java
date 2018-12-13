@@ -1,10 +1,15 @@
 package com.sd.his.wrapper;
 
 
+import com.sd.his.model.Organization;
+import com.sd.his.service.OrganizationService;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.utill.JSONUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -96,8 +101,11 @@ public class AppointmentWrapper {
     private Long value;
     private Date dateSchedule;
     private Long statusId;
-
+    private String zonedDate;
+    private String formatedDate ="YYYY-MM-dd hh:mm:ss";
+    private String zone = "Asia/Karachi";
     private Double refundAmount;
+
 
     public AppointmentWrapper() {
     }
@@ -111,13 +119,15 @@ public class AppointmentWrapper {
                               Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId,Date followUpDate,Long serviceId,String serviceName
     ) {
 
+
         this.id = id;
         this.appointmentId=appointmentId;
-        this.title = title;
+        this.zonedDate = HISCoreUtil.convertDateToTimeZone(scheduleDate,this.formatedDate,zone);
         this.appointmentConvertedTime = convertAppointmentTime(startedOn);
         this.appointmentEndedConvertedTime = convertAppointmentTime(startedOn) + duration;
         this.appointmentEndedOn = HISCoreUtil.convertTimeToString(endedOn);
-        this.scheduleDate = HISCoreUtil.convertDateToString(scheduleDate);
+      //  this.scheduleDate = HISCoreUtil.convertDateToString(scheduleDate);
+        this.scheduleDate = this.zonedDate;
         this.draggable = draggable;
         this.patient = firstName + " " + lastName;
         this.notes = notes;
@@ -149,6 +159,8 @@ public class AppointmentWrapper {
         this.serviceName=serviceName;
         this.label = appointmentId+","+HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
         this.value = id;
+
+
 
     }
     public AppointmentWrapper(Long id,String appointmentId, String title,Date scheduleDate, String firstName, String lastName, String docFirstName, String docLastName, Long patientId, String invPrefix, boolean completed)
