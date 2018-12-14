@@ -9,8 +9,11 @@ import com.sd.his.wrapper.reports.RefundReceiptReportWrapper;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -20,6 +23,8 @@ public class ReportPrintService {
     private PatientRepository patientRepository;
     @Autowired
     private OrganizationRepository organizationRepository;
+    @Value("${spring.http.multipart.location}")
+    private String tmpFilePath;
 
     private String path = "./WEB-INF/reports/";
 
@@ -35,8 +40,10 @@ public class ReportPrintService {
         return patientRepository.getOneInvoicePaymentData(invoiceId);
     }
 
-    public String generateReport(String reportName, Map<String, Object> parameters) throws JRException, SQLException {
-        String reportPath = path + reportName + ".jrxml", pdfPath = path + reportName + ".pdf";
+    public String generateReport(String reportName, Map<String, Object> parameters) throws JRException, SQLException, IOException, InterruptedException {
+        String reportPath = path + reportName + ".jrxml";
+        String reportId = (String) parameters.getOrDefault("invoiceId", (String) parameters.getOrDefault("paymentId", (String) parameters.get("transId")));
+        String pdfPath = tmpFilePath + reportName + "_" + reportId + ".pdf";
         JasperReport jasperReport = JasperCompileManager.compileReport(reportPath);
         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource((Collection<?>) parameters.get("beanDS"));
         parameters.put("beanCoDataSource", beanColDataSource);
@@ -54,7 +61,12 @@ public class ReportPrintService {
 //        exporter.exportReport();
 
         JasperExportManager.exportReportToPdfFile(jasperPrint, pdfPath);
-        return pdfPath;
+        File pdfFile = new File(pdfPath);
+        if (pdfFile.exists()) {
+            Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + pdfFile.getCanonicalPath());
+            p.waitFor();
+        }
+        return pdfFile.getCanonicalPath();
     }
 
     public Map<String, Object> createParamMap(PrintReportsEnum refundReceipt, Object wrapperObject) {

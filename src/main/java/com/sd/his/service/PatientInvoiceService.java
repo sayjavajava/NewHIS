@@ -139,14 +139,14 @@ public class PatientInvoiceService {
 
         if(invoice != null)
         {
-            double advanceCredit= 0.00;
+            double advanceCredit = 0.00;
             if(paymentRequest.getUseAdvancedBal()){
-                advanceCredit = paymentRequest.getUsedAdvanceDeposit();
+                advanceCredit = paymentRequest.getUsedAdvanceDeposit() == null ? 0D : paymentRequest.getUsedAdvanceDeposit();
             }
             double receivedAmount = (invoice.getPaidAmount()== null? 0.00 : invoice.getPaidAmount()) + paymentRequest.getPaidAmount() + advanceCredit + paymentRequest.getDiscountAmount();
 
             Patient patient = patientRepository.findOne(invoice.getPatient().getId());
-            double advanceConsumed = patient.getAdvanceBalance() - advanceCredit;
+            double advanceConsumed = (patient.getAdvanceBalance() == null ? 0D : patient.getAdvanceBalance()) - advanceCredit;
             if(receivedAmount >= invoice.getInvoiceAmount())
             {
                 invoice.setStatus(InvoiceStatusEnum.CLOSE.toString());
