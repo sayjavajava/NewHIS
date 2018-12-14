@@ -51,11 +51,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             " WHERE pt.paymentId = :paymentId ")
     AdvancePaymentReportWrapper getOneAdvancePaymentData(@Param("paymentId") String paymentId);
 
-    /*
-    PatientPaymentReportWrapper(String paymentId, String firstName, String middleName, String lastName, String patientEMR,
-                                       Date paymentDate, String invoiceId, Double invoiceAmount,
-                                       Double paidAmount, Double discountAmount, Double refund, Double advance)
-     */
     @Query("SELECT new com.sd.his.wrapper.reports.PatientPaymentReportWrapper(pip.payment.paymentId, pip.patient.firstName," +
             " pip.patient.middleName, pip.patient.lastName, pip.patient.patientId, pip.updatedOn, pip.invoice.invoiceId, pip.invoice.invoiceAmount," +
             " pip.invoice.paidAmount, pip.invoice.discountAmount, pip.advanceAmount) " +
