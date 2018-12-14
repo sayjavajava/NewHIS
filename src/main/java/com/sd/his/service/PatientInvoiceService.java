@@ -196,7 +196,12 @@ public class PatientInvoiceService {
         double advanceDeposit = 0.00;
 
         Patient patient = patientRepository.findOne(advancePaymentRequestWrapper.getPatientId());
-        advanceDeposit = patient.getAdvanceBalance() + advancePaymentRequestWrapper.getAmount();
+        if(patient.getAdvanceBalance() != null) {
+            advanceDeposit = patient.getAdvanceBalance() + advancePaymentRequestWrapper.getAmount();
+        }
+        else {
+            advanceDeposit = advancePaymentRequestWrapper.getAmount();
+        }
         patient.setAdvanceBalance(advanceDeposit);
         patientRepository.save(patient);
 
@@ -204,7 +209,6 @@ public class PatientInvoiceService {
         payment.setCreatedOn(new Date());
         payment.setUpdatedOn(new Date());
         payment.setPaymentId(advancePaymentRequestWrapper.getPaymentId());
-    //    payment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));  // To Do  (handle this from front end)
         payment.setPaymentAmount(advancePaymentRequestWrapper.getAmount());
         payment.setTransactionType("Advance");
         paymentRepository.save(payment);
