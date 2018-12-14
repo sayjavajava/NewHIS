@@ -8,9 +8,7 @@ import com.sd.his.wrapper.RaceWrapper;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by jamal on 6/7/2018.
@@ -74,8 +72,8 @@ public class PatientWrapper {
     private String photoBackURL;
 
     ////////////Appointment
-    private List<AppointmentWrapper> futureAppointments;
-    private List<AppointmentWrapper> pastAppointments;
+    private List<AppointmentWrapper> futureAppointments = new ArrayList<>();
+    private List<AppointmentWrapper> pastAppointments = new ArrayList<>();
     private String label;
     private long value;
 
@@ -146,6 +144,27 @@ public class PatientWrapper {
         if (patient.getPatientGroup() != null) {
             this.patientGroup = patient.getPatientGroup().getName();
             this.patientGroupId = patient.getPatientGroup().getId();
+        }
+
+        if (this.hasChild) {
+            Date today = new Date();
+            List<Appointment> appointments = patient.getAppointments();
+//            Collections.sort(appointments, new Comparator<Appointment>(){
+//                public int compare(Appointment o1, Appointment o2){
+//                    if(o1.getSchdeulledDate().equals(o2.getSchdeulledDate()))
+//                        return 0;
+//                    return o1.getSchdeulledDate().before(o2.getSchdeulledDate()) ? 1 : -1;
+//                }
+//            });
+            for (Appointment appointment : appointments) {
+                AppointmentWrapper appointmentWrapper = new AppointmentWrapper(appointment.getId(), appointment.getAppointmentId(), appointment.getName(), appointment.getSchdeulledDate(), this.firstName, this.lastName,
+                        this.getPrimaryDoctorFirstName(), this.getPrimaryDoctorLastName(), this.id, "", appointment.getStatus().isStatus());
+                if (appointment.getSchdeulledDate().before(today) || appointment.getSchdeulledDate().equals(today)) {
+                    futureAppointments.add(appointmentWrapper);
+                } else {
+                    pastAppointments.add(appointmentWrapper);
+                }
+            }
         }
 
     }

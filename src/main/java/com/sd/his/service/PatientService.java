@@ -463,7 +463,9 @@ public class PatientService {
     }
 
     public List<PatientWrapper> getAllPatient() {
-        return patientRepository.getAll();
+        List<PatientWrapper> patientsList = patientRepository.getAll();
+
+        return patientsList;
 //        return patientRepository.getAllByStatusTrue();
     }
 
