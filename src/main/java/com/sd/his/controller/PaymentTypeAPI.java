@@ -147,7 +147,7 @@ public class PaymentTypeAPI {
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public ResponseEntity<?> updatePaymentType(HttpServletRequest request,
-                                            @RequestBody PaymentType paymentType) {
+                                            @RequestBody PaymentTypeWrapper paymentType) {
 
 
         logger.info("Update Payment API - Update Payment Type By id:" + paymentType.getId());
@@ -201,9 +201,9 @@ public class PaymentTypeAPI {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public ResponseEntity<?> savePaymentType(HttpServletRequest request,
-                                          @RequestBody PaymentType paymentType) {
+                                          @RequestBody PaymentTypeWrapper paymentType) {
 
-        logger.info("Customer API Called...!!");
+        logger.info("API Called...!!");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("paymentType.save.error"));
         response.setResponseCode(ResponseEnum.PAYMENTTYPE_SAVE_ERROR.getValue());

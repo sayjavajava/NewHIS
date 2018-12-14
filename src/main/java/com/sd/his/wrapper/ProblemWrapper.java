@@ -1,8 +1,11 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.ICDCode;
+import com.sd.his.repository.ICDCodeRepository;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import org.codehaus.jackson.map.Serializers;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
@@ -41,6 +44,9 @@ public class ProblemWrapper extends BaseWrapper {
     private String status = "ACTIVE";
     private long patientId;
 
+
+
+    private String problemName;
     public Date getDatePrescribedDate() {
         return datePrescribedDate;
     }
@@ -78,6 +84,7 @@ public class ProblemWrapper extends BaseWrapper {
         this.status = problemWrapper.getStatus();
         this.info=problemWrapper.getInfo();
         this.patientId = problemWrapper.getPatientId();
+        this.problemName=problemWrapper.getProblemName();
 
     }
 
@@ -100,7 +107,28 @@ public class ProblemWrapper extends BaseWrapper {
         this.status = status;
         this.info=info;
         this.patientId = patientId;
+    //    ICDCode icdCode=icdCodeRepository.findByCode(codeName);
+     //   this.problemName=icdCode.getName();
     }
+
+
+    /*public ProblemWrapper(ProblemWrapper problemWrapper) {
+        super(problemWrapper.getId(),
+                problemWrapper.getCreatedOn(),
+                problemWrapper.getUpdatedOn());
+        this.appointmentId = problemWrapper.getAppointmentId();
+        this.selectedCodeId = problemWrapper.getSelectedCodeId();
+        this.codeName = problemWrapper.getCodeName();
+        this.selectedICDVersionId = problemWrapper.getSelectedICDVersionId();
+        this.versionName = problemWrapper.getVersionName();
+        this.dateDiagnosis = problemWrapper.getDateDiagnosis();
+        this.note = problemWrapper.getNote();
+        this.status = problemWrapper.getStatus();
+        this.info=problemWrapper.getInfo();
+
+        this.patientId = problemWrapper.getPatientId();
+        this.problemName=problemWrapper.getProblemName();
+    }*/
 
     public String getCodeName() {
         return codeName;
@@ -173,6 +201,15 @@ public class ProblemWrapper extends BaseWrapper {
 
     public long getAppointmentId() {
         return appointmentId;
+    }
+
+
+    public String getProblemName() {
+        return problemName;
+    }
+
+    public void setProblemName(String problemName) {
+        this.problemName = problemName;
     }
 
 }

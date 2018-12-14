@@ -37,21 +37,43 @@ public class PaymentTypeService {
 
     //Save Record For Payment Type
     @Transactional(rollbackOn = Throwable.class)
-    public PaymentType savePaymentAPI(PaymentType paymentType) {
-        return paymentRepository.save(paymentType);
+    public PaymentType savePaymentAPI(PaymentTypeWrapper paymentTypeWrapper) {
+        PaymentType paymentTypeObj=new PaymentType();
+    //    paymentTypeObj.setBankGlCharges(paymentTypeWrapper.getBankGlCharges());
+        paymentTypeObj.setPaymentGlAccount(paymentTypeWrapper.getPaymentGlAccount());
+        paymentTypeObj.setActive(paymentTypeWrapper.getActive());
+    //    paymentTypeObj.setMaxCardCharges(paymentTypeWrapper.getMaxCardCharges());
+        paymentTypeObj.setPatient(paymentTypeWrapper.getPatient());
+    //    paymentTypeObj.setPayCredit(paymentTypeWrapper.getPayCredit());
+        if(paymentTypeWrapper.getPaymentMode().equalsIgnoreCase("Card")){
+
+            paymentTypeObj.setMaxCardCharges(paymentTypeWrapper.getMaxCardCharges());
+            paymentTypeObj.setBankGlCharges(paymentTypeWrapper.getBankGlCharges());
+            paymentTypeObj.setPayCredit(paymentTypeWrapper.getPayCredit());
+            paymentTypeObj.setServiceCharges(paymentTypeWrapper.getServiceCharges());
+
+        }
+        paymentTypeObj.setPaymentMode(paymentTypeWrapper.getPaymentMode());
+        paymentTypeObj.setPaymentTitle(paymentTypeWrapper.getPaymentTitle());
+     //   paymentTypeObj.setServiceCharges(paymentTypeWrapper.getServiceCharges());
+        paymentTypeObj.setPaymentMode(paymentTypeWrapper.getPaymentMode());
+        paymentTypeObj.setPaymentPurpose(paymentTypeWrapper.getPaymentPurpose());
+      //  paymentTypeObj.
+       // paymentTypeObj.
+        /*if(paymentTypeWrapper.getPaymentMode().equalsIgnoreCase("Card")) {
+            return paymentRepository.(paymentTypeObj);
+        }*/
+        return paymentRepository.save(paymentTypeObj);
     }
 
     // Update Record////////////////////////////
     @Transactional(rollbackOn = Throwable.class)
-    public PaymentType updatePaymentType(PaymentType paymentType) {
+    public PaymentType updatePaymentType(PaymentTypeWrapper paymentType) {
         PaymentType paymentEntity = paymentRepository.findOne(Long.valueOf(paymentType.getId()));
        paymentEntity.setPaymentGlAccount(paymentType.getPaymentGlAccount());
         paymentEntity.setPaymentPurpose(paymentType.getPaymentPurpose());
         paymentEntity.setPaymentTitle(paymentType.getPaymentTitle());
         paymentEntity.setPaymentMode(paymentType.getPaymentMode());
-       // SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.ENGLISH);
-      //  String dateString = format.format(new Date());
-     //   paymentEntity.setUpdatedOn(HISCoreUtil.convertToDate(dateString));
         paymentEntity.setActive(paymentType.getActive());
         if(paymentType.getPaymentMode().equalsIgnoreCase("Card")){
 
