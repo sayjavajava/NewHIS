@@ -105,6 +105,7 @@ public class AppointmentWrapper {
     private String formatedDate ="YYYY-MM-dd hh:mm:ss";
     private String zone = "Asia/Karachi";
     private Double refundAmount;
+    private String hashColor;
 
 
     public AppointmentWrapper() {
@@ -113,7 +114,7 @@ public class AppointmentWrapper {
     public AppointmentWrapper(Long id, String name, String notes) {
     }
 
-    public AppointmentWrapper(Long id,String appointmentId, String title, String notes,String statusName,Long statusId, String reason, String color, String appointmentType, Integer duration,
+    public AppointmentWrapper(Long id,String appointmentId, String title, String notes,String statusName,String hashColor,Long statusId, String reason, String color, String appointmentType, Integer duration,
                               Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
                               Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, Long patientId,
                               Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId,Date followUpDate,Long serviceId,String serviceName
@@ -159,6 +160,8 @@ public class AppointmentWrapper {
         this.serviceName=serviceName;
         this.label = appointmentId+","+HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
         this.value = id;
+        this.hashColor =hashColor;
+
 
 
 
@@ -208,6 +211,14 @@ public class AppointmentWrapper {
                 ", type='" + type + '\'' +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public String getHashColor() {
+        return hashColor;
+    }
+
+    public void setHashColor(String hashColor) {
+        this.hashColor = hashColor;
     }
 
     public String getFollowUpDateResponse() {
