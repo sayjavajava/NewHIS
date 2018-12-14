@@ -127,7 +127,7 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "LAST_APPOINTMENT_ON")
     private Date lastAppointmentOn;
 
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=Status.class)
     @JoinColumn(name = "STATUS_ID")
     private Status status;

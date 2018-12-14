@@ -597,7 +597,7 @@ public class AppointmentAPI {
     public ResponseEntity<?> deleteAppointment(HttpServletRequest request,
                                           @PathVariable("id") long id) {
 
-        GenericAPIResponse response = new GenericAPIResponse();
+        GenericAPIResponse response = new GenericstatAPIResponse();
         response.setResponseMessage(messageBundle.getString("appointment.delete.error"));
         response.setResponseCode(ResponseEnum.APPT_NOT_DELETED.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());

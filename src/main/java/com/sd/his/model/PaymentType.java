@@ -16,26 +16,10 @@ public class PaymentType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-
-   /* @Column(name = "gl_account")
-    private  String paymentGlAccount;*/
-
-
-
-
     @ManyToOne
     @JoinColumn(name = "gl_account")
     private GeneralLedger paymentGlAccount;
 
-
-    /*@OneToMany(mappedBy = "PAYMENT_TYPE_ID")
-    private List<GeneralLedger> generalLedger;*/
-
-
-
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gl_account", nullable = false)
-    private GeneralLedger paymentGlAccount;*/
 
     @Column(name = "is_active", columnDefinition = "boolean default true", nullable = false)
     private Boolean active;
@@ -60,7 +44,7 @@ public class PaymentType extends BaseEntity implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "paymentType")
     private List<StaffPayment> staffPayment;
-
+    @JsonIgnore
     @OneToMany (mappedBy="paymentType")
     private List<ReceiptPaymentType> ReceiptPaymentType;
 
@@ -101,6 +85,8 @@ public class PaymentType extends BaseEntity implements Serializable {
     @Column(name = "is_patient", columnDefinition = "boolean default true")
     private Boolean isPatient;
 
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "payment_bankGlCharges")
     private GeneralLedger bankGlCharges;

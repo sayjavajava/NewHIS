@@ -48,6 +48,7 @@ public class LabOrder extends BaseEntity implements Serializable {
     @Column(name = "DATE_TEST")
     private Date dateTest;
 
+    @JsonIgnore
     @Column(name = "DOCTOR_SIGNOFF")
     private Boolean doctorSignOff;
 
@@ -67,7 +68,7 @@ public class LabOrder extends BaseEntity implements Serializable {
 
     public LabOrder() {
     }
-
+    @JsonIgnore
     public List<LabTest> getLabTests() {
         return labTests;
     }
@@ -76,6 +77,7 @@ public class LabOrder extends BaseEntity implements Serializable {
         this.labTests = labTests;
     }
 
+    @JsonIgnore
     public String getStatus() {
         return status;
     }
@@ -84,6 +86,7 @@ public class LabOrder extends BaseEntity implements Serializable {
         this.status = status;
     }
 
+    @JsonIgnore
     public String getComments() {
         return comments;
     }
@@ -92,6 +95,7 @@ public class LabOrder extends BaseEntity implements Serializable {
         this.comments = comments;
     }
 
+    @JsonIgnore
     public Date getDateTest() {
         return dateTest;
     }
@@ -100,6 +104,7 @@ public class LabOrder extends BaseEntity implements Serializable {
         this.dateTest = dateTest;
     }
 
+    @JsonIgnore
     public Boolean getDoctorSignOff() {
         return doctorSignOff;
     }
@@ -108,6 +113,7 @@ public class LabOrder extends BaseEntity implements Serializable {
         this.doctorSignOff = doctorSignOff;
     }
 
+    @JsonIgnore
     public Patient getPatient() {
         return patient;
     }
@@ -116,6 +122,7 @@ public class LabOrder extends BaseEntity implements Serializable {
         this.patient = patient;
     }
 
+    @JsonIgnore
     public Appointment getAppointment() {
         return appointment;
     }

@@ -20,4 +20,10 @@ public interface LabTestSpecimanRepository extends JpaRepository<LabTestSpeciman
             " AND lts.maxNormalRange = :maxNormalRange ")
     LabTestSpeciman findDuplicateTestEntry(@Param("testCode") String testCode, @Param("testName") String testName,
                                            @Param("minNormalRange") String minNormalRange, @Param("maxNormalRange") String maxNormalRange);
+
+
+    @Query("SELECT CASE WHEN COUNT (labTestSpeciman) > 0 THEN true ELSE false END " +
+            "FROM com.sd.his.model.LabTestSpeciman labTestSpeciman " +
+            "WHERE labTestSpeciman.testName=:name AND labTestSpeciman.id<>:id")
+    boolean getNameAndEqualId(@Param("id") Long id, @Param("name") String name);
 }

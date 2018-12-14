@@ -1,17 +1,91 @@
 package com.sd.his.wrapper.response;
 
-import com.sd.his.model.PaymentType;
+import com.sd.his.model.*;
+
+import java.util.List;
 
 public class PaymentTypeWrapper {
 
+    private GeneralLedger paymentGlAccount;
+
+
+    private String payCredit;
     private long id;
     private String paymentTitle;
     private String paymentMode;
+    private  String paymentPurpose;
     private double serviceCharges;
     private double maxCardCharges;
     private boolean active;
     private String paymentGlAccountName;
     private long paymentGlAccountId;
+
+    private Boolean isPatient;
+    private GeneralLedger bankGlCharges;
+
+
+
+    public void setServiceCharges(Double serviceCharges) {
+        this.serviceCharges = serviceCharges;
+    }
+
+
+
+    public void setMaxCardCharges(Double maxCardCharges) {
+        this.maxCardCharges = maxCardCharges;
+    }
+
+    public Boolean getPatient() {
+        return isPatient;
+    }
+
+    public void setPatient(Boolean patient) {
+        isPatient = patient;
+    }
+
+    public String getPayCredit() {
+        return payCredit;
+    }
+
+    public void setPayCredit(String payCredit) {
+        this.payCredit = payCredit;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public String getPaymentPurpose() {
+        return paymentPurpose;
+    }
+
+    public void setPaymentPurpose(String paymentPurpose) {
+        this.paymentPurpose = paymentPurpose;
+    }
+
+    public GeneralLedger getPaymentGlAccount() {
+        return paymentGlAccount;
+    }
+
+    public void setPaymentGlAccount(GeneralLedger paymentGlAccount) {
+        this.paymentGlAccount = paymentGlAccount;
+    }
+    public GeneralLedger getBankGlCharges() {
+        return bankGlCharges;
+    }
+
+    public void setBankGlCharges(GeneralLedger bankGlCharges) {
+        this.bankGlCharges = bankGlCharges;
+    }
+
+
+
+
+
 
 
 
@@ -28,6 +102,21 @@ public class PaymentTypeWrapper {
             this.paymentGlAccountId = p.getPaymentGlAccount().getId();
             this.paymentGlAccountName = p.getPaymentGlAccount().getName();
         }
+
+        this.active=p.getActive();
+        this.bankGlCharges=p.getBankGlCharges();
+        this.payCredit=p.getPayCredit();
+        this.paymentGlAccount=p.getPaymentGlAccount();
+        this.paymentMode=p.getPaymentMode();
+        this.paymentPurpose=p.getPaymentPurpose();
+        this.paymentTitle=p.getPaymentTitle();
+        /*active: true
+        bankGlCharges: GeneralLedgerModel {parentType: "", accountType: "-1", name: "", code: "", description: "", …}
+        payCredit: ""
+        paymentGlAccount: {id: 1, createdOn: 1542101139000, updatedOn: 1542101139000, parentType: "Liabilities", accountType: "Current Liabilities", …}
+        paymentMode: "Cash"
+        paymentPurpose: "Test Purpose"
+        paymentTitle: "Payment Title"*/
     }
     public long getId() {
         return id;

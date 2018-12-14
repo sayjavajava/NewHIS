@@ -1,6 +1,7 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +15,13 @@ import java.io.Serializable;
 public class LabTestSpeciman extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+
+
+    @NaturalId
+    @Column(name = "SPECIMAN_ID", unique = true, nullable = false, updatable = false)
+    private String specimanId;
+
 
     @Column(name = "TEST_CODE")
     private String testCode;
@@ -42,6 +50,7 @@ public class LabTestSpeciman extends BaseEntity implements Serializable {
     }
 
     public LabTestSpeciman(LabTestSpeciman labTestSpeciman) {
+        this.specimanId=labTestSpeciman.getSpecimanId();
         this.setId(labTestSpeciman.getId());
         this.testCode = labTestSpeciman.getTestCode();
         this.testName = labTestSpeciman.getTestName();
@@ -98,5 +107,14 @@ public class LabTestSpeciman extends BaseEntity implements Serializable {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+
+    public String getSpecimanId() {
+        return specimanId;
+    }
+
+    public void setSpecimanId(String specimanId) {
+        this.specimanId = specimanId;
     }
 }
