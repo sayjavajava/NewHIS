@@ -35,7 +35,7 @@ import java.util.List;
  * All rights reserved.
  *
  */
-public class AppointmentWrapper {
+public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
 
     private Long id;
     private String appointmentId;
@@ -82,7 +82,7 @@ public class AppointmentWrapper {
     private Long branchId;
     private String scheduleDate;
     private String scheduleDateAndTime;
-   // private Date scheduleDateAndTime2;
+    // private Date scheduleDateAndTime2;
     private String docFirstName;
     private String docLastName;
     private int appointmentConvertedTime;
@@ -127,7 +127,7 @@ public class AppointmentWrapper {
         this.appointmentConvertedTime = convertAppointmentTime(startedOn);
         this.appointmentEndedConvertedTime = convertAppointmentTime(startedOn) + duration;
         this.appointmentEndedOn = HISCoreUtil.convertTimeToString(endedOn);
-      //  this.scheduleDate = HISCoreUtil.convertDateToString(scheduleDate);
+        //  this.scheduleDate = HISCoreUtil.convertDateToString(scheduleDate);
         this.scheduleDate = this.zonedDate;
         this.draggable = draggable;
         this.patient = firstName + " " + lastName;
@@ -181,7 +181,7 @@ public class AppointmentWrapper {
         this.docFirstName = docFirstName;
         this.docLastName = docLastName;
 
-       // this.status = status.name();
+        // this.status = status.name();
         this.followUpReminder = followUpReminder;
         this.duration = duration;
         this.compareDate = scheduleDate;
@@ -739,5 +739,10 @@ public class AppointmentWrapper {
 
     public void setRefundAmount(Double refundAmount) {
         this.refundAmount = refundAmount;
+    }
+
+    @Override
+    public int compareTo(AppointmentWrapper o) {
+        return getCompareDate().compareTo(o.getCompareDate());
     }
 }

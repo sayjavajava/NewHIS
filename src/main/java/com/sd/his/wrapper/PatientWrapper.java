@@ -74,6 +74,8 @@ public class PatientWrapper {
     ////////////Appointment
     private List<AppointmentWrapper> futureAppointments = new ArrayList<>();
     private List<AppointmentWrapper> pastAppointments = new ArrayList<>();
+    private String lastAppointment = "";
+    private String nextAppointment = "";
     private String label;
     private long value;
 
@@ -149,22 +151,20 @@ public class PatientWrapper {
         if (this.hasChild) {
             Date today = new Date();
             List<Appointment> appointments = patient.getAppointments();
-//            Collections.sort(appointments, new Comparator<Appointment>(){
-//                public int compare(Appointment o1, Appointment o2){
-//                    if(o1.getSchdeulledDate().equals(o2.getSchdeulledDate()))
-//                        return 0;
-//                    return o1.getSchdeulledDate().before(o2.getSchdeulledDate()) ? 1 : -1;
-//                }
-//            });
             for (Appointment appointment : appointments) {
                 AppointmentWrapper appointmentWrapper = new AppointmentWrapper(appointment.getId(), appointment.getAppointmentId(), appointment.getName(), appointment.getSchdeulledDate(), this.firstName, this.lastName,
                         this.getPrimaryDoctorFirstName(), this.getPrimaryDoctorLastName(), this.id, "", appointment.getStatus().isStatus());
                 if (appointment.getSchdeulledDate().before(today) || appointment.getSchdeulledDate().equals(today)) {
-                    futureAppointments.add(appointmentWrapper);
-                } else {
                     pastAppointments.add(appointmentWrapper);
+                } else {
+                    futureAppointments.add(appointmentWrapper);
                 }
             }
+            Collections.sort(pastAppointments);
+            Collections.sort(futureAppointments);
+
+            lastAppointment = pastAppointments.size() > 0 ? pastAppointments.get(pastAppointments.size() - 1).getScheduleDateAndTime() : "";
+            nextAppointment = futureAppointments.size() > 0 ? futureAppointments.get(0).getScheduleDateAndTime() : "";
         }
 
     }
@@ -639,5 +639,21 @@ public class PatientWrapper {
 
     public void setPatientGroupId(Long patientGroupId) {
         this.patientGroupId = patientGroupId;
+    }
+
+    public String getLastAppointment() {
+        return lastAppointment;
+    }
+
+    public void setLastAppointment(String lastAppointment) {
+        this.lastAppointment = lastAppointment;
+    }
+
+    public String getNextAppointment() {
+        return nextAppointment;
+    }
+
+    public void setNextAppointment(String nextAppointment) {
+        this.nextAppointment = nextAppointment;
     }
 }
