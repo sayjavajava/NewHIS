@@ -23,9 +23,10 @@ public class DashboardResponseWrapper {
     private String patientLastName;
     private Long patientId;
     private Long statusId;
+    private String hashColor;
 
 
-    public DashboardResponseWrapper(Long appointmentId,String apptNaturalId,Long patientId ,String patientFirstName, String patientLastName,String statuName,Long statusId ,Date inTime, String doctorFirstName, String doctorLastName, String branch, String group, Date scheduleAt, String examRoom, Long branchId, Long doctorId, Long roomId) {
+    public DashboardResponseWrapper(Long appointmentId,String apptNaturalId,Long patientId ,String patientFirstName, String patientLastName,String statuName,String hashColor,Long statusId ,Date inTime, String doctorFirstName, String doctorLastName, String branch, String group, Date scheduleAt, String examRoom, Long branchId, Long doctorId, Long roomId) {
         this.appointmentId=appointmentId;
         this.inTime = HISCoreUtil.convertDateAndTimeToString(scheduleAt);
         this.patientFirstName =patientFirstName;
