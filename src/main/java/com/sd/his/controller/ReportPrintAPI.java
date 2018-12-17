@@ -4,6 +4,7 @@ import com.sd.his.enums.InvoiceMessageEnum;
 import com.sd.his.service.ReportPrintService;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.reports.AdvancePaymentReportWrapper;
+import com.sd.his.wrapper.reports.InvoiceReportWrapper;
 import com.sd.his.wrapper.reports.PatientPaymentReportWrapper;
 import com.sd.his.wrapper.reports.RefundReceiptReportWrapper;
 import io.swagger.annotations.ApiOperation;
@@ -105,7 +106,7 @@ public class ReportPrintAPI {
                 String outFile = reportPrintService.generateReport("patientPaymentVoucher", map);
 
                 response.setResponseData(outFile);
-                response.setResponseMessage(messageBundle.getString("report.patient.invoice.success"));
+                response.setResponseMessage(messageBundle.getString("report.patient.payment.invoice.success"));
                 response.setResponseCode(InvoiceMessageEnum.SUCCESS.getValue());
                 response.setResponseStatus(InvoiceMessageEnum.SUCCESS.getValue());
                 logger.info("Patient Payment Invoice Printed successfully...");
@@ -114,7 +115,7 @@ public class ReportPrintAPI {
                 logger.error("Patient Payment Invoice Print Failed...");
                 response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
                 response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
-                response.setResponseMessage(messageBundle.getString("report.patient.invoice.no.record"));
+                response.setResponseMessage(messageBundle.getString("report.patient.payment.invoice.no.record"));
                 return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
@@ -122,7 +123,7 @@ public class ReportPrintAPI {
             logger.error("Patient Payment Invoice Print Failed...", ex.fillInStackTrace());
             response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
             response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
-            response.setResponseMessage(messageBundle.getString("report.patient.invoice.failed"));
+            response.setResponseMessage(messageBundle.getString("report.patient.payment.invoice.failed"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -136,11 +137,10 @@ public class ReportPrintAPI {
         logger.info("patientInvoice initialized successfully...");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            PatientPaymentReportWrapper patientPaymentReportWrapper = reportPrintService.getPatientPaymentInvoiceData(invoiceId);
+            List<InvoiceReportWrapper> invoiceReportWrapper = reportPrintService.getPatientInvoiceData(invoiceId);
 
-            if (patientPaymentReportWrapper != null) {
-
-                Map<String, Object> map = reportPrintService.createParamMap(ReportPrintService.PrintReportsEnum.PATIENT_PAYMENT_INVOICE, patientPaymentReportWrapper);
+            if (invoiceReportWrapper != null) {
+                Map<String, Object> map = reportPrintService.createParamMap(ReportPrintService.PrintReportsEnum.PATIENT_INVOICE, invoiceReportWrapper);
                 String outFile = reportPrintService.generateReport("patientInvoice", map);
 
                 response.setResponseData(outFile);
@@ -150,7 +150,7 @@ public class ReportPrintAPI {
                 logger.info("Patient Payment Invoice Printed successfully...");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
-                logger.error("Patient Payment Invoice Print Failed...");
+                logger.error("Patient Invoice Print Failed...");
                 response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
                 response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
                 response.setResponseMessage(messageBundle.getString("report.patient.invoice.no.record"));
@@ -158,7 +158,7 @@ public class ReportPrintAPI {
             }
 
         } catch (Exception ex) {
-            logger.error("Patient Payment Invoice Print Failed...", ex.fillInStackTrace());
+            logger.error("Patient Invoice Print Failed...", ex.fillInStackTrace());
             response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
             response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("report.patient.invoice.failed"));

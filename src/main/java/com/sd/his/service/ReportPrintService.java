@@ -4,6 +4,7 @@ import com.sd.his.model.Organization;
 import com.sd.his.repository.OrganizationRepository;
 import com.sd.his.repository.PatientRepository;
 import com.sd.his.wrapper.reports.AdvancePaymentReportWrapper;
+import com.sd.his.wrapper.reports.InvoiceReportWrapper;
 import com.sd.his.wrapper.reports.PatientPaymentReportWrapper;
 import com.sd.his.wrapper.reports.RefundReceiptReportWrapper;
 import net.sf.jasperreports.engine.*;
@@ -40,12 +41,16 @@ public class ReportPrintService {
         return patientRepository.getOneInvoicePaymentData(paymentId);
     }
 
+    public List<InvoiceReportWrapper> getPatientInvoiceData(String invoiceId) {
+        return patientRepository.getInvoicesData(invoiceId);
+    }
+
     public String generateReport(String reportName, Map<String, Object> parameters) throws JRException, SQLException, IOException, InterruptedException {
         String reportPath = path + reportName + ".jrxml";
         String reportId = (String) parameters.getOrDefault("invoiceId", (String) parameters.getOrDefault("paymentId", (String) parameters.get("transId")));
         String pdfPath = tmpFilePath + reportName + "_" + reportId + ".pdf";
         JasperReport jasperReport = JasperCompileManager.compileReport(reportPath);
-        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource((Collection<?>) parameters.get("beanDS"));
+        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource((ArrayList<?>) parameters.get("beanDS"));
         parameters.put("beanCoDataSource", beanColDataSource);
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
@@ -117,28 +122,22 @@ public class ReportPrintService {
             map.put("advance", patientPaymentReportWrapper.getAdvance());
             map.put("appliedAmount", patientPaymentReportWrapper.getAppliedAmount());
             map.put("balance", patientPaymentReportWrapper.getBalance());
-        } else if (refundReceipt == PrintReportsEnum.PATIENT_INVOICE) {
-            PatientPaymentReportWrapper patientPaymentReportWrapper = (PatientPaymentReportWrapper) wrapperObject;
-            collection.add(patientPaymentReportWrapper);
 
-            map.put("paymentId", patientPaymentReportWrapper.getPaymentId());
-            map.put("fullName", patientPaymentReportWrapper.getFullName());
-            map.put("paymentDate", patientPaymentReportWrapper.getPaymentDate());
-            map.put("patientEMR", patientPaymentReportWrapper.getPatientEMR());
-            map.put("paidAmount", patientPaymentReportWrapper.getPaidAmount());
-            map.put("paymentMode", "Cash");
-            map.put("invoiceId", patientPaymentReportWrapper.getInvoiceId());
-            map.put("invoiceAmount", patientPaymentReportWrapper.getInvoiceAmount());
-            map.put("discountAmount", patientPaymentReportWrapper.getDiscountAmount());
-            map.put("advance", patientPaymentReportWrapper.getAdvance());
-            map.put("appliedAmount", patientPaymentReportWrapper.getAppliedAmount());
-            map.put("balance", patientPaymentReportWrapper.getBalance());
+        } else if (refundReceipt == PrintReportsEnum.PATIENT_INVOICE) {
+            List<Object> invoiceReportWrapper = (List<Object>) wrapperObject;
+//            collection.add(invoiceReportWrapper);
+            collection = invoiceReportWrapper;
+
+            map.put("fullName", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getFullName());
+            map.put("doctorName", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getDoctorName());
+            map.put("schdeulledDate", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getSchdeulledDate());
+            map.put("paymentMethod", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getPaymentMode());
+            map.put("invoiceId", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getInvoiceId());
         }
 
         map.put("beanDS", collection);
         return map;
     }
-
 
     public enum PrintReportsEnum {
         REFUND_RECEIPT, ADVANCE_PAYMENT_RECEIPT, PATIENT_PAYMENT_INVOICE, PATIENT_INVOICE

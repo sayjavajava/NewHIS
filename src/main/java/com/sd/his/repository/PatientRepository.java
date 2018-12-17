@@ -3,6 +3,7 @@ package com.sd.his.repository;
 import com.sd.his.model.Patient;
 import com.sd.his.wrapper.reports.AdvancePaymentReportWrapper;
 import com.sd.his.wrapper.PatientWrapper;
+import com.sd.his.wrapper.reports.InvoiceReportWrapper;
 import com.sd.his.wrapper.reports.PatientPaymentReportWrapper;
 import com.sd.his.wrapper.reports.RefundReceiptReportWrapper;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +57,18 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
             " pip.invoice.paidAmount, pip.invoice.discountAmount, pip.advanceAmount) " +
             " FROM com.sd.his.model.PatientInvoicePayment pip " +
             " WHERE pip.payment.paymentId = :id ")
-//            "WHERE pip.invoice.invoiceId = :id ")
     PatientPaymentReportWrapper getOneInvoicePaymentData(@Param("id") String paymentId);
+
+    /*
+    (, String , String , String , String ,
+                                String , Date , String , Integer , Double ,
+                                Double , Double , Double , Double )
+     */
+    @Query( " SELECT new com.sd.his.wrapper.reports.InvoiceReportWrapper(inv.invoiceId, inv.patient.firstName, inv.patient.middleName, inv.patient.lastName, " +
+            " CONCAT(inv.appointment.doctor.firstName, inv.appointment.doctor.lastName), inv.appointment.schdeulledDate, invi.serviceName, invi.quantity, " +
+//            " inv.appointment.doctor.firstName, inv.appointment.schdeulledDate, invi.serviceName, invi.quantity, " +
+            " invi.unitFee, invi.discountRate, inv.discountAmount, invi.taxRate, inv.taxAmount) " +
+            " FROM com.sd.his.model.InvoiceItems invi JOIN invi.invoice inv  " +
+            " WHERE inv.invoiceId = :id ")
+    List<InvoiceReportWrapper> getInvoicesData(@Param("id") String invoiceId);
 }
