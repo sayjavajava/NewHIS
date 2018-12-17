@@ -168,6 +168,7 @@ public class PatientInvoiceService {
             payment.setUpdatedOn(new Date());
             payment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));
             payment.setPaymentAmount(paymentRequest.getPaidAmount());
+            payment.setTransactionType("Invoice");
     //        payment.setPaymentAmount((paymentRequest.getPaidAmount()+ advanceCredit));
             paymentRepository.save(payment);
 

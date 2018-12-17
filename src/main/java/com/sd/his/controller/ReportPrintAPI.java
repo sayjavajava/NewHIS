@@ -92,9 +92,48 @@ public class ReportPrintAPI {
             notes = "This method will Print Patient Payment Invoice",
             produces = "application/json", nickname = "Patient Payment Invoice",
             response = GenericAPIResponse.class, protocols = "https")
-    @RequestMapping(value = "/patientPaymentInvoice/{invoiceId}", method = RequestMethod.GET)
-    public ResponseEntity<?> patientPaymentInvoice(@PathVariable("invoiceId") String invoiceId) {
+    @RequestMapping(value = "/patientPaymentInvoice/{paymentId}", method = RequestMethod.GET)
+    public ResponseEntity<?> patientPaymentInvoice(@PathVariable("paymentId") String paymentId) {
         logger.info("patientPaymentInvoice initialized successfully...");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            PatientPaymentReportWrapper patientPaymentReportWrapper = reportPrintService.getPatientPaymentInvoiceData(paymentId);
+
+            if (patientPaymentReportWrapper != null) {
+
+                Map<String, Object> map = reportPrintService.createParamMap(ReportPrintService.PrintReportsEnum.PATIENT_PAYMENT_INVOICE, patientPaymentReportWrapper);
+                String outFile = reportPrintService.generateReport("patientPaymentVoucher", map);
+
+                response.setResponseData(outFile);
+                response.setResponseMessage(messageBundle.getString("report.patient.invoice.success"));
+                response.setResponseCode(InvoiceMessageEnum.SUCCESS.getValue());
+                response.setResponseStatus(InvoiceMessageEnum.SUCCESS.getValue());
+                logger.info("Patient Payment Invoice Printed successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                logger.error("Patient Payment Invoice Print Failed...");
+                response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
+                response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
+                response.setResponseMessage(messageBundle.getString("report.patient.invoice.no.record"));
+                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+        } catch (Exception ex) {
+            logger.error("Patient Payment Invoice Print Failed...", ex.fillInStackTrace());
+            response.setResponseStatus(InvoiceMessageEnum.ERROR.getValue());
+            response.setResponseCode(InvoiceMessageEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("report.patient.invoice.failed"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "Print Patient Complete Invoice",
+            notes = "This method will Print Patient's Complete Invoice",
+            produces = "application/json", nickname = "Patient Invoice",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/patientInvoice/{invoiceId}", method = RequestMethod.GET)
+    public ResponseEntity<?> patientInvoice(@PathVariable("invoiceId") String invoiceId) {
+        logger.info("patientInvoice initialized successfully...");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             PatientPaymentReportWrapper patientPaymentReportWrapper = reportPrintService.getPatientPaymentInvoiceData(invoiceId);
@@ -102,7 +141,7 @@ public class ReportPrintAPI {
             if (patientPaymentReportWrapper != null) {
 
                 Map<String, Object> map = reportPrintService.createParamMap(ReportPrintService.PrintReportsEnum.PATIENT_PAYMENT_INVOICE, patientPaymentReportWrapper);
-                String outFile = reportPrintService.generateReport("patientPaymentVoucher", map);
+                String outFile = reportPrintService.generateReport("patientInvoice", map);
 
                 response.setResponseData(outFile);
                 response.setResponseMessage(messageBundle.getString("report.patient.invoice.success"));

@@ -54,6 +54,8 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     @Query("SELECT new com.sd.his.wrapper.reports.PatientPaymentReportWrapper(pip.payment.paymentId, pip.patient.firstName," +
             " pip.patient.middleName, pip.patient.lastName, pip.patient.patientId, pip.updatedOn, pip.invoice.invoiceId, pip.invoice.invoiceAmount," +
             " pip.invoice.paidAmount, pip.invoice.discountAmount, pip.advanceAmount) " +
-            " FROM com.sd.his.model.PatientInvoicePayment pip WHERE pip.invoice.invoiceId = :id ")
-    PatientPaymentReportWrapper getOneInvoicePaymentData(@Param("id") String invoiceId);
+            " FROM com.sd.his.model.PatientInvoicePayment pip " +
+            " WHERE pip.payment.paymentId = :id ")
+//            "WHERE pip.invoice.invoiceId = :id ")
+    PatientPaymentReportWrapper getOneInvoicePaymentData(@Param("id") String paymentId);
 }

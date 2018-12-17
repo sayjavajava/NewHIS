@@ -36,8 +36,8 @@ public class ReportPrintService {
         return patientRepository.getOneAdvancePaymentData(paymentId);
     }
 
-    public PatientPaymentReportWrapper getPatientPaymentInvoiceData(String invoiceId) {
-        return patientRepository.getOneInvoicePaymentData(invoiceId);
+    public PatientPaymentReportWrapper getPatientPaymentInvoiceData(String paymentId) {
+        return patientRepository.getOneInvoicePaymentData(paymentId);
     }
 
     public String generateReport(String reportName, Map<String, Object> parameters) throws JRException, SQLException, IOException, InterruptedException {
@@ -117,6 +117,22 @@ public class ReportPrintService {
             map.put("advance", patientPaymentReportWrapper.getAdvance());
             map.put("appliedAmount", patientPaymentReportWrapper.getAppliedAmount());
             map.put("balance", patientPaymentReportWrapper.getBalance());
+        } else if (refundReceipt == PrintReportsEnum.PATIENT_INVOICE) {
+            PatientPaymentReportWrapper patientPaymentReportWrapper = (PatientPaymentReportWrapper) wrapperObject;
+            collection.add(patientPaymentReportWrapper);
+
+            map.put("paymentId", patientPaymentReportWrapper.getPaymentId());
+            map.put("fullName", patientPaymentReportWrapper.getFullName());
+            map.put("paymentDate", patientPaymentReportWrapper.getPaymentDate());
+            map.put("patientEMR", patientPaymentReportWrapper.getPatientEMR());
+            map.put("paidAmount", patientPaymentReportWrapper.getPaidAmount());
+            map.put("paymentMode", "Cash");
+            map.put("invoiceId", patientPaymentReportWrapper.getInvoiceId());
+            map.put("invoiceAmount", patientPaymentReportWrapper.getInvoiceAmount());
+            map.put("discountAmount", patientPaymentReportWrapper.getDiscountAmount());
+            map.put("advance", patientPaymentReportWrapper.getAdvance());
+            map.put("appliedAmount", patientPaymentReportWrapper.getAppliedAmount());
+            map.put("balance", patientPaymentReportWrapper.getBalance());
         }
 
         map.put("beanDS", collection);
@@ -125,6 +141,6 @@ public class ReportPrintService {
 
 
     public enum PrintReportsEnum {
-        REFUND_RECEIPT, ADVANCE_PAYMENT_RECEIPT, PATIENT_PAYMENT_INVOICE
+        REFUND_RECEIPT, ADVANCE_PAYMENT_RECEIPT, PATIENT_PAYMENT_INVOICE, PATIENT_INVOICE
     }
 }
