@@ -431,7 +431,9 @@ public class PatientService {
         List<AppointmentWrapper> apptFutureWrapperList = new ArrayList<>();
         List<AppointmentWrapper> apptPastWrapperList = new ArrayList<>();
         List<AppointmentWrapper> listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patient.getId());
-        Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream().collect(Collectors.partitioningBy(x -> x.getCompareDate().toInstant().isAfter(Instant.now())));
+        Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream()
+                .collect(Collectors.partitioningBy(x -> x.getCompareDate()
+                .toInstant().isAfter(Instant.now())));
         patientWrapper.setFutureAppointments(listOfApp.get(true));
         patientWrapper.setPastAppointments(listOfApp.get(false));
     }
@@ -463,7 +465,9 @@ public class PatientService {
     }
 
     public List<PatientWrapper> getAllPatient() {
-        return patientRepository.getAll();
+        List<PatientWrapper> patientsList = patientRepository.getAll();
+
+        return patientsList;
 //        return patientRepository.getAllByStatusTrue();
     }
 

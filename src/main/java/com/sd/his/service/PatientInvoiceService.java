@@ -139,14 +139,14 @@ public class PatientInvoiceService {
 
         if(invoice != null)
         {
-            double advanceCredit= 0.00;
+            double advanceCredit = 0.00;
             if(paymentRequest.getUseAdvancedBal()){
-                advanceCredit = paymentRequest.getUsedAdvanceDeposit();
+                advanceCredit = paymentRequest.getUsedAdvanceDeposit() == null ? 0D : paymentRequest.getUsedAdvanceDeposit();
             }
             double receivedAmount = (invoice.getPaidAmount()== null? 0.00 : invoice.getPaidAmount()) + paymentRequest.getPaidAmount() + advanceCredit + paymentRequest.getDiscountAmount();
 
             Patient patient = patientRepository.findOne(invoice.getPatient().getId());
-            double advanceConsumed = patient.getAdvanceBalance() - advanceCredit;
+            double advanceConsumed = (patient.getAdvanceBalance() == null ? 0D : patient.getAdvanceBalance()) - advanceCredit;
             if(receivedAmount >= invoice.getInvoiceAmount())
             {
                 invoice.setStatus(InvoiceStatusEnum.CLOSE.toString());
@@ -168,6 +168,7 @@ public class PatientInvoiceService {
             payment.setUpdatedOn(new Date());
             payment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));
             payment.setPaymentAmount(paymentRequest.getPaidAmount());
+            payment.setTransactionType("Invoice");
     //        payment.setPaymentAmount((paymentRequest.getPaidAmount()+ advanceCredit));
             paymentRepository.save(payment);
 
@@ -196,7 +197,12 @@ public class PatientInvoiceService {
         double advanceDeposit = 0.00;
 
         Patient patient = patientRepository.findOne(advancePaymentRequestWrapper.getPatientId());
-        advanceDeposit = patient.getAdvanceBalance() + advancePaymentRequestWrapper.getAmount();
+        if(patient.getAdvanceBalance() != null) {
+            advanceDeposit = patient.getAdvanceBalance() + advancePaymentRequestWrapper.getAmount();
+        }
+        else {
+            advanceDeposit = advancePaymentRequestWrapper.getAmount();
+        }
         patient.setAdvanceBalance(advanceDeposit);
         patientRepository.save(patient);
 
@@ -204,7 +210,6 @@ public class PatientInvoiceService {
         payment.setCreatedOn(new Date());
         payment.setUpdatedOn(new Date());
         payment.setPaymentId(advancePaymentRequestWrapper.getPaymentId());
-    //    payment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));  // To Do  (handle this from front end)
         payment.setPaymentAmount(advancePaymentRequestWrapper.getAmount());
         payment.setTransactionType("Advance");
         paymentRepository.save(payment);

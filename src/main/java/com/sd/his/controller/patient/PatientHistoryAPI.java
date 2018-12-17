@@ -1,6 +1,8 @@
 package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.ICDCode;
+import com.sd.his.repository.ICDCodeRepository;
 import com.sd.his.service.PatientService;
 import com.sd.his.service.ProblemService;
 import com.sd.his.utill.HISCoreUtil;
@@ -56,7 +58,8 @@ public class PatientHistoryAPI {
     @Autowired
     private ProblemService problemService;
 
-
+    @Autowired
+    ICDCodeRepository icdCodeRepository;
     @ApiOperation(httpMethod = "POST", value = "Save patient Problem",
             notes = "This method will save the patient Problem.",
             produces = "application/json", nickname = "Save patient Problem",
@@ -274,6 +277,8 @@ public class PatientHistoryAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             ProblemWrapper problemWrapper = this.problemService.getProblemById(id);
+            ICDCode icdCode=icdCodeRepository.findByCode(problemWrapper.getCodeName());
+            problemWrapper.setProblemName(icdCode.getProblem());
             if (HISCoreUtil.isValidObject(problemWrapper)) {
                 response.setResponseData(problemWrapper);
                 response.setResponseMessage(messageBundle.getString("patient.found"));
@@ -341,6 +346,8 @@ public class PatientHistoryAPI {
 
             if (patientProblems != null) {
                 for (ProblemWrapper problemWrapper : patientProblems) {
+                    ICDCode icdCode=icdCodeRepository.findByCode(problemWrapper.getCodeName());
+                    problemWrapper.setProblemName(icdCode.getProblem());
                     list.add(new ProblemWrapper(problemWrapper));
                 }
                 Integer nextPage, prePage, currPage;
@@ -421,6 +428,9 @@ public class PatientHistoryAPI {
 
             if (patientProblems != null) {
                 for (ProblemWrapper problemWrapper : patientProblems) {
+
+                    ICDCode icdCode=icdCodeRepository.findByCode(problemWrapper.getCodeName());
+                    problemWrapper.setProblemName(icdCode.getProblem());
                     list.add(new ProblemWrapper(problemWrapper));
                 }
 

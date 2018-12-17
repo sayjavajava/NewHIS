@@ -8,6 +8,17 @@ public class LabTest {
     String units;
     String normalRange;
     String loincCode;
+
+    String testCode;
+    String testName;
+    String maxNormalRange;
+    String minNormalRange;
+    String unit;
+
+
+
+    String specimanId;
+
     public String getId() {
         return id;
     }
@@ -56,11 +67,7 @@ public class LabTest {
         this.unit = unit;
     }
 
-    String testCode;
-    String testName;
-    String maxNormalRange;
-    String minNormalRange;
-    String unit;
+
 
 
 
@@ -106,5 +113,13 @@ public class LabTest {
 
     public void setNormalRange(String normalRange) {
         this.normalRange = normalRange;
+    }
+
+    public String getSpecimanId() {
+        return specimanId;
+    }
+
+    public void setSpecimanId(String specimanId) {
+        this.specimanId = specimanId;
     }
 }

@@ -986,7 +986,10 @@ public class StaffService {
         double remainingBalance = 0.00;
         Doctor doctor = doctorRepository.findOne(paymentRequestWrapper.getDoctorId());
         if(doctor != null){
+            if(doctor.getBalance() != null)
             remainingBalance = doctor.getBalance() - paymentRequestWrapper.getAmount();
+            else
+                remainingBalance = paymentRequestWrapper.getAmount();
             doctor.setBalance(remainingBalance);
             doctorRepository.save(doctor);
 
