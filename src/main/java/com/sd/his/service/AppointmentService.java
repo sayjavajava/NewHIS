@@ -86,7 +86,7 @@ public class AppointmentService {
 
     public List<AppointmentWrapper> findAllPaginatedAppointments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
-    //    List<AppointmentWrapper> list = appointmentRepository.findAllPaginatedAppointments(pageable);
+        //    List<AppointmentWrapper> list = appointmentRepository.findAllPaginatedAppointments(pageable);
         return appointmentRepository.findAllPaginatedAppointments(pageable);
     }
 
@@ -122,14 +122,14 @@ public class AppointmentService {
         Appointment appointmentObj2;
         String result = "success";
         Patient patient = null;
-        Organization dbOrganization=organizationService.getAllOrgizationData();
-        String zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        Organization dbOrganization = organizationService.getAllOrgizationData();
+        String zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
 
         if (appointmentWrapper.getStateOfPatientBox()) {
             patient = this.buildPatient(appointmentWrapper);
             appointment.setPatient(patient);
         }
-        appointment = this.buildAppointment(appointmentWrapper, appointment,zone);
+        appointment = this.buildAppointment(appointmentWrapper, appointment, zone);
 
         if (appointmentWrapper.isRecurringAppointment()) {
             LocalDate start = HISCoreUtil.convertDateToLocalDate(appointmentWrapper.getFirstAppointment());
@@ -148,12 +148,12 @@ public class AppointmentService {
 
             if (!HISCoreUtil.isListEmpty(listOfDates)) {
                 for (LocalDate localDate1 : listOfDates) {
-                    String readDate=HISCoreUtil.convertDateToTimeZone(HISCoreUtil.convertLocalDateToDate(localDate1),"YYYY-MM-dd hh:mm:ss",zone);
-                    Date zoneScheduleDate=HISCoreUtil.convertStringDateObject(readDate);
+                    String readDate = HISCoreUtil.convertDateToTimeZone(HISCoreUtil.convertLocalDateToDate(localDate1), "YYYY-MM-dd hh:mm:ss", zone);
+                    Date zoneScheduleDate = HISCoreUtil.convertStringDateObject(readDate);
                     boolean isAlreadyExist = this.checkTimeAndDateAlreadyExist(zoneScheduleDate, appointment.getStartedOn(), appointment.getEndedOn(), appointmentWrapper.getDoctorId());
                     if (!isAlreadyExist) {
                         appointmentObj = new Appointment();
-                        appointmentObj2 = this.buildAppointment(appointmentWrapper, appointmentObj,zone);
+                        appointmentObj2 = this.buildAppointment(appointmentWrapper, appointmentObj, zone);
                         appointmentObj2.setSchdeulledDate(HISCoreUtil.convertLocalDateToDate(localDate1));
                         appointmentRepository.save(appointmentObj2);
                     }
@@ -189,19 +189,19 @@ public class AppointmentService {
         return patient;
     }
 
-    private Appointment buildAppointment(AppointmentWrapper appointmentWrapper, Appointment appointment,String zone) {
+    private Appointment buildAppointment(AppointmentWrapper appointmentWrapper, Appointment appointment, String zone) {
         Patient patient = new Patient();
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
-       // Date scheduleDate = appointmentWrapper.getDateSchedule();
-       // appointment.setSchdeulledDate(scheduleDate); // old working sc date without zone
-        String readDate=HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(),"YYYY-MM-dd hh:mm:ss",zone);
-        Date zoneScheduleDate=HISCoreUtil.convertStringDateObject(readDate);
+        // Date scheduleDate = appointmentWrapper.getDateSchedule();
+        // appointment.setSchdeulledDate(scheduleDate); // old working sc date without zone
+        String readDate = HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(), "YYYY-MM-dd hh:mm:ss", zone);
+        Date zoneScheduleDate = HISCoreUtil.convertStringDateObject(readDate);
 
         //Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDateAndTime()));
         LocalDateTime date2 = HISCoreUtil.convertToLocalDateTimeViaSqlTimestamp(zoneScheduleDate);
 
         appointment.setSchdeulledDate(zoneScheduleDate);
-        logger.info("zone date .."+ zoneScheduleDate);
+        logger.info("zone date .." + zoneScheduleDate);
         appointment.setStartedOn(HISCoreUtil.convertToDateViaLocalDateTime(date2));
         Date ended = HISCoreUtil.addTimetoDate(appointment.getSchdeulledDate(), appointmentWrapper.getDuration());
         appointment.setEndedOn(ended);
@@ -241,12 +241,12 @@ public class AppointmentService {
     @Transactional
     public String updateAppointment(AppointmentWrapper appointmentWrapper, Appointment alreadyExistAppointment) {
         String result = "success";
-        Organization dbOrganization=organizationService.getAllOrgizationData();
-        String zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        Organization dbOrganization = organizationService.getAllOrgizationData();
+        String zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
 
-        String readDate=HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(),"YYYY-MM-dd hh:mm:ss",zone);
-        Date zoneScheduleDate=HISCoreUtil.convertStringDateObject(readDate);
+        String readDate = HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(), "YYYY-MM-dd hh:mm:ss", zone);
+        Date zoneScheduleDate = HISCoreUtil.convertStringDateObject(readDate);
 
         //Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
         /*alreadyExistAppointment.setSchdeulledDate(zoneScheduleDate);
@@ -258,7 +258,7 @@ public class AppointmentService {
         LocalDateTime date2 = HISCoreUtil.convertToLocalDateTimeViaSqlTimestamp(zoneScheduleDate);
 
         alreadyExistAppointment.setSchdeulledDate(zoneScheduleDate);
-        logger.info("zone date .."+ zoneScheduleDate);
+        logger.info("zone date .." + zoneScheduleDate);
         alreadyExistAppointment.setStartedOn(HISCoreUtil.convertToDateViaLocalDateTime(date2));
         Date ended = HISCoreUtil.addTimetoDate(alreadyExistAppointment.getSchdeulledDate(), appointmentWrapper.getDuration());
         alreadyExistAppointment.setEndedOn(ended);
@@ -388,9 +388,10 @@ public class AppointmentService {
         return null;
     }
 
-    public boolean changeStatus(String currentStatus, Appointment alreadyExistAppointment) {
+    public boolean changeStatus(Long currentStatus, Appointment alreadyExistAppointment) {
         boolean statusChanged = false;
-        //  alreadyExistAppointment.setStatus(AppointmentStatusTypeEnum.valueOf(currentStatus));
+        Status status = statusRepository.findOne(currentStatus);
+        alreadyExistAppointment.setStatus(status);
         Appointment appt = appointmentRepository.save(alreadyExistAppointment);
         if (HISCoreUtil.isValidObject(appt)) {
             statusChanged = true;
@@ -416,10 +417,10 @@ public class AppointmentService {
         return isExist;
     }
 
-    public String updateAppointmentRoom(String  roomId, Appointment alreadyAppointment) {
+    public String updateAppointmentRoom(String roomId, Appointment alreadyAppointment) {
         String apt = "";
         long rId = Long.valueOf(roomId);
-        if (rId !=0) {
+        if (rId != 0) {
             Room roomObj = roomRepository.findOne(rId);
             alreadyAppointment.setRoom(roomObj);
             appointmentRepository.save(alreadyAppointment);
@@ -433,7 +434,7 @@ public class AppointmentService {
         return doctorMedicalServiceRepository.findAllByDoctorAndServices();
     }
 
-   public void deleteAppointment(Appointment appointment) {
+    public void deleteAppointment(Appointment appointment) {
 
     }
 

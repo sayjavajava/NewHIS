@@ -99,7 +99,7 @@ public class DashboardAPI {
     @RequestMapping(value = "/changestatus/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateStatus(HttpServletRequest request,
                                           @PathVariable("id") String apptId,
-                                          @RequestParam(value = "status" ) String currentStatus) {
+                                          @RequestParam(value = "status" ) Long currentStatus) {
 
         logger.info("update Status API called...");
 

@@ -106,6 +106,8 @@ public class AppointmentWrapper {
     private String zone = "Asia/Karachi";
     private Double refundAmount;
     private String hashColor;
+    private String profileImgURL;
+    private String base_S3_URL ="https://s3.amazonaws.com/hisdev/users/patient/history/order/";
 
 
     public AppointmentWrapper() {
@@ -116,7 +118,7 @@ public class AppointmentWrapper {
 
     public AppointmentWrapper(Long id,String appointmentId, String title, String notes,String statusName,String hashColor,Long statusId, String reason, String color, String appointmentType, Integer duration,
                               Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
-                              Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, Long patientId,
+                              Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName,String profileImgURL,Long patientId,
                               Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId,Date followUpDate,Long serviceId,String serviceName
     ) {
 
@@ -161,12 +163,10 @@ public class AppointmentWrapper {
         this.label = appointmentId+","+HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
         this.value = id;
         this.hashColor =hashColor;
-
-
-
+        this.profileImgURL =this.base_S3_URL+profileImgURL;
 
     }
-    public AppointmentWrapper(Long id,String appointmentId, String title,Date scheduleDate, String firstName, String lastName, String docFirstName, String docLastName, Long patientId, String invPrefix, boolean completed)
+    public AppointmentWrapper(Long id,String appointmentId, String title,Date scheduleDate, String firstName, String lastName,String profileImgURL, String docFirstName, String docLastName, Long patientId, String invPrefix, boolean completed)
     {
         //Long patientId,Long branchId, String branchName, Long roomId,
         this.id = id;
@@ -199,6 +199,7 @@ public class AppointmentWrapper {
         this.completed = completed;
         this.label = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
         this.value = id;
+        this.profileImgURL =this.base_S3_URL+profileImgURL;
     }
 
     @Override
@@ -211,6 +212,14 @@ public class AppointmentWrapper {
                 ", type='" + type + '\'' +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public String getProfileImgURL() {
+        return profileImgURL;
+    }
+
+    public void setProfileImgURL(String profileImgURL) {
+        this.profileImgURL = profileImgURL;
     }
 
     public String getHashColor() {
