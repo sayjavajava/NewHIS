@@ -152,7 +152,7 @@ public class PatientWrapper {
             Date today = new Date();
             List<Appointment> appointments = patient.getAppointments();
             for (Appointment appointment : appointments) {
-                AppointmentWrapper appointmentWrapper = new AppointmentWrapper(appointment.getId(), appointment.getAppointmentId(), appointment.getName(), appointment.getSchdeulledDate(), this.firstName, this.lastName,
+                AppointmentWrapper appointmentWrapper = new AppointmentWrapper(appointment.getId(), appointment.getAppointmentId(), appointment.getName(), appointment.getSchdeulledDate(), this.firstName, this.lastName,this.profileImgURL,
                         this.getPrimaryDoctorFirstName(), this.getPrimaryDoctorLastName(), this.id, "", appointment.getStatus().isStatus());
                 if (appointment.getSchdeulledDate().before(today) || appointment.getSchdeulledDate().equals(today)) {
                     pastAppointments.add(appointmentWrapper);
