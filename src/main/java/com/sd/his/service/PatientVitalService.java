@@ -11,6 +11,8 @@ import com.sd.his.repository.PatientVitalRepository;
 
 import com.sd.his.wrapper.PatientVitalWrapper;
 import com.sd.his.wrapper.Patient_OrderWrapper;
+import com.sd.his.wrapper.VitaPatientWrapper;
+import com.sd.his.wrapper.VitalWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -50,12 +52,12 @@ public class PatientVitalService{
 
 
     @Transactional(rollbackOn = Throwable.class)
-    public PatientVital update(PatientVitalWrapper wrapper) {
+    public PatientVital update(VitaPatientWrapper wrapper) {
         PatientVital wrapperObj = patientVitalRepository.findOne(Long.valueOf(wrapper.getId()));
-        wrapperObj.setName(wrapper.getName());
-        wrapperObj.setUnit(wrapper.getUnit());
-        wrapperObj.setStandardValue(wrapper.getStandardValue());
-        wrapperObj.setStatus(wrapper.getStatus());
+        wrapperObj.setName(wrapperObj.getName());
+        wrapperObj.setUnit(wrapperObj.getUnit());
+        wrapperObj.setStandardValue(wrapperObj.getStandardValue());
+        wrapperObj.setStatus(wrapperObj.getStatus());
         wrapperObj.setCurrentValue(wrapper.getCurrentValue());
         Optional<Patient> patient=patientRepository.findById(Long.valueOf(wrapperObj.getPatient().getId()));
         wrapperObj.setPatient(patient.get());
@@ -86,5 +88,22 @@ public class PatientVitalService{
 
     public int countPaginatedDocuments() {
         return this.patientVitalRepository.findAll().size();
+    }
+
+
+    public void saveListVital(List<VitalWrapper>  vital,String  patientId){
+        for(int i=0;i<vital.size();i++){
+            PatientVital patientVital=new PatientVital();
+
+            patientVital.setName(vital.get(i).getName());
+            patientVital.setUnit(vital.get(i).getUnit());
+            patientVital.setStandardValue(vital.get(i).getStandardValue());
+           // patientVital.setStatus(vital.get(i).get);
+            patientVital.setCurrentValue(vital.get(i).getCurrentValue());
+            Optional<Patient> patient=patientRepository.findById(Long.valueOf(patientId));
+            patientVital.setPatient(patient.get());
+            patientVitalRepository.save(patientVital);
+        }
+
     }
 }

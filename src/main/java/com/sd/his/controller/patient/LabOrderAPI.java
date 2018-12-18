@@ -187,7 +187,7 @@ public class LabOrderAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateLabOrder(HttpServletRequest request,
-                                          @PathVariable("id") long id,
+                                                @PathVariable("id") long id,
                                             @RequestBody LabOrderWrapper labOrderWrapper) {
 
         logger.info("update LabOrder API called...");
