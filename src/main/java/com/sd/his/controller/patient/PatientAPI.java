@@ -119,9 +119,9 @@ public class PatientAPI {
                 logger.error("savePatient API - user already found.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }*/
-            patientWrapper.setDob( DateTimeUtil.convertDateToGMT( patientWrapper.getDob().trim() ) );
-            patientWrapper.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientWrapper.getCardIssuedDate().trim() ) );
-            patientWrapper.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientWrapper.getCardExpiryDate().trim() ) );
+            patientWrapper.setDob( DateTimeUtil.convertDateToGMT( patientWrapper.getDob().trim(), "E MMM dd yyyy" ) );
+            patientWrapper.setCardIssuedDate( DateTimeUtil.convertDateToGMT( patientWrapper.getCardIssuedDate().trim(), "E MMM dd yyyy" ) );
+            patientWrapper.setCardExpiryDate( DateTimeUtil.convertDateToGMT( patientWrapper.getCardExpiryDate().trim(), "E MMM dd yyyy" ) );
             patientService.savePatient(patientWrapper);
 //            patientService.convertDateToGMT(patientWrapper.getDob().trim());
 
