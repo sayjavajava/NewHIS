@@ -549,11 +549,10 @@ public class PatientService {
       //  labOrder.setDateTest(HISCoreUtil.convertToDate(labOrderWrapper.getOrderTestDate()));
         Optional<Patient> patient = patientRepository.findById(labOrderWrapper.getPatientId());
         patient.ifPresent(labOrder::setPatient);
-        Appointment appointment = appointmentRepository.findOne(labOrderWrapper.getAppointmentId());
+        Appointment appointment = appointmentRepository.findOne(labOrder.getAppointment().getId());
         labOrder.setAppointment(appointment);
 
         List<com.sd.his.wrapper.LabTest> list = Arrays.stream(labOrderWrapper.getLabTest()).collect(Collectors.toList());
-      //  List<String> lionicCodeList = list.stream().map(x -> x.getLoincCode()).collect(Collectors.toList());
         labOrderRepository.save(labOrder);
         List<String> alistCode=new ArrayList<>();
         for(int i=0;i<alistCode.size();i++){
@@ -566,11 +565,12 @@ public class PatientService {
         for (com.sd.his.wrapper.LabTest labOrder1 : list) {
             LabTest labTest = new LabTest();
             labTest.setDescription(labOrder1.getDescription());
-            labTest.setNormalRange(labOrder1.getMinNormalRange());
-            labTest.setUnits(labOrder1.getUnit());
+            labTest=labTestRepository.findOne(Long.valueOf(labOrder1.getId()));
+        //    labTest.setNormalRange(labOrder1.getMinNormalRange());
+        //    labTest.setUnits(labOrder1.getUnit());
             labTest.setResultValue(labOrder1.getResultValue());
-            labTest.setLabOrder(labOrder);
-            labTest.setLoincCode(labOrder1.getTestCode());
+        //    labTest.setLabOrder(labOrder);
+        //    labTest.setLoincCode(labOrder1.getTestCode());
             labTestRepository.save(labTest);
         }
         return labOrderWrapper;

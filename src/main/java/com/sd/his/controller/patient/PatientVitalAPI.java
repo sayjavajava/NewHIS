@@ -5,8 +5,7 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.PatientVital;
 import com.sd.his.service.PatientVitalService;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.GenericAPIResponse;
-import com.sd.his.wrapper.PatientVitalWrapper;
+import com.sd.his.wrapper.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -113,8 +112,8 @@ public class PatientVitalAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseEntity<?> updatePaymentType(HttpServletRequest request,
-                                               @RequestBody PatientVitalWrapper vitalRequestWrapper) {
+    public ResponseEntity<?> updateVitalType(HttpServletRequest request,
+                                               @RequestBody VitaPatientWrapper vitalRequestWrapper) {
 
 
         logger.info("Update Payment API - Update Vital By id:" + vitalRequestWrapper.getId());
@@ -126,7 +125,7 @@ public class PatientVitalAPI {
         response.setResponseData(null);
 
         try {
-            if (HISCoreUtil.isNull(vitalRequestWrapper.getName()) || vitalRequestWrapper.getId()<= 0) {
+            if (vitalRequestWrapper.getId()<= 0) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -333,5 +332,39 @@ public class PatientVitalAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+
+
+    @ApiOperation(httpMethod = "POST", value = "Save Vital Setup ",
+            notes = "This method will save Vital Setup ",
+            produces = "application/json", nickname = "Save Vital Setup ",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/savePatientVitalList", method = RequestMethod.POST)
+    public ResponseEntity<?> saveVitalSetupList(HttpServletRequest request, @RequestBody List<VitalWrapper> vitalRequestWrapper,
+                                                @RequestParam("selectedPatientId") String selectedPatientId) {
+
+        logger.error("Save Vital  API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try
+        {
+            vitalServices.saveListVital(vitalRequestWrapper,selectedPatientId);
+            //    response.setResponseData(vitalServices.getAll());
+            response.setResponseMessage(messageBundle.getString("vital.setup.save.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Vital  saved successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Vital Setup  Save Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("vital.setup.update.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
