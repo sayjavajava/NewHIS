@@ -127,9 +127,11 @@ public class BranchService {
         branch.setOfficeStartTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursStart()));
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
         branch.setFax(branchRequestWrapper.getFax());
-        branch.setBranchId(hisUtilService.generatePrefix(ModuleEnum.BRANCH));
+        branch.setBranchId(hisUtilService.getPrefixId(ModuleEnum.BRANCH));
         branch.setAddress(branchRequestWrapper.getAddress());
-        branch.setCity(cityRepository.findOne(branchRequestWrapper.getCityId()));
+        if (branchRequestWrapper.getCityId() != null) {
+            branch.setCity(cityRepository.findOne(branchRequestWrapper.getCityId()));
+        }
         branch.setFlow(branchRequestWrapper.getFlow());
         Organization organization = organizationRepository.findOne(1L);
         branch.setOrganization(organization);
@@ -254,21 +256,24 @@ public class BranchService {
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
         branch.setFax(branchRequestWrapper.getFax());
         branch.setAddress(branchRequestWrapper.getAddress());
+        if (branchRequestWrapper.getCityId() != null) {
+            branch.setCity(cityRepository.findOne(branchRequestWrapper.getCityId()));
+        }
         branchRepository.save(branch);
+/*
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
-        /*if(!HISCoreUtil.isListEmpty(exRooms)){ // delete branches room for future
+        if(!HISCoreUtil.isListEmpty(exRooms)){ // delete branches room for future
              roomRepository.deleteAllByBranch(branch);
-        }*/
-        /*for (ExamRooms ex : exRooms) {
+        }
+        for (ExamRooms ex : exRooms) {
             Room room = new Room();
             room.setAllowOnlineScheduling(ex.isAllowOnlineScheduling());
             room.setRoomName(ex.getRoomName());
             room.setBranch(branch);
             room.setActive(true);
             roomRepository.save(room);
-        }*/
-
-       /* Doctor doctor = doctorRepository.getOne(branchRequestWrapper.getPrimaryDoctor());
+        }
+        Doctor doctor = doctorRepository.getOne(branchRequestWrapper.getPrimaryDoctor());
         BranchDoctor branchDoctor =branchDoctorRepository.findByBranch(branch);
         branchDoctor.setBranch(branch);
         branchDoctor.setDoctor(doctor);
