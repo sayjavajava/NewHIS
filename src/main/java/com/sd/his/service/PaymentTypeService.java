@@ -52,7 +52,7 @@ public class PaymentTypeService {
         paymentTypeObj.setPaymentGlAccount(paymentTypeWrapper.getPaymentGlAccount());
         paymentTypeObj.setActive(paymentTypeWrapper.getActive());
     //    paymentTypeObj.setMaxCardCharges(paymentTypeWrapper.getMaxCardCharges());
-        paymentTypeObj.setPatient(paymentTypeWrapper.getPatient());
+        paymentTypeObj.setPatient(paymentTypeWrapper.isPatient());
     //    paymentTypeObj.setPayCredit(paymentTypeWrapper.getPayCredit());
         if(paymentTypeWrapper.getPaymentMode().equalsIgnoreCase("Card")){
 
@@ -60,7 +60,7 @@ public class PaymentTypeService {
             paymentTypeObj.setBankGlCharges(paymentTypeWrapper.getBankGlCharges());
             paymentTypeObj.setPayCredit(paymentTypeWrapper.getPayCredit());
             paymentTypeObj.setServiceCharges(paymentTypeWrapper.getServiceCharges());
-
+            paymentTypeObj.setPatient(paymentTypeWrapper.isPatient());
         }
         paymentTypeObj.setPaymentMode(paymentTypeWrapper.getPaymentMode());
         paymentTypeObj.setPaymentTitle(paymentTypeWrapper.getPaymentTitle());
@@ -96,6 +96,7 @@ public class PaymentTypeService {
             paymentEntity.setBankGlCharges(paymentType.getBankGlCharges());
             paymentEntity.setPayCredit(paymentType.getPayCredit());
             paymentEntity.setServiceCharges(paymentType.getServiceCharges());
+            paymentEntity.setPatient(paymentType.isPatient());
 
         }
         return paymentRepository.save(paymentEntity);

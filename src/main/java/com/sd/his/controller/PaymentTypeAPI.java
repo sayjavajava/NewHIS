@@ -221,9 +221,9 @@ public class PaymentTypeAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            if(paymentType.getPatient()==null){
+            /*if(paymentType.getPatient()==null){
                 paymentType.setPatient(true);
-            }
+            }*/
             PaymentType paymentTypeSave = paymentServiceType.savePaymentAPI(paymentType);
             if (HISCoreUtil.isValidObject(paymentTypeSave)) {
                 response.setResponseMessage(messageBundle.getString("paymentType.save.success"));
