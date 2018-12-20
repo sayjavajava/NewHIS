@@ -124,7 +124,7 @@ public class Patient extends BaseEntity implements Serializable {
     @JoinColumn(name="INSURANCE_ID")
     private Insurance insurance;
 
-    @Column(name = "ADVANCE_BALANCE")
+    @Column(name = "ADVANCE_BALANCE", columnDefinition = "double default '0.00'")
     private Double advanceBalance;
 
     @ElementCollection

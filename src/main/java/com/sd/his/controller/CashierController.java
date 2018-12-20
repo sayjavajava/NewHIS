@@ -2,6 +2,7 @@ package com.sd.his.controller;
 
 import com.sd.his.enums.CashierMessageEnum;
 import com.sd.his.enums.InvoiceMessageEnum;
+import com.sd.his.enums.InvoiceStatusEnum;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Invoice;
 import com.sd.his.service.AppointmentService;
@@ -79,6 +80,46 @@ public class CashierController {
         }
     }
 
+    @ApiOperation(httpMethod = "GET", value = "Get All Pending Invoice List data",
+            notes = "This method will Get All Pending Invoice List data",
+            produces = "application/json", nickname = "Pending Invoices List data",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All Pending Invoice List data fetch successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/getPendingInvoices", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllPendingInvoice(HttpServletRequest request) {
+
+        long date = System.currentTimeMillis();
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.add.error"));
+        response.setResponseCode(CashierMessageEnum.ERROR.getValue());
+        response.setResponseStatus(CashierMessageEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try
+        {
+            response.setResponseData(patientInvoiceService.getInvoiceListByStatus(InvoiceStatusEnum.PENDING.name()));
+            response.setResponseMessage(messageBundle.getString("user.add.success"));
+            response.setResponseCode(CashierMessageEnum.SUCCESS.getValue());
+            response.setResponseStatus(CashierMessageEnum.SUCCESS.getValue());
+            logger.info("All Invoice List data fetch successfully");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            logger.error("All Invoice List data  not fetched successfully/ Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(CashierMessageEnum.ERROR.getValue());
+            response.setResponseCode(CashierMessageEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
     @ApiOperation(httpMethod = "GET", value = "Fetch Appointment",
