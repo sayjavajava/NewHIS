@@ -217,6 +217,7 @@ public class Doctor extends StaffProfile implements Serializable {
         this.balance = balance;
     }
 
+    @JsonIgnore
     public List<StaffPayment> getStaffPayment() {
         return staffPayment;
     }
