@@ -165,7 +165,7 @@ public class StaffResponseWrapper{
         this.workingDays = doctor.getWorkingDays();
         this.dutyShifts = doctor.getDutyShifts();
         // this.visitBranches=branchCashiers;
-        this.docDepartmentId = doctor.getDepartment().getId();
+        this.docDepartmentId = doctor.getDepartment() != null ? doctor.getDepartment().getId() : null;
     }
 
   /*  public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,

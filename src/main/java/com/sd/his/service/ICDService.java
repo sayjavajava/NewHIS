@@ -60,6 +60,9 @@ public class ICDService {
 
     public String saveICDCode(ICDCodeCreateRequest createRequest) {
         ICDCode icd = new ICDCode(createRequest);
+        icd.setInfoURL((createRequest.getInfoURL().contains("http:") || createRequest.getInfoURL().contains("https:"))
+                ? createRequest.getInfoURL()
+                : ("http://" + createRequest.getInfoURL()));
         codeRepository.save(icd);
         this.associateICDCODEBySelectedVersion(icd, createRequest);
         return "";

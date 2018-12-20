@@ -38,6 +38,7 @@ public class AccountConfigRequestWrapper {
 
     //EXPENSE
     long generalExpense;
+    long doctorExpense;
 
     public AccountConfigRequestWrapper() {
     }
@@ -182,5 +183,13 @@ public class AccountConfigRequestWrapper {
 
     public void setGeneralExpense(long generalExpense) {
         this.generalExpense = generalExpense;
+    }
+
+    public long getDoctorExpense() {
+        return doctorExpense;
+    }
+
+    public void setDoctorExpense(long doctorExpense) {
+        this.doctorExpense = doctorExpense;
     }
 }
