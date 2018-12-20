@@ -134,6 +134,7 @@ public class OrganizationService {
             Long num;
             Long numState;
             Long numCountry;
+
             if (chkStatusCity) {
                 num = Long.parseLong(organizationRequestWrapper.getSelectedCity());
             } else {
@@ -177,9 +178,50 @@ public class OrganizationService {
           //  organization.setZone(zoneRepository.findOne(Long.valueOf(organizationRequestWrapper.getTimezoneList()));
 //            long id=Long.valueOf(organizationRequestWrapper.getSelectedTimeZoneFormat());
 //            Zone zoneId=zoneRepository.findOne(id);
-            Zone zone = organizationRequestWrapper.getZoneFormat();
-            if (zone != null) {
-                organization.setZone(zone);
+            Long numZone;
+            Zone zoneObj=new Zone();
+            String zone="";
+            String result="";
+         //   boolean chkStatusZone;
+            if(organizationRequestWrapper.getSelectedTimeZoneFormat().length()>3){
+                 zone=organizationRequestWrapper.getSelectedTimeZoneFormat().replaceAll("\\s","");
+
+                if(zone.contains("(")){
+                    result = zone.substring(0, zone.indexOf("("));
+
+                }else{
+                    result=zone;
+                }
+               zoneObj=zoneRepository.findZoneByName(result);
+            }else{
+                result=organizationRequestWrapper.getSelectedTimeZoneFormat();
+                numZone = Long.parseLong(result);
+                zoneObj=zoneRepository.findOne(numZone);
+            }
+
+
+            if (zoneObj != null) {
+                organization.setZone(zoneObj);
+            }
+
+
+
+
+       //     long numZone;
+           /* if (chkStatusZone) {
+               numZone = Long.parseLong(result);
+               zoneObj=zoneRepository.findOne(numZone);
+            } else {
+
+                    if(zone.contains("(")  ){
+                        result=zone.substring(0, zone.indexOf("("));
+                    }
+
+                zoneObj = zoneRepository.findZoneByName(result);
+
+            }*/
+            if (zoneObj != null) {
+                organization.setZone(zoneObj);
             }
         //    organization.setZone(organizationRequestWrapper.getZoneFormat().replaceAll("\\s",""));
             organization.setDateFormat(organizationRequestWrapper.getDateFormat().trim());

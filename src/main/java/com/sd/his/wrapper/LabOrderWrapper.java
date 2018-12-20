@@ -1,18 +1,30 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.Appointment;
+import com.sd.his.model.Patient;
+
 import java.util.Date;
 import java.util.List;
 
 public class LabOrderWrapper {
 
+
+
     //create wrapper
+    private long id;
     private String orderStatus;
     private String doctorSignOff;
     private String comments;
     private LabTest[] labTest;
+    private List<LabTest> labTestVales;
     private String orderTestDate;
     private Long patientId;
     private Long appointmentId;
+    private Patient patient;
+
+
+
+    private  Appointment appointment;
 
     public Date getTestDate() {
         return testDate;
@@ -24,11 +36,27 @@ public class LabOrderWrapper {
 
     private Date testDate;
 
+    public long getId() {
+        return id;
+    }
 
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public LabOrderWrapper() {
     }
 
+    public LabOrderWrapper(String orderStatus, String comments, Date orderTestDate, Patient patientId, Appointment appointmentId) {
+        this.orderStatus = orderStatus;
+     //   this.doctorSignOff = doctorSignOff;
+        this.comments = comments;
+       // this.labTestVales = labTest;
+     //   this.orderTestDate = orderTestDate;
+        this.patient = patientId;
+        this.appointment = appointmentId;
+       this.testDate = orderTestDate;
+    }
 
     public Long getPatientId() {
         return patientId;
@@ -84,6 +112,34 @@ public class LabOrderWrapper {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+
+
+    public void setLabTest(List<LabTest> labTest) {
+        this.labTestVales = labTest;
+    }
+
+
+
+    public List<LabTest> getLabTestVales() {
+        return labTestVales;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
     }
 }
 
