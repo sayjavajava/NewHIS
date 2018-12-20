@@ -2,7 +2,10 @@ package com.sd.his.repository;
 
 import com.sd.his.model.LabOrder;
 import com.sd.his.model.LabTest;
+import com.sd.his.model.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,6 +38,8 @@ public interface LabTestRepository extends JpaRepository<LabTest, Long> {
     List<LabTest> findAllByLoincCodeIn(List<String> ids);
     List<LabTest> findAllByLabOrderIn(List<LabOrder> ids);
 
-
+    @Query("SELECT po " +
+            "FROM com.sd.his.model.LabTest po where po.labOrder.id=:id")
+    List<LabTest> findAllByLabOrder(@Param("id") long lbId);
 }
 

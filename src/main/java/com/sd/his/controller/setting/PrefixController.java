@@ -4,6 +4,7 @@ import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Prefix;
 import com.sd.his.service.PrefixServices;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.PrefixWrapper;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class PrefixController {
             response = GenericAPIResponse.class, protocols = "https")
 
     @RequestMapping(value = "/savePrefixConfiguration", method = RequestMethod.POST)
-    public ResponseEntity<?> savePrefixConfiguration(@RequestBody Prefix configurationRequestWrapper) {
+    public ResponseEntity<?> savePrefixConfiguration(@RequestBody PrefixWrapper configurationRequestWrapper) {
 
         logger.error("save SMS Configuration API initiated");
         GenericAPIResponse response = new GenericAPIResponse();

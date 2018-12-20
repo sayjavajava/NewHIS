@@ -63,6 +63,15 @@
 	<parameter name="doctorName" class="java.lang.String"/>
 	<parameter name="schdeulledDate" class="java.util.Date"/>
 	<parameter name="beanDS" class="java.util.List"/>
+	<parameter name="invoiceTotalDiscount" class="java.lang.Double"/>
+	<parameter name="invoiceTotalTax" class="java.lang.Double"/>
+	<parameter name="invoiceTotalAmount" class="java.lang.Double"/>
+	<variable name="totalAmountDue" class="java.lang.Double">
+		<variableExpression><![CDATA[$P{invoiceTotalAmount} - $P{invoiceTotalDiscount} + $P{invoiceTotalTax}]]></variableExpression>
+	</variable>
+	<variable name="grandTotal" class="java.lang.Double">
+		<variableExpression><![CDATA[$P{invoiceTotalAmount} - $P{invoiceTotalDiscount}]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -198,7 +207,7 @@
 	<summary>
 		<band height="200">
 			<componentElement>
-				<reportElement x="11" y="0" width="780" height="200" uuid="c21586f4-d45b-45f2-a304-9b9ab8f67ff3">
+				<reportElement x="11" y="0" width="780" height="100" uuid="c21586f4-d45b-45f2-a304-9b9ab8f67ff3">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -227,7 +236,6 @@
 								<text><![CDATA[Sr #]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="41" height="30" uuid="6afed908-71f5-4a92-b640-d57dca8c266a"/>
@@ -254,7 +262,6 @@
 								<text><![CDATA[Services]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="150" height="30" uuid="7c51d193-c32a-4573-9b6a-a21a0f2e84dd"/>
@@ -281,7 +288,6 @@
 								<text><![CDATA[Qty]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="50" height="30" uuid="a4e8ff86-c041-48b1-9f47-fdaf8cb6497d"/>
@@ -308,13 +314,12 @@
 								<text><![CDATA[Charges]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="90" height="30" uuid="3b53178a-c691-49f1-af5d-8e1a19993ecf"/>
 								<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{serviceCharges}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($F{serviceCharges})]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -335,13 +340,12 @@
 								<text><![CDATA[Discount%]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="90" height="30" uuid="f0ca3e2c-5207-427a-bcf1-58c3485a0e6c"/>
 								<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{discountRate}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($F{discountRate})]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -362,13 +366,12 @@
 								<text><![CDATA[Discount Amt.]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="100" height="30" uuid="5be13f28-0298-4a61-913b-650d328c24af"/>
 								<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{discountAmount}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($F{discountAmount})]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -389,13 +392,12 @@
 								<text><![CDATA[Tax%]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="79" height="30" uuid="9b4072f7-3cd9-4f11-9387-c6ee8ee10374"/>
 								<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{taxRate}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($F{taxRate})]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -416,13 +418,12 @@
 								<text><![CDATA[Tax Amt.]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="80" height="30" uuid="bd892725-9f39-48fe-87a0-ef8f035a9d03"/>
 								<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{taxAmount}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($F{taxAmount})]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -443,18 +444,101 @@
 								<text><![CDATA[Total]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="Table_CH" height="30" rowSpan="1"/>
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="100" height="30" uuid="cf1903eb-14cf-4cd9-8b7c-e48c1cd6fcd2"/>
 								<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3"/>
 								<textElement textAlignment="Right" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{totalAmount}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($F{totalAmount})]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
 				</jr:table>
 			</componentElement>
+			<staticText>
+				<reportElement positionType="Float" x="590" y="100" width="100" height="20" uuid="1dd65bc8-f336-4ad2-9ddb-c0bd9f0532d6"/>
+				<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gross Amount:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="590" y="120" width="100" height="20" uuid="54ad1cc4-f414-47da-9ad3-9a714daf6d02"/>
+				<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Discount:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="590" y="160" width="100" height="20" uuid="3bd13404-4bdd-4061-9310-ec3b66d667fc"/>
+				<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Tax:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="590" y="180" width="100" height="20" uuid="795b8f70-28cf-4b41-a106-ec403c6c9c68"/>
+				<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Invoice Total:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="690" y="120" width="100" height="20" uuid="e5a85d3c-28d8-4827-a0a9-d15cd9687dfd"/>
+				<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($P{invoiceTotalDiscount})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="690" y="160" width="100" height="20" uuid="d1450cb9-b859-4320-a6b8-6803bfefee4b"/>
+				<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($P{invoiceTotalTax})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="690" y="100" width="100" height="19" uuid="b6ebd22b-8811-4511-a23a-3e48132ea944"/>
+				<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($P{invoiceTotalAmount})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="690" y="180" width="100" height="20" uuid="9b7dcba4-0f83-4294-8bc5-949f45a74081"/>
+				<box leftPadding="3" rightPadding="3">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($V{totalAmountDue})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="690" y="140" width="100" height="19" uuid="92871689-ccf9-403e-a0eb-2286f06f729a"/>
+				<box leftPadding="3" rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.text.DecimalFormat(" #,##0.00").format($V{grandTotal})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="590" y="140" width="100" height="20" uuid="74433356-d284-4d9a-84a4-81e7533a028c"/>
+				<box topPadding="0" leftPadding="3" bottomPadding="0" rightPadding="3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grand Total:]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

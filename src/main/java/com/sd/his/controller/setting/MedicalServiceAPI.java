@@ -267,10 +267,10 @@ public class MedicalServiceAPI {
     @RequestMapping(value = "/getDeptMedicalService/{deptId}", method = RequestMethod.GET)
     public ResponseEntity<?> getDeptMedicalService(@PathVariable("deptId") Long deptId) {
 
-        logger.error("getDeptMedicalService API initiated");
+        logger.info("getDeptMedicalService API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-            logger.error("getDeptMedicalService - Department Medical Services fetching from DB");
+            logger.info("getDeptMedicalService - Department Medical Services fetching from DB");
             List<MedicalServiceWrapper> deptMedicalSrvc = medicalServicesService.getMedicalServicesByDeptId(deptId);
             logger.info("getDeptMedicalService - Department Medical Services fetched successfully" + deptMedicalSrvc.size());
             response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
@@ -278,7 +278,7 @@ public class MedicalServiceAPI {
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             response.setResponseData(deptMedicalSrvc);
 
-            logger.error("getDeptMedicalService API successfully executed.");
+            logger.info("getDeptMedicalService API successfully executed.");
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (Exception ex) {
