@@ -38,11 +38,11 @@ public class LabOrder extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     //add some data
-    @JsonIgnore
+
     @Column(name = "STATUS")
     private String status;
 
-    @JsonIgnore
+
     @Column(name = "COMMENTS")
     private String comments;
 
@@ -50,7 +50,7 @@ public class LabOrder extends BaseEntity implements Serializable {
     @Column(name = "DATE_TEST")
     private Date dateTest;
 
-    @JsonIgnore
+
     @Column(name = "DOCTOR_SIGNOFF")
     private Boolean doctorSignOff;
 
@@ -59,13 +59,13 @@ public class LabOrder extends BaseEntity implements Serializable {
     @JoinColumn(name = "PATIENT_ID")
     private Patient patient;
 
-    @JsonIgnore
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "APPOINTMENT_ID")
     private Appointment appointment;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "labOrder")
+
+    @OneToMany(mappedBy = "labOrder",fetch = FetchType.LAZY)
     private List<LabTest> labTests;
 
     public LabOrder() {

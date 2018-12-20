@@ -26,4 +26,10 @@ public interface LabTestSpecimanRepository extends JpaRepository<LabTestSpeciman
             "FROM com.sd.his.model.LabTestSpeciman labTestSpeciman " +
             "WHERE labTestSpeciman.testName=:name AND labTestSpeciman.id<>:id")
     boolean getNameAndEqualId(@Param("id") Long id, @Param("name") String name);
+
+
+
+    @Query("SELECT new com.sd.his.model.LabTestSpeciman(lts) FROM LabTestSpeciman lts " +
+            " WHERE  lts.testCode = :testName  ")
+    LabTestSpeciman findTestEntry(@Param("testName") String testName);
 }
