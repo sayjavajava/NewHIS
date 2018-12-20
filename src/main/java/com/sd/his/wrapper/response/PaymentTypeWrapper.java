@@ -17,7 +17,12 @@ public class PaymentTypeWrapper {
     private boolean active;
     private String paymentGlAccountName;
     private long paymentGlAccountId;
-    private Boolean isPatient;
+
+    public boolean isPatient() {
+        return isPatient;
+    }
+
+    private boolean isPatient;
     private GeneralLedger bankGlCharges;
     private boolean hasChild;
 
@@ -58,11 +63,9 @@ public class PaymentTypeWrapper {
         this.maxCardCharges = maxCardCharges;
     }
 
-    public Boolean getPatient() {
-        return isPatient;
-    }
 
-    public void setPatient(Boolean patient) {
+
+    public void setIsPatient(boolean patient) {
         isPatient = patient;
     }
 
