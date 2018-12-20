@@ -66,6 +66,6 @@ public interface ICDCodeVersionRepository extends JpaRepository<ICDCodeVersion, 
             "WHERE codeVersion.version.id=:versionId")
     boolean isVersionAssociated(@Param("versionId") Long versionId);
 
-    List<Long> deleteAllByIcd_id(long id);
+    void deleteAllByIcd_id(Long id);
 
 }

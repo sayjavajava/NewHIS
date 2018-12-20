@@ -133,6 +133,10 @@ public class ReportPrintService {
             map.put("schdeulledDate", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getSchdeulledDate());
             map.put("paymentMethod", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getPaymentMode());
             map.put("invoiceId", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getInvoiceId());
+            map.put("invoiceTotalDiscount", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getInvoiceTotalDiscount());
+            map.put("invoiceTotalTax", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getInvoiceTotalTax());
+            map.put("invoiceTotalAmount", ((InvoiceReportWrapper) invoiceReportWrapper.get(0)).getInvoiceTotalAmount());
+
         }
 
         map.put("beanDS", collection);
