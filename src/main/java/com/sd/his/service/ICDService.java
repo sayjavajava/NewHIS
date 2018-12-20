@@ -71,7 +71,7 @@ public class ICDService {
          * now old record going to delete by icd code id
          *
          * */
-        this.codeVersionRepository.deleteAllByIcd_id(createRequest.getId());
+        this.codeVersionRepository.deleteAllByIcd_id(Long.valueOf(createRequest.getId()));
 
         List<ICDCodeVersion> codeVersions = new ArrayList<>();
         ICDCodeVersion codeVersion = null;
@@ -215,6 +215,7 @@ public class ICDService {
     public boolean deletedICD(Long icdId) {
         ICDCode icd = codeRepository.findOne(icdId);
         if (HISCoreUtil.isValidObject(icd)) {
+            this.codeVersionRepository.deleteAllByIcd_id(icdId);
             this.codeRepository.delete(icd);
             return true;
         } else {
@@ -255,6 +256,9 @@ public class ICDService {
             icdCode.setProblem(createRequest.getProblem());
             icdCode.setDescription(createRequest.getDescription());
             icdCode.setStatus(createRequest.isStatus());
+            icdCode.setInfoURL((createRequest.getInfoURL().contains("http:") || createRequest.getInfoURL().contains("https:"))
+                    ? createRequest.getInfoURL()
+                    : ("http://" + createRequest.getInfoURL()));
         }
         this.codeRepository.save(icdCode);
         this.associateICDCODEBySelectedVersion(icdCode, createRequest);
@@ -358,9 +362,9 @@ public class ICDService {
     public boolean isCodeAssociated(long codeId) {
         ICDCode icdCode = this.codeRepository.findOne(codeId);
         if (icdCode != null) {
-            if (icdCode.getVersions() != null && icdCode.getVersions().size() > 0) {//this.codeVersionRepository.isCodeAssociated(codeId)
-                return true;
-            }
+//            if (icdCode.getVersions() != null && icdCode.getVersions().size() > 0) {//this.codeVersionRepository.isCodeAssociated(codeId)
+//                return true;
+//            }
             if (icdCode.getProblems() != null && icdCode.getProblems().size() > 0) {
                 return true;
             }

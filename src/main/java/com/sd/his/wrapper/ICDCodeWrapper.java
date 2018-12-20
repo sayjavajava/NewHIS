@@ -49,7 +49,6 @@ public class ICDCodeWrapper {
 
         if (icd.getVersions() != null) {
             long versionCount = icd.getVersions().size();
-            this.hasChild = versionCount > 0 ? true : false;
             if (versionCount == 1) {
                 this.checkedVersionCount = icd.getVersions().get(0).getVersion().getName() + "";
                 this.versionCountUnique = true;
@@ -57,9 +56,7 @@ public class ICDCodeWrapper {
                 this.checkedVersionCount = versionCount + "";
             }
         }
-        if (icd.getProblems() != null && icd.getProblems().size() > 0) {
-            this.hasChild = true;
-        }
+        this.hasChild = (icd.getProblems() != null && icd.getProblems().size() > 0);
     }
 
     public ICDCodeWrapper(ICDCodeVersion icdCodeVersion, ICDCode icd) {

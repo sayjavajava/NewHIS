@@ -591,7 +591,7 @@ public class ICDAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/code/delete", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteICDCode(HttpServletRequest request,
-                                           @RequestParam("codeId") long codeId) {
+                                           @RequestParam("codeId") Long codeId) {
         logger.info("Delete ICDCode Api Called..");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("icd.delete.error"));

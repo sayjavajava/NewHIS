@@ -71,7 +71,7 @@ public class Drug extends BaseEntity {
         drug.GenericName = drugWrapper.getGenericName();
         drug.companyName = drugWrapper.getCompanyName();
         drug.route = drugWrapper.getRoute();
-     //   drug.strengths = drugWrapper.getStrengths();
+        drug.strengths = drugWrapper.getStrengths();
         drug.uOM = drugWrapper.getuOM();
    //     drug.country = drugWrapper.getSelectedCountry();
         drug.active = drugWrapper.isActive();

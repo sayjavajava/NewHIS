@@ -258,7 +258,7 @@ public class PaymentTypeAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/delete/{custId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deletePaymentType(HttpServletRequest request,
-                                            @PathVariable("custId")  long  cusId) {
+                                            @PathVariable("custId")  Long  cusId) {
 
         logger.error("Delete Payment Type API initiated");
         GenericAPIResponse response = new GenericAPIResponse();

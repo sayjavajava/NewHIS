@@ -21,12 +21,16 @@ public class InvoiceReportWrapper {
     private Double taxAmount;
     private Double totalAmount;
 
+    private Double invoiceTotalDiscount;
+    private Double invoiceTotalTax;
+    private Double invoiceTotalAmount;
+
     public InvoiceReportWrapper() {
     }
 
     public InvoiceReportWrapper(String invoiceId, String firstName, String middleName, String lastName, // String paymentMode,
                                 String doctorName, Date schdeulledDate, String serviceName, Integer quantity, Double serviceCharges,
-                                Double discountRate, Double discountAmount, Double taxRate, Double taxAmount) {
+                                Double discountRate, Double discountAmount, Double taxRate, Double taxAmount, Double totalAmount) {
         this.invoiceId = invoiceId;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -43,7 +47,12 @@ public class InvoiceReportWrapper {
         this.taxRate = taxRate;
         this.taxAmount = taxAmount;
         this.fullName = this.firstName + ((this.middleName == null || this.middleName.trim().equals("")) ? " " : " " + this.middleName + " ") + this.lastName;
-        this.totalAmount = quantity * (serviceCharges - discountAmount + taxAmount);
+        this.totalAmount = this.calculateTotalAmount(serviceCharges, discountRate, taxRate);
+
+        this.invoiceTotalDiscount = discountAmount;
+        this.invoiceTotalTax = taxAmount;
+        this.invoiceTotalAmount = totalAmount;
+
     }
 
     public String getInvoiceId() {
@@ -172,5 +181,35 @@ public class InvoiceReportWrapper {
 
     public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public Double getInvoiceTotalDiscount() {
+        return invoiceTotalDiscount;
+    }
+
+    public void setInvoiceTotalDiscount(Double invoiceTotalDiscount) {
+        this.invoiceTotalDiscount = invoiceTotalDiscount;
+    }
+
+    public Double getInvoiceTotalTax() {
+        return invoiceTotalTax;
+    }
+
+    public void setInvoiceTotalTax(Double invoiceTotalTax) {
+        this.invoiceTotalTax = invoiceTotalTax;
+    }
+
+    public Double getInvoiceTotalAmount() {
+        return invoiceTotalAmount;
+    }
+
+    public void setInvoiceTotalAmount(Double invoiceTotalAmount) {
+        this.invoiceTotalAmount = invoiceTotalAmount;
+    }
+
+    private Double calculateTotalAmount(Double serviceCharges, Double discountRate, Double taxRate) {
+        Double totalChargesWithDiscount = serviceCharges - (serviceCharges * discountRate / 100);
+        Double totalChargesWithTax = totalChargesWithDiscount + (totalChargesWithDiscount * taxRate / 100);
+        return totalChargesWithTax;
     }
 }

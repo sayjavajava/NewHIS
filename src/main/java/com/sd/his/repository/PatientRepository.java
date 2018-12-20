@@ -67,7 +67,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     @Query( " SELECT new com.sd.his.wrapper.reports.InvoiceReportWrapper(inv.invoiceId, inv.patient.firstName, inv.patient.middleName, inv.patient.lastName, " +
             " CONCAT(inv.appointment.doctor.firstName, inv.appointment.doctor.lastName), inv.appointment.schdeulledDate, invi.serviceName, invi.quantity, " +
 //            " inv.appointment.doctor.firstName, inv.appointment.schdeulledDate, invi.serviceName, invi.quantity, " +
-            " invi.unitFee, invi.discountRate, inv.discountAmount, invi.taxRate, inv.taxAmount) " +
+            " invi.unitFee, invi.discountRate, inv.discountAmount, invi.taxRate, inv.taxAmount, inv.invoiceAmount) " +
             " FROM com.sd.his.model.InvoiceItems invi JOIN invi.invoice inv  " +
             " WHERE inv.invoiceId = :id ")
     List<InvoiceReportWrapper> getInvoicesData(@Param("id") String invoiceId);

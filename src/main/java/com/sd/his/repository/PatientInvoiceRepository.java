@@ -1,5 +1,6 @@
 package com.sd.his.repository;
 
+import com.sd.his.enums.InvoiceStatusEnum;
 import com.sd.his.model.Invoice;
 import com.sd.his.wrapper.response.InvoiceResponseWrapper;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,9 @@ public interface PatientInvoiceRepository  extends JpaRepository<Invoice, Long> 
 
     @Query(" SELECT NEW com.sd.his.wrapper.response.InvoiceResponseWrapper(invc) FROM Invoice invc ")
     List<InvoiceResponseWrapper> findAllInvoices();
+
+    @Query("SELECT NEW com.sd.his.wrapper.response.InvoiceResponseWrapper(invc) FROM Invoice invc WHERE invc.status=:status")
+    List<InvoiceResponseWrapper> getInvoiceListByStatus(@Param("status") String status);
 
     @Query("SELECT NEW com.sd.his.wrapper.response.InvoiceResponseWrapper( ( SUM(invc.invoiceAmount)-SUM(invc.paidAmount) ), SUM(invc.invoiceAmount), SUM(invc.paidAmount), SUM(p.advanceBalance) ) "+
             "FROM Invoice invc inner join invc.patient p WHERE p.id=:patientId ")

@@ -22,7 +22,7 @@ public class ReceiptPaymentType extends BaseEntity implements Serializable {
     @JoinColumn(name = "PAYMENT_TYPE_ID")
     private PaymentType paymentType;
 
-    @Column(name = "PAYMENT_AMOUNT")
+    @Column(name = "PAYMENT_AMOUNT", columnDefinition = "double default '0.00'")
     private  Double paymentAmount;
 
 

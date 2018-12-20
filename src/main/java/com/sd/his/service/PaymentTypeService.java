@@ -34,7 +34,7 @@ public class PaymentTypeService {
 
     //Delete Record for Payment Delete
     @Transactional(rollbackOn = Throwable.class)
-    public void deletePaymentType(long id) {
+    public void deletePaymentType(Long id) {
 
         PaymentType type = this.paymentRepository.findOne(id);
         if (type != null) {

@@ -19,25 +19,20 @@ public class StaffPayment extends BaseEntity implements Serializable {
     @Column(name = "PAYMENT_ID")
     private String paymentId;
 
-
     @Column(name = "PAYMENT_ON")
     private Date paymentOn;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "DOCTOR_ID", nullable = false)
     private Doctor doctor;
 
-    @Column(name = "PAYMENT_AMOUNT")
+    @Column(name = "PAYMENT_AMOUNT", columnDefinition = "double default '0.00'")
     private  Double paymentAmount;
-
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PAYMENT_TYPE_ID", nullable = false)
     private PaymentType paymentType;
-
-
 
     public String getPaymentId() {
         return paymentId;

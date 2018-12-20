@@ -52,7 +52,7 @@ public class Tax extends BaseEntity implements Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "RATE")
+    @Column(name = "RATE", columnDefinition = "double default '0.00'", nullable = false)
     private double rate;
 
     @Temporal(TemporalType.DATE)

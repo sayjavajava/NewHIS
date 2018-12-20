@@ -33,7 +33,7 @@ public class PaymentType extends BaseEntity implements Serializable {
     @Column(name = "payment_purpose")
     private  String paymentPurpose;
 
-    @Column(name="payment_servicecharges")
+    @Column(name="payment_servicecharges", columnDefinition = "double default '0.00'")
     private Double serviceCharges;
 
     @JsonIgnore
