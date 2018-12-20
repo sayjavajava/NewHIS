@@ -283,9 +283,10 @@ public class PatientInvoiceService {
             patient.setAdvanceBalance(advanceDeposit);
             patientRepository.save(patient);
         }else{
-            Invoice invoice = patientInvoiceRepository.findOne(Long.parseLong(refundPaymentRequestWrapper.getInvoiceId()));
-            invoice.setPaidAmount(invoice.getPaidAmount() - refundPaymentRequestWrapper.getRefundAmount());
-            if(invoice.getPaidAmount()<1){
+            Invoice invoice = patientInvoiceRepository.findByInvoiceId(refundPaymentRequestWrapper.getInvoiceId());
+//            invoice.setPaidAmount(invoice.getPaidAmount() - refundPaymentRequestWrapper.getRefundAmount());
+
+            if((invoice.getPaidAmount()-refundPaymentRequestWrapper.getRefundAmount())<1){
                 invoice.setStatus(InvoiceStatusEnum.REFUND.toString());
             }
             patientInvoiceRepository.save(invoice);

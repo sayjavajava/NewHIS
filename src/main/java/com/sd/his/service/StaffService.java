@@ -10,6 +10,7 @@ import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.ServiceComission;
 import com.sd.his.wrapper.request.DoctorPaymentRequestWrapper;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
+import com.sd.his.wrapper.response.DoctorPaymentResponseWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
 import org.slf4j.Logger;
@@ -948,8 +949,9 @@ public class StaffService {
         return staffRespWrapper;
     }
 
-
-
+    public List<DoctorPaymentResponseWrapper> findDoctorListWithCommission() {
+        return doctorRepository.getAllDoctorWithCommission();
+    }
 
     public List<StaffWrapper> searchByNameOrRole(String name, String userType, int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
