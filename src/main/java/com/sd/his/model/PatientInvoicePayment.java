@@ -10,14 +10,14 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PatientInvoicePayment extends BaseEntity implements Serializable {
 
-    @Column(name = "PAYMENT_AMOUNT")
+    @Column(name = "PAYMENT_AMOUNT", columnDefinition = "double default '0.00'")
     private Double paymentAmount;
 
 // -----------------------------------------
-    @Column(name = "DISCOUNT_AMOUNT")
+    @Column(name = "DISCOUNT_AMOUNT", columnDefinition = "double default '0.00'")
     private Double discountAmount;
 
-    @Column(name = "ADVANCE_AMOUNT")
+    @Column(name = "ADVANCE_AMOUNT", columnDefinition = "double default '0.00'")
     private Double advanceAmount;
 // -----------------------------------------
 

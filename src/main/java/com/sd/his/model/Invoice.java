@@ -38,20 +38,22 @@ public class Invoice extends BaseEntity implements Serializable
     @OneToMany(mappedBy = "paymentType")
     private List<PatientRefund> patientRefunds;
 
-    @Column(name = "TAX_AMOUNT")
+    @Column(name = "TAX_AMOUNT", columnDefinition = "double default '0.00'")
     private  Double taxAmount;
 
-    @Column(name = "DISCOUNT_AMOUNT")
+    @Column(name = "DISCOUNT_AMOUNT", columnDefinition = "double default '0.00'")
     private  Double discountAmount;
 
-    @Column(name = "PAID_AMOUNT")
+    @Column(name = "PAID_AMOUNT", columnDefinition = "double default '0.00'")
     private  Double paidAmount;
 
-    @Column(name = "INVOICE_AMOUNT")
+    @Column(name = "INVOICE_AMOUNT", columnDefinition = "double default '0.00'")
     private Double invoiceAmount;
 
+    @Column(name = "DOCTOR_COMMISSION", columnDefinition = "double default '0.00'")
+    private Double doctorCommission;
 
-    @Column(name = "TOTAL_INVOICE_AMOUNT")
+    @Column(name = "TOTAL_INVOICE_AMOUNT", columnDefinition = "double default '0.00'")
     private Double totalInvoiceAmount;
 
 
@@ -165,5 +167,13 @@ public class Invoice extends BaseEntity implements Serializable
 
     public void setPatientRefunds(List<PatientRefund> patientRefunds) {
         this.patientRefunds = patientRefunds;
+    }
+
+    public Double getDoctorCommission() {
+        return doctorCommission;
+    }
+
+    public void setDoctorCommission(Double doctorCommission) {
+        this.doctorCommission = doctorCommission;
     }
 }

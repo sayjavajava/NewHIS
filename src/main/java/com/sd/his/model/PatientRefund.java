@@ -19,7 +19,7 @@ public class PatientRefund extends BaseEntity implements Serializable {
     private String refundId;
 
 
-    @Column(name = "REFUND_AMOUNT")
+    @Column(name = "REFUND_AMOUNT", columnDefinition = "double default '0.00'")
     private  Double refundAmount;
 
     @ManyToOne(fetch = FetchType.LAZY)

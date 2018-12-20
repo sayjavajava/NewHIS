@@ -21,17 +21,20 @@ public class InvoiceItems  extends BaseEntity implements Serializable
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "QUANTITY")
+    @Column(name = "QUANTITY", columnDefinition = "int default '0'")
     private Integer quantity;
 
-    @Column(name = "UNIT_FEE")
+    @Column(name = "UNIT_FEE", columnDefinition = "double default '0.00'")
     private Double unitFee;
 
-    @Column(name = "TAX_RATE")
+    @Column(name = "TAX_RATE", columnDefinition = "double default '0.00'")
     private Double taxRate;
 
-    @Column(name = "DISCOUNT_RATE")
+    @Column(name = "DISCOUNT_RATE", columnDefinition = "double default '0.00'")
     private Double discountRate;
+
+    @Column(name = "COMMISSION_RATE", columnDefinition = "double default '0.00'")
+    private Double commissionRate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INVOICE_ID", nullable = false)
@@ -103,5 +106,11 @@ public class InvoiceItems  extends BaseEntity implements Serializable
         this.invoice = invoice;
     }
 
+    public Double getCommissionRate() {
+        return commissionRate;
+    }
 
+    public void setCommissionRate(Double commissionRate) {
+        this.commissionRate = commissionRate;
+    }
 }

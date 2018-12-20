@@ -20,12 +20,8 @@ public class Payment  extends BaseEntity implements Serializable {
     private String paymentId;
 
 
-    @Column(name = "PAYMENT_AMOUNT")
+    @Column(name = "PAYMENT_AMOUNT", columnDefinition = "double default '0.00'")
     private  Double paymentAmount;
-
-    @Column(name = "REFUND_TYPE")
-    private  String refundType;
-
 
 
     @Column(name = "TRANSACTION_TYPE")
@@ -54,14 +50,6 @@ public class Payment  extends BaseEntity implements Serializable {
 
     public void setPaymentAmount(Double paymentAmount) {
         this.paymentAmount = paymentAmount;
-    }
-
-    public String getRefundType() {
-        return refundType;
-    }
-
-    public void setRefundType(String refundType) {
-        this.refundType = refundType;
     }
 
     public List<PatientInvoicePayment> getPatientInvoicePayment() {

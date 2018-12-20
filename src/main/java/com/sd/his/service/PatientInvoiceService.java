@@ -51,19 +51,22 @@ public class PatientInvoiceService {
     @Autowired
     ReceiptPaymentTypeRepository receiptPaymentTypeRepository;
 
+    @Autowired
+    DoctorMedicalServiceRepository doctorMedicalServiceRepository;
+
 
 
     public Invoice getInvoiceById(Long id){
        return patientInvoiceRepository.findOne(id);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Throwable.class)
     public void saveInvoice(GenerateInvoiceRequestWrapper createInvoiceRequest)
     {
         Appointment appointment =appointmentRepository.findOne(Long.parseLong(createInvoiceRequest.getInvoiceRequestWrapper().get(0).getAppointmentId()));
 
         Invoice invoice = patientInvoiceRepository.findByAppointmentId(appointment.getId());
-//        invoice.setCompleted(createInvoiceRequest.getCompleted());
+        invoice.setCompleted(createInvoiceRequest.getCompleted());
 
         if(invoice == null)
         {
@@ -88,12 +91,17 @@ public class PatientInvoiceService {
 
 
         double amount =0.00;
-        double totalAmount =0.00;
         double taxAmount =0.00;
         double discountAmount = 0.00;
+        double amountAfterDics = 0.0;
+        double commission = 0.0;
+
         double ivoiceTotal =0.00;
         double discountTotal =0.00;
         double taxTotal =0.00;
+        double totalAmount =0.00;
+        double totalAmountAfterDics = 0.0;
+        double totalCommission =0.00;
         for(PatientInvoiceRequestWrapper pInvc : createInvoiceRequest.getInvoiceRequestWrapper())
         {
             InvoiceItems invItems ;
@@ -101,6 +109,12 @@ public class PatientInvoiceService {
                 invItems = new InvoiceItems();
             }else{
                 invItems =invoiceItemsRepository.findOne(pInvc.getId());
+            }
+
+            DoctorMedicalService doctorMedicalService = doctorMedicalServiceRepository.getByDoctor_IdAndMedicalService_Code(appointment.getDoctor().getId(),pInvc.getCode());
+            double commissionRate = 0.0;
+            if(doctorMedicalService != null) {
+                commissionRate = doctorMedicalService.getComission();
             }
             invItems.setCode(pInvc.getCode());
             invItems.setDescription(pInvc.getDescription());
@@ -112,27 +126,36 @@ public class PatientInvoiceService {
             invItems.setCreatedOn(new Date());
             invItems.setUpdatedOn(new Date());
             invItems.setInvoice(invoice);
+            invItems.setCommissionRate(commissionRate);
             invoiceItemsRepository.save(invItems);
 
+
+
             amount = invItems.getQuantity() * invItems.getUnitFee();
-            taxAmount = (invItems.getQuantity() * invItems.getUnitFee()) * invItems.getTaxRate()/100;
-            discountAmount =(invItems.getQuantity() * invItems.getUnitFee()) * invItems.getDiscountRate()/100;
+            discountAmount =(amount * invItems.getDiscountRate())/100;
+            amountAfterDics = amount-discountAmount;
+            commission = (amountAfterDics * invItems.getCommissionRate())/100;
+            taxAmount = (amountAfterDics * invItems.getTaxRate())/100;
+
+
             discountTotal += discountAmount;
             taxTotal += taxAmount;
-            ivoiceTotal += amount;
-            totalAmount += amount + taxAmount - discountAmount;
+            totalAmountAfterDics+= amountAfterDics;
+            totalCommission += commission;
+            totalAmount += amount;
         }
 
+        ivoiceTotal += (totalAmountAfterDics+taxTotal);
         invoice.setDiscountAmount(discountTotal);
         invoice.setTaxAmount(taxTotal);
-        invoice.setInvoiceAmount(ivoiceTotal);
-        invoice.setTotalInvoiceAmount(totalAmount);
+        invoice.setInvoiceAmount(totalAmount);
+        invoice.setTotalInvoiceAmount(ivoiceTotal);
         patientInvoiceRepository.save(invoice);
     }
 
 
 // Save Payment
-    @Transactional
+    @Transactional(rollbackOn = Throwable.class)
     public void savePayment(PaymentRequestWrapper paymentRequest)
     {
         Invoice invoice = patientInvoiceRepository.findOne(paymentRequest.getId());
@@ -147,13 +170,13 @@ public class PatientInvoiceService {
 
             Patient patient = patientRepository.findOne(invoice.getPatient().getId());
             double advanceConsumed = (patient.getAdvanceBalance() == null ? 0D : patient.getAdvanceBalance()) - advanceCredit;
-            if(receivedAmount >= invoice.getInvoiceAmount())
+            if(receivedAmount >= invoice.getTotalInvoiceAmount())
             {
                 invoice.setStatus(InvoiceStatusEnum.CLOSE.toString());
             //    patient.setAdvanceBalance(advanceDeposit);
                 patient.setAdvanceBalance(advanceConsumed);
                 patientRepository.save(patient);
-                receivedAmount = invoice.getInvoiceAmount();
+                receivedAmount = invoice.getTotalInvoiceAmount();
             }else if(paymentRequest.getUseAdvancedBal() && paymentRequest.getUsedAdvanceDeposit() > 0){
                 patient.setAdvanceBalance(advanceConsumed);
                 patientRepository.save(patient);
@@ -171,6 +194,13 @@ public class PatientInvoiceService {
             payment.setTransactionType("Invoice");
     //        payment.setPaymentAmount((paymentRequest.getPaidAmount()+ advanceCredit));
             paymentRepository.save(payment);
+
+            ReceiptPaymentType receiptPaymentType = new ReceiptPaymentType();
+            receiptPaymentType.setPayment(payment);
+            receiptPaymentType.setPaymentType(paymentTypeRepository.findOne(paymentRequest.getPaymentTypeId()));
+            receiptPaymentType.setPaymentAmount(paymentRequest.getPaidAmount());
+            receiptPaymentTypeRepository.save(receiptPaymentType);
+
 
             PatientInvoicePayment patientInvoicePayment = new PatientInvoicePayment();
             patientInvoicePayment.setCreatedOn(new Date());
@@ -371,6 +401,7 @@ public class PatientInvoiceService {
     }
 
 
+    @Transactional(rollbackOn = Throwable.class)
     public void generateInvoiceOnCheckIn(long id)
     {
         Appointment appointment = appointmentRepository.findOne(id);
@@ -386,6 +417,7 @@ public class PatientInvoiceService {
             invoice.setPaidAmount(0.0);
             invoice.setDiscountAmount(0.0);
             invoice.setTaxAmount(0.00);
+            invoice.setTotalInvoiceAmount(0.00);
             invoice.setStatus(InvoiceStatusEnum.PENDING.toString());
             invoice.setCompleted(false);
 
@@ -394,9 +426,16 @@ public class PatientInvoiceService {
             double amount =0.00;
             double taxAmount =0.00;
             double discountAmount = 0.00;
+            double amountAfterDics = 0.00;
             double ivoiceTotal =0.00;
+            double commission = 0.00;
 
-            MedicalService medicalService =medicalServiceRepository.findOne(appointment.getMedicalService().getId()); // TO DO  --- take id from appointment
+            MedicalService medicalService =appointment.getMedicalService();
+            DoctorMedicalService doctorMedicalService = doctorMedicalServiceRepository.getByDoctor_IdAndMedicalService_Id(appointment.getDoctor().getId(),medicalService.getId());
+            double commissionRate = 0.0;
+            if(doctorMedicalService != null) {
+                commissionRate = doctorMedicalService.getComission();
+            }
             if(medicalService!=null){
                 InvoiceItems invItems = new InvoiceItems();
                 invItems.setCode(medicalService.getCode());
@@ -409,15 +448,21 @@ public class PatientInvoiceService {
                 invItems.setCreatedOn(new Date());
                 invItems.setUpdatedOn(new Date());
                 invItems.setInvoice(invoice);
+                invItems.setCommissionRate(commissionRate);
                 invoiceItemsRepository.save(invItems);
 
-                amount = invItems.getQuantity() * invItems.getUnitFee();
-                taxAmount = (invItems.getQuantity() * invItems.getUnitFee()) * invItems.getTaxRate()/100;
-                discountAmount =(invItems.getQuantity() * invItems.getUnitFee()) * invItems.getDiscountRate()/100;
-                ivoiceTotal += amount + taxAmount - discountAmount;
 
+                amount = invItems.getQuantity() * invItems.getUnitFee();
+                discountAmount =(amount * invItems.getDiscountRate())/100;
+                amountAfterDics = amount-discountAmount;
+                commission = (amountAfterDics * invItems.getCommissionRate())/100;
+                taxAmount = (amountAfterDics * invItems.getTaxRate())/100;
+
+                ivoiceTotal += amountAfterDics+taxAmount;
+                invoice.setTaxAmount(taxAmount);
+                invoice.setDoctorCommission(commission);
+                invoice.setInvoiceAmount(amount);
                 invoice.setTotalInvoiceAmount(ivoiceTotal);
-                invoice.setInvoiceAmount(ivoiceTotal);
                 patientInvoiceRepository.save(invoice);
             }
         }
@@ -425,6 +470,9 @@ public class PatientInvoiceService {
 
     public List<InvoiceResponseWrapper> getAllInvoice(){
         return patientInvoiceRepository.findAllInvoices();
+    }
+    public List<InvoiceResponseWrapper> getInvoiceListByStatus(String status){
+        return patientInvoiceRepository.getInvoiceListByStatus(status);
     }
 
     public InvoiceResponseWrapper getPatientInvoicesBalance(Long patientId){
