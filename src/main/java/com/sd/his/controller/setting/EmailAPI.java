@@ -51,9 +51,9 @@ public class EmailAPI {
     Logger logger = LoggerFactory.getLogger(EmailAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
+
     @Autowired
     EmailTemplateService emailTemplateService;
-
 
     @ApiOperation(httpMethod = "GET", value = "Paginated Email Template",
             notes = "This method will return Paginated  Email Templates",
@@ -84,11 +84,9 @@ public class EmailAPI {
             int emailTemplateCount = emailTemplateService.countAllEmailTemplate();
 
             logger.error("getAllPaginatedEmailTemplate - fetched successfully");
-
             if (!HISCoreUtil.isListEmpty(emailTemplates)) {
                 Integer nextPage, prePage, currPage;
                 int[] pages;
-
                 if (emailTemplateCount > pageSize) {
                     int remainder = emailTemplateCount % pageSize;
                     int totalPages = emailTemplateCount / pageSize;
@@ -319,7 +317,6 @@ public class EmailAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             emailTemplateService.saveEmailTemplate(createRequest);
-
             response.setResponseData(null);
             response.setResponseMessage(messageBundle.getString("email.template.save.success"));
             response.setResponseCode(ResponseEnum.EMAIL_TEMPLATE_SAVE_SUCCESS.getValue());

@@ -108,7 +108,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
     private String hashColor;
     private String profileImgURL;
     private String base_S3_URL ="https://s3.amazonaws.com/hisdev/users/patient/history/order/";
-
+    private String default_photo ="/public/images/patient-photo.jpg";
 
     public AppointmentWrapper() {
     }
@@ -161,9 +161,10 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.serviceId=serviceId;
         this.serviceName=serviceName;
         this.label = appointmentId+","+HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
+        this.profileImgURL = profileImgURL != null ? this.base_S3_URL+profileImgURL : this.default_photo ;
         this.value = id;
         this.hashColor =hashColor;
-        this.profileImgURL =this.base_S3_URL+profileImgURL;
+
 
     }
     public AppointmentWrapper(Long id,String appointmentId, String title,Date scheduleDate, String firstName, String lastName,String profileImgURL, String docFirstName, String docLastName, Long patientId, String invPrefix, boolean completed)

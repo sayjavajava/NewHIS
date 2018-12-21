@@ -17,22 +17,16 @@ public interface PatientVitalRepository  extends JpaRepository<PatientVital, Lon
 
     PatientVital findByName(String name);
 
-
   /*  @Query("SELECT new com.sd.his.model.PatientVital(patientVital) FROM PatientVital patientVital")
     List<PatientVital> getAll();*/
 
+//    @Query("SELECT new com.sd.his.wrapper.PatientVitalWrapper(patientVital.id,patientVital.name, patientVital.unit, patientVital.standardValue, patientVital.currentValue, patientVital.status, patientVital.patient, patientVital.updatedOn) FROM PatientVital patientVital where patientVital.status = 'true' and patientVital.patient.id=:patientId ")
+//    List<PatientVital> getAllVitalPatient();
 
-
-    @Query("SELECT new com.sd.his.wrapper.PatientVitalWrapper(patientVital.id,patientVital.name, patientVital.unit, patientVital.standardValue, patientVital.currentValue, patientVital.status, patientVital.patient) FROM PatientVital patientVital where patientVital.status = 'true' and patientVital.patient.id=:patientId ")
-    List<PatientVital> getAllVitalPatient();
-
-
-
-    @Query("SELECT new com.sd.his.wrapper.PatientVitalWrapper(patientVital.id,patientVital.name, patientVital.unit, patientVital.standardValue, patientVital.currentValue, patientVital.status, patientVital.patient) FROM PatientVital patientVital")
+    @Query("SELECT new com.sd.his.wrapper.PatientVitalWrapper(patientVital.id,patientVital.name, patientVital.unit, patientVital.standardValue, patientVital.currentValue, patientVital.status, patientVital.patient, patientVital.updatedOn) FROM PatientVital patientVital")
     List<PatientVital> getAll();
 
-
-    @Query("Select new com.sd.his.wrapper.PatientVitalWrapper(patientVital.id,patientVital.name, patientVital.unit, patientVital.standardValue, patientVital.currentValue, patientVital.status, patientVital.patient) FROM PatientVital patientVital where  patientVital.patient.id=:patientId")
+    @Query("Select new com.sd.his.wrapper.PatientVitalWrapper(patientVital.id,patientVital.name, patientVital.unit, patientVital.standardValue, patientVital.currentValue, patientVital.status, patientVital.patient, patientVital.updatedOn) FROM PatientVital patientVital where  patientVital.patient.id=:patientId")
     List<PatientVital> getPaginatedOrder(Pageable pageable, @Param("patientId") Long patientId);
 
 }

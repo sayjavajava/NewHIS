@@ -16,7 +16,7 @@ public class EmailConfigurationService {
     private EmailConfigurationRepository emailConfigurationRepository;
 
     @Transactional
-    public void saveSMTPSConfiguration(EmailConfiguration smtpRequestWrapper){
+    public EmailConfiguration saveSMTPSConfiguration(EmailConfiguration smtpRequestWrapper){
 
         EmailConfiguration smtpObj=emailConfigurationRepository.findByServerType(smtpRequestWrapper.getServerType());
 
@@ -29,12 +29,12 @@ public class EmailConfigurationService {
             smtpObj = smtpRequestWrapper;
             smtpObj.setUpdatedOn(new Date());
         }
-        emailConfigurationRepository.save(smtpObj);
+      return  emailConfigurationRepository.save(smtpObj);
     }
 
 
     @Transactional
-    public void saveSESConfiguration(EmailConfiguration sesRequestWrapper){
+    public EmailConfiguration saveSESConfiguration(EmailConfiguration sesRequestWrapper){
 
         EmailConfiguration sesObj=emailConfigurationRepository.findByServerType(sesRequestWrapper.getServerType());
 
@@ -47,7 +47,7 @@ public class EmailConfigurationService {
             sesObj = sesRequestWrapper;
             sesObj.setUpdatedOn(new Date());
         }
-        emailConfigurationRepository.save(sesObj);
+      return emailConfigurationRepository.save(sesObj);
     }
 
     @Transactional

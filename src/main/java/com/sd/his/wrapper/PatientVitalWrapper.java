@@ -3,10 +3,12 @@ package com.sd.his.wrapper;
 import com.sd.his.model.Patient;
 import com.sd.his.model.PatientVital;
 import com.sd.his.repository.PatientRepository;
+import com.sd.his.utill.HISCoreUtil;
 import com.sun.xml.internal.bind.api.impl.NameConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Column;
+import java.util.Date;
 import java.util.List;
 
 public class PatientVitalWrapper extends BaseWrapper {
@@ -23,7 +25,6 @@ public class PatientVitalWrapper extends BaseWrapper {
     private boolean status;
 
     List<PatientVital> listOfVital;
-
 
     public PatientVitalWrapper(long id, String name, String unit, String standardValue, String currentValue, boolean status, String patient) {
         this.id = id;
@@ -43,6 +44,17 @@ public class PatientVitalWrapper extends BaseWrapper {
         this.currentValue = currentValue;
         this.status = status;
         this.patientId = String.valueOf(patient.getId());
+    }
+
+    public PatientVitalWrapper(long id, String name, String unit, String standardValue, String currentValue, boolean status, Patient patient, Date updatedOn) {
+        this.id = id;
+        this.name = name;
+        this.unit = unit;
+        this.standardValue = standardValue;
+        this.currentValue = currentValue;
+        this.status = status;
+        this.patientId = String.valueOf(patient.getId());
+        super.setUpdatedOn(HISCoreUtil.convertDateToString(updatedOn, "dd MMM yyyy hh:mm:ss"));
     }
 
     public PatientVitalWrapper() {
@@ -135,13 +147,13 @@ public class PatientVitalWrapper extends BaseWrapper {
         this.patient = patient;
     }
 
-    public PatientVitalWrapper(String createdDate, String currentValue, long id, String name, long patientId, String Standard, boolean
-            status, String unit, String updated) {
+    public PatientVitalWrapper(String createdDate, String currentValue, long id, String name, long patientId,
+                               String Standard, boolean status, String unit, String updated) {
         super.setCreatedOn(createdDate);
         this.currentValue = currentValue;
         this.id = id;
         this.name = name;
-       this.patientId=String.valueOf(patientId);
+        this.patientId=String.valueOf(patientId);
         this.standardValue = Standard;
         this.status = status;
         this.unit = unit;
@@ -149,10 +161,14 @@ public class PatientVitalWrapper extends BaseWrapper {
     }
 
     public PatientVitalWrapper(String currentValue,long id,String name,boolean status,String unit){
-    this.currentValue=currentValue;
-    this.id=id;
-    this.name=name;
-    this.status=status;
-    this.unit=unit;
+        this.currentValue=currentValue;
+        this.id=id;
+        this.name=name;
+        this.status=status;
+        this.unit=unit;
+    }
+
+    public boolean isStatus() {
+        return status;
     }
 }
