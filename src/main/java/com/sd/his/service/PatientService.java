@@ -51,6 +51,8 @@ public class PatientService {
     @Autowired
     private PatientGroupRepository patientGroupRepository;
 
+
+
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
         patientWrapper.setId(patient.getId());//patient pk
@@ -167,7 +169,7 @@ public class PatientService {
 //        patient.setReminderLanguage(patientWrapper.getReminderLanguage());
         patient.setStreetAddress(patientWrapper.getStreetAddress());
 
-        if(patientWrapper.getCityId()!=null) {
+        if (patientWrapper.getCityId() != null) {
             patient.setCity(cityRepository.findOne(patientWrapper.getCityId()));
             patient.setCountry(patient.getCity().getCountry().getName());
             patient.setState(patient.getCity().getState().getName());
@@ -229,7 +231,7 @@ public class PatientService {
 
         this.populatePatient(patient, patientWrapper);
         Insurance insurance = null;
-        if (patientWrapper.getInsuranceId()!=null && patientWrapper.getInsuranceId() > 0) {
+        if (patientWrapper.getInsuranceId() != null && patientWrapper.getInsuranceId() > 0) {
             insurance = this.insuranceService.getInsuranceRepository().findOne(patientWrapper.getInsuranceId());
             if (insurance == null) {
                 insurance = new Insurance();
@@ -433,14 +435,14 @@ public class PatientService {
         List<AppointmentWrapper> listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patient.getId());
         Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream()
                 .collect(Collectors.partitioningBy(x -> x.getCompareDate()
-                .toInstant().isAfter(Instant.now())));
+                        .toInstant().isAfter(Instant.now())));
         patientWrapper.setFutureAppointments(listOfApp.get(true));
         patientWrapper.setPastAppointments(listOfApp.get(false));
     }
 
     public boolean deletePatientById(long patientId) {
         Patient patient = this.patientRepository.findOne(patientId);
-        if (patient != null){
+        if (patient != null) {
             patientRepository.delete(patientId);
             return true;
         }
@@ -478,16 +480,16 @@ public class PatientService {
         labOrder.setComments(labOrderWrapper.getComments());
         labOrder.setStatus(labOrderWrapper.getOrderStatus());
         // Time Zone Logic
-        Organization dbOrganization=organizationService.getAllOrgizationData();
-        String systemDateFormat=dbOrganization.getDateFormat();
-        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
-        Date dte=labOrderWrapper.getTestDate();
-        String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
-        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
-        System.out.println("Time"+currentTime);
-        String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+        Organization dbOrganization = organizationService.getAllOrgizationData();
+        String systemDateFormat = dbOrganization.getDateFormat();
+        String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+        Date dte = labOrderWrapper.getTestDate();
+        String utcDate = HISCoreUtil.convertDateToTimeZone(dte, systemDateFormat, Zone);
+        String currentTime = HISCoreUtil.getCurrentTimeByzone(Zone);
+        System.out.println("Time" + currentTime);
+        String readDate = HISCoreUtil.convertDateToTimeZone(dte, "YYYY-MM-dd hh:mm:ss", Zone);
         //  System.out.println("Read Date"+readDate);
-        Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+        Date scheduledDate = HISCoreUtil.convertStringDateObject(readDate);
         labOrder.setDateTest(scheduledDate);
         Optional<Patient> patient = patientRepository.findById(labOrderWrapper.getPatientId());
         patient.ifPresent(labOrder::setPatient);
@@ -535,28 +537,27 @@ public class PatientService {
     public LabOrderWrapper updateLabOrder(LabOrderWrapper labOrderWrapper, LabOrder labOrder) {
         labOrder.setComments(labOrderWrapper.getComments());
         labOrder.setStatus(labOrderWrapper.getOrderStatus());
-        Organization dbOrganization=organizationService.getAllOrgizationData();
-        String systemDateFormat=dbOrganization.getDateFormat();
-        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
-        Date dte=labOrderWrapper.getTestDate();
-        String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
-        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
-        System.out.println("Time"+currentTime);
-        String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+        Organization dbOrganization = organizationService.getAllOrgizationData();
+        String systemDateFormat = dbOrganization.getDateFormat();
+        String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+        Date dte = labOrderWrapper.getTestDate();
+        String utcDate = HISCoreUtil.convertDateToTimeZone(dte, systemDateFormat, Zone);
+        String currentTime = HISCoreUtil.getCurrentTimeByzone(Zone);
+        System.out.println("Time" + currentTime);
+        String readDate = HISCoreUtil.convertDateToTimeZone(dte, "YYYY-MM-dd hh:mm:ss", Zone);
         //  System.out.println("Read Date"+readDate);
-        Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+        Date scheduledDate = HISCoreUtil.convertStringDateObject(readDate);
         labOrder.setDateTest(scheduledDate);
-      //  labOrder.setDateTest(HISCoreUtil.convertToDate(labOrderWrapper.getOrderTestDate()));
+        //  labOrder.setDateTest(HISCoreUtil.convertToDate(labOrderWrapper.getOrderTestDate()));
         Optional<Patient> patient = patientRepository.findById(labOrderWrapper.getPatientId());
         patient.ifPresent(labOrder::setPatient);
-        Appointment appointment = appointmentRepository.findOne(labOrderWrapper.getAppointmentId());
+        Appointment appointment = appointmentRepository.findOne(labOrder.getAppointment().getId());
         labOrder.setAppointment(appointment);
 
         List<com.sd.his.wrapper.LabTest> list = Arrays.stream(labOrderWrapper.getLabTest()).collect(Collectors.toList());
-      //  List<String> lionicCodeList = list.stream().map(x -> x.getLoincCode()).collect(Collectors.toList());
         labOrderRepository.save(labOrder);
-        List<String> alistCode=new ArrayList<>();
-        for(int i=0;i<alistCode.size();i++){
+        List<String> alistCode = new ArrayList<>();
+        for (int i = 0; i < alistCode.size(); i++) {
             alistCode.add(labOrder.getLabTests().get(i).getLoincCode());
         }
 
@@ -566,11 +567,12 @@ public class PatientService {
         for (com.sd.his.wrapper.LabTest labOrder1 : list) {
             LabTest labTest = new LabTest();
             labTest.setDescription(labOrder1.getDescription());
-            labTest.setNormalRange(labOrder1.getMinNormalRange());
-            labTest.setUnits(labOrder1.getUnit());
+            labTest = labTestRepository.findOne(Long.valueOf(labOrder1.getId()));
+            //    labTest.setNormalRange(labOrder1.getMinNormalRange());
+            //    labTest.setUnits(labOrder1.getUnit());
             labTest.setResultValue(labOrder1.getResultValue());
-            labTest.setLabOrder(labOrder);
-            labTest.setLoincCode(labOrder1.getTestCode());
+            //    labTest.setLabOrder(labOrder);
+            //    labTest.setLoincCode(labOrder1.getTestCode());
             labTestRepository.save(labTest);
         }
         return labOrderWrapper;
@@ -673,15 +675,158 @@ public class PatientService {
 
     public boolean patientHasChild(long patientId) {
         Patient patient = this.patientRepository.findOne(patientId);
-        if (patient != null && patient.getAppointments() != null && patient.getAppointments().size() > 0){
+        if (patient != null && patient.getAppointments() != null && patient.getAppointments().size() > 0) {
             return true;
         }
         return false;
     }
 
+    public List<LabOrderWrapper> getAllLabOrdersList(String id) {
+        Patient patient = patientRepository.findOne(Long.valueOf(id));
+        return labOrderRepository.findAllByPatientById(patient);
+    }
+
+    public List<LabOrderWrapper> getAllLabOrdersByPatient(String patientId) {
+        Patient patient = patientRepository.findOne(Long.valueOf(patientId));
+      //  Pageable pageable = new PageRequest(offset, limit);
+        List<LabOrder> obj = labOrderRepository.findAllByPatient(patient);
+        List<LabOrderWrapper> listofLab = new ArrayList<>();
+        for (int i = 0; i < obj.size(); i++) {
+            LabOrderWrapper wrapObj = new LabOrderWrapper();
+            wrapObj.setTestDate(obj.get(i).getDateTest());
+            wrapObj.setComments(obj.get(i).getComments());
+            wrapObj.setAppointment(obj.get(i).getAppointment());
+            wrapObj.setPatient(obj.get(i).getPatient());
+            wrapObj.setId(obj.get(i).getId());
+            wrapObj.setOrderStatus(obj.get(i).getStatus());
+            /*for(int j=0;j<obj.get(i).getLabTests().size();j++){
+                LabTest testObj=new LabTest();
+                testObj.setDescription(obj.get(i).getLabTests().get(j).getDescription());
+                testObj.setResultValue(obj.get(i).getLabTests().get(j).getResultValue());
+                testObj.setLoincCode(obj.get(i).getLabTests().get(j).getLoincCode());
+                testObj.setUnits(obj.get(i).getLabTests().get(j).getUnits());
+                testObj.setId(obj.get(i).getLabTests().get(j).getId());
+                wrapObj.setLabTest();
+            }*/
+            listofLab.add(wrapObj);
+        }
+                return listofLab;
+    }
+
+
+    public List<com.sd.his.wrapper.LabTest> ListByLabOrder(long id) {
+
+        List<LabTest> labTests = labTestRepository.findAllByLabOrder(id);
+        List<com.sd.his.wrapper.LabTest> returnListofLab = new ArrayList<>();
+        for(int j=0;j<labTests.size();j++){
+            com.sd.his.wrapper.LabTest testObj=new com.sd.his.wrapper.LabTest();
+                testObj.setDescription(labTests.get(j).getDescription());
+                testObj.setResultValue(labTests.get(j).getResultValue());
+                testObj.setLoincCode(labTests.get(j).getLoincCode());
+                testObj.setUnits(labTests.get(j).getUnits());
+                testObj.setNormalRange(labTests.get(j).getNormalRange());
+                testObj.setId(String.valueOf(labTests.get(j).getId()));
+                returnListofLab.add(testObj);
+            }
+        return returnListofLab;
+
+
+
+    }
+
+
+    public List<LabOrder> ListByLabOrderByOrderId(long id) {
+
+        List<LabOrder> labOrder = labOrderRepository.findAllById(id);
+        return labOrder;
+
+
+
+    }
+
+
+ // New Functionality
+    public LabOrderUpdateWrapper updateLabOrderNew(LabOrderUpdateWrapper labOrderWrapper, LabOrder labOrder) {
+        labOrder.setComments(labOrderWrapper.getComments());
+        labOrder.setStatus(labOrderWrapper.getOrderStatus());
+        Organization dbOrganization = organizationService.getAllOrgizationData();
+        String systemDateFormat = dbOrganization.getDateFormat();
+        String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+        Date dte = labOrderWrapper.getTestDate();
+        String utcDate = HISCoreUtil.convertDateToTimeZone(dte, systemDateFormat, Zone);
+        String currentTime = HISCoreUtil.getCurrentTimeByzone(Zone);
+        System.out.println("Time" + currentTime);
+        String readDate = HISCoreUtil.convertDateToTimeZone(dte, "YYYY-MM-dd hh:mm:ss", Zone);
+        //  System.out.println("Read Date"+readDate);
+        Date scheduledDate = HISCoreUtil.convertStringDateObject(readDate);
+        labOrder.setDateTest(scheduledDate);
+        //  labOrder.setDateTest(HISCoreUtil.convertToDate(labOrderWrapper.getOrderTestDate()));
+        Optional<Patient> patient = patientRepository.findById(labOrderWrapper.getPatientId());
+        patient.ifPresent(labOrder::setPatient);
+        Appointment appointment = appointmentRepository.findOne(labOrder.getAppointment().getId());
+        labOrder.setAppointment(appointment);
+
+      //  List<com.sd.his.wrapper.LabTest> list = Arrays.stream(labOrderWrapper.getLabTest()).collect(Collectors.toList());
+        labOrderRepository.save(labOrder);
+        List<String> alistCode = new ArrayList<>();
+        for (int i = 0; i < alistCode.size(); i++) {
+            alistCode.add(labOrder.getLabTests().get(i).getLoincCode());
+        }
+
+        List<LabTest> labTests = labTestRepository.findAllByLoincCodeIn(alistCode);
+        if (!HISCoreUtil.isListEmpty(labTests))
+            labTestRepository.delete(labTests);
+        List<com.sd.his.wrapper.LabTest> list = labOrderWrapper.getLabTest();
+        for (com.sd.his.wrapper.LabTest labOrder1 : list) {
+            LabTest labTest = new LabTest();
+            labTest.setDescription(labOrder1.getDescription());
+            labTest = labTestRepository.findOne(Long.valueOf(labOrder1.getId()));
+            //    labTest.setNormalRange(labOrder1.getMinNormalRange());
+            //    labTest.setUnits(labOrder1.getUnit());
+            labTest.setResultValue(labOrder1.getResultValue());
+            //    labTest.setLabOrder(labOrder);
+            //    labTest.setLoincCode(labOrder1.getTestCode());
+            labTestRepository.save(labTest);
+        }
+        return labOrderWrapper;
+    }
 
 
 
 
+    public LabOrderUpdateWrapper saveLabOrderNew(LabOrderUpdateWrapper labOrderWrapper) {
+        LabOrder labOrder = new LabOrder();
 
+        labOrder.setComments(labOrderWrapper.getComments());
+        labOrder.setStatus(labOrderWrapper.getOrderStatus());
+        // Time Zone Logic
+        Organization dbOrganization = organizationService.getAllOrgizationData();
+        String systemDateFormat = dbOrganization.getDateFormat();
+        String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+        Date dte = labOrderWrapper.getTestDate();
+        String utcDate = HISCoreUtil.convertDateToTimeZone(dte, systemDateFormat, Zone);
+        String currentTime = HISCoreUtil.getCurrentTimeByzone(Zone);
+        System.out.println("Time" + currentTime);
+        String readDate = HISCoreUtil.convertDateToTimeZone(dte, "YYYY-MM-dd hh:mm:ss", Zone);
+        //  System.out.println("Read Date"+readDate);
+        Date scheduledDate = HISCoreUtil.convertStringDateObject(readDate);
+        labOrder.setDateTest(scheduledDate);
+        Optional<Patient> patient = patientRepository.findById(labOrderWrapper.getPatientId());
+        patient.ifPresent(labOrder::setPatient);
+        Appointment appointment = appointmentRepository.findOne(Long.valueOf(labOrderWrapper.getAppointmentId()));
+        labOrder.setAppointment(appointment);
+        List<com.sd.his.wrapper.LabTest> list =labOrderWrapper.getLabTest();
+        labOrderRepository.save(labOrder);
+        for (com.sd.his.wrapper.LabTest labOrder1 : list) {
+            LabTest labTest = new LabTest();
+            labTest.setDescription(labOrder1.getDescription());
+            labTest.setNormalRange(labOrder1.getMinNormalRange());
+            labTest.setUnits(labOrder1.getUnit());
+            labTest.setResultValue(labOrder1.getResultValue());
+            labTest.setLabOrder(labOrder);
+            labTest.setLoincCode(labOrder1.getTestCode());
+            labTestRepository.save(labTest);
+        }
+        return labOrderWrapper;
+    }
 }

@@ -17,7 +17,7 @@ public class DoctorMedicalService extends BaseEntity implements Serializable{
     @JoinColumn(name = "MEDICAL_SERVICE_ID")
     private MedicalService medicalService;
 
-    @Column
+    @Column(name="COMMISSION_RATE", columnDefinition = "double default '0.00'")
     private Double comission;
 
     public DoctorMedicalService(Doctor doctor, MedicalService medicalService) {

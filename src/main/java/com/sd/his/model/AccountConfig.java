@@ -77,6 +77,10 @@ public class AccountConfig extends BaseEntity implements Serializable {
     @JoinColumn(name="GENERAL_EXPENSE_ID")
     private GeneralLedger generalExpense;
 
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="DOCTOR_EXPENSE_ID")
+    private GeneralLedger doctorExpense;
+
 
     public AccountConfig(){}
 
@@ -199,5 +203,13 @@ public class AccountConfig extends BaseEntity implements Serializable {
 
     public void setGeneralExpense(GeneralLedger generalExpense) {
         this.generalExpense = generalExpense;
+    }
+
+    public GeneralLedger getDoctorExpense() {
+        return doctorExpense;
+    }
+
+    public void setDoctorExpense(GeneralLedger doctorExpense) {
+        this.doctorExpense = doctorExpense;
     }
 }

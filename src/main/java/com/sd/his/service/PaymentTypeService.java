@@ -1,6 +1,9 @@
 package com.sd.his.service;
 
+import com.sd.his.model.Drug;
+import com.sd.his.model.GeneralLedger;
 import com.sd.his.model.PaymentType;
+import com.sd.his.repository.GeneralLedgerRepository;
 import com.sd.his.repository.PaymentTypeRepository;
 import com.sd.his.wrapper.response.PaymentTypeWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +19,8 @@ public class PaymentTypeService {
 
     @Autowired
     private PaymentTypeRepository paymentRepository;
-
-
+    @Autowired
+    GeneralLedgerRepository generalLedgerRepository;
     // Fetch All Record
     public List<PaymentTypeWrapper> getAllPaymentType() {
 //        List<PaymentType> paymentType = paymentRepository.findAll();
@@ -31,8 +34,14 @@ public class PaymentTypeService {
 
     //Delete Record for Payment Delete
     @Transactional(rollbackOn = Throwable.class)
-    public void deletePaymentType(long id) {
-        paymentRepository.delete(id);
+    public void deletePaymentType(Long id) {
+
+        PaymentType type = this.paymentRepository.findOne(id);
+        if (type != null) {
+            this.paymentRepository.delete(type);
+
+        }
+
     }
 
     //Save Record For Payment Type
@@ -43,7 +52,7 @@ public class PaymentTypeService {
         paymentTypeObj.setPaymentGlAccount(paymentTypeWrapper.getPaymentGlAccount());
         paymentTypeObj.setActive(paymentTypeWrapper.getActive());
     //    paymentTypeObj.setMaxCardCharges(paymentTypeWrapper.getMaxCardCharges());
-        paymentTypeObj.setPatient(paymentTypeWrapper.getPatient());
+        paymentTypeObj.setPatient(paymentTypeWrapper.isPatient());
     //    paymentTypeObj.setPayCredit(paymentTypeWrapper.getPayCredit());
         if(paymentTypeWrapper.getPaymentMode().equalsIgnoreCase("Card")){
 
@@ -51,7 +60,7 @@ public class PaymentTypeService {
             paymentTypeObj.setBankGlCharges(paymentTypeWrapper.getBankGlCharges());
             paymentTypeObj.setPayCredit(paymentTypeWrapper.getPayCredit());
             paymentTypeObj.setServiceCharges(paymentTypeWrapper.getServiceCharges());
-
+            paymentTypeObj.setPatient(paymentTypeWrapper.isPatient());
         }
         paymentTypeObj.setPaymentMode(paymentTypeWrapper.getPaymentMode());
         paymentTypeObj.setPaymentTitle(paymentTypeWrapper.getPaymentTitle());
@@ -70,7 +79,13 @@ public class PaymentTypeService {
     @Transactional(rollbackOn = Throwable.class)
     public PaymentType updatePaymentType(PaymentTypeWrapper paymentType) {
         PaymentType paymentEntity = paymentRepository.findOne(Long.valueOf(paymentType.getId()));
-       paymentEntity.setPaymentGlAccount(paymentType.getPaymentGlAccount());
+        if(paymentType.getPaymentGlAccountId()>0){
+        GeneralLedger gl= generalLedgerRepository.findOne(paymentType.getPaymentGlAccountId());
+            paymentEntity.setPaymentGlAccount(gl);
+        }else{
+            paymentEntity.setPaymentGlAccount(paymentType.getPaymentGlAccount());
+        }
+
         paymentEntity.setPaymentPurpose(paymentType.getPaymentPurpose());
         paymentEntity.setPaymentTitle(paymentType.getPaymentTitle());
         paymentEntity.setPaymentMode(paymentType.getPaymentMode());
@@ -81,6 +96,7 @@ public class PaymentTypeService {
             paymentEntity.setBankGlCharges(paymentType.getBankGlCharges());
             paymentEntity.setPayCredit(paymentType.getPayCredit());
             paymentEntity.setServiceCharges(paymentType.getServiceCharges());
+            paymentEntity.setPatient(paymentType.isPatient());
 
         }
         return paymentRepository.save(paymentEntity);

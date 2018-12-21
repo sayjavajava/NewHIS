@@ -7,8 +7,6 @@ import java.util.List;
 public class PaymentTypeWrapper {
 
     private GeneralLedger paymentGlAccount;
-
-
     private String payCredit;
     private long id;
     private String paymentTitle;
@@ -20,26 +18,54 @@ public class PaymentTypeWrapper {
     private String paymentGlAccountName;
     private long paymentGlAccountId;
 
-    private Boolean isPatient;
+    public boolean isPatient() {
+        return isPatient;
+    }
+
+    private boolean isPatient;
     private GeneralLedger bankGlCharges;
+    private boolean hasChild;
 
+    public PaymentTypeWrapper() {
 
+    }
+
+    public PaymentTypeWrapper(PaymentType p) {
+        this.id = p.getId();
+        this.paymentTitle = p.getPaymentTitle();
+        this.paymentMode = p.getPaymentMode();
+        this.serviceCharges = p.getServiceCharges() == null ? 0D : p.getServiceCharges();
+        this.maxCardCharges = p.getMaxCardCharges() == null ? 0D : p.getMaxCardCharges();
+        this.active = p.getActive();
+
+        if (p.getPaymentGlAccount() != null) {
+            this.paymentGlAccountId = p.getPaymentGlAccount().getId();
+            this.paymentGlAccountName = p.getPaymentGlAccount().getName();
+        }
+
+        this.active=p.getActive();
+        this.bankGlCharges=p.getBankGlCharges();
+        this.payCredit=p.getPayCredit();
+        this.paymentGlAccount=p.getPaymentGlAccount();
+        this.paymentMode=p.getPaymentMode();
+        this.paymentPurpose=p.getPaymentPurpose();
+        this.paymentTitle=p.getPaymentTitle();
+        this.hasChild = (p.getPatientRefunds() != null && p.getPatientRefunds().size() > 0)
+                || (p.getStaffPayment() != null && p.getStaffPayment().size() > 0)
+                || (p.getReceiptPaymentType() != null && p.getReceiptPaymentType().size() > 0);
+    }
 
     public void setServiceCharges(Double serviceCharges) {
         this.serviceCharges = serviceCharges;
     }
 
-
-
     public void setMaxCardCharges(Double maxCardCharges) {
         this.maxCardCharges = maxCardCharges;
     }
 
-    public Boolean getPatient() {
-        return isPatient;
-    }
 
-    public void setPatient(Boolean patient) {
+
+    public void setIsPatient(boolean patient) {
         isPatient = patient;
     }
 
@@ -74,6 +100,7 @@ public class PaymentTypeWrapper {
     public void setPaymentGlAccount(GeneralLedger paymentGlAccount) {
         this.paymentGlAccount = paymentGlAccount;
     }
+
     public GeneralLedger getBankGlCharges() {
         return bankGlCharges;
     }
@@ -82,42 +109,6 @@ public class PaymentTypeWrapper {
         this.bankGlCharges = bankGlCharges;
     }
 
-
-
-
-
-
-
-
-    public PaymentTypeWrapper() {}
-
-    public PaymentTypeWrapper(PaymentType p) {
-        this.id = p.getId();
-        this.paymentTitle = p.getPaymentTitle();
-        this.paymentMode = p.getPaymentMode();
-        this.serviceCharges = p.getServiceCharges() == null ? 0D : p.getServiceCharges();
-        this.maxCardCharges = p.getMaxCardCharges() == null ? 0D : p.getMaxCardCharges();
-        this.active = p.getActive();
-        if (p.getPaymentGlAccount() != null) {
-            this.paymentGlAccountId = p.getPaymentGlAccount().getId();
-            this.paymentGlAccountName = p.getPaymentGlAccount().getName();
-        }
-
-        this.active=p.getActive();
-        this.bankGlCharges=p.getBankGlCharges();
-        this.payCredit=p.getPayCredit();
-        this.paymentGlAccount=p.getPaymentGlAccount();
-        this.paymentMode=p.getPaymentMode();
-        this.paymentPurpose=p.getPaymentPurpose();
-        this.paymentTitle=p.getPaymentTitle();
-        /*active: true
-        bankGlCharges: GeneralLedgerModel {parentType: "", accountType: "-1", name: "", code: "", description: "", …}
-        payCredit: ""
-        paymentGlAccount: {id: 1, createdOn: 1542101139000, updatedOn: 1542101139000, parentType: "Liabilities", accountType: "Current Liabilities", …}
-        paymentMode: "Cash"
-        paymentPurpose: "Test Purpose"
-        paymentTitle: "Payment Title"*/
-    }
     public long getId() {
         return id;
     }
@@ -180,5 +171,13 @@ public class PaymentTypeWrapper {
 
     public void setPaymentGlAccountId(long paymentGlAccountId) {
         this.paymentGlAccountId = paymentGlAccountId;
+    }
+
+    public boolean isHasChild() {
+        return hasChild;
+    }
+
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
     }
 }

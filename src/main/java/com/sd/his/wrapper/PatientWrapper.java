@@ -128,7 +128,7 @@ public class PatientWrapper {
         this.cellPhone = patient.getCellPhone();
         this.label = patient.getFirstName();
         this.value = patient.getId();
-        this.gender = patient.getGender().name();
+        this.gender = patient.getGender() == null ? null : patient.getGender().name();
         this.status = patient.getStatus().name().equalsIgnoreCase("ACTIVE");
         this.hasChild = !(patient.getAppointments() == null || patient.getAppointments().size() < 1);         // if null then false else true;
 

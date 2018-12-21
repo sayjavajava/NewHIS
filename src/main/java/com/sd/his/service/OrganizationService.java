@@ -128,39 +128,43 @@ public class OrganizationService {
             organization.setFax(organizationRequestWrapper.getFax());
             organization.setAddress(organizationRequestWrapper.getAddress());
             organization.setEmail(organizationRequestWrapper.getCompanyEmail());
-            boolean chkStatusCity=containsDigit(organizationRequestWrapper.getSelectedCity());
-            boolean chkStatusState=containsDigit(organizationRequestWrapper.getSelectedState());
-            boolean chkStatusCountry=containsDigit(organizationRequestWrapper.getSelectedCountry());
-            long num;
-            long numState;
-            long numCountry;
-            if(chkStatusCity==true){
-                 num = Long.parseLong(organizationRequestWrapper.getSelectedCity());
-            }else{
-                City cityObj=cityRepository.findTitleById(organizationRequestWrapper.getSelectedCity());
-                num=cityObj.getId();
+            boolean chkStatusCity = containsDigit(organizationRequestWrapper.getSelectedCity());
+            boolean chkStatusState = containsDigit(organizationRequestWrapper.getSelectedState());
+            boolean chkStatusCountry = containsDigit(organizationRequestWrapper.getSelectedCountry());
+            Long num;
+            Long numState;
+            Long numCountry;
 
+            if (chkStatusCity) {
+                num = Long.parseLong(organizationRequestWrapper.getSelectedCity());
+            } else {
+                City cityObj = cityRepository.findTitleById(organizationRequestWrapper.getSelectedCity());
+                num = cityObj != null ? cityObj.getId() : null;
             }
-            if(chkStatusState==true){
+            if (chkStatusState) {
                 numState = Long.parseLong(organizationRequestWrapper.getSelectedState());
-            }else{
-                State stateObj=stateRepository.findTitleById(organizationRequestWrapper.getSelectedState());
-                numState=stateObj.getId();
-
+            } else {
+                State stateObj = stateRepository.findTitleById(organizationRequestWrapper.getSelectedState());
+                numState = stateObj != null ? stateObj.getId() : null;
             }
-            if(chkStatusCountry==true){
+            if (chkStatusCountry) {
                 numCountry = Long.parseLong(organizationRequestWrapper.getSelectedCountry());
-            }else{
-                Country countryObj=countryRepository.findTitleById(organizationRequestWrapper.getSelectedCountry());
-                numCountry=countryObj.getId();
-
+            } else {
+                Country countryObj = countryRepository.findTitleById(organizationRequestWrapper.getSelectedCountry());
+                numCountry = countryObj != null ? countryObj.getId() : null;
             }
          //   long num = Long.parseLong(organizationRequestWrapper.getSelectedCity());
           //  long numState = Long.parseLong(organizationRequestWrapper.getSelectedState());
          //   long numCountry = Long.parseLong(organizationRequestWrapper.getSelectedCountry());
-            organization.setCity(cityRepository.findOne(num));
-            organization.setState(stateRepository.findOne(numState));
-            organization.setCountry(countryRepository.findOne(numCountry));
+            if (num != null) {
+                organization.setCity(cityRepository.findOne(num));
+            }
+            if (numState != null) {
+                organization.setState(stateRepository.findOne(numState));
+            }
+            if (numCountry != null) {
+                organization.setCountry(countryRepository.findOne(numCountry));
+            }
             organizationRepository.save(organization);
             return organizationRequestWrapper;
         }
@@ -172,12 +176,56 @@ public class OrganizationService {
             branchRepository.save(branch1);
             organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
           //  organization.setZone(zoneRepository.findOne(Long.valueOf(organizationRequestWrapper.getTimezoneList()));
-            long id=Long.valueOf(organizationRequestWrapper.getSelectedTimeZoneFormat());
-            Zone zoneId=zoneRepository.findOne(id);
-            organization.setZone(zoneId);
+//            long id=Long.valueOf(organizationRequestWrapper.getSelectedTimeZoneFormat());
+//            Zone zoneId=zoneRepository.findOne(id);
+            Long numZone;
+            Zone zoneObj=new Zone();
+            String zone="";
+            String result="";
+         //   boolean chkStatusZone;
+            if(organizationRequestWrapper.getSelectedTimeZoneFormat().length()>3){
+                 zone=organizationRequestWrapper.getSelectedTimeZoneFormat().replaceAll("\\s","");
+
+                if(zone.contains("(")){
+                    result = zone.substring(0, zone.indexOf("("));
+
+                }else{
+                    result=zone;
+                }
+               zoneObj=zoneRepository.findZoneByName(result);
+            }else{
+                result=organizationRequestWrapper.getSelectedTimeZoneFormat();
+                numZone = Long.parseLong(result);
+                zoneObj=zoneRepository.findOne(numZone);
+            }
+
+
+            if (zoneObj != null) {
+                organization.setZone(zoneObj);
+            }
+
+
+
+
+       //     long numZone;
+           /* if (chkStatusZone) {
+               numZone = Long.parseLong(result);
+               zoneObj=zoneRepository.findOne(numZone);
+            } else {
+
+                    if(zone.contains("(")  ){
+                        result=zone.substring(0, zone.indexOf("("));
+                    }
+
+                zoneObj = zoneRepository.findZoneByName(result);
+
+            }*/
+            if (zoneObj != null) {
+                organization.setZone(zoneObj);
+            }
         //    organization.setZone(organizationRequestWrapper.getZoneFormat().replaceAll("\\s",""));
-            organization.setDateFormat(organizationRequestWrapper.getDateFormat());
-            organization.setTimeFormat(organizationRequestWrapper.getTimeFormat());
+            organization.setDateFormat(organizationRequestWrapper.getDateFormat().trim());
+            organization.setTimeFormat(organizationRequestWrapper.getTimeFormat().trim());
 
             organizationRepository.save(organization);
             return organizationRequestWrapper;

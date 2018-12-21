@@ -108,7 +108,7 @@ public class Problem extends BaseEntity implements Serializable {
             problem.setStatus(problemWrapper.getStatus());
         }
         if (problemWrapper.getNote() != null) {
-            this.setNote(problemWrapper.getNote());
+            problem.setNote(problemWrapper.getNote());
         }
     }
 

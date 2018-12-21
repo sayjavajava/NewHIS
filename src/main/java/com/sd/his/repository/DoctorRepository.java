@@ -4,6 +4,7 @@ package com.sd.his.repository;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.Doctor;
 import com.sd.his.model.User;
+import com.sd.his.wrapper.response.DoctorPaymentResponseWrapper;
 import com.sd.his.wrapper.response.StaffResponseWrapper;
 import com.sd.his.wrapper.response.StaffWrapper;
 import org.springframework.data.domain.Pageable;
@@ -60,5 +61,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     @Query("SELECT dr FROM Doctor dr WHERE dr.profileId = :profileId ")
     Doctor getByProfileId(@Param("profileId") String profileId);
+
+    @Query("SELECT new com.sd.his.wrapper.response.DoctorPaymentResponseWrapper(dr.id, dr.firstName, dr.lastName, dr.balance)  FROM Doctor dr")
+    List<DoctorPaymentResponseWrapper> getAllDoctorWithCommission();
 }
 

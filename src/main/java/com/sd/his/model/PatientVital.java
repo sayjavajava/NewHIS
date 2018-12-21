@@ -50,8 +50,8 @@ public class PatientVital  extends BaseEntity implements Serializable {
         this.patient = patient;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "PATIENT_ID")
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "PATIENT_ID",nullable = false)
     private Patient patient;
 
     public PatientVital() {

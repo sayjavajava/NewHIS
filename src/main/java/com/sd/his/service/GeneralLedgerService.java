@@ -101,6 +101,7 @@ public class GeneralLedgerService {
             accountConfig = new AccountConfig();
         }
         accountConfig.setGeneralExpense(generalLedgerRepository.findOne(accountConfigRequest.getGeneralExpense()));
+        accountConfig.setDoctorExpense(generalLedgerRepository.findOne(accountConfigRequest.getDoctorExpense()));
         accountConfigRepository.save(accountConfig);
     }
 

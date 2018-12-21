@@ -42,10 +42,10 @@ public class MedicalService extends BaseEntity implements Serializable {
     @Column(name = "CODE")
     private String code;
 
-    @Column(name = "COST")
+    @Column(name = "COST", columnDefinition = "double default '0.00'")
     private Double cost;
 
-    @Column(name = "FEE")
+    @Column(name = "FEE", columnDefinition = "double default '0.00'")
     private Double fee;
 
     @Column(name = "DURATION")

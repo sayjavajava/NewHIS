@@ -68,7 +68,8 @@ public class BulkImportService {
 
         for (Row row : excelSheet) {
             if (row != null && row.getRowNum() > 0 && row.getCell(0) != null) {
-                if (row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null || row.getCell(3) == null || row.getCell(4) == null || row.getCell(5) == null)
+                if (row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null || row.getCell(3) == null
+                        || row.getCell(4) == null || row.getCell(5) == null || row.getCell(6) == null)
                     continue;
                 Drug oldDrug = drugRepository.findDrugByBrandName(row.getCell(0).getStringCellValue() + "");
                 if (oldDrug != null)
@@ -94,6 +95,9 @@ public class BulkImportService {
                             break;
                         case 5:
                             drug.setuOM(row.getCell(j).getStringCellValue());
+                            break;
+                        case 6:
+                            drug.setCountry(countryRepository.findOne((long) row.getCell(j).getNumericCellValue()));
                             break;
                     }
                 }
@@ -140,8 +144,12 @@ public class BulkImportService {
                         case 3:
                             labTestSpeciman.setMaxNormalRange(row.getCell(j).getNumericCellValue() + "");
                             break;
+                        case 4:
+                            labTestSpeciman.setUnit(row.getCell(j).getStringCellValue());
+                            break;
                     }
                 }
+                labTestSpeciman.setSpecimanId(hisUtilService.getPrefixId(ModuleEnum.LAB_TEST));
                 labTestSpecimanRepository.save(labTestSpeciman);
                 System.out.println();
             }
@@ -261,7 +269,7 @@ public class BulkImportService {
 
                 country = countryRepository.findOne((long) row.getCell(7).getNumericCellValue());
                 if (country == null) {
-//                    continue;
+                    continue;
                 }
                 patient = new Patient();
                 for (int j = 0; j < row.getLastCellNum(); j++) {
@@ -294,9 +302,7 @@ public class BulkImportService {
                             }
                             break;
                         case 7:
-                            if (country != null) {
-                                patient.setCountry(country.getName());
-                            }
+                            patient.setCountry(country.getName());
                             break;
                     }
                 }

@@ -1,5 +1,6 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -57,7 +58,7 @@ public class LabTest extends BaseEntity implements Serializable {
 
     public LabTest() {
     }
-
+    @JsonIgnore
     public String getLoincCode() {
         return loincCode;
     }
@@ -65,7 +66,7 @@ public class LabTest extends BaseEntity implements Serializable {
     public void setLoincCode(String loincCode) {
         this.loincCode = loincCode;
     }
-
+    @JsonIgnore
     public String getDescription() {
         return description;
     }
@@ -81,6 +82,7 @@ public class LabTest extends BaseEntity implements Serializable {
     public void setResultValue(String resultValue) {
         this.resultValue = resultValue;
     }
+
 
     public String getUnits() {
         return units;
