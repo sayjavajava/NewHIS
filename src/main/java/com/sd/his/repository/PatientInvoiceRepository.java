@@ -28,7 +28,7 @@ public interface PatientInvoiceRepository  extends JpaRepository<Invoice, Long> 
 
 
     @Query("SELECT NEW com.sd.his.wrapper.response.InvoiceResponseWrapper( invc ) "+
-            "FROM Invoice invc WHERE invc.patient.id=:id ")
+            "FROM Invoice invc WHERE invc.patient.id=:id AND invc.status='Pending'")
     List<InvoiceResponseWrapper> findAllByPatientId(@Param("id") long id);
 
     Invoice findByInvoiceId(String invoiceId);
