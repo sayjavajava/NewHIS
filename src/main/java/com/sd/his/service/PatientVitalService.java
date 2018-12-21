@@ -9,6 +9,8 @@ import com.sd.his.model.Patient_Order;
 import com.sd.his.repository.PatientRepository;
 import com.sd.his.repository.PatientVitalRepository;
 
+import com.sd.his.utill.DateTimeUtil;
+import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.PatientVitalWrapper;
 import com.sd.his.wrapper.Patient_OrderWrapper;
 import com.sd.his.wrapper.VitaPatientWrapper;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +32,6 @@ public class PatientVitalService{
 
     @Autowired
     PatientVitalRepository patientVitalRepository;
-
     @Autowired
     private PatientRepository patientRepository;
 
@@ -45,6 +47,7 @@ public class PatientVitalService{
         patientVital.setStandardValue(vital.getStandardValue());
         patientVital.setStatus(vital.getStatus());
         patientVital.setCurrentValue(vital.getCurrentValue());
+        patientVital.setUpdatedOn(HISCoreUtil.convertStringDateObject(vital.getUpdatedOn()) );
         Optional<Patient> patient=patientRepository.findById(Long.valueOf(vital.getPatientId()));
         patientVital.setPatient(patient.get());
         patientVitalRepository.save(patientVital);
@@ -61,6 +64,7 @@ public class PatientVitalService{
         wrapperObj.setCurrentValue(wrapper.getCurrentValue());
         Optional<Patient> patient=patientRepository.findById(Long.valueOf(wrapperObj.getPatient().getId()));
         wrapperObj.setPatient(patient.get());
+        wrapperObj.setUpdatedOn(new Date());
 
         return patientVitalRepository.save(wrapperObj);
     }

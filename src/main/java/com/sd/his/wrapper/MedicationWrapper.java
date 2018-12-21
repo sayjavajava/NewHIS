@@ -128,15 +128,17 @@ public class MedicationWrapper extends BaseWrapper {
         }
         if (medication.getAppointment() != null) {
             this.appointmentId = medication.getAppointment().getId();
-
         }
 
-        this.datePrescribedString = DateTimeUtil.getFormattedDateFromDate(medication.getDatePrescribed(), HISConstants.DATE_FORMAT_APP);
-
-        this.dateStartedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStartedTaking(), HISConstants.DATE_FORMAT_APP);
-
-        this.dateStoppedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStoppedTaking(), HISConstants.DATE_FORMAT_APP);
-
+        if (medication.getDatePrescribed() != null) {
+            this.datePrescribedString = DateTimeUtil.getFormattedDateFromDate(medication.getDatePrescribed(), "dd MMM yyyy hh:mm:ss");
+        }
+        if (medication.getDateStartedTaking() != null) {
+            this.dateStartedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStartedTaking(), "dd MMM yyyy hh:mm:ss");
+        }
+        if (medication.getDateStoppedTaking() != null) {
+            this.dateStoppedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStoppedTaking(), "dd MMM yyyy hh:mm:ss");
+        }
         this.dispenseQuantity = medication.getDispenseQuantity();
         this.dispensePackage = medication.getDispensePackage();
         this.numberRefill = medication.getNumberRefill();
@@ -144,11 +146,11 @@ public class MedicationWrapper extends BaseWrapper {
         this.pharmacyNote = medication.getPharmacyNote();
         this.note = medication.getNote();
         this.orderStatus = medication.getOrderStatus();
-        this.duration=medication.getDuration();
-        this.frequency=medication.getFrequency();
-        this.durationPeriod=medication.getDurationPeriod();
-        this.route=medication.getRoute();
-        this.strengths=medication.getStrengths();
+        this.duration = medication.getDuration();
+        this.frequency = medication.getFrequency();
+        this.durationPeriod = medication.getDurationPeriod();
+        this.route = medication.getRoute();
+        this.strengths = medication.getStrengths();
     }
 
     public MedicationWrapper(Long id, String createdOn, String updatedOn) {

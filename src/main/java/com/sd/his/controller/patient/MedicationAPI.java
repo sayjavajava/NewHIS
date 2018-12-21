@@ -390,10 +390,10 @@ public class MedicationAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/status/{page}", method = RequestMethod.GET)
     public ResponseEntity<?> getPaginatedMedicationsByStatusAndPatientId(HttpServletRequest request,
-                                                                     @PathVariable("page") int page,
-                                                                     @RequestParam("status") String status,
-                                                                     @RequestParam("selectedPatientId") String selectedPatientId,
-                                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+             @PathVariable("page") int page,
+             @RequestParam("status") String status,
+             @RequestParam("selectedPatientId") String selectedPatientId,
+             @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
 
         logger.error("getPaginatedMedicationsByStatusAndPatientId API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
