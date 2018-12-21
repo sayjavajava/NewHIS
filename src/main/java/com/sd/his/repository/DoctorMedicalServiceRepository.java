@@ -1,5 +1,6 @@
 package com.sd.his.repository;
 
+import com.sd.his.model.Doctor;
 import com.sd.his.model.DoctorMedicalService;
 import com.sd.his.model.MedicalService;
 import com.sd.his.wrapper.MedicalServiceWrapper;
@@ -26,4 +27,7 @@ public interface DoctorMedicalServiceRepository extends JpaRepository<DoctorMedi
 
     @Query("SELECT NEW com.sd.his.wrapper.MedicalServiceWrapper(dms.medicalService,dms.comission,dms.id) FROM DoctorMedicalService dms inner join dms.doctor d where dms.doctor.id=:id")
     List<MedicalServiceWrapper> getDocServicesAndComissions(@Param("id") Long id);
+
+    DoctorMedicalService getByDoctor_IdAndMedicalService_Id(@Param("doctorId") Long doctorId,@Param("serviceId") Long serviceId);
+    DoctorMedicalService getByDoctor_IdAndMedicalService_Code(@Param("doctorId") Long doctorId,@Param("serviceCode") String serviceCode);
 }

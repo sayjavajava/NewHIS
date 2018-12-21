@@ -252,11 +252,9 @@ public class AWSService {
         S3Bucket s3Bucket = s3BucketService.findActiveBucket();
         String fileName = Id+"_"+HISCoreUtil.convertDateToStringUpload(new Date())+"_"+multipartFile.getOriginalFilename();
         String fileUrl = "";
-        File file = new File(fileName);
+        String relativePath = "PatientOrder";
+        File file = new File(relativePath+fileName);
         try {
-            //creating the file in the server (temporarily)
-
-         //   FileOutputStream fos = new FileOutputStream(file);
             FileInputStream fis = new FileInputStream(file);
         //    fos.write(multipartFile.getBytes());
             ObjectMetadata metadata = new ObjectMetadata();
@@ -267,10 +265,33 @@ public class AWSService {
        //     fos.close();
         //    File f = new File(fileName);
 
-
             try {
                 PutObjectResult result = this.awss3.putObject(bucketName, fis, metadata, CannedAccessControlList.PublicRead);
                 System.out.println("Etag:" + result.getETag() + "-->" + result);
+                File theDir = new File(relativePath);
+                boolean flagResult=true;
+                if (!theDir.exists()) {
+                    System.out.println("creating directory: " + theDir.getName());
+                     flagResult = false;
+
+                    try {
+                        theDir.mkdir();
+                        flagResult = true;
+                    } catch (SecurityException se) {
+                        //handle it
+                    }
+                    if (flagResult) {
+                        System.out.println("DIR created");
+                    }
+                }else{
+                    if(flagResult){
+                    if(file.exists()){
+                        System.out.println("File existed");
+                     //   file.delete();
+                    }else{
+                        System.out.println("File not found!");
+                    }
+                } }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -278,12 +299,12 @@ public class AWSService {
         } catch (IOException | AmazonServiceException ex) {
             logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
         }finally {
-            if(file.exists()){
+           /* if(file.exists()){
                 System.out.println("File existed");
                 file.delete();
             }else{
                 System.out.println("File not found!");
-            }
+            }*/
         }
         return fileName;
     }

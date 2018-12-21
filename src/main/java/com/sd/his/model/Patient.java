@@ -124,7 +124,7 @@ public class Patient extends BaseEntity implements Serializable {
     @JoinColumn(name="INSURANCE_ID")
     private Insurance insurance;
 
-    @Column(name = "ADVANCE_BALANCE")
+    @Column(name = "ADVANCE_BALANCE", columnDefinition = "double default '0.00'")
     private Double advanceBalance;
 
     @ElementCollection
@@ -185,6 +185,13 @@ public class Patient extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PATIENT_GROUP_ID")
     private PatientGroup patientGroup;
+
+
+    @JsonIgnore
+    @OneToMany(targetEntity = PatientVital.class, mappedBy = "patient")
+    private List<PatientVital> patientVitals;
+
+
 
     public List<LabOrder> getLabOrders() {
         return labOrders;
@@ -562,4 +569,11 @@ public class Patient extends BaseEntity implements Serializable {
         this.patientGroup = patientGroup;
     }
 
+    public List<PatientVital> getPatientVitals() {
+        return patientVitals;
+    }
+
+    public void setPatientVitals(List<PatientVital> patientVitals) {
+        this.patientVitals = patientVitals;
+    }
 }

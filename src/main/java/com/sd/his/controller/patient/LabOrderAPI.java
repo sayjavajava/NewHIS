@@ -1,14 +1,17 @@
 package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.Appointment;
-import com.sd.his.model.LabOrder;
-import com.sd.his.model.Organization;
+import com.sd.his.model.*;
+import com.sd.his.repository.AppointmentRepository;
 import com.sd.his.repository.LabOrderProjection;
+import com.sd.his.repository.LabTestRepository;
+import com.sd.his.repository.LabTestSpecimanRepository;
 import com.sd.his.service.OrganizationService;
 import com.sd.his.service.PatientService;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.AppointmentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.LabOrderUpdateWrapper;
 import com.sd.his.wrapper.LabOrderWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -21,7 +24,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @RestController
@@ -32,9 +37,14 @@ public class LabOrderAPI {
     private PatientService patientService;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private LabTestRepository labTestRepository;
     private final Logger logger = LoggerFactory.getLogger(LabOrderAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
-
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+    @Autowired
+    LabTestSpecimanRepository labTestSpecimanRepository;
     @ApiOperation(httpMethod = "POST", value = "Create LabOrder",
             notes = "This method will Create Lab Order",
             produces = "application/json", nickname = "Create LabOrder",
@@ -47,7 +57,7 @@ public class LabOrderAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<?> createLabOrder(HttpServletRequest request,
-                                            @RequestBody LabOrderWrapper labOrderWrapper) {
+                                            @RequestBody LabOrderUpdateWrapper labOrderWrapper) {
         logger.info("Create LabOrder API called...");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -57,16 +67,8 @@ public class LabOrderAPI {
         response.setResponseData(null);
 
         try {
-            /*Branch alreadyExist = branchService.findByBranchName(branchRequestWrapper.getBranchName());
-            if (HISCoreUtil.isValidObject(alreadyExist)) {
-                response.setResponseMessage(messageBundle.getString("branch.add.already-found.error"));
-                response.setResponseCode(ResponseEnum.BRANCH_ALREADY_EXIST_ERROR.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                response.setResponseData(null);
-                logger.error("Branch already exist with the same name...");
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            }*/
-            LabOrderWrapper labOrder = patientService.saveLabOrder(labOrderWrapper);
+
+            LabOrderUpdateWrapper labOrder = patientService.saveLabOrderNew(labOrderWrapper);
             if (HISCoreUtil.isValidObject(labOrder)) {
                 response.setResponseData(labOrder);
                 response.setResponseMessage(messageBundle.getString("laborder.add.success"));
@@ -187,8 +189,8 @@ public class LabOrderAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateLabOrder(HttpServletRequest request,
-                                          @PathVariable("id") long id,
-                                            @RequestBody LabOrderWrapper labOrderWrapper) {
+                                                @PathVariable("id") long id,
+                                            @RequestBody LabOrderUpdateWrapper labOrderWrapper) {
 
         logger.info("update LabOrder API called...");
         GenericAPIResponse response = new GenericAPIResponse();
@@ -200,7 +202,7 @@ public class LabOrderAPI {
             LabOrder alreadyExistLabOrder = patientService.findById(id);
             if (HISCoreUtil.isValidObject(alreadyExistLabOrder)) {
                 logger.info("LabOrder founded...");
-                LabOrderWrapper labOrderUpdated = patientService.updateLabOrder(labOrderWrapper, alreadyExistLabOrder);
+                LabOrderUpdateWrapper labOrderUpdated = patientService.updateLabOrderNew(labOrderWrapper, alreadyExistLabOrder);
                 if (HISCoreUtil.isValidObject(labOrderUpdated)) {
                     logger.info("LabOrder Updated...");
                     response.setResponseData(labOrderUpdated);
@@ -230,7 +232,7 @@ public class LabOrderAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(httpMethod = "GET", value = "Fetch LabOrder",
+    /*@ApiOperation(httpMethod = "GET", value = "Fetch LabOrder",
             notes = "This method will return LabOrder on base of id",
             produces = "application/json", nickname = "Get Single Order",
             response = GenericAPIResponse.class, protocols = "https")
@@ -272,7 +274,7 @@ public class LabOrderAPI {
 
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
     @ApiOperation(httpMethod = "DELETE", value = "Delete LasbOrder",
             notes = "This method will Delete LabOrder on base of id",
             produces = "application/json", nickname = "Delete LabOrder ",
@@ -318,7 +320,7 @@ public class LabOrderAPI {
     }
 
     //get by id
-    @ApiOperation(httpMethod = "GET", value = "Paginated LabOrders",
+   /* @ApiOperation(httpMethod = "GET", value = "Paginated LabOrders",
             notes = "This method will return Paginated LabOrders",
             produces = "application/json", nickname = "Get Paginated LabOrders ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -398,6 +400,238 @@ public class LabOrderAPI {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("get all paginated countOrders failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+*/
+
+    @ApiOperation(httpMethod = "GET", value = "Paginated LabOrders",
+            notes = "This method will return Paginated LabOrders",
+            produces = "application/json", nickname = "Get Paginated LabOrders ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated LabOrders fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/order/{page}", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllLabTestOrders(HttpServletRequest request,
+                                                            @PathVariable("page") int page,
+                                                            @RequestParam (value = "name", required = false) String patientId,
+                                                            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize) {
+        logger.info("getAllLabOrders paginated.." + patientId);
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("laborder.not.found"));
+        response.setResponseCode(ResponseEnum.LABORDER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            List<LabOrderWrapper> labordersdata = patientService.getAllLabOrdersByPatient(patientId);
+            List<String>  objappoiment = new ArrayList<>();
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String stdDateTime=dbOrganization.getDateFormat()+" "+dbOrganization.getTimeFormat();
+            /*for(int i=0;i<labordersdata.size();i++){
+                String readDate=HISCoreUtil.convertDateToString(labordersdata.get(i).getDateTest(),stdDateTime);
+                //    labordersdata.get(i).setDateTestString(readDate);
+                labordersdata.get(i).setDateTest(HISCoreUtil.convertToDateString(readDate,stdDateTime));
+                //     String doctorFirstName=labordersdata.get(i).getAppointment().get(i).getDoctor().getFirstName();
+                //    String doctorLastName=labordersdata.get(i).getAppointment().get(i).getDoctor().getLastName();
+                //     objappoiment.add(doctorFirstName+""+doctorLastName);
+            }*/
+            int countOrders = patientService.totaLabOrders();
+
+            if (!HISCoreUtil.isListEmpty(labordersdata)) {
+                Integer nextPage, prePage, currPage;
+                int[] pages;
+
+                if (countOrders > pageSize) {
+                    int remainder = countOrders % pageSize;
+                    int totalPages = countOrders / pageSize;
+                    if (remainder > 0) {
+                        totalPages = totalPages + 1;
+                    }
+                    pages = new int[totalPages];
+                    pages = IntStream.range(0, totalPages).toArray();
+                    currPage = page;
+                    nextPage = (currPage + 1) != totalPages ? currPage + 1 : null;
+                    prePage = currPage > 0 ? currPage : null;
+                } else {
+                    pages = new int[1];
+                    pages[0] = 0;
+                    currPage = 0;
+                    nextPage = null;
+                    prePage = null;
+                }
+
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                /*returnValues.put("nextPage", nextPage);
+                returnValues.put("prePage", prePage);
+                returnValues.put("currPage", currPage);
+                returnValues.put("pages", pages);*/
+                returnValues.put("data", labordersdata);
+                //   returnValues.put("doctors",objappoiment);
+                response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
+                response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+                logger.info("getAllPaginatedLabOrders Fetched successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+
+            }
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("get all paginated countOrders failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    @ApiOperation(httpMethod = "GET", value = "Paginated LabOrders",
+            notes = "This method will return Paginated LabOrders",
+            produces = "application/json", nickname = "Get Paginated LabOrders ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Paginated LabOrders fetched successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/orderId", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllPaginatedOrdersByPatientId(HttpServletRequest request,
+                                                              @RequestParam("orderId") long orderId) {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("laborder.not.found"));
+        response.setResponseCode(ResponseEnum.LABORDER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            List<com.sd.his.wrapper.LabTest> labordersdata = patientService.ListByLabOrder(Long.valueOf(orderId));
+
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String stdDateTime=dbOrganization.getDateFormat()+" "+dbOrganization.getTimeFormat();
+
+
+
+            if (!HISCoreUtil.isListEmpty(labordersdata)) {
+              /*  Integer nextPage, prePage, currPage;
+                int[] pages;*/
+
+
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+
+                returnValues.put("data", labordersdata);
+                //   returnValues.put("doctors",objappoiment);
+                response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
+                response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                response.setResponseData(returnValues);
+                logger.info("getAllPaginatedLabOrders Fetched successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+
+            }
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("get all paginated countOrders failed.", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    // New Setup
+    @ApiOperation(httpMethod = "GET", value = "Fetch LabOrder",
+            notes = "This method will return LabOrder on base of id",
+            produces = "application/json", nickname = "Get Single Order",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "LabOrder found successfully", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getLabOrderNewById(HttpServletRequest request,
+                                             @PathVariable("id") long id) {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("laborder.not.found"));
+        response.setResponseCode(ResponseEnum.LABORDER_NOT_FOUND.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            List<LabOrder> dbLabOrder = this.patientService.ListByLabOrderByOrderId(id);
+            List<LabTest> labTests = labTestRepository.findAllByLabOrder(id);
+            List<com.sd.his.wrapper.LabTest> returnListofLab = new ArrayList<>();
+
+            for(int j=0;j<labTests.size();j++){
+                com.sd.his.wrapper.LabTest testObj=new com.sd.his.wrapper.LabTest();
+                if(labTests.get(j).getLoincCode()!=null){
+                LabTestSpeciman labTestSpecimanObj = this.labTestSpecimanRepository.findTestEntry(labTests.get(j).getLoincCode());
+                testObj.setNormalRange(labTestSpecimanObj.getMinNormalRange()+"-"+labTestSpecimanObj.getMaxNormalRange());
+                }else{
+                    testObj.setNormalRange("");
+                }
+                testObj.setDescription(labTests.get(j).getDescription());
+                testObj.setResultValue(labTests.get(j).getResultValue());
+                testObj.setLoincCode(labTests.get(j).getLoincCode());
+                testObj.setUnits(labTests.get(j).getUnits());
+
+                testObj.setId(String.valueOf(labTests.get(j).getId()));
+                returnListofLab.add(testObj);
+            }
+
+            List<AppointmentWrapper> apptFutureWrapperList = new ArrayList<>();
+            List<AppointmentWrapper> apptPastWrapperList = new ArrayList<>();
+            List<AppointmentWrapper> listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(dbLabOrder.get(0).getPatient().getId());
+            Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream()
+                    .collect(Collectors.partitioningBy(x -> x.getCompareDate()
+                            .toInstant().isAfter(Instant.now())));
+            /*patientWrapper.setFutureAppointments(listOfApp.get(true));
+            patientWrapper.setPastAppointments(listOfApp.get(false));*/
+
+            if (!HISCoreUtil.isListEmpty(dbLabOrder)) {
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                dbLabOrder.get(0).setLabTests(null);
+                returnValues.put("data", dbLabOrder);
+                returnValues.put("labTest",returnListofLab);
+                returnValues.put("appointment",listOfApp);
+                response.setResponseData(returnValues);
+
+                response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());
+                response.setResponseMessage(messageBundle.getString("laborder.fetched.success"));
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("LabOrder Found successfully...");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("LabOrder Not Found", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());

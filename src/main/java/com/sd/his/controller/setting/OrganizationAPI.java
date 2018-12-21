@@ -275,6 +275,7 @@ public class OrganizationAPI {
                 orgCity.put("Currency",addInfo.getCountry().getCurrency());
             }
             orgCity.put("zoneFormat",addInfo.getZone().getName()+""+addInfo.getZone().getZoneTime());
+            orgCity.put("zoneId",addInfo.getZone().getZoneId());
 
             dbOrganization.setAddInfo(orgCity);
             dbOrganization.setDateFormat(addInfo.getDateFormat());

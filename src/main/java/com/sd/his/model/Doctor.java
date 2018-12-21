@@ -90,13 +90,12 @@ public class Doctor extends StaffProfile implements Serializable {
     @Column(name = "STATUS")
     private Boolean status;
 
-    @Column(name = "BALANCE")
+    @Column(name = "BALANCE", columnDefinition = "double default '0.00'")
     private  Double balance;
 
 
     @OneToMany(mappedBy = "doctor")
     private List<StaffPayment> staffPayment;
-
 
     public Boolean getVacation() {
         return vacation;
@@ -218,6 +217,7 @@ public class Doctor extends StaffProfile implements Serializable {
         this.balance = balance;
     }
 
+    @JsonIgnore
     public List<StaffPayment> getStaffPayment() {
         return staffPayment;
     }

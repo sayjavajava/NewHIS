@@ -189,9 +189,15 @@ public class Medication extends BaseEntity implements Serializable {
         medication.indication = medicationWrapper.getIndication();
         medication.status = medicationWrapper.getStatus();
 
-        medication.datePrescribed = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDatePrescribedString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+       /* medication.datePrescribed = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDatePrescribedString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
         medication.dateStartedTaking = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDateStartedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
         medication.dateStoppedTaking = HISCoreUtil.convertToDateWithTime(medicationWrapper.getDateStoppedTakingString(),HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM);
+*/
+        medication.datePrescribed = medicationWrapper.getDatePrescribedDate();
+        medication.dateStartedTaking = medicationWrapper.getDateStartedTakingDate();
+        medication.dateStoppedTaking = medicationWrapper.getDateStoppedTakingDate();
+
+
 
         medication.dispenseQuantity = medicationWrapper.getDispenseQuantity();
         medication.dispensePackage = medicationWrapper.getDispensePackage();

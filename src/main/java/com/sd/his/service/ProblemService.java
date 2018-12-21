@@ -122,6 +122,7 @@ public class ProblemService {
         dte=problemWrapper.getDatePrescribedDate();
         String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
         Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+
      //   String readDate=HISCoreUtil.convertDateToTimeZone(dte,HISConstants.DATE_FORMAT_APP,Zone);
 
      //   Date scheduledDate=HISCoreUtil.convertToDateNew(readDate);
