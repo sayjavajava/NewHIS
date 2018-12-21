@@ -699,7 +699,7 @@ public class StaffAPI {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("user.not.found"));
-        response.setResponseCode(ResponseEnum.USER_NOT_FOUND.getValue());
+        response.setResponseCode(ResponseEnum.CLI_DPT_NOT_FOUND.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
 
