@@ -213,7 +213,7 @@ public class PatientOrderAPI {
     }
 
 
-    @ApiOperation(httpMethod = "GET", value = "Get Order",
+    /*@ApiOperation(httpMethod = "GET", value = "Get Order",
             notes = "This method will Get the Order.",
             produces = "application/json", nickname = "Get ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -252,7 +252,7 @@ public class PatientOrderAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
+*/
 
     @ApiOperation(httpMethod = "POST", value = "Update Order",
             notes = "This method will Update the Order.",
@@ -396,7 +396,7 @@ public class PatientOrderAPI {
     }
 
 
-    @ApiOperation(httpMethod = "GET", value = "Get Order",
+   /* @ApiOperation(httpMethod = "GET", value = "Get Order",
             notes = "This method will Get the Order.",
             produces = "application/json", nickname = "Get ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -438,6 +438,6 @@ public class PatientOrderAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
+*/
 
 }
