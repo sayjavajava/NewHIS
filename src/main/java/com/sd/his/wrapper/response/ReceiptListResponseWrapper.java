@@ -25,7 +25,7 @@ public class ReceiptListResponseWrapper {
         this.paymentId=pmt.getPaymentId();
         this.paymontAmount=pmt.getPaymentAmount();
         if (pmt.getPatientInvoicePayment().size() > 0) {
-            this.patientName = pmt.getPatientInvoicePayment().get(0).getPatient().getFirstName();
+            this.patientName = pmt.getPatientInvoicePayment().get(0).getPatient().getFirstName() +" "+pmt.getPatientInvoicePayment().get(0).getPatient().getLastName(); ;
             this.discountAmount=getDiscountOnPayment(pmt.getPatientInvoicePayment());
             this.advanceUsedAmount=getAdvancedUsed(pmt.getPatientInvoicePayment());
         }
