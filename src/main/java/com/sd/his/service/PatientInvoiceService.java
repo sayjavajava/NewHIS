@@ -146,11 +146,18 @@ public class PatientInvoiceService {
         }
 
         ivoiceTotal += (totalAmountAfterDics+taxTotal);
+        invoice.setDoctorCommission(totalCommission);
         invoice.setDiscountAmount(discountTotal);
         invoice.setTaxAmount(taxTotal);
         invoice.setInvoiceAmount(totalAmount);
         invoice.setTotalInvoiceAmount(ivoiceTotal);
         patientInvoiceRepository.save(invoice);
+
+        if(invoice.getCompleted()) {
+            Doctor dr= appointment.getDoctor();
+            double balance = dr.getBalance()== null? 0.0:dr.getBalance();
+            dr.setBalance(balance+totalCommission);
+        }
     }
 
 
