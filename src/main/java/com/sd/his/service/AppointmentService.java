@@ -6,9 +6,7 @@ import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.AmazonSESUtil;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.utill.SMTPUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
-import com.sd.his.wrapper.EmailWrapper;
 import com.sd.his.wrapper.response.MedicalServicesDoctorWrapper;
 import org.apache.catalina.core.ApplicationContext;
 import org.slf4j.Logger;
@@ -85,8 +83,7 @@ public class AppointmentService {
     private StatusRepository statusRepository;
     @Autowired
     private OrganizationService organizationService;
-    @Autowired
-    EmailServiceImp emailServiceImp;
+
 
 
 
