@@ -4,6 +4,8 @@ import com.sd.his.controller.StaffAPI;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.EmailConfiguration;
 import com.sd.his.service.EmailConfigurationService;
+import com.sd.his.utill.AmazonSESUtil;
+import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -41,12 +43,14 @@ public class EmailConfigurationController {
         GenericAPIResponse response = new GenericAPIResponse();
         try
         {
-            emailConfigurationService.saveSMTPSConfiguration(configurationRequestWrapper);
-            response.setResponseMessage(messageBundle.getString("email.configuration.save.success"));
-            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            logger.info("SMTP Email Configuration save successfully...");
+           EmailConfiguration emailConfiguration = emailConfigurationService.saveSMTPSConfiguration(configurationRequestWrapper);
+            if(HISCoreUtil.isValidObject(emailConfiguration)) {
+                response.setResponseMessage(messageBundle.getString("email.configuration.save.success"));
+                response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("SMTP Email Configuration save successfully...");
 
+            }
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception ex)
@@ -71,12 +75,14 @@ public class EmailConfigurationController {
         GenericAPIResponse response = new GenericAPIResponse();
         try
         {
-            emailConfigurationService.saveSESConfiguration(configurationRequestWrapper);
-            response.setResponseMessage(messageBundle.getString("email.configuration.save.success"));
-            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            logger.info("AmazonSES Email Configuration saved successfully...");
-
+           EmailConfiguration emailConfiguration =  emailConfigurationService.saveSESConfiguration(configurationRequestWrapper);
+           if(HISCoreUtil.isValidObject(emailConfiguration)) {
+               AmazonSESUtil.getInstance(true);
+               response.setResponseMessage(messageBundle.getString("email.configuration.save.success"));
+               response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+               response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+               logger.info("AmazonSES Email Configuration saved successfully...");
+           }
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (Exception ex)

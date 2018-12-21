@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import com.sd.his.enums.*;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
+import com.sd.his.utill.AmazonSESUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
 import com.sd.his.wrapper.response.MedicalServicesDoctorWrapper;
+import org.apache.catalina.core.ApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -80,6 +83,8 @@ public class AppointmentService {
     private StatusRepository statusRepository;
     @Autowired
     private OrganizationService organizationService;
+
+
 
 
     Logger logger = LoggerFactory.getLogger(AppointmentService.class);
@@ -163,6 +168,17 @@ public class AppointmentService {
         //check date time exist already
         if (!checkTimeAndDateAlreadyExist(appointment.getSchdeulledDate(), appointment.getStartedOn(), appointment.getEndedOn(), appointmentWrapper.getDoctorId())) {
             appointmentRepository.save(appointment);
+        //    emailServiceImp.sendSimpleMessage("waqasrana11@gmail.com","Test","Hey Buddy");
+         //   EmailService emailService = EmailService.getInstance(true);
+         //   boolean testSent   = SMTPUtil.sendTestEmail("AKIAJITH6V4G622BCQ6A","ssl://email-smtp.us-east-1.amazonaws.com","465","waqas@solutiondots.net","AnwMXw05Y7JstZEKPtNM9M023fpm5om2DljVqYIGNin5");
+            /*try {
+              boolean testSent =  AmazonSESUtil.sendTestEmail("noreply@solutiondots.com","ag@solutiondots.com","Test","Hello Body","AKIAICPTDCC6INFXRWGA","KxC1ZF5FJCdD6x43RPg+51ccITDWV++UF6fdmnXA");
+              logger.info("email has been"+ testSent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }*/
+           /* boolean  emailSent= emailService.sendEmail(new EmailWrapper("waqasrana1111@yahoo.com","Tes","Hey buddy "));
+            logger.info("email sending..."+emailSent );*/
         } else {
             result = "already";
         }

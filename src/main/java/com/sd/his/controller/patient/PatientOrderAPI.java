@@ -213,7 +213,7 @@ public class PatientOrderAPI {
     }
 
 
-    @ApiOperation(httpMethod = "GET", value = "Get Order",
+    /*@ApiOperation(httpMethod = "GET", value = "Get Order",
             notes = "This method will Get the Order.",
             produces = "application/json", nickname = "Get ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -236,7 +236,7 @@ public class PatientOrderAPI {
                 logger.error(" API - successfully saved.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            response.setResponseData(this.patientOrderService.getOrderById(orderId));
+            response.setResponseData(this.patientOrderService.getImagesOrderById(orderId));
             response.setResponseMessage(messageBundle.getString("document.get.success"));
             response.setResponseCode(ResponseEnum.DOCUMENT_GET_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -252,7 +252,7 @@ public class PatientOrderAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
+*/
 
     @ApiOperation(httpMethod = "POST", value = "Update Order",
             notes = "This method will Update the Order.",
@@ -396,5 +396,48 @@ public class PatientOrderAPI {
     }
 
 
+   /* @ApiOperation(httpMethod = "GET", value = "Get Order",
+            notes = "This method will Get the Order.",
+            produces = "application/json", nickname = "Get ",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Get Order successfully ", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/getImagesOrderId/{orderId}", method = RequestMethod.GET)//, consumes = "multipart/form-data"
+    public ResponseEntity<?> getOrderImagesById(HttpServletRequest request,
+                                                @PathVariable("orderId") int orderId,
+                                                @RequestParam("fileName") String fileName
+                                                 ) {
+        logger.info(" API - initiated..");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            if (orderId <= 0) {
+                response.setResponseMessage(messageBundle.getString("document.get.id.required"));
+                response.setResponseCode(ResponseEnum.DOCUMENT_GET_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.error(" API - successfully saved.");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            response.setResponseData(this.patientOrderService.getOrderImageById(orderId,fileName));
+            response.setResponseMessage(messageBundle.getString("document.get.success"));
+            response.setResponseCode(ResponseEnum.DOCUMENT_GET_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.error("getDocumentById API - successfully saved.");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("getDocumentById exception.", e.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+*/
 
 }

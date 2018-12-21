@@ -31,7 +31,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmailConfigurationRepository extends JpaRepository<EmailConfiguration, Long> {
 
-    EmailConfiguration findBySystemDefaultTrue();
+    EmailConfiguration  findBySystemDefaultTrue();
 
     EmailConfiguration findByServerType(String serverType);
 

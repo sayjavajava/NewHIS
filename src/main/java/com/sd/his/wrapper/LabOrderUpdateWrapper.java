@@ -14,7 +14,12 @@ public class LabOrderUpdateWrapper {
     private Date orderTestDate;
     private long patientId;
     private Date testDate;
-    private LabTest testNameId;
+  //  private LabTest testNameId;
+    private String testNameId;
+
+
+
+
 
     public LabOrderUpdateWrapper() {
 
@@ -92,13 +97,13 @@ public class LabOrderUpdateWrapper {
         this.testDate = testDate;
     }
 
-    public LabTest getTestNameId() {
+    /*public LabTest getTestNameId() {
         return testNameId;
     }
 
     public void setTestNameId(LabTest testNameId) {
         this.testNameId = testNameId;
-    }
+    }*/
 
 
 }

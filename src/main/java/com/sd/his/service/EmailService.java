@@ -1,77 +1,74 @@
 package com.sd.his.service;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
-import com.amazonaws.services.simpleemail.model.*;
-import com.sd.his.enums.ModuleEnum;
+import com.sd.his.model.Branch;
 import com.sd.his.model.EmailConfiguration;
-import com.sd.his.model.Prefix;
 import com.sd.his.repository.EmailConfigurationRepository;
-import com.sd.his.repository.PrefixRepository;
+import com.sd.his.utill.AmazonSESUtil;
+import com.sd.his.utill.IEmailUtil;
+import com.sd.his.utill.SMTPUtil;
+import com.sd.his.wrapper.EmailWrapper;
+import com.sd.his.wrapper.request.EmailTemplateWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.transaction.Transactional;
 
-@Service
-public class EmailService {
-
-    @Autowired
-    EmailConfigurationRepository emailConfigurationRepository;
+@Component
+public class EmailService implements ApplicationContextAware {
 
 
-    private final Logger logger = LoggerFactory.getLogger(EmailService.class);
+    private static EmailService INSTANCE;
+    private EmailConfiguration configuration;
+    private IEmailUtil emailUtil;
+    private static ApplicationContext ctx;
 
-    private AmazonSimpleEmailServiceClient client;
+    /*private EmailService(){}*/
 
-
-    public EmailService() {
-        initialize();
-    }
-
-    private void initialize() {
-        try {
-
-            EmailConfiguration config = emailConfigurationRepository.findBySystemDefaultTrue();
-            AWSCredentials credentials = new BasicAWSCredentials(config.getSesAccessKey(), config.getSesSecretKey());
-            client = new AmazonSimpleEmailServiceClient(credentials);
-        } catch (Exception t) {
-            logger.error("Error while configuration of email service");
+    private void initializeDefault() {
+        ApplicationContext appCtx = EmailService
+                .getApplicationContext();
+        EmailConfigurationRepository emailConfigurationRepository = (EmailConfigurationRepository) appCtx.getBean(EmailConfigurationRepository.class);
+      //  System.out.println("test branc..."+ branchService.totalBranches());
+         configuration = emailConfigurationRepository.findBySystemDefaultTrue();
+        if(configuration.getServerType().equalsIgnoreCase("SES")) {
+            emailUtil = AmazonSESUtil.getInstance(false);
         }
-
-    }
-
-
-    public Boolean sendEmail(
-            String emailSender,
-            String emailRecipient,
-            String emailSubject,
-            String emailHtmlBody) {
-
-        try {
-            SendEmailRequest request = new SendEmailRequest().withSource(emailSender);
-            List<String> toAddresses = new ArrayList<>();
-            toAddresses.add(emailRecipient);
-            Destination dest = new Destination().withToAddresses(toAddresses);
-            request.setDestination(dest);
-            Content subjContent = new Content().withData(emailSubject);
-            Message msg = new Message().withSubject(subjContent);
-            Content htmlContent = new Content().withData(emailHtmlBody);
-            Body body = new Body().withHtml(htmlContent);
-            msg.setBody(body);
-            request.setMessage(msg);
-            client.sendEmail(request);
-            return true;
-        } catch (Exception e) {
-            logger.error("Error while sending email");
-            return false;
+        else {
+            emailUtil = SMTPUtil.getInstance(false);
         }
     }
 
+   public static synchronized EmailService getInstance(Boolean isUpdated) {
+        if(INSTANCE == null || isUpdated) {
+            INSTANCE = new EmailService();
+
+        }
+        return INSTANCE;
+
+    }
+
+@Transactional
+    public  Boolean sendEmail(EmailWrapper email) {
+            initializeDefault();
+    return emailUtil.sendEmail(configuration.getSenderEmail(),email.getRecepient(), email.getSubject(), email.getContent());
+    }
+
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        ctx = applicationContext;
+    }
+    public static ApplicationContext getApplicationContext() {
+        return ctx;
+    }
 
 }
