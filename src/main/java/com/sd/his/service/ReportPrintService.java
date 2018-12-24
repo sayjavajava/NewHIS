@@ -16,7 +16,10 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReportPrintService {
@@ -26,8 +29,6 @@ public class ReportPrintService {
     private OrganizationRepository organizationRepository;
     @Value("${spring.http.multipart.location}")
     private String tmpFilePath;
-
-    private String path = "./WEB-INF/reports/";
 
     public RefundReceiptReportWrapper getRefundReceiptData(String refundId) {
         return patientRepository.getOneRefundData(refundId);
@@ -46,27 +47,18 @@ public class ReportPrintService {
     }
 
     public String generateReport(String reportName, Map<String, Object> parameters) throws JRException, SQLException, IOException, InterruptedException {
-        String reportPath = path + reportName + ".jrxml";
+        String reportPath = getClass().getClassLoader().getResource( "reports/" + reportName + ".jrxml").getPath();
         String reportId = (String) parameters.getOrDefault("invoiceId", (String) parameters.getOrDefault("paymentId", (String) parameters.get("transId")));
         String pdfPath = tmpFilePath + reportName + "_" + reportId + ".pdf";
         JasperReport jasperReport = JasperCompileManager.compileReport(reportPath);
+
         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource((ArrayList<?>) parameters.get("beanDS"));
         parameters.put("beanCoDataSource", beanColDataSource);
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
-
-//        String printFileName = null;
-//        printFileName=JasperFillManager.fillReportToFile(reportPath, parameters, beanColDataSource);
-
-//        JRPdfExporter exporter = new JRPdfExporter();
-//        exporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, pdfPath);
-//        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-//        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-//        exporter.setParameter(JRExporterParameter.OUTPUT_FILE, new File(pdfPath));
-//        exporter.exportReport();
-
         JasperExportManager.exportReportToPdfFile(jasperPrint, pdfPath);
         File pdfFile = new File(pdfPath);
+
         if (pdfFile.exists()) {
             Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + pdfFile.getCanonicalPath());
             p.waitFor();
@@ -78,7 +70,7 @@ public class ReportPrintService {
         Map<String, Object> map = new HashMap<>();
         Organization org = organizationRepository.findOne(1L);
         List<Object> collection = new ArrayList<>();
-        map.put("logoImg", path + "logo.gif");
+        map.put("logoImg", getClass().getClassLoader().getResource( "reports/logo.gif").getPath());
         map.put("companyName", org.getCompanyName());
         map.put("officePhone", org.getOfficePhone());
         map.put("email", org.getEmail());
