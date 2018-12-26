@@ -420,4 +420,14 @@ public class HISCoreUtil {
         return convFile;
     }
 
+
+    /*public static Date convertDateToStringWithZoneDate(Date date) {
+        String formatedDate = null;
+        if (date != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+           // formatedDate = formatter.format(date);
+            //date = formatter.parse(str);
+        }
+        return formatter;
+    }*/
 }
