@@ -21,6 +21,9 @@ public class Cashier extends StaffProfile implements Serializable {
     @Column(name = "STATUS")
     private Boolean status;
 
+    @Column(name = "ALLOW_DISCOUNT")
+    private Boolean allowDiscount;
+
     @JsonIgnore
     @OneToMany(targetEntity = BranchCashier.class, mappedBy = "cashier")
     private List<BranchCashier> branchCashiers;
@@ -47,5 +50,13 @@ public class Cashier extends StaffProfile implements Serializable {
 
     public void setBranchCashiers(List<BranchCashier> branchCashiers) {
         this.branchCashiers = branchCashiers;
+    }
+
+    public Boolean getAllowDiscount() {
+        return allowDiscount;
+    }
+
+    public void setAllowDiscount(Boolean allowDiscount) {
+        this.allowDiscount = allowDiscount;
     }
 }

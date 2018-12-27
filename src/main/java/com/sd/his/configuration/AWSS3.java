@@ -13,7 +13,6 @@ import com.sd.his.model.S3Bucket;
 import com.sd.his.model.User;
 import com.sd.his.service.S3BucketService;
 import com.sd.his.service.UserService;
-import com.sd.his.utill.AWSFileMapper;
 import com.sd.his.utill.GraphicsUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -66,8 +65,7 @@ public class AWSS3 {
     UserService userService;
     @Autowired
     S3BucketService s3BucketService;
-    @Autowired
-    AWSFileMapper awsFileMapper;
+
     /**
      * Retrieves a single object from S3 with the specified Key name
      *

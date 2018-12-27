@@ -52,6 +52,10 @@ public class Nurse extends StaffProfile implements Serializable {
     @OneToMany(targetEntity = NurseDepartment.class, mappedBy = "nurse", cascade=CascadeType.ALL)
     private List<NurseDepartment> nurseDepartments;
 
+    @Column(name = "MANAGE_PATIENT_RECORDS")
+    private Boolean managePatientRecords;
+    @Column(name = "MANAGE_PATIENT_INVOICES")
+    private Boolean managePatientInvoices;
     @Column(name = "STATUS")
     private Boolean status;
 
@@ -63,6 +67,21 @@ public class Nurse extends StaffProfile implements Serializable {
         this.nurseWithDoctorList = nurseWithDoctorList;
     }
 
+    public Boolean getManagePatientRecords() {
+        return managePatientRecords;
+    }
+
+    public void setManagePatientRecords(Boolean managePatientRecords) {
+        this.managePatientRecords = managePatientRecords;
+    }
+
+    public Boolean getManagePatientInvoices() {
+        return managePatientInvoices;
+    }
+
+    public void setManagePatientInvoices(Boolean managePatientInvoices) {
+        this.managePatientInvoices = managePatientInvoices;
+    }
 
     public Boolean getStatus() {
         return status;

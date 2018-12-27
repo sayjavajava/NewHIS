@@ -93,6 +93,9 @@ public class Doctor extends StaffProfile implements Serializable {
     @Column(name = "BALANCE", columnDefinition = "double default '0.00'")
     private  Double balance;
 
+    @Column(name = "ALLOW_DISCOUNT")
+    private Boolean allowDiscount;
+
 
     @OneToMany(mappedBy = "doctor")
     private List<StaffPayment> staffPayment;
@@ -127,6 +130,14 @@ public class Doctor extends StaffProfile implements Serializable {
 
     public void setNurseWithDoctorList(List<NurseWithDoctor> nurseWithDoctorList) {
         this.nurseWithDoctorList = nurseWithDoctorList;
+    }
+
+    public Boolean getAllowDiscount() {
+        return allowDiscount;
+    }
+
+    public void setAllowDiscount(Boolean allowDiscount) {
+        this.allowDiscount = allowDiscount;
     }
 
     public User getUser() {

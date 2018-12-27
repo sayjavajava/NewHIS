@@ -34,50 +34,53 @@ import java.util.OptionalLong;
  */
 public class StaffResponseWrapper{
 
-    Long uid;
-    Long pId;
-    Long primaryBranchId;
-    String userType;
-    String email;
-    String userName;
-    String firstName;
-    String lastName;
-    String homePhone;
-    String cellPhone;
-    String expiryDate;
-    String primaryBranch;
-    DutyShift dutyShift;
-    String workingDaysOfDoctor;
-    List<Branch> visitBranches;
-    Boolean active;
-    Long checkUpInterval;
-    Boolean vacation;
-    String vacationFrom;
-    String vacationTo;
-    List<String> workingDays;
-    List<DutyShift> dutyShifts;
-    Boolean managePatientRecords;
-    Boolean managePatientInvoices;
-    String phoneNumber;
-    String address;
-    String city;
-    String country;
-    Boolean status;
-    String profileImg;
-    Long id;
-    String naturalId;
-    long value;
-    String label;
-    Long docDepartmentId;
-    List<Department> nurseDepartmentList;
-    List<Branch> staffBranches = new ArrayList();
-    List<Doctor> dutyWithDoctors;
-    boolean checkedDoc;
-    List<MedicalService> doctorMedicalSrvcList = new ArrayList();
-    List<MedicalServiceWrapper> doctorServiceComission = new ArrayList();
-    List<ServiceComission> comissionServices;
+  private   Long uid;
+    private  Long pId;
+    private Long primaryBranchId;
+    private String userType;
+    private String email;
+    private String userName;
+    private   String firstName;
+    private  String lastName;
+    private  String homePhone;
+    private  String cellPhone;
+    private  String expiryDate;
+    private  String primaryBranch;
+    private  DutyShift dutyShift;
+    private  String workingDaysOfDoctor;
+    private  List<Branch> visitBranches;
+    private  Boolean active;
+    private  Long checkUpInterval;
+    private  Boolean vacation;
+    private  String vacationFrom;
+    private String vacationTo;
+    private List<String> workingDays;
+    private List<DutyShift> dutyShifts;
+    private Boolean managePatientRecords;
+    private Boolean managePatientInvoices;
+    private String phoneNumber;
+    private String address;
+    private String city;
+    private String country;
+    private Boolean status;
+    private String profileImg;
+    private Long id;
+    private String naturalId;
+    private  long value;
+    private  String label;
+    private Long docDepartmentId;
+    private List<Department> nurseDepartmentList;
+    private  List<Branch> staffBranches = new ArrayList();
+    private List<Doctor> dutyWithDoctors;
+    private boolean checkedDoc;
+    private List<MedicalService> doctorMedicalSrvcList = new ArrayList();
+    private List<MedicalServiceWrapper> doctorServiceComission = new ArrayList();
+    private  List<ServiceComission> comissionServices;
+    private Double balance;
+    private Boolean sendBillingReport;
+    private Boolean useReceptDashboard;
+    private Boolean otherDoctorDashBoard;
 
-    Double balance;
 
     public StaffResponseWrapper() {
     }
@@ -85,7 +88,7 @@ public class StaffResponseWrapper{
     //constructor for cashier and receptionist
     public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
                                 String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
-                                Date expiryDate
+                                Date expiryDate,Boolean sendBillingReport,Boolean useReceptDashboard,Boolean otherDoctorDashBoard
 
                                 ){
         this.uid = uId;
@@ -102,6 +105,9 @@ public class StaffResponseWrapper{
         this.homePhone=homePhone;
         this.cellPhone=cellPhone;
         this.primaryBranch=primaryBranch;
+        this.sendBillingReport = sendBillingReport;
+        this.useReceptDashboard = useReceptDashboard;
+        this.otherDoctorDashBoard = otherDoctorDashBoard;
 
        // this.visitBranches=branchCashiers;
 
@@ -164,6 +170,9 @@ public class StaffResponseWrapper{
         this.vacationTo=null;
         this.workingDays = doctor.getWorkingDays();
         this.dutyShifts = doctor.getDutyShifts();
+        this.sendBillingReport = doctor.getSendBillingReport();
+        this.useReceptDashboard = doctor.getUseReceiptDashboard();
+        this.otherDoctorDashBoard = doctor.getOtherDoctorDashboard();
         // this.visitBranches=branchCashiers;
         this.docDepartmentId = doctor.getDepartment() != null ? doctor.getDepartment().getId() : null;
     }
@@ -195,6 +204,35 @@ public class StaffResponseWrapper{
     }*/
 
     //constructor for nurse
+
+    public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
+                                String email,String primaryBranch,String homePhone,String cellPhone,Boolean active,Long primaryId,
+                                Date expiryDate,Boolean sendBillingReport,Boolean useReceptDashboard,Boolean otherDoctorDashBoard,Boolean managePatientRecords,Boolean managePatientInvoices
+
+    ){
+        this.uid = uId;
+        this.pId=pId;
+        this.userType = userType;
+        this.userName = userName;
+        this.firstName=firstName;
+        this.lastName =lastName;
+        this.email=email;
+        this.primaryBranchId=primaryId;
+        //   this.visitBranches=branchList;
+        this.active=active;
+        this.expiryDate= HISCoreUtil.convertDateToStringWithZone(expiryDate);
+        this.homePhone=homePhone;
+        this.cellPhone=cellPhone;
+        this.primaryBranch=primaryBranch;
+        this.sendBillingReport = sendBillingReport;
+        this.useReceptDashboard = useReceptDashboard;
+        this.otherDoctorDashBoard = otherDoctorDashBoard;
+        this.managePatientInvoices = managePatientInvoices;
+        this.managePatientRecords = managePatientRecords;
+
+        // this.visitBranches=branchCashiers;
+
+    }
     public StaffResponseWrapper(Nurse nurse){
         this.uid = nurse.getUser().getId();
         this.pId= nurse.getId();
@@ -269,6 +307,39 @@ public class StaffResponseWrapper{
             this.profileImg = receptionist.getProfileImgURL();
             this.status = receptionist.getStatus();
         }
+    }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Boolean getSendBillingReport() {
+        return sendBillingReport;
+    }
+
+    public void setSendBillingReport(Boolean sendBillingReport) {
+        this.sendBillingReport = sendBillingReport;
+    }
+
+    public Boolean getUseReceptDashboard() {
+        return useReceptDashboard;
+    }
+
+    public void setUseReceptDashboard(Boolean useReceptDashboard) {
+        this.useReceptDashboard = useReceptDashboard;
+    }
+
+    public Boolean getOtherDoctorDashBoard() {
+        return otherDoctorDashBoard;
+    }
+
+    public void setOtherDoctorDashBoard(Boolean otherDoctorDashBoard) {
+        this.otherDoctorDashBoard = otherDoctorDashBoard;
     }
 
     public List<MedicalServiceWrapper> getDoctorServiceComission() {

@@ -24,6 +24,9 @@ public class Receptionist extends StaffProfile implements Serializable {
     @Column(name = "STATUS")
     private Boolean status;
 
+    @Column(name = "ALLOW_DISCOUNT")
+    private Boolean allowDiscount;
+
     public User getUser() {
         return user;
     }
@@ -34,6 +37,14 @@ public class Receptionist extends StaffProfile implements Serializable {
 
     public void setBranchReceptionists(List<BranchReceptionist> branchReceptionists) {
         this.branchReceptionists = branchReceptionists;
+    }
+
+    public Boolean getAllowDiscount() {
+        return allowDiscount;
+    }
+
+    public void setAllowDiscount(Boolean allowDiscount) {
+        this.allowDiscount = allowDiscount;
     }
 
     public Boolean getStatus() {

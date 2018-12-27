@@ -140,9 +140,15 @@ public class StaffService {
             cashier.setFirstName(createRequest.getFirstName());
             cashier.setLastName(createRequest.getLastName());
             cashier.setProfileId(prefID);
-            //  cashier.setStatus(ProfileStatusTypeEnum.ACTIVE);
             cashier.setUser(user);
+
+            cashier.setActive(createRequest.isActive());
+            cashier.setSendBillingReport(createRequest.isSendBillingReport());
+            cashier.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
+            cashier.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
+            cashier.setAllowDiscount(createRequest.getAllowDiscount());
             cashier.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
+
             List<Branch> allowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
             List<BranchCashier> cashierVisitBranchesData = new ArrayList<>();
             cashierRepository.save(cashier);
@@ -214,6 +220,13 @@ public class StaffService {
             receptionist.setFirstName(createRequest.getFirstName());
             receptionist.setLastName(createRequest.getLastName());
             receptionist.setUser(user);
+
+            receptionist.setActive(createRequest.isActive());
+            receptionist.setSendBillingReport(createRequest.isSendBillingReport());
+            receptionist.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
+            receptionist.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
+            receptionist.setAllowDiscount(createRequest.getAllowDiscount());
+
             receptionist.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
             List<Long> listbr = Arrays.asList(createRequest.getSelectedVisitBranches());
             List<Branch> allowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
@@ -284,6 +297,13 @@ public class StaffService {
             nurse.setLastName(createRequest.getLastName());
             nurse.setUser(user);
             nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
+
+            nurse.setActive(createRequest.isActive());
+            nurse.setSendBillingReport(createRequest.isSendBillingReport());
+            nurse.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
+            nurse.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
+            nurse.setManagePatientRecords(createRequest.isManagePatientRecords());
+            nurse.setManagePatientRecords(createRequest.isManagePatientInvoices());
             //     nurse.setManagePatientInvoices(createRequest.isManagePatientInvoices());
             //      nurse.setManagePatientRecords(createRequest.isManagePatientRecords());
 
@@ -389,6 +409,11 @@ public class StaffService {
             doctor.setVacation(createRequest.isVacation());
             doctor.setVacationFrom(HISCoreUtil.convertToDate(createRequest.getDateFrom()));
 
+            doctor.setActive(createRequest.isActive());
+            doctor.setSendBillingReport(createRequest.isSendBillingReport());
+            doctor.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
+            doctor.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
+            doctor.setAllowDiscount(createRequest.getAllowDiscount());
 
             doctor.setVacationTO(HISCoreUtil.convertToDate(createRequest.getDateTo()));
             List<String> daysList = Arrays.asList(createRequest.getSelectedWorkingDays());
@@ -509,8 +534,8 @@ public class StaffService {
         }
         if (userType.equalsIgnoreCase("DOCTOR")) {
              staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(id);
-            staffResponseWrapper.setStaffBranches(branchDoctorRepository.getDoctorBranches(id));
-            staffResponseWrapper.setDoctorServiceComission(doctorMedicalServiceRepository.getDocServicesAndComissions(id));
+             staffResponseWrapper.setStaffBranches(branchDoctorRepository.getDoctorBranches(id));
+             staffResponseWrapper.setDoctorServiceComission(doctorMedicalServiceRepository.getDocServicesAndComissions(id));
             return staffResponseWrapper;
         }
         if (userType.equalsIgnoreCase("NURSE")) {
