@@ -22,6 +22,10 @@ public class DrugWrapper extends BaseWrapper {
     private List<String> strengths;
     private String strength = "";
     private String uOM;
+    private String selectedCountry;
+    private String drugInfo;
+    private boolean active = true;
+    private boolean hasChild;
 
     public String getCountryView() {
         return countryView;
@@ -32,6 +36,7 @@ public class DrugWrapper extends BaseWrapper {
     }
 
     private String countryView;
+
     public String getDrugInfo() {
         return drugInfo;
     }
@@ -40,32 +45,24 @@ public class DrugWrapper extends BaseWrapper {
         this.drugInfo = drugInfo;
     }
 
-    private String drugInfo;
-
-
-   public String getSelectedCountry() {
+    public String getSelectedCountry() {
         return selectedCountry;
     }
-
 
     public void setSelectedCountry(String selectedCountry) {
         this.selectedCountry = selectedCountry;
     }
 
-    private String selectedCountry;
+    /* public Country getCountry() {
+         return country;
+     }
 
-   /* public Country getCountry() {
-        return country;
-    }
+     public void setCountry(Country country) {
+         this.country = country;
+     }
 
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
-    // private String origin;
-    private Country country;*/
-    private boolean active = true;
-    private boolean hasChild;
+     // private String origin;
+     private Country country;*/
 
     public Map<String, Object> getAddInfo() {
         return addInfo;
@@ -80,14 +77,14 @@ public class DrugWrapper extends BaseWrapper {
     public DrugWrapper() {
     }
 
-    public DrugWrapper(String drugName,String route) {
+    public DrugWrapper(String drugName, String route) {
         this.drugName = drugName;
-        this.route=route;
+        this.route = route;
     }
 
     public DrugWrapper(Long id, Date createdOn, Date updatedOn,
                        String drugNaturalId, String drugName, String genericName, String companyName, String route,
-                       List<String> strengths, String uOM, Country origin, boolean active, boolean hasChild) {
+                       List<String> strengths, String uOM, Country origin, boolean active, boolean hasChild, String drugInfo) {
         super(id,
                 HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_dd),
                 HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMATE_YYY_MM_dd));
@@ -96,17 +93,18 @@ public class DrugWrapper extends BaseWrapper {
         this.genericName = genericName;
         this.companyName = companyName;
         this.route = route;
-       this.strengths = strengths;
+        this.strengths = strengths;
 
         if (strengths != null && strengths.size() > 0) {
             for (String s : strengths) {
-                this.strength.concat(s + ",");
+                this.strength = this.strength.concat(s + ",");
             }
         }
         this.uOM = uOM;
-    //    this.selectedCountry = origin;
+        //    this.selectedCountry = origin;
         this.active = active;
         this.hasChild = hasChild;
+        this.drugInfo = drugInfo;
     }
 
     public DrugWrapper(Drug drug) {
@@ -124,15 +122,17 @@ public class DrugWrapper extends BaseWrapper {
 
         if (drug.getStrengths() != null && drug.getStrengths().size() > 0) {
             for (String s : drug.getStrengths()) {
-                this.strength += (s + ",");
+                this.strength = this.strength.concat(s + ",");
             }
             this.strength = this.strength.substring(0, this.getStrength().length() - 1);
         }
         this.uOM = drug.getuOM();
-       // this.origin = drug.getOrigin();
-   //     this.selectedCountry=drug.getCountry();
+        // this.origin = drug.getOrigin();
+        // this.selectedCountry=drug.getCountry();
         this.active = drug.isActive();
         this.hasChild = false;
+        this.drugInfo = drug.getDruginfo();
+        this.selectedCountry = drug.getCountry().getName();
     }
 
     public String getDrugNaturalId() {
@@ -175,7 +175,7 @@ public class DrugWrapper extends BaseWrapper {
         this.route = route;
     }
 
-   public List<String> getStrengths() {
+    public List<String> getStrengths() {
         return strengths;
     }
 

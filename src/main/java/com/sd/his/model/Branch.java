@@ -41,7 +41,7 @@ import java.util.List;
 public class Branch extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-  @Column(name = "NAME")
+    @Column(name = "NAME")
     private String name;
 //
 //    @Column(name = "NO_OF_ROOMS")
@@ -53,6 +53,9 @@ public class Branch extends BaseEntity implements Serializable {
 
     @Column(name = "ADDRESS")
     private String address;
+
+    @Column(name = "FORMATTED_ADDRESS")
+    private String formattedAddress;
 
     @Column(name = "FAX")
     private String fax;
@@ -75,6 +78,9 @@ public class Branch extends BaseEntity implements Serializable {
     private Boolean status;
 
     //STATUS boolean
+
+    @Column(name = "ZIP_CODE")
+    private String zipCode;
 
     @Column(name = "SYSTEM_BRANCH", columnDefinition = "boolean default false", nullable = false)
     private Boolean systemBranch;
@@ -134,7 +140,8 @@ public class Branch extends BaseEntity implements Serializable {
         this.organization = organization;
     }
 
-    public Branch() {}
+    public Branch() {
+    }
 
     public String getName() {
         return name;
@@ -294,5 +301,21 @@ public class Branch extends BaseEntity implements Serializable {
 
     public void setCity(City city) {
         this.city = city;
+    }
+
+    public String getFormattedAddress() {
+        return formattedAddress;
+    }
+
+    public void setFormattedAddress(String formattedAddress) {
+        this.formattedAddress = formattedAddress;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 }

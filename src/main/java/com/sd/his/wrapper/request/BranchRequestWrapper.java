@@ -1,8 +1,5 @@
 package com.sd.his.wrapper.request;
 
-import com.sd.his.model.City;
-import com.sd.his.model.Country;
-import com.sd.his.model.State;
 import com.sd.his.wrapper.ExamRooms;
 
 /*
@@ -27,21 +24,35 @@ import com.sd.his.wrapper.ExamRooms;
  *
  */
 public class BranchRequestWrapper {
+    long id;
+    String name;
+    String country;
+    String state;
+    String city;
+    Long rooms;
+    String username;
+    String firstName;
+    String lastName;
+    Long doctorId;
+    boolean checkedBranch;
+    long value;
+    String label;
+    String companyName;
 
     String branchName;
     String officeHoursStart;
     String officeHoursEnd;
     Long noOfExamRooms;
-    Long stateId;
-    Long cityId;
+    String stateId;
+    String cityId;
     Long primaryDoctor;
-    Integer zipCode;
+    String zipCode;
     String address;
     String officePhone;
     String fax;
     String formattedAddress;
     ExamRooms[] examRooms;
-    Long countryId;
+    String countryId;
     String billingName;
     String billingBranch;
     String billingTaxID;
@@ -58,11 +69,11 @@ public class BranchRequestWrapper {
         this.flow = flow;
     }
 
-    public Long getCountryId() {
+    public String getCountryId() {
         return countryId;
     }
 
-    public void setCountryId(Long country) {
+    public void setCountryId(String countryId) {
         this.countryId = countryId;
     }
 
@@ -149,19 +160,19 @@ public class BranchRequestWrapper {
         this.noOfExamRooms = noOfExamRooms;
     }
 
-    public Long getStateId() {
+    public String getStateId() {
         return stateId;
     }
 
-    public void setStateId(Long stateId) {
+    public void setStateId(String stateId) {
         this.stateId = stateId;
     }
 
-    public Long getCityId() {
+    public String getCityId() {
         return cityId;
     }
 
-    public void setCityId(Long cityId) {
+    public void setCityId(String cityId) {
         this.cityId = cityId;
     }
 
@@ -169,11 +180,11 @@ public class BranchRequestWrapper {
         this.primaryDoctor = primaryDoctor;
     }
 
-    public Integer getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(Integer zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 

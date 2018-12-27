@@ -150,7 +150,8 @@ public class OrganizationService {
             if (chkStatusCountry) {
                 numCountry = Long.parseLong(organizationRequestWrapper.getSelectedCountry());
             } else {
-                Country countryObj = countryRepository.findTitleById(organizationRequestWrapper.getSelectedCountry());
+//                Country countryObj = countryRepository.findTitleById(organizationRequestWrapper.getSelectedCountry());
+                Country countryObj = countryRepository.findByName(organizationRequestWrapper.getSelectedCountry());
                 numCountry = countryObj != null ? countryObj.getId() : null;
             }
          //   long num = Long.parseLong(organizationRequestWrapper.getSelectedCity());

@@ -77,15 +77,15 @@ public class BranchService {
     @Autowired
     private OrganizationRepository organizationRepository;
     @Autowired
-    private  DepartmentRepository departmentRepository;
+    private DepartmentRepository departmentRepository;
     @Autowired
     HISUtilService hisUtilService;
     @Autowired
-    private  CountryRepository countryRepository;
+    private CountryRepository countryRepository;
     @Autowired
-    private  StateRepository stateRepository;
+    private StateRepository stateRepository;
     @Autowired
-    private  CityRepository cityRepository;
+    private CityRepository cityRepository;
 
     @Autowired
     private OrganizationService organizationService;
@@ -122,15 +122,16 @@ public class BranchService {
         System.out.println("Date with Time Zone"+allDate);*/
 
 
-      //  branch.setCreatedOn(allDate);
-      //  branch.setUpdatedOn(allDate);
+        //  branch.setCreatedOn(allDate);
+        //  branch.setUpdatedOn(allDate);
         branch.setOfficeStartTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursStart()));
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
         branch.setFax(branchRequestWrapper.getFax());
         branch.setBranchId(hisUtilService.getPrefixId(ModuleEnum.BRANCH));
-        branch.setAddress(branchRequestWrapper.getAddress());
+        branch.setFormattedAddress(branchRequestWrapper.getFormattedAddress());
+        branch.setZipCode(branchRequestWrapper.getZipCode());
         if (branchRequestWrapper.getCityId() != null) {
-            branch.setCity(cityRepository.findOne(branchRequestWrapper.getCityId()));
+            branch.setCity(cityRepository.findOne(Long.valueOf(branchRequestWrapper.getCityId())));
         }
         branch.setFlow(branchRequestWrapper.getFlow());
         Organization organization = organizationRepository.findOne(1L);
@@ -149,26 +150,29 @@ public class BranchService {
         return branch;
 
     }
+
     public Branch findByBranchName(String name) {
         return branchRepository.findByName(name);
     }
 
     public List<BranchResponseWrapper> findAllBranches(int offset, int limit) {
-        Pageable pageable = new PageRequest(offset, limit);;
-        List<BranchResponseWrapper> list =  branchRepository.findAllByActive(pageable);
+        Pageable pageable = new PageRequest(offset, limit);
+        ;
+        List<BranchResponseWrapper> list = branchRepository.findAllByActive(pageable);
         List<BranchResponseWrapper> uniqueBranches = new ArrayList<>();
-        int index=0;//to do for list
+        int index = 0;//to do for list
         StringBuilder sb = new StringBuilder();
-        for(BranchResponseWrapper branchResponseWrapper :list){
+        for (BranchResponseWrapper branchResponseWrapper : list) {
 
-          Optional<BranchResponseWrapper> exist =  uniqueBranches.stream().filter(x->x.getId() == branchResponseWrapper.getId()).findAny();
-           if(exist.isPresent()){
+            Optional<BranchResponseWrapper> exist = uniqueBranches.stream().filter(x -> x.getId() == branchResponseWrapper.getId()).findAny();
+            if (exist.isPresent()) {
             /*BranchResponseWrapper branchResponseWrapper1  = uniqueBranches.stream().filter(x->x.getFirstName() ==exist.get().getFirstName()).findAny().orElse(null);
               if(branchResponseWrapper1 !=null){
                String s = branchResponseWrapper1.getFirstName()+","+ sb.append(exist.get().getFirstName());
                 branchResponseWrapper1.setFirstName(s);
               }*/
-               continue;}
+                continue;
+            }
             uniqueBranches.add(branchResponseWrapper);
         }
         return uniqueBranches;
@@ -177,6 +181,7 @@ public class BranchService {
     public List<Doctor> getDoctorsWithBranch(long branchId) {
         return branchDoctorRepository.getBranchesDoctors(branchId);
     }
+
     public int totalBranches() {
         return ((int) branchRepository.count());
     }
@@ -184,19 +189,21 @@ public class BranchService {
     public BranchResponseWrapper getById(Long id) {
         return branchRepository.findAllById(id);
     }
-    public  Branch findBranchById(Long id){
-        return  branchRepository.findOne(id);
+
+    public Branch findBranchById(Long id) {
+        return branchRepository.findOne(id);
     }
 
     public Branch deleteBranch(Branch branch) {
         //  branch.setDeleted(true);
-        if(branch.getBranchCashiers().size() >0 || branch.getBranchDoctors().size() >0 || branch.getBranchDepartments().size() > 0
-                || branch.getBranchNurses().size() > 0 || branch.getBranchReceptionists().size() > 0){
+        if (branch.getBranchCashiers().size() > 0 || branch.getBranchDoctors().size() > 0 || branch.getBranchDepartments().size() > 0
+                || branch.getBranchNurses().size() > 0 || branch.getBranchReceptionists().size() > 0) {
             return null;
         }
         branchRepository.delete(branch);
-        return  branch;
+        return branch;
     }
+
     /*public Boolean checkBranchExist(Branch branch){
 
         branch.getBranchCashiers().;
@@ -244,21 +251,22 @@ public class BranchService {
  */
     @Transactional
     public Branch updateBranch(BranchRequestWrapper branchRequestWrapper, Branch branch) {
-
         branch.setName(branchRequestWrapper.getBranchName());
         branch.setStatus(true);
-    //    branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
+        //    branch.setNoOfRooms(branchRequestWrapper.getNoOfExamRooms());
+        //    branch.setSystemBranch(false);
         branch.setAddress(branchRequestWrapper.getAddress());
         branch.setFlow(branchRequestWrapper.getFlow());
-        //    branch.setSystemBranch(false);
         branch.setOfficePhone(branchRequestWrapper.getOfficePhone());
         branch.setOfficeStartTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursStart()));
         branch.setOfficeEndTime(HISCoreUtil.convertToTime(branchRequestWrapper.getOfficeHoursEnd()));
         branch.setFax(branchRequestWrapper.getFax());
-        branch.setAddress(branchRequestWrapper.getAddress());
-        if (branchRequestWrapper.getCityId() != null) {
-            branch.setCity(cityRepository.findOne(branchRequestWrapper.getCityId()));
+        branch.setFormattedAddress(branchRequestWrapper.getFormattedAddress());
+        branch.setZipCode(branchRequestWrapper.getZipCode());
+        if (branchRequestWrapper.getCityId() != null && HISCoreUtil.containsDigit(branchRequestWrapper.getCityId())) {
+            branch.setCity(cityRepository.findOne(Long.valueOf(branchRequestWrapper.getCityId())));
         }
+        branch.setUpdatedOn(new Date());
         branchRepository.save(branch);
 /*
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
@@ -315,12 +323,13 @@ public class BranchService {
     public List<BranchResponseWrapper> searchByBranchNameAndDepartment(Long name, int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
         logger.info("searching branches");
-        Branch branch1 =  branchRepository.findOne(name);
-        List<BranchResponseWrapper> branches = branchRepository.findByNameAndBranchDepartments(branch1.getName(),pageable);
+        Branch branch1 = branchRepository.findOne(name);
+        List<BranchResponseWrapper> branches = branchRepository.findByNameAndBranchDepartments(branch1.getName(), pageable);
         return branches;
     }
+
     public boolean isBranchNameOrIdExistsAlready(String name, long brId) {
-        return branchRepository.findByNameAndIdNot(name,brId) == null ? false : true;
+        return branchRepository.findByNameAndIdNot(name, brId) == null ? false : true;
     }
 
 
@@ -339,38 +348,39 @@ public class BranchService {
     public Set<BranchResponseWrapper> getAllActiveBranchesWithDoctors() {
         return new HashSet<BranchResponseWrapper>(branchRepository.findByBranchAndBranchDoctors());
     }
+
     private String generateEmail(String domain, int length) {
         return RandomStringUtils.random(length, "abcdefghijklmnopqrstuvwxyz") + "@" + domain;
     }
 
-   /* public List<Room> getTotalRoomsByBrId(Long branchId){
-        return roomRepository.findByBranchId(branchId);
-    }*/
-    public List<Room> getTotalRoomsByBrId(Long branchId){
+    /* public List<Room> getTotalRoomsByBrId(Long branchId){
+         return roomRepository.findByBranchId(branchId);
+     }*/
+    public List<Room> getTotalRoomsByBrId(Long branchId) {
         return null;//roomRepository.findByBranchId(branchId)
     }
 
-    public CityWrapper getCityByBrId(Long branchId){
+    public CityWrapper getCityByBrId(Long branchId) {
         return branchRepository.findCityByBranchId(branchId);
     }
 
-    public StateWrapper getStateByBrId(Long branchId){
+    public StateWrapper getStateByBrId(Long branchId) {
         return branchRepository.findStateByBranchId(branchId);
     }
 
-    public CountryWrapper getCountryByBrId(Long branchId){
+    public CountryWrapper getCountryByBrId(Long branchId) {
         return branchRepository.findCountryByBranchId(branchId);
     }
 
-    public List<CountryWrapper> getAllCountries(){
+    public List<CountryWrapper> getAllCountries() {
         return countryRepository.getAllCountries();
     }
 
-    public List<StateWrapper> getStatesByCntryId(Long countryId){
+    public List<StateWrapper> getStatesByCntryId(Long countryId) {
         return stateRepository.getAllStatesByCountry(countryId);
     }
 
-    public List<CityWrapper> getCitiesByStateId(Long stateId){
+    public List<CityWrapper> getCitiesByStateId(Long stateId) {
         return cityRepository.getAllCitiesByStateId(stateId);
     }
 }
