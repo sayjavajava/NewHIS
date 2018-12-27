@@ -8,7 +8,6 @@ import com.sd.his.configuration.AWSS3;
 import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.enums.S3ContentTypes;
 import com.sd.his.model.S3Bucket;
-import com.sd.his.utill.AWSFileMapper;
 import com.sd.his.utill.HISCoreUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -61,9 +60,6 @@ public class AWSService {
 
     @Autowired
     S3BucketService s3BucketService;
-
-    @Autowired
-    AWSFileMapper awsFileMapper;
 
     private AmazonS3 s3client;
 

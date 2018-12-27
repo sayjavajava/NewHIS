@@ -4,7 +4,6 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.auth.PropertiesCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
@@ -13,24 +12,20 @@ import com.sd.his.model.S3Bucket;
 import com.sd.his.model.User;
 import com.sd.his.service.S3BucketService;
 import com.sd.his.service.UserService;
-import com.sd.his.utill.AWSFileMapper;
 import com.sd.his.utill.GraphicsUtil;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.sd.his.utill.HISConstants.S3_USER_ORDER_DIRECTORY_PATH;
 
@@ -66,8 +61,6 @@ public class AWSS3 {
     UserService userService;
     @Autowired
     S3BucketService s3BucketService;
-    @Autowired
-    AWSFileMapper awsFileMapper;
     /**
      * Retrieves a single object from S3 with the specified Key name
      *

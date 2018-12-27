@@ -26,7 +26,7 @@ public class ReportPrintAPI {
 
     @Autowired
     private ReportPrintService reportPrintService;
-    private final Logger logger = LoggerFactory.getLogger(StaffAPI.class);
+    private final Logger logger = LoggerFactory.getLogger(ReportPrintAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @ApiOperation(httpMethod = "GET", value = "Print Refund Receipt",
