@@ -27,7 +27,6 @@ public class AmazonSESUtil implements IEmailUtil {
 
     private void initialize() {
         try {
-
             EmailConfiguration config = emailConfigurationRepository.findBySystemDefaultTrue();
             AWSCredentials credentials = new BasicAWSCredentials(config.getSesAccessKey(), config.getSesSecretKey());
             client = new AmazonSimpleEmailServiceClient(credentials);

@@ -1,7 +1,9 @@
 package com.sd.his.wrapper;
 
 
+import com.sd.his.model.Appointment;
 import com.sd.his.model.Organization;
+import com.sd.his.model.Room;
 import com.sd.his.service.OrganizationService;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISCoreUtil;
@@ -112,14 +114,57 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
 
     public AppointmentWrapper() {
     }
+    public AppointmentWrapper(Appointment appointment){
+
+        this.appointmentId = appointment.getAppointmentId();
+        this.id = appointment.getId();
+        this.branchId = appointment.getBranch().getId();
+        this.branchName =appointment.getBranch().getName();
+
+        this.hashColor =appointment.getStatus().getHashColor();
+        this.statusId =appointment.getStatus().getId();
+        this.status =appointment.getStatus().getName();
+
+        this.serviceName =appointment.getMedicalService().getName();
+        this.serviceId =appointment.getMedicalService().getId();
+
+
+        this.notes =appointment.getNotes();
+   //     this.recurringAppointment =appointment.getRecurring();
+
+        this.profileImgURL=appointment.getPatient().getProfileImgURL();
+        this.patientFirstName =appointment.getPatient().getFirstName();
+        this.patientLastName =appointment.getPatient().getLastName();
+        this.patient = this.getPatientFirstName() + this.getPatientLastName();
+
+        this.docFirstName =appointment.getDoctor().getFirstName();
+        this.docLastName =appointment.getDoctor().getLastName();
+        if(HISCoreUtil.isValidObject(appointment.getRoom())){
+          this.examName = appointment.getRoom().getRoomName();
+          this.roomId =  appointment.getRoom().getId();
+        }
+        this.zonedDate = HISCoreUtil.convertDateToTimeZone(appointment.getSchdeulledDate(),this.formatedDate,zone);
+        this.label = appointmentId+","+HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(appointment.getSchdeulledDate());
+        this.profileImgURL = profileImgURL != null ? this.base_S3_URL+profileImgURL : this.default_photo ;
+        this.value = id;
+        this.scheduleDate = this.zonedDate;
+        this.appointmentConvertedTime = convertAppointmentTime(appointment.getStartedOn());
+//        this.appointmentEndedConvertedTime = convertAppointmentTime(appointment.getStartedOn()) + duration;
+        this.appointmentEndedOn = HISCoreUtil.convertTimeToString(appointment.getEndedOn());
+        this.reason =appointment.getReason();
+        this.followUpReason =appointment.getFollowUpReasonReminder();
+        this.duration = appointment.getDuration();
+        this.compareDate = appointment.getSchdeulledDate();
+        this.appointmentType = JSONUtil.convertJsonToList(appointment.getType());
+    }
 
     public AppointmentWrapper(Long id, String name, String notes) {
     }
 
-    public AppointmentWrapper(Long id,String appointmentId, String title, String notes,String statusName,String hashColor,Long statusId, String reason, String color, String appointmentType, Integer duration,
-                              Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn, Date createdOn, Date updatedOn,
-                              Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName,String profileImgURL,Long patientId,
-                              Long branchId, String branchName, Long roomId, String roomName, String docFirstName, String docLastName, Long docId,Date followUpDate,Long serviceId,String serviceName
+    public AppointmentWrapper(Long id, String appointmentId, String title, String notes, String statusName, String hashColor, Long statusId, String reason, String color, String appointmentType, Integer duration,
+                              Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn,
+                              Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, String profileImgURL, Long patientId,
+                              Long branchId, String branchName,Long roomId, String docFirstName, String docLastName, Long docId, Date followUpDate, Long serviceId, String serviceName
     ) {
 
 
@@ -154,7 +199,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.patientLastName = lastName;
         this.branchId = branchId;
         this.roomId = roomId;
-        this.examName = roomName;
+   //     this.examName = room.getRoomName();
         this.branchName = branchName;
         this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
         this.followUpDateResponse = HISCoreUtil.convertDateToString(followUpDate);
@@ -192,7 +237,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.patientFirstName = patientFirstName;
         this.patientLastName = patientLastName;
         this.branchId = branchId;
-        this.roomId = roomId;
+//        this.roomId = roomId;
 
         this.branchName = branchName;
         this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToString(scheduleDate);

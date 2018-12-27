@@ -4,10 +4,8 @@ import com.sd.his.model.Patient;
 import com.sd.his.model.PatientVital;
 import com.sd.his.repository.PatientRepository;
 import com.sd.his.utill.HISCoreUtil;
-import com.sun.xml.internal.bind.api.impl.NameConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.Column;
 import java.util.Date;
 import java.util.List;
 

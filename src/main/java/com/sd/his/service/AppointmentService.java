@@ -92,11 +92,20 @@ public class AppointmentService {
     public List<AppointmentWrapper> findAllPaginatedAppointments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
         //    List<AppointmentWrapper> list = appointmentRepository.findAllPaginatedAppointments(pageable);
-        return appointmentRepository.findAllPaginatedAppointments(pageable);
-    }
-
-    public List<AppointmentWrapper> findAllAppointments() {
+      //  return appointmentRepository.findAllPaginatedAppointments(pageable);
         return appointmentRepository.findAllAppointments();
+    }
+    public List<AppointmentWrapper> findAllAppointments() {
+     /* appointmentRepository.findAll().stream()
+              .map(x -> new AppointmentWrapper(x.getId(), x.getAppointmentId(), x.getName(), x.getNotes(), x.getStatus().getName(), x.getColor(), x.getStatus().getId(), x.getReason(), x.getColor()
+                      , x.getType(), x.getDuration(), x.getFollowUpReminder(), x.getFollowUpReasonReminder(), x.getSchdeulledDate(), x.getStartedOn(), x.getEndedOn(),
+                      x.getRecurring(), x.getFirstAppointmentOn(), x.getLastAppointmentOn(), x.getDoctor().getFirstName(), x.getDoctor().getLastName(), x.getPatient().getProfileImgURL()
+                      , x.getPatient().getId(), x.getBranch().getId(), x.getBranch().getName(), x.getRoom().getId(), x.getDoctor().getFirstName(), x.getDoctor().getLastName(), x.getDoctor().getId(), x.getFollowUpDate(), x.getMedicalService().getId(), x.getMedicalService().getName()))
+              .collect(Collectors.toList());*/
+
+     return appointmentRepository.findAllAppointments();
+
+
     }
 
     public AppointmentWrapper getSingleAppointment(long id) {

@@ -56,6 +56,16 @@ public abstract class StaffProfile extends BaseEntity implements Serializable {
     @Column(name = "ADDRESS")
     private String address;
 
+    @Column(name = "SEND_BILLING_REPORT")
+    private Boolean sendBillingReport;
+
+    @Column(name = "USE_RECEIPT_DASHBOARD")
+    private Boolean useReceiptDashboard;
+
+    @Column(name = "OTHER_DOCTOR_DASHBOARD")
+    private Boolean otherDoctorDashboard;
+    @Column(name = "IS_ACTIVE")
+    private Boolean active;
 
 //    @Column(name = "CITY")
 //    private String city;
@@ -68,6 +78,38 @@ public abstract class StaffProfile extends BaseEntity implements Serializable {
 
     @Column(name = "MARITAL_STATUS")
     private String maritalStatus;
+
+    public Boolean getSendBillingReport() {
+        return sendBillingReport;
+    }
+
+    public void setSendBillingReport(Boolean sendBillingReport) {
+        this.sendBillingReport = sendBillingReport;
+    }
+
+    public Boolean getUseReceiptDashboard() {
+        return useReceiptDashboard;
+    }
+
+    public void setUseReceiptDashboard(Boolean useReceiptDashboard) {
+        this.useReceiptDashboard = useReceiptDashboard;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public Boolean getOtherDoctorDashboard() {
+        return otherDoctorDashboard;
+    }
+
+    public void setOtherDoctorDashboard(Boolean otherDoctorDashboard) {
+        this.otherDoctorDashboard = otherDoctorDashboard;
+    }
 
     public String getFirstName() {
         return firstName;
