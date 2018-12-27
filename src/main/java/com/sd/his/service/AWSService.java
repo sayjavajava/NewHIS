@@ -3,15 +3,14 @@ package com.sd.his.service;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
+import com.amazonaws.services.s3.model.*;
 import com.sd.his.configuration.AWSS3;
 import com.sd.his.configuration.S3KeyGen;
 import com.sd.his.enums.S3ContentTypes;
 import com.sd.his.model.S3Bucket;
+import com.sd.his.utill.AWSFileMapper;
 import com.sd.his.utill.HISCoreUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static com.sd.his.utill.HISConstants.S3_USER_ORDER_DIRECTORY_PATH;
@@ -60,6 +61,9 @@ public class AWSService {
 
     @Autowired
     S3BucketService s3BucketService;
+
+    @Autowired
+    AWSFileMapper awsFileMapper;
 
     private AmazonS3 s3client;
 
@@ -216,7 +220,13 @@ public class AWSService {
             fileUrl = s3Bucket.getAccessProtocol()+s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+patientId+"_"+fileName;
             String fileNameIrl=uploadFileTos3bucket(multipartFile, true,patientId,fileUrl);
             fileUrl=s3Bucket.getAccessProtocol()+s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+fileNameIrl;
+            if(fileUrl!=null || fileUrl.equals("")){
 
+                fileUrl=fileUrl;
+            }else{
+
+                fileUrl="";
+            }
             /* if(file.exists()){
             file.delete();
             }*/
@@ -252,8 +262,9 @@ public class AWSService {
         S3Bucket s3Bucket = s3BucketService.findActiveBucket();
         String fileName = Id+"_"+HISCoreUtil.convertDateToStringUpload(new Date())+"_"+multipartFile.getOriginalFilename();
         String fileUrl = "";
-        String relativePath = "PatientOrder";
-        File file = new File(relativePath+fileName);
+     //   String relativePath = "PatientOrder";
+     //   File file = new File(relativePath+fileName);
+        File file = new File(fileName);
         try {
             FileInputStream fis = new FileInputStream(file);
         //    fos.write(multipartFile.getBytes());
@@ -262,15 +273,20 @@ public class AWSService {
             metadata.setContentType(multipartFile.getContentType());
             fileUrl = s3Bucket.getPublicBaseURL() + "/" + s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH+fileName;
             String bucketName=S3_USER_ORDER_DIRECTORY_PATH+fileName;
-       //     fos.close();
-        //    File f = new File(fileName);
 
             try {
                 PutObjectResult result = this.awss3.putObject(bucketName, fis, metadata, CannedAccessControlList.PublicRead);
                 System.out.println("Etag:" + result.getETag() + "-->" + result);
-                File theDir = new File(relativePath);
-                boolean flagResult=true;
-                if (!theDir.exists()) {
+                if(result==null){
+                 //   fileName="";
+                }else{
+
+                    fileName="";
+
+                }
+           //     File theDir = new File(relativePath);
+          //      boolean flagResult=true;
+                /*if (!theDir.exists()) {
                     System.out.println("creating directory: " + theDir.getName());
                      flagResult = false;
 
@@ -291,7 +307,7 @@ public class AWSService {
                     }else{
                         System.out.println("File not found!");
                     }
-                } }
+                } }*/
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -299,16 +315,31 @@ public class AWSService {
         } catch (IOException | AmazonServiceException ex) {
             logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
         }finally {
-           /* if(file.exists()){
+            if(file.exists()){
                 System.out.println("File existed");
                 file.delete();
             }else{
                 System.out.println("File not found!");
-            }*/
+            }
         }
         return fileName;
     }
 
+  /*  public File getFile(String fileName) throws Exception {
+        if (StringUtils.isEmpty(fileName)) {
+            throw new Exception("file name can not be empty");
+        }
+       // S3Object s3Object =
+        String bucketName=S3_USER_ORDER_DIRECTORY_PATH+fileName;
+        S3Object obj = this.awss3.getObject;
+        if (s3Object == null) {
+            throw new Exception("Object not found");
+        }
+        File file = new File("you file path");
+        Files.copy(s3Object.getObjectContent(), file.toPath());
+        inputStream.close();
+        return file;
+    }*/
 
 
 

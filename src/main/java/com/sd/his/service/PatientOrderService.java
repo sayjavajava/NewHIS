@@ -1,16 +1,25 @@
 package com.sd.his.service;
 
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.sd.his.configuration.AWSS3;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.Patient_OrderWrapper;
+import jdk.nashorn.api.scripting.URLReader;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.File;
+import java.io.*;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +44,11 @@ public class PatientOrderService {
 
     @Autowired
     AWSService awsService;
+    @Autowired
+    S3BucketService s3BucketService;
+
+    @Autowired
+    AWSS3 awss3;
 
     @Transactional
     public String saveOrder(Patient_OrderWrapper orderWrapper) {
@@ -185,5 +199,140 @@ public class PatientOrderService {
         // return null;
     }
 
+    public Patient_OrderWrapper  getImagesOrderById(long Id) {
+        Patient_OrderWrapper wrapperObj= this.patientOrderRepository.findOrderById(Id);
+         return null;
+    }
+
+
+    public String   getOrderImageById(long Id,String fileName) {
+        Patient_OrderWrapper wrapPatient = this.patientOrderRepository.findOrderImageById(Id);
+        String path="";
+        if(wrapPatient!=null){
+            if(wrapPatient.getUrl().size()>0){
+                for(int i=0;i<wrapPatient.getUrl().size();i++){
+
+
+                    String urlStr = wrapPatient.getUrl().get(i);
+
+                    String fileNameDb = urlStr.substring(urlStr.lastIndexOf('/')+1, urlStr.length());
+
+                    if(fileName.equals(fileNameDb)){
+                        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+                        String bucketName= s3Bucket.getName();
+                        try {
+                            boolean isPresent=this.awss3.getFileFromS3Bucket(fileName);
+                        //    boolean isPresent=downloadUsingStream(urlStr,fileName);
+                            if(isPresent){
+                                try {
+                                    File fileNameReturn=PatientOrderService.getFile(fileName);
+                                    String url=System.getProperty("user.dir");
+                                    String finalUrl=url+"/PatientOrder"+"/"+fileName;
+                             //       File fileObj=fileNameReturn.getCanonicalFile();
+                              //      String url=fileNameReturn.getParent();
+                                    path = finalUrl;
+                                   // path= fileNameReturn.getPath();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                }
+            }
+
+        }
+              return path;
+    }
+
+
+    public static  File getFile(String fileName) throws Exception {
+        if (StringUtils.isEmpty(fileName)) {
+            throw new Exception("file name can not be empty");
+        }
+
+        File file = new File(fileName);
+        if(file.exists()){
+            System.out.println("File existed");
+            //   file.delete();
+        }else{
+            System.out.println("File not found!");
+        }
+
+        return file;
+    }
+
+
+    private static void downloadUsingNIO(String urlStr, String file) throws IOException {
+        URL url = new URL(urlStr);
+        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        fos.close();
+        rbc.close();
+    }
+
+
+    private boolean   downloadUsingStream(String urlStr, String file) throws IOException{
+
+        boolean retStatus=false;
+        URL url = new URL(urlStr);
+        BufferedInputStream bis = new BufferedInputStream(url.openStream());
+        FileOutputStream fis = new FileOutputStream(file);
+        byte[] buffer = new byte[1024];
+        int count=0;
+        while((count = bis.read(buffer,0,1024)) != -1)
+        {
+            fis.write(buffer, 0, count);
+            retStatus=true;
+        }
+        fis.close();
+        bis.close();
+        return retStatus;
+    }
+
+
+    public static void copyURLToFile(URL url, File file) {
+
+        /*File file = new File("C:/Temp/file.zip");
+
+        URLReader.copyURLToFile(url, file);*/
+        try {
+            InputStream input = url.openStream();
+            if (file.exists()) {
+                if (file.isDirectory())
+                    throw new IOException("File '" + file + "' is a directory");
+
+                if (!file.canWrite())
+                    throw new IOException("File '" + file + "' cannot be written");
+            } else {
+                File parent = file.getParentFile();
+                if ((parent != null) && (!parent.exists()) && (!parent.mkdirs())) {
+                    throw new IOException("File '" + file + "' could not be created");
+                }
+            }
+
+            FileOutputStream output = new FileOutputStream(file);
+
+            byte[] buffer = new byte[4096];
+            int n = 0;
+            while (-1 != (n = input.read(buffer))) {
+                output.write(buffer, 0, n);
+            }
+
+            input.close();
+            output.close();
+
+            System.out.println("File '" + file + "' downloaded successfully!");
+        }
+        catch(IOException ioEx) {
+            ioEx.printStackTrace();
+        }
+    }
 
 }

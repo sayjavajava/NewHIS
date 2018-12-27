@@ -13,20 +13,26 @@ import com.sd.his.model.S3Bucket;
 import com.sd.his.model.User;
 import com.sd.his.service.S3BucketService;
 import com.sd.his.service.UserService;
+import com.sd.his.utill.AWSFileMapper;
 import com.sd.his.utill.GraphicsUtil;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
+
+import static com.sd.his.utill.HISConstants.S3_USER_ORDER_DIRECTORY_PATH;
 
 /*
  * @author    : irfan nasim
@@ -60,7 +66,8 @@ public class AWSS3 {
     UserService userService;
     @Autowired
     S3BucketService s3BucketService;
-
+    @Autowired
+    AWSFileMapper awsFileMapper;
     /**
      * Retrieves a single object from S3 with the specified Key name
      *
@@ -526,6 +533,230 @@ public class AWSS3 {
             } catch (Throwable t) {
                 System.err.println("Error creating AmazonDynamoDBClient: " + t);
             }
+        }
+    }
+
+    public boolean  getFileFromS3Bucket(String fileName) throws IOException {
+
+        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+        boolean fileCreated=false;
+        s3Client = new S3Client();
+        String relPath="PatientOrder";
+        String nameOfBucket=s3Bucket.getName() + "/"+S3_USER_ORDER_DIRECTORY_PATH;
+        s3Client = new S3Client();
+        if(s3Client.client.doesBucketExist("hisdev")){
+
+            String path="users/patient/history/order";
+            S3Object object = s3Client.client.getObject("hisdev/"+path,fileName);
+            System.out.println("Etag:" + object.getKey() + "-->" + object.getBucketName());
+            if (object == null) {
+
+            }else{
+                try (S3ObjectInputStream inputStream = object.getObjectContent()) {
+                    try {
+                        this.saveFile(fileName, relPath, inputStream);
+                        fileCreated=true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        /* File file=new File("PatientOrder/"+fileName);
+        FileOutputStream fos = new FileOutputStream(file);
+        byte[] read_buf = new byte[1024];
+        int read_len = 0;
+        while ((read_len = inputStream.read(read_buf)) > 0) {
+            fos.write(read_buf, 0, read_len);
+        }
+        inputStream.close();
+        fos.close();
+        fileCreated=true;
+            if(fileCreated){
+                if(file.exists()){
+                    System.out.println("File existed");
+                    //   file.delete();
+                }else{
+                    System.out.println("File not found!");
+                }
+            }*/
+            }
+           /* List<String> objlist=this.getObjectslistFromFolder(s3Bucket.getName(),path);
+
+            if(objlist.size()>0){
+
+            }*/
+       //     boolean fileExist=this.isExist(nameOfBucket,fileName);
+
+
+        }else{
+
+        }
+
+
+        return  fileCreated;
+    }
+
+
+   /* public boolean isFilePublic(String rootFolderName, String fileName) {
+        AccessControlList acl = s3Client.client.getObjectAcl(rootFolderName, fileName);
+        for (Iterator<Grant> iterator = acl.getGrants().iterator(); iterator.hasNext(); ) {
+            Grant grant = iterator.next();
+            if (grant.getPermission().equals(Permission.Read) && grant.getGrantee().getIdentifier().equals("http://acs.amazonaws.com/groups/global/AllUsers"))
+                return true;
+        }
+        return false;
+    }*/
+
+
+    public void  saveFile(String fileName, String path, InputStream objectData) throws Exception {
+   //     DataOutputStream dos = null;
+   //     OutputStream out = null;
+        try {
+            File newDirectory = new File(path);
+            if (!newDirectory.exists()) {
+                newDirectory.mkdirs();
+            }
+
+            File uploadedFile = new File(path, fileName);
+            copyInputStreamToFile(objectData,uploadedFile);
+            /*out = new FileOutputStream(uploadedFile);
+            byte[] fileAsBytes = new byte[objectData.available()];
+            objectData.read(fileAsBytes);
+
+            dos = new DataOutputStream(out);
+            dos.write(fileAsBytes);*/
+        } /*catch (IOException io) {
+            io.printStackTrace();
+        }*/ catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+           /* try {
+                if (out != null) {
+                    out.close();
+                }
+                if (dos != null) {
+                    dos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
+        }
+    }
+
+  /*  public void downloadFile(String bucketName,String keyName,String fileName) {
+
+        try {
+
+            System.out.println("Downloading an object");
+            S3Object s3object = s3Client.client.getObject(new GetObjectRequest(bucketName, keyName),fileName));
+            System.out.println("Content-Type: "  + s3object.getObjectMetadata().getContentType());
+         //   Utility.displayText(s3object.getObjectContent());
+            logger.info("===================== Import File - Done! =====================");
+
+        } catch (AmazonServiceException ase) {
+            logger.info("Caught an AmazonServiceException from GET requests, rejected reasons:");
+            logger.info("Error Message:    " + ase.getMessage());
+            logger.info("HTTP Status Code: " + ase.getStatusCode());
+            logger.info("AWS Error Code:   " + ase.getErrorCode());
+            logger.info("Error Type:       " + ase.getErrorType());
+            logger.info("Request ID:       " + ase.getRequestId());
+        } catch (AmazonClientException ace) {
+            logger.info("Caught an AmazonClientException: ");
+            logger.info("Error Message: " + ace.getMessage());
+        } catch (IOException ioe) {
+            logger.info("IOE Error Message: " + ioe.getMessage());
+        }
+    }*/
+
+
+
+    /*public ResponseEntity<Resource> downloadFile(String filename){
+
+        String bucketPath = "s3://" + bucket + "/";
+        Resource s3Resource = resourceLoader.getResource(bucketPath + filename);
+
+        String s3FileName = filename.substring(filename.lastIndexOf("/"));
+        s3FileName = s3FileName.replace("/", "");
+
+        logger.info("Downloading File: {} from S3", s3FileName);
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+s3FileName+"\"")
+                .body(s3Resource);
+
+    }*/
+
+    /*boolean isExist(String bucketName,String key)
+    {
+        ObjectListing objects = s3Client.client.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(key));
+
+        for (S3ObjectSummary objectSummary : objects.getObjectSummaries())
+        {
+            if (objectSummary.getKey().equals(key))
+            {
+                return true;
+            }
+
+        }
+        return false;
+    }*/
+
+
+   /* public List<String> getObjectslistFromFolder(String bucketName, String folderKey) {
+
+        ListObjectsRequest listObjectsRequest =
+                new ListObjectsRequest()
+                        .withBucketName(bucketName)
+                        .withPrefix(folderKey + "/");
+
+        List<String> keys = new ArrayList<>();
+
+        ObjectListing objects = s3Client.client.listObjects(listObjectsRequest);
+        for (;;) {
+            List<S3ObjectSummary> summaries = objects.getObjectSummaries();
+            if (summaries.size() < 1) {
+                break;
+            }
+            summaries.forEach(s -> keys.add(s.getKey()));
+            objects = s3Client.client.listNextBatchOfObjects(objects);
+        }
+
+        return keys;
+    }*/
+
+
+
+ /*   public static List<String> getS3ImmediatePaths(AmazonS3 s3Client, String bucketName, String keyPrefix) {
+        List<String> paths = new ArrayList<String>();
+        String delimiter = "/";
+        if (keyPrefix != null && !keyPrefix.isEmpty() && !keyPrefix.endsWith(delimiter)) {
+            keyPrefix += delimiter;
+        }
+
+        ListObjectsRequest listObjectRequest = new ListObjectsRequest().withBucketName(bucketName)
+                .withPrefix(keyPrefix).withDelimiter(delimiter);
+
+        ObjectListing objectListing;
+        do {
+            objectListing = s3Client.listObjects(listObjectRequest);
+            paths.addAll(objectListing.getCommonPrefixes());
+            listObjectRequest.setMarker(objectListing.getNextMarker());
+        } while (objectListing.isTruncated());
+        return paths;
+    }*/
+
+
+    private void copyInputStreamToFile( InputStream in, File file ) {
+        try {
+            OutputStream out = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int len;
+            while((len=in.read(buf))>0){
+                out.write(buf,0,len);
+            }
+            out.close();
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
