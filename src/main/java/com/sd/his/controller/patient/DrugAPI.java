@@ -1,7 +1,6 @@
 package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.Country;
 import com.sd.his.model.Drug;
 import com.sd.his.repository.CountryRepository;
 import com.sd.his.service.BulkImportService;
@@ -14,7 +13,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -311,14 +309,12 @@ public class DrugAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             DrugWrapper drugWrapper = this.drugService.getDrugWrapper(id);
-            Drug drug=this.drugService.getDrugById(id);
-            Country addInfo  =  countryRepository.findOne(Long.valueOf(drug.getCountry().getId()));
-            Map<String, Object> countryInfo;
-            countryInfo = new HashMap<>();
-            drugWrapper.setSelectedCountry(drug.getCountry().getName());
-            drugWrapper.setDrugInfo(drug.getDruginfo());
+            Drug drug = this.drugService.getDrugById(id);
+            Map<String, Object> countryInfo = new HashMap<>();
             countryInfo.put("countryId", drug.getCountry().getId());
             countryInfo.put("country", drug.getCountry().getName());
+            drugWrapper.setSelectedCountry(drug.getCountry().getName());
+            drugWrapper.setDrugInfo(drug.getDruginfo());
             drugWrapper.setAddInfo(countryInfo);
             if (HISCoreUtil.isValidObject(drugWrapper)) {
                 response.setResponseData(drugWrapper);
@@ -373,7 +369,7 @@ public class DrugAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            if (drugWrapper.getDrugName() == "") {
+            if (drugWrapper.getDrugName().trim().equals("")) {
                 response.setResponseMessage(messageBundle.getString("drug.update.name.required"));
                 response.setResponseCode(ResponseEnum.DRUG_UPDATE_NAME_REQUIRED.getValue());//DOC_SUC_13
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -382,7 +378,6 @@ public class DrugAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-
             if (this.drugService.isNameDrugDuplicateByNameAndNotEqualId(drugWrapper.getId(), drugWrapper.getDrugName())) {
                 response.setResponseMessage(messageBundle.getString("drug.update.name.duplicate"));
                 response.setResponseCode(ResponseEnum.DRUG_UPDATE_NAME_REQUIRED.getValue());
@@ -390,6 +385,7 @@ public class DrugAPI {
                 logger.error("updateDrug API - successfully saved.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
+
             this.drugService.updateDrug(drugWrapper);
             response.setResponseMessage(messageBundle.getString("drug.update.success"));
             response.setResponseCode(ResponseEnum.DRUG_UPDATE_SUCCESS.getValue());
@@ -407,7 +403,6 @@ public class DrugAPI {
 
     }
 
-
     @ApiOperation(httpMethod = "GET", value = "Drug all",
             notes = "This method will return drug wrapper on base of all",
             produces = "application/json", nickname = "Get Single User",
@@ -423,7 +418,6 @@ public class DrugAPI {
 
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-
             Map<String, Object> returnValues = new LinkedHashMap<>();
             returnValues.put("data", this.drugService.getAllDrugWrappers());
 
@@ -445,7 +439,6 @@ public class DrugAPI {
         }
     }
 
-
     @ApiOperation(httpMethod = "GET", value = "GET Paginated Medications",
             notes = "This method will return Paginated  Medications",
             produces = "application/json", nickname = "GET Paginated Medications",
@@ -458,19 +451,14 @@ public class DrugAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/searchName", method = RequestMethod.GET)
     public ResponseEntity<?> getDrugsByNameSearch(@RequestParam(value = "drugName", required = false) String drugName) {
-
         logger.error("getMedicationByNameAutocomplete API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
-
         try {
             logger.error("getMedicationByNameAutocomplete -  fetching from DB");
             // Drug listObj= this.drugService.searchByDrugNameAutoCompleteDetail(drugName);
             response.setResponseData(this.drugService.searchByDrugNameAutoCompleteDetail(drugName));
-
-
             response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());//(""),
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-
             logger.error("getMedicationByNameAutocomplete API successfully executed.");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
@@ -481,8 +469,6 @@ public class DrugAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
     @ApiOperation(httpMethod = "GET", value = "GET Paginated Medications",
             notes = "This method will return Paginated  Medications",
@@ -496,19 +482,13 @@ public class DrugAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/searchStrengths", method = RequestMethod.GET)
     public ResponseEntity<?> getDrugsByNameSearchStrengths(@RequestParam(value = "drugName", required = false) String drugName) {
-
         logger.error("getMedicationByNameAutocomplete API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
-
         try {
             logger.error("getMedicationByNameAutocomplete -  fetching from DB");
-
             response.setResponseData(this.drugService.searchByDrugNameAutoCompleteStrengths(drugName));
-
-
             response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());//(""),
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-
             logger.error("getMedicationByNameAutocomplete API successfully executed.");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
@@ -526,7 +506,6 @@ public class DrugAPI {
             response = GenericAPIResponse.class, protocols = "https")
     @RequestMapping(value = "/importRecords", method = RequestMethod.POST)
     public ResponseEntity<?> importDrugRecords(@RequestParam("dataFile") MultipartFile dataFile ) {
-
         logger.info("importDrugRecords API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
@@ -539,6 +518,7 @@ public class DrugAPI {
             } else {
                 response.setResponseMessage(messageBundle.getString("drug.no.records.import"));
             }
+
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
             logger.info(records + " - Drug records imported successfully...");

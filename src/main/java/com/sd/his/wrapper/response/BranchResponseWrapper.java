@@ -47,7 +47,7 @@ public class BranchResponseWrapper {
     String stateId;
     String cityId;
     String primaryDoctor;
-    Integer zipCode;
+    String zipCode;
     String officePhone;
     String fax;
     String formattedAddress;
@@ -100,8 +100,9 @@ public class BranchResponseWrapper {
         this.label = branch.getName();
         this.flow = branch.getFlow();
         this.label = branch.getName();
-        this.value =branch.getId();
-
+        this.value = branch.getId();
+        this.formattedAddress = branch.getFormattedAddress();
+        this.zipCode = branch.getZipCode();
     }
 
     public BranchResponseWrapper(){}
@@ -269,11 +270,11 @@ public class BranchResponseWrapper {
         this.primaryDoctor = primaryDoctor;
     }
 
-    public Integer getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(Integer zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 

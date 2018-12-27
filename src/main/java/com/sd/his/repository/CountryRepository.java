@@ -24,8 +24,8 @@ public interface CountryRepository extends JpaRepository<Country, Long> {
     List<Country> getAllBy();
 
 
-    @Query("SELECT t FROM Country t where t.name = :name")
-    Country findTitleById(@Param("name") String id);
+    @Query("SELECT t FROM Country t where t.id = :id")
+    Country findTitleById(@Param("id") Long id);
 
     @Query("SELECT t FROM Country t where UPPER(t.name) like UPPER(:name) ")
     Country findByName(@Param("name") String name);

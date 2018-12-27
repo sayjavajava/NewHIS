@@ -31,6 +31,9 @@ public class Drug extends BaseEntity {
     private boolean active;
     @Column(name = "Drug_info")
     private String druginfo;
+    @ManyToOne
+    @JoinColumn(name = "Country_id")
+    private Country country;
 
     public Country getCountry() {
         return country;
@@ -39,10 +42,6 @@ public class Drug extends BaseEntity {
     public void setCountry(Country country) {
         this.country = country;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "Country_id")
-    private Country country;
 
     public Drug() {
     }
@@ -75,6 +74,9 @@ public class Drug extends BaseEntity {
         drug.uOM = drugWrapper.getuOM();
    //     drug.country = drugWrapper.getSelectedCountry();
         drug.active = drugWrapper.isActive();
+        drug.druginfo = ((drugWrapper.getDrugInfo().contains("http:") || drugWrapper.getDrugInfo().contains("https:"))
+                ? drugWrapper.getDrugInfo()
+                : ("http://" + drugWrapper.getDrugInfo()));
     }
 
     public String getDrugNaturalId() {

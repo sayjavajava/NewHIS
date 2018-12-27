@@ -46,25 +46,25 @@ public class DrugService {
     }
 
     @Transactional
-    public String saveDrug(DrugWrapper drugWrapper) {
+    public void saveDrug(DrugWrapper drugWrapper) {
         Drug drug = new Drug(drugWrapper);
         drug.setStrengths(drugWrapper.getStrengths());
         boolean chkStatusCountry = containsDigit(drugWrapper.getSelectedCountry());
-        long numCountry;
-        if (chkStatusCountry == true) {
+        Long numCountry;
+
+        if (chkStatusCountry) {
             numCountry = Long.parseLong(drugWrapper.getSelectedCountry());
         } else {
-            Country countryObj = countryRepository.findTitleById(drugWrapper.getSelectedCountry());
+            Country countryObj = countryRepository.findByName(drugWrapper.getSelectedCountry());
             numCountry = countryObj.getId();
-
         }
-        Country countryObj = countryRepository.findOne(Long.valueOf(numCountry));
+
+        Country countryObj = countryRepository.findOne(numCountry);
         drug.setCountry(countryObj);
         Prefix pr = this.prefixRepository.findByModule(ModuleEnum.DRUG.name());
         pr.setCurrentValue(pr.getCurrentValue() + 1L);
         this.prefixRepository.save(pr);
         this.drugRepository.save(drug);
-        return "";
     }
 
     public List<DrugWrapper> getPaginatedAllDrugs(Pageable pageable) {
@@ -90,21 +90,24 @@ public class DrugService {
     }
 
     @Transactional
-    public String updateDrug(DrugWrapper drugWrapper) {
+    public void updateDrug(DrugWrapper drugWrapper) {
         Drug drug = this.drugRepository.findOne(drugWrapper.getId());
         boolean chkStatusCountry = containsDigit(drugWrapper.getSelectedCountry());
-        long numCountry;
-        if (chkStatusCountry == true) {
-            numCountry = Long.parseLong(drugWrapper.getSelectedCountry());
-        } else {
-            Country countryObj = countryRepository.findTitleById(drugWrapper.getSelectedCountry());
-            numCountry = countryObj.getId();
+        String numCountry;
+        Country countryObj = null;
 
+        if (chkStatusCountry) {
+            countryObj = countryRepository.findTitleById(Long.valueOf(drugWrapper.getSelectedCountry()));
+            numCountry = countryObj.getName();
+        } else {
+            numCountry = drugWrapper.getSelectedCountry();
         }
-        drugWrapper.setSelectedCountry(String.valueOf(numCountry));
+
+        drugWrapper.setSelectedCountry(numCountry);
         new Drug(drug, drugWrapper);
-        this.drugRepository.save(drug);
-        return "";
+        Drug saveDrug = this.drugRepository.save(drug);
+        if (countryObj != null) saveDrug.setCountry(countryObj);
+        this.drugRepository.save(saveDrug);
     }
 
     public List<DrugWrapper> searchDrugByParams(Pageable pageable, DrugWrapper drugWrapper) {
@@ -113,8 +116,7 @@ public class DrugService {
 
     public String getDrugNaturalId() {
         Prefix prefix = prefixRepository.findByModule(ModuleEnum.DRUG.name());
-        String currentPrefix = prefix.getName() + "-" + prefix.getCurrentValue();
-        return currentPrefix;
+        return (prefix.getName() + "-" + prefix.getCurrentValue());
     }
 
     public List<String> searchByDrugNameAutoComplete(String text) {
@@ -130,9 +132,8 @@ public class DrugService {
     }
 
 
-    public final boolean containsDigit(String s) {
+    private boolean containsDigit(String s) {
         boolean containsDigit = false;
-
         if (s != null && !s.isEmpty()) {
             for (char c : s.toCharArray()) {
                 if (containsDigit = Character.isDigit(c)) {
@@ -140,18 +141,12 @@ public class DrugService {
                 }
             }
         }
-
         return containsDigit;
     }
 
     public String searchByDrugNameAutoCompleteDetail(String text) {
         return this.drugRepository.searchDrugByDifferentParams(text);
     }
-
-
-    /*public List<String> searchByDrugNameAuto(String text) {
-        return this.drugRepository.searchDrugByParamsNames(text);
-    }*/
 
     public Drug searchByDrugNameAutoCompleteStrengths(String text) {
         return this.drugRepository.searchDrugStrengthsByDifferentParams(text);
