@@ -24,77 +24,76 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-/*import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;*/
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 /**
  * @author Irfan Nasim
  * @description To create JAR Packaging
- * @since 05-Jun-2018
- */
+ * @since 05-Jun-2018*/
 
 
 
-
-@SpringBootApplication
-@EnableJpaAuditing
-public class HisApplication {
-    private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
-
-    public static void main(String[] args) {
-        SpringApplication.run(HisApplication.class, args);
-    }
-
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserRoleRepository userRoleRepository;
-    @Autowired
-    private RolePermissionRepository rolePermissionRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private ManagerRepository managerRepository;
-    @Autowired
-    private DoctorRepository doctorRepository;
-    @Autowired
-    private PermissionRepository permissionRepository;
-    @Autowired
-    private OrganizationRepository organizationRepository;
-    @Autowired
-    private S3BucketRepository bucketRepository;
-    @Autowired
-    private BranchRepository branchRepository;
-    @Autowired
-    private BranchDoctorRepository branchDoctorRepository;
-    @Autowired
-    private RoomRepository roomRepository;
-    @Autowired
-    private DepartmentRepository departmentRepository;
-    @Autowired
-    private TaxRepository taxRepository;
-    @Autowired
-    private MedicalServiceRepository medicalServiceRepository;
-    @Autowired
-    private CountryRepository countryRepository;
-
-    @Autowired
-    private CityRepository cityRepository;
-    @Autowired
-    private ZoneRepository zoneRepository;
-
-    @Autowired
-    private DoctorMedicalServiceRepository doctorMedicalServiceRepository;
-    @Autowired
-    private HISUtilService hisUtilService;
-    @Autowired
-    private StatusRepository statusRepository;
-    @Autowired
-    private PatientGroupRepository patientGroupRepository;
-
-    @EventListener
-    @Transactional(rollbackOn = Throwable.class)
-    public void onBootStartup(ApplicationContextEvent event) {
+//
+//@SpringBootApplication
+//@EnableJpaAuditing
+//public class HisApplication {
+//    private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
+//
+//    public static void main(String[] args) {
+//        SpringApplication.run(HisApplication.class, args);
+//    }
+//
+//    @Autowired
+//    private UserRepository userRepository;
+//    @Autowired
+//    private UserRoleRepository userRoleRepository;
+//    @Autowired
+//    private RolePermissionRepository rolePermissionRepository;
+//    @Autowired
+//    private RoleRepository roleRepository;
+//    @Autowired
+//    private ManagerRepository managerRepository;
+//    @Autowired
+//    private DoctorRepository doctorRepository;
+//    @Autowired
+//    private PermissionRepository permissionRepository;
+//    @Autowired
+//    private OrganizationRepository organizationRepository;
+//    @Autowired
+//    private S3BucketRepository bucketRepository;
+//    @Autowired
+//    private BranchRepository branchRepository;
+//    @Autowired
+//    private BranchDoctorRepository branchDoctorRepository;
+//    @Autowired
+//    private RoomRepository roomRepository;
+//    @Autowired
+//    private DepartmentRepository departmentRepository;
+//    @Autowired
+//    private TaxRepository taxRepository;
+//    @Autowired
+//    private MedicalServiceRepository medicalServiceRepository;
+//    @Autowired
+//    private CountryRepository countryRepository;
+//
+//    @Autowired
+//    private CityRepository cityRepository;
+//    @Autowired
+//    private ZoneRepository zoneRepository;
+//
+//    @Autowired
+//    private DoctorMedicalServiceRepository doctorMedicalServiceRepository;
+//    @Autowired
+//    private HISUtilService hisUtilService;
+//    @Autowired
+//    private StatusRepository statusRepository;
+//    @Autowired
+//    private PatientGroupRepository patientGroupRepository;
+//
+//    @EventListener
+//    @Transactional(rollbackOn = Throwable.class)
+//    public void onBootStartup(ApplicationContextEvent event) {
 
 
 //        if (organizationRepository.findOne(1L) == null) {
@@ -229,8 +228,8 @@ public class HisApplication {
 //                            new Status(AppointmentStatusTypeEnum.COMPLETE.name(),"CN",true,"#FE0D0D")));
 //        }
 
-    }
-}
+//    }
+//}
 
 
 
@@ -241,7 +240,8 @@ public class HisApplication {
  * @description To create WAR Packaging
  * @since 05-Jun-2018
  */
-/*@SpringBootApplication
+
+@SpringBootApplication
 @EnableJpaAuditing
 public class HisApplication extends SpringBootServletInitializer {
     private final Logger logger = LoggerFactory.getLogger(HisApplication.class);
@@ -254,6 +254,7 @@ public class HisApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(HisApplication.class);
     }
-}*/
+}
+
 
 

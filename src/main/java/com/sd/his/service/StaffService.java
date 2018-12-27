@@ -388,6 +388,8 @@ public class StaffService {
             doctor.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
             doctor.setVacation(createRequest.isVacation());
             doctor.setVacationFrom(HISCoreUtil.convertToDate(createRequest.getDateFrom()));
+
+
             doctor.setVacationTO(HISCoreUtil.convertToDate(createRequest.getDateTo()));
             List<String> daysList = Arrays.asList(createRequest.getSelectedWorkingDays());
             doctor.setWorkingDays(daysList);
