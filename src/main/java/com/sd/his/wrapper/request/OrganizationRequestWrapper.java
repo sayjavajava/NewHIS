@@ -36,7 +36,7 @@ public class OrganizationRequestWrapper {
     String address;
     String website;
 
-    Long defaultBranch;     //geenral form
+    //   Long defaultBranch;     //geenral form
     Long durationOfExam;
     Long durationFollowUp;
     String prefixSerialPatient;
@@ -44,6 +44,38 @@ public class OrganizationRequestWrapper {
     String prefixSerialDepartment;
     String prefixSerialAppointment;
     String prefixSerialInvoices;
+    String hoursFormat;
+
+
+
+    String currencyFormat;
+
+    public OrganizationRequestWrapper(){}
+
+
+    public OrganizationRequestWrapper(String dateFormat, String defaultBranch, String durationFollowUp, String durationOfExam, String formName, String prefixSerialAppointment,
+                                      String prefixSerialDepartment,
+                                      String prefixSerialInvoices,
+                                      String prefixSerialPatient,
+                                      String prefixSerialUser,
+                                      String selectedTimeZoneFormat, String timeFormat){
+
+
+        this.dateFormat= dateFormat;
+        this.defaultBranch=defaultBranch;
+        this.durationFollowUp=Long.valueOf(durationFollowUp);
+        this.durationOfExam=Long.valueOf(durationOfExam);
+       this.formName=formName;
+       this.prefixSerialAppointment=prefixSerialAppointment;
+       this.prefixSerialDepartment= prefixSerialDepartment;
+       this.prefixSerialInvoices=prefixSerialInvoices;
+       this.prefixSerialPatient=prefixSerialPatient;
+       this.prefixSerialUser= prefixSerialUser;
+       this.selectedTimeZoneFormat=selectedTimeZoneFormat;
+       this.timeFormat= timeFormat;
+}
+
+
 
     String firstName;
     String lastName;
@@ -56,6 +88,9 @@ public class OrganizationRequestWrapper {
     String dateFormat;
     String timeFormat;
 
+
+
+    private byte[] image;
     public String getSelectedTimeZoneFormat() {
         return selectedTimeZoneFormat;
     }
@@ -128,7 +163,7 @@ public class OrganizationRequestWrapper {
 
     String selectedState;
     String zoneId;
-
+    String defaultBranch;
 
 
 
@@ -226,11 +261,11 @@ public class OrganizationRequestWrapper {
         this.website = website;
     }
 
-    public Long getDefaultBranch() {
+    public String getDefaultBranch() {
         return defaultBranch;
     }
 
-    public void setDefaultBranch(Long defaultBranch) {
+    public void setDefaultBranch(String defaultBranch) {
         this.defaultBranch = defaultBranch;
     }
 
@@ -344,5 +379,30 @@ public class OrganizationRequestWrapper {
 
     public void setHomePhone(String homePhone) {
         this.homePhone = homePhone;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+
+    public String getHoursFormat() {
+        return hoursFormat;
+    }
+
+    public void setHoursFormat(String hoursFormat) {
+        this.hoursFormat = hoursFormat;
+    }
+
+    public String getCurrencyFormat() {
+        return currencyFormat;
+    }
+
+    public void setCurrencyFormat(String currencyFormat) {
+        this.currencyFormat = currencyFormat;
     }
 }

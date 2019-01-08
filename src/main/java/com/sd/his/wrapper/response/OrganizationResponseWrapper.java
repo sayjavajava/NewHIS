@@ -57,6 +57,12 @@ public class OrganizationResponseWrapper {
     String email;
     String address;
 
+
+
+    String hoursFormat;
+    String currencyFormat;
+    String profileImgUrl;
+
     public Map<String, Object> getAddInfo() {
         return addInfo;
     }
@@ -126,7 +132,7 @@ public class OrganizationResponseWrapper {
     String timeFormat;
     String zoneFormat;
 
-    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email ,String fax,String address) {
+    public OrganizationResponseWrapper(Long id, String companyName, String officePhone, String website, String email ,String fax,String address,String speciality,String hoursFormat,String currencyFormat,String profileImgUrl) {
         this.id = id;
         this.companyName = companyName;
         this.officePhone = officePhone;
@@ -139,6 +145,10 @@ public class OrganizationResponseWrapper {
         this.speciality=speciality;
         this.fax=fax;
         this.address=address;
+        this.hoursFormat=hoursFormat;
+        this.currencyFormat=currencyFormat;
+        this.profileImgUrl=profileImgUrl;
+
 
      //   this.branchId =brId;
      //   this.branchName =brName;
@@ -407,5 +417,30 @@ public class OrganizationResponseWrapper {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+
+    public String getHoursFormat() {
+        return hoursFormat;
+    }
+
+    public void setHoursFormat(String hoursFormat) {
+        this.hoursFormat = hoursFormat;
+    }
+
+    public String getCurrencyFormat() {
+        return currencyFormat;
+    }
+
+    public void setCurrencyFormat(String currencyFormat) {
+        this.currencyFormat = currencyFormat;
+    }
+
+    public String getProfileImgUrl() {
+        return profileImgUrl;
+    }
+
+    public void setProfileImgUrl(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
     }
 }

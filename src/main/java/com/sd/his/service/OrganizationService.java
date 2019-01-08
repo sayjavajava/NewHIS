@@ -26,6 +26,7 @@ import com.sd.his.enums.OrganizationFormTypeEnum;
 import com.sd.his.enums.UserTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.TimezoneWrapper;
 import com.sd.his.wrapper.request.OrganizationRequestWrapper;
@@ -64,6 +65,8 @@ public class OrganizationService {
     @Autowired
     private CountryRepository countryRepository;
 
+    @Autowired
+    private UserService userService;
 
   /*  @Autowired
     private BranchRepository branchRepository;*/
@@ -127,9 +130,23 @@ public class OrganizationService {
             organization.setOfficePhone(organizationRequestWrapper.getOfficePhone());
             organization.setFax(organizationRequestWrapper.getFax());
             organization.setAddress(organizationRequestWrapper.getAddress());
+            organization.setSpecialty(organizationRequestWrapper.getSpecialty());
             organization.setEmail(organizationRequestWrapper.getCompanyEmail());
-            boolean chkStatusCity = containsDigit(organizationRequestWrapper.getSelectedCity());
-            boolean chkStatusState = containsDigit(organizationRequestWrapper.getSelectedState());
+            boolean chkStatusCity=false;
+            boolean chkStatusState=false;
+            if(organizationRequestWrapper.getSelectedCity()!=null && (!organizationRequestWrapper.getSelectedCity().equals(""))){
+             chkStatusCity = containsDigit(organizationRequestWrapper.getSelectedCity());
+
+            }else{
+
+            }
+            if(organizationRequestWrapper.getSelectedState()!=null && (!organizationRequestWrapper.getSelectedState().equals(""))){
+                chkStatusState = containsDigit(organizationRequestWrapper.getSelectedState());
+
+            }else{
+
+            }
+
             boolean chkStatusCountry = containsDigit(organizationRequestWrapper.getSelectedCountry());
             Long num;
             Long numState;
@@ -138,14 +155,23 @@ public class OrganizationService {
             if (chkStatusCity) {
                 num = Long.parseLong(organizationRequestWrapper.getSelectedCity());
             } else {
+                if(organizationRequestWrapper.getSelectedCity()!=null && (!organizationRequestWrapper.getSelectedCity().equals(""))){
                 City cityObj = cityRepository.findTitleById(organizationRequestWrapper.getSelectedCity());
                 num = cityObj != null ? cityObj.getId() : null;
+                }else{
+                    num=null;
+                }
             }
             if (chkStatusState) {
                 numState = Long.parseLong(organizationRequestWrapper.getSelectedState());
             } else {
-                State stateObj = stateRepository.findTitleById(organizationRequestWrapper.getSelectedState());
-                numState = stateObj != null ? stateObj.getId() : null;
+                if(organizationRequestWrapper.getSelectedState() != null && (!organizationRequestWrapper.getSelectedState().equals("")))
+                {
+                    State stateObj = stateRepository.findTitleById(organizationRequestWrapper.getSelectedState());
+                    numState = stateObj != null ? stateObj.getId() : null;
+                }else{
+                    numState=null;
+                }
             }
             if (chkStatusCountry) {
                 numCountry = Long.parseLong(organizationRequestWrapper.getSelectedCountry());
@@ -154,28 +180,72 @@ public class OrganizationService {
                 Country countryObj = countryRepository.findByName(organizationRequestWrapper.getSelectedCountry());
                 numCountry = countryObj != null ? countryObj.getId() : null;
             }
-         //   long num = Long.parseLong(organizationRequestWrapper.getSelectedCity());
-          //  long numState = Long.parseLong(organizationRequestWrapper.getSelectedState());
-         //   long numCountry = Long.parseLong(organizationRequestWrapper.getSelectedCountry());
+
             if (num != null) {
                 organization.setCity(cityRepository.findOne(num));
+            }else{
+                organization.setCity(null);
             }
             if (numState != null) {
                 organization.setState(stateRepository.findOne(numState));
+            }else{
+                organization.setState(null);
             }
+
             if (numCountry != null) {
                 organization.setCountry(countryRepository.findOne(numCountry));
             }
+            /*String url = null;
+            if (organizationRequestWrapper.getImage() != null) {
+                try {
+                    url = userService.saveImage(organizationRequestWrapper.getImage(),
+                            HISConstants.S3_USER_ORGANIZATION_DIRECTORY_PATH,
+                            organizationRequestWrapper.getUserId()
+                                    + "_"
+                                    + organizationRequestWrapper.getUserId()
+                                    + "_"
+                                    + HISConstants.S3_USER_ORGANIZATION_THUMBNAIL_GRAPHIC_NAME,
+                            organizationRequestWrapper.getUserId()
+                                    + "_"
+                                    + organizationRequestWrapper.getUserId()
+                                    + "_"
+                                    + HISConstants.S3_USER_ORGANIZATION_GRAPHIC_NAME,
+                            "/"
+                                    + HISConstants.S3_USER_ORGANIZATION_DIRECTORY_PATH
+                                    + organizationRequestWrapper.getUserId()
+                                    + "_"
+                                    + organizationRequestWrapper.getUserId()
+                                    + "_"
+                                    + HISConstants.S3_USER_ORGANIZATION_THUMBNAIL_GRAPHIC_NAME);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
+
+
+               /* if (HISCoreUtil.isValidObject(url)) {
+                    organization.setUrl(url);
+                    this.organizationRepository.save(organization);
+                    return organizationRequestWrapper;
+                    //           url = null;
+                }*/
             organizationRepository.save(organization);
             return organizationRequestWrapper;
         }
         if (organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.GENERAL.name())) {
+        //    String branchName;
+          //  Branch branchFound=new Branch();
+            Branch branch1=new Branch();
             Branch branch = branchRepository.findBySystemBranchTrue();
             branch.setSystemBranch(false);
-            Branch branch1 = branchRepository.findOne(organizationRequestWrapper.getDefaultBranch());
+            if(organizationRequestWrapper.getDefaultBranch()!=null && organizationRequestWrapper.getDefaultBranch().length()>4){
+                 branch1=branchRepository.findByName(organizationRequestWrapper.getDefaultBranch());
+            }else{
+                 branch1 = branchRepository.findOne(Long.valueOf(organizationRequestWrapper.getDefaultBranch()));
+            }
+
             branch1.setSystemBranch(true);
             branchRepository.save(branch1);
-            organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
+       //     organization.setDurationOFExam(organizationRequestWrapper.getDurationOfExam());
           //  organization.setZone(zoneRepository.findOne(Long.valueOf(organizationRequestWrapper.getTimezoneList()));
 //            long id=Long.valueOf(organizationRequestWrapper.getSelectedTimeZoneFormat());
 //            Zone zoneId=zoneRepository.findOne(id);
@@ -227,8 +297,11 @@ public class OrganizationService {
         //    organization.setZone(organizationRequestWrapper.getZoneFormat().replaceAll("\\s",""));
             organization.setDateFormat(organizationRequestWrapper.getDateFormat().trim());
             organization.setTimeFormat(organizationRequestWrapper.getTimeFormat().trim());
+            organization.setCurrencyFormat(organizationRequestWrapper.getCurrencyFormat());
+            organization.setHoursFormat(organizationRequestWrapper.getHoursFormat());
 
-            organizationRepository.save(organization);
+
+           organizationRepository.save(organization);
             return organizationRequestWrapper;
         }
 
@@ -248,9 +321,11 @@ public class OrganizationService {
             //  organizationRepository.save(organization);
             return organizationRequestWrapper;
         }
+        return organizationRequestWrapper;
 
-        return null;
     }
+
+
 
     public Organization findOrgnazatinoByCompanyName(String companyName) {
         return organizationRepository.findByCompanyName(companyName);
@@ -283,7 +358,9 @@ public class OrganizationService {
         return OrganizationObj;
     }
 
-
+    public void saveOrganizationUpadtedImage(Organization organization) {
+        organizationRepository.save(organization);
+    }
 
     public final boolean containsDigit(String s) {
         boolean containsDigit = false;

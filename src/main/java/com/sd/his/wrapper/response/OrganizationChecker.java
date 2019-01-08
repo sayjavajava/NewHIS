@@ -11,23 +11,33 @@ public class OrganizationChecker {
 
 
 
+    private String currencyFormat;
+    private String hoursFormat;
+
+
+
     private String currency;
 
-    public OrganizationChecker(Long id, String dateFormat, String timeFormat, String zone,String zoneTime,String currency) {
+    public OrganizationChecker(Long id, String dateFormat, String timeFormat, String zone,String zoneTime,String currency,String currencyFormat,String hoursFormat) {
         this.id = id;
         this.dateFormat = dateFormat;
         this.timeFormat = timeFormat;
         this.zone = zone;
         this.zoneTime=zoneTime;
         this.currency=currency;
+        this.currencyFormat=currencyFormat;
+        this.hoursFormat=hoursFormat;
+
     }
 
-    public OrganizationChecker(String dateFormat, String timeFormat, String zone,String zoneTime,String currency) {
+    public OrganizationChecker(String dateFormat, String timeFormat, String zone,String zoneTime,String currency,String currencyFormat,String hoursFormat) {
         this.dateFormat = dateFormat;
         this.timeFormat = timeFormat;
         this.zone = zone;
         this.zoneTime=zoneTime;
         this.currency=currency;
+        this.currencyFormat=currencyFormat;
+        this.hoursFormat=hoursFormat;
     }
 
 
@@ -77,5 +87,21 @@ public class OrganizationChecker {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public String getCurrencyFormat() {
+        return currencyFormat;
+    }
+
+    public void setCurrencyFormat(String currencyFormat) {
+        this.currencyFormat = currencyFormat;
+    }
+
+    public String getHoursFormat() {
+        return hoursFormat;
+    }
+
+    public void setHoursFormat(String hoursFormat) {
+        this.hoursFormat = hoursFormat;
     }
 }

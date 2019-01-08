@@ -84,8 +84,8 @@ public class Tax extends BaseEntity implements Serializable {
         this.name = taxRequest.getName();
         this.description = taxRequest.getDescription();
         this.rate = taxRequest.getRate();
-        this.fromDate = DateTimeUtil.getDateFromString(taxRequest.getFromDate(), HISConstants.DATE_FORMATE_THREE);
-        this.toDate = DateTimeUtil.getDateFromString(taxRequest.getToDate(), HISConstants.DATE_FORMATE_THREE);
+        this.fromDate = DateTimeUtil.getDateFromString(taxRequest.getStrfromDate(), HISConstants.DATE_FORMATE_THREE);
+        this.toDate = DateTimeUtil.getDateFromString(taxRequest.getStrtoDate(), HISConstants.DATE_FORMATE_THREE);
         this.active = taxRequest.isActive();
     }
 
@@ -95,8 +95,8 @@ public class Tax extends BaseEntity implements Serializable {
         if (taxRequest.isHasChild()){
             dbTax.setRate(taxRequest.getRate());
         }
-        dbTax.setFromDate(DateTimeUtil.getDateFromString(taxRequest.getFromDate(), HISConstants.DATE_FORMATE_THREE));
-        dbTax.setToDate(DateTimeUtil.getDateFromString(taxRequest.getToDate(), HISConstants.DATE_FORMATE_THREE));
+    //    dbTax.setFromDate(DateTimeUtil.getDateFromString(taxRequest.getFromDate(), HISConstants.DATE_FORMATE_THREE));
+    //    dbTax.setToDate(DateTimeUtil.getDateFromString(taxRequest.getToDate(), HISConstants.DATE_FORMATE_THREE));
         dbTax.setActive(taxRequest.isActive());
 
     }

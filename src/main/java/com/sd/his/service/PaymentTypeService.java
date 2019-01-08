@@ -55,11 +55,16 @@ public class PaymentTypeService {
         paymentTypeObj.setPatient(paymentTypeWrapper.isPatient());
     //    paymentTypeObj.setPayCredit(paymentTypeWrapper.getPayCredit());
         if(paymentTypeWrapper.getPaymentMode().equalsIgnoreCase("Card")){
-
-            paymentTypeObj.setMaxCardCharges(paymentTypeWrapper.getMaxCardCharges());
+            if(paymentTypeWrapper.getStrServiceCharges()!=null){
+                paymentTypeObj.setServiceCharges(Double.valueOf(paymentTypeWrapper.getStrServiceCharges()));
+            }
+            if(paymentTypeWrapper.getStrmaxCardCharges()!=null){
+                paymentTypeObj.setMaxCardCharges(Double.valueOf(paymentTypeWrapper.getStrmaxCardCharges()));
+            }
+         //   paymentTypeObj.setMaxCardCharges(paymentTypeWrapper.getMaxCardCharges());
             paymentTypeObj.setBankGlCharges(paymentTypeWrapper.getBankGlCharges());
             paymentTypeObj.setPayCredit(paymentTypeWrapper.getPayCredit());
-            paymentTypeObj.setServiceCharges(paymentTypeWrapper.getServiceCharges());
+       //     paymentTypeObj.setServiceCharges(paymentTypeWrapper.getServiceCharges());
             paymentTypeObj.setPatient(paymentTypeWrapper.isPatient());
         }
         paymentTypeObj.setPaymentMode(paymentTypeWrapper.getPaymentMode());
@@ -92,10 +97,10 @@ public class PaymentTypeService {
         paymentEntity.setActive(paymentType.getActive());
         if(paymentType.getPaymentMode().equalsIgnoreCase("Card")){
 
-            paymentEntity.setMaxCardCharges(paymentType.getMaxCardCharges());
+            paymentEntity.setMaxCardCharges(Double.valueOf(paymentType.getStrmaxCardCharges()));
             paymentEntity.setBankGlCharges(paymentType.getBankGlCharges());
             paymentEntity.setPayCredit(paymentType.getPayCredit());
-            paymentEntity.setServiceCharges(paymentType.getServiceCharges());
+            paymentEntity.setServiceCharges(Double.valueOf(paymentType.getStrServiceCharges()));
             paymentEntity.setPatient(paymentType.isPatient());
 
         }

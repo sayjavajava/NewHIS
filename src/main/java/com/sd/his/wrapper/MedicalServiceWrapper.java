@@ -6,6 +6,7 @@ import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /*
@@ -52,6 +53,11 @@ public class MedicalServiceWrapper {
     private List<DepartmentWrapper> checkedDepartments;
     private List<Long> selectedBranchesMS;
     private boolean hasChild;
+
+
+
+    private String  strFee;
+    private String  strCost;
     public MedicalServiceWrapper() {
     }
 
@@ -65,7 +71,8 @@ public class MedicalServiceWrapper {
         this.description = medicalServiceWrapper.getDescription();
         this.duration = medicalServiceWrapper.getDuration();
     }
-    public MedicalServiceWrapper(MedicalService ms,double comissionService,long medDocID){
+
+    public MedicalServiceWrapper(MedicalService ms, double comissionService, long medDocID) {
         this.id = ms.getId();
         this.name = ms.getName();
         this.name = ms.getName();
@@ -84,6 +91,8 @@ public class MedicalServiceWrapper {
     }
 
     public MedicalServiceWrapper(MedicalService ms) {
+
+
         if (ms.getTax() == null) {
             this.tax = new TaxWrapper();
             this.tax.setId(-1);
@@ -290,4 +299,62 @@ public class MedicalServiceWrapper {
     public void setHasChild(boolean hasChild) {
         this.hasChild = hasChild;
     }
+
+    public String getStrFee() {
+        return strFee;
+    }
+
+    public void setStrFee(String strFee) {
+        this.strFee = strFee;
+    }
+
+    public String getStrCost() {
+        return strCost;
+    }
+
+    public void setStrCost(String strCost) {
+        this.strCost = strCost;
+    }
+
+
+    public static String formatCurrency(String amount, String format) {
+        String returnFormat = "";
+        if (format.equals("123,456")) {
+            DecimalFormat formatter = new DecimalFormat("###,000");
+            returnFormat = formatter.format(Double.parseDouble(amount));
+            // "###,###,##0.00"
+        } else if (format.equals("123,456.00")) {
+            DecimalFormat formatter = new DecimalFormat("###,###.00");
+            returnFormat = formatter.format(Double.parseDouble(amount));
+        } else if (format.equals("123456")) {
+            DecimalFormat formatter = new DecimalFormat("######");
+            returnFormat = formatter.format(Double.parseDouble(amount));
+        } else if (format.equals("123456.00")) {
+            DecimalFormat formatter = new DecimalFormat("######.00");
+            returnFormat = formatter.format(Double.parseDouble(amount));
+        }
+        return returnFormat;
+    }
+
+
+    public static String priceWithDecimal(Double price) {
+        DecimalFormat formatter = new DecimalFormat("###,###.00");
+        return formatter.format(price);
+    }
+
+    public static String priceWithoutDecimal(Double price) {
+        DecimalFormat formatter = new DecimalFormat("###.##");
+        return formatter.format(price);
+    }
+
+    public static String priceToString(Double price) {
+        String toShow = priceWithoutDecimal(price);
+        if (toShow.indexOf(".") > 0) {
+            return priceWithDecimal(price);
+        } else {
+            return priceWithoutDecimal(price);
+        }
+
+    }
+
 }

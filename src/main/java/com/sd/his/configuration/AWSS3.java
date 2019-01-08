@@ -757,4 +757,21 @@ public class AWSS3 {
             e.printStackTrace();
         }
     }
+
+
+    public void deleteObjectSingle(String keyName) throws Exception {
+
+        try {
+            S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+            s3Client = new S3Client();
+
+            s3Client.client.deleteObject(new DeleteObjectRequest(s3Bucket.getName(), keyName));
+        } catch (AmazonServiceException ase) {
+            logger.error("Error response from AWS while deleting object", ase);
+            throw ase;
+        } catch (AmazonClientException ace) {
+            logger.error("Error response from AWS while deleting object", ace);
+            throw ace;
+        }
+    }
 }

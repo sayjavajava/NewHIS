@@ -22,6 +22,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -82,7 +85,8 @@ public class StaffService {
 
     @Autowired
     PaymentTypeRepository paymentTypeRepository;
-
+    @Autowired
+    private OrganizationService organizationService;
 
     List<StaffWrapper> finalStaffList = new ArrayList<>();
     private final Logger logger = LoggerFactory.getLogger(StaffService.class);
@@ -96,6 +100,8 @@ public class StaffService {
         // String brName = branch.getName();
         User user = null;
         String prefID = hisUtilService.generatePrefix(ModuleEnum.PROFILE);
+
+
 
         if (usertype.equalsIgnoreCase("CASHIER")) {
             user = new User();
@@ -373,6 +379,12 @@ public class StaffService {
 
             user = new User();
             user.setActive(true);
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        //    String systemCurrency=dbOrganization.getCurrencyFormat();
+            String hoursFormat=dbOrganization.getHoursFormat();
+        //    String dateFormat=dbOrganization.getDateFormat();
+            String timeFormat=dbOrganization.getTimeFormat();
             user.setPassword(new BCryptPasswordEncoder().encode(createRequest.getPassword()));
             user.setUsername(createRequest.getUserName());
             user.setUserType("DOCTOR");
@@ -430,8 +442,17 @@ public class StaffService {
             //duty shift portion
             DutyShift dutyShift = new DutyShift();
             dutyShift.setShiftName(DutyShiftEnum.SHIFT1);
-            dutyShift.setStartTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftFromTime()));
-            dutyShift.setEndTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftToTime()));
+         //   sdasdas
+            Date startTime=HISCoreUtil.convertToTime(createRequest.getFirstShiftFromTime());
+            Date endTime=HISCoreUtil.convertToTime(createRequest.getFirstShiftToTime());
+            Date startTimeOutput=convertHours(startTime,hoursFormat,timeFormat);
+            Date endTimeOutput=convertHours(endTime,hoursFormat,timeFormat);
+            dutyShift.setStartTime(startTimeOutput);
+            dutyShift.setEndTime(endTimeOutput);
+          //  staffResponseWrapper.getDutyShifts().get(i).setStartTime(startTime);
+         //   staffResponseWrapper.getDutyShifts().get(i).setEndTime(endTime);
+         //   dutyShift.setStartTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftFromTime()));
+         //   dutyShift.setEndTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftToTime()));
             dutyShift.setDoctor(doctor);
             dutyShiftRepository.save(dutyShift);
 
@@ -520,6 +541,14 @@ public class StaffService {
     }
 
     public StaffResponseWrapper findByIdAndResponse(long id, String userType) {
+
+        /*Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String systemCurrency=dbOrganization.getCurrencyFormat();
+        String hoursFormat=dbOrganization.getHoursFormat();
+        String dateFormat=dbOrganization.getDateFormat();
+        String timeFormat=dbOrganization.getTimeFormat();*/
+
         StaffResponseWrapper staffResponseWrapper = null;
         if (userType.equalsIgnoreCase("CASHIER")) {
             staffResponseWrapper = cashierRepository.findAllByIdAndStatusActive(id);
@@ -534,8 +563,23 @@ public class StaffService {
         }
         if (userType.equalsIgnoreCase("DOCTOR")) {
              staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(id);
+
              staffResponseWrapper.setStaffBranches(branchDoctorRepository.getDoctorBranches(id));
              staffResponseWrapper.setDoctorServiceComission(doctorMedicalServiceRepository.getDocServicesAndComissions(id));
+
+            staffResponseWrapper.setStaffBranches(branchDoctorRepository.getDoctorBranches(id));
+            staffResponseWrapper.setDoctorServiceComission(doctorMedicalServiceRepository.getDocServicesAndComissions(id));
+            /*if(staffResponseWrapper.getDutyShifts().size()>0){
+                for(int i=0;i<staffResponseWrapper.getDutyShifts().size();i++){
+                    Date startTime=convertHours(staffResponseWrapper.getDutyShifts().get(i).getStartTime(),hoursFormat,timeFormat);
+                    Date endTime=convertHours(staffResponseWrapper.getDutyShifts().get(i).getEndTime(),hoursFormat,timeFormat);
+                    staffResponseWrapper.getDutyShifts().get(i).setStartTime(startTime);
+                    staffResponseWrapper.getDutyShifts().get(i).setEndTime(endTime);
+                }
+
+            }*/
+
+
             return staffResponseWrapper;
         }
         if (userType.equalsIgnoreCase("NURSE")) {
@@ -1041,4 +1085,42 @@ public class StaffService {
         return staffPaymentRepository.findAllList();
     }
 
+
+
+
+    public static Date convertHours(Date input,String hoursFormat,String format)
+    {
+        DateFormat df=new SimpleDateFormat("hh:mm");
+        if(hoursFormat.equals("12")){
+            if(format.equals("hh:mm")){
+                df = new SimpleDateFormat("hh:mm");
+            }else{
+                df = new SimpleDateFormat("hh:mm:ss");
+            }
+
+        }
+
+        if(hoursFormat.equals("24")){
+        if(format.equals("hh:mm")){
+            df = new SimpleDateFormat("HH:mm");
+        }else{
+            df = new SimpleDateFormat("HH:mm:ss");
+        }
+
+        }
+
+        Date date=null;
+        String outputFormat;
+        try{
+            //Converting the input String to Date
+            outputFormat= df.format(input);
+            date=df.parse(outputFormat);
+            System.out.println(date);
+            return date;
+
+        }catch(ParseException pe){
+            pe.printStackTrace();
+        }
+        return date;
+    }
 }

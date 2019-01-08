@@ -83,7 +83,7 @@ public class PaymentType extends BaseEntity implements Serializable {
     }
 
     @Column(name = "is_patient")
-    private Boolean isPatient;
+    private boolean isPatient;
 
 
     @JsonIgnore

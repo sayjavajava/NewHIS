@@ -44,6 +44,6 @@ public interface StatusRepository extends JpaRepository<Status, Long> {
     int countByStatusTrue();
     Status findByName(String name);
     Status findByNameAndIdNot(String name ,Long id);//Long id, String name, String abbreviation, boolean active, String colorHash
-    @Query("SELECT new com.sd.his.wrapper.StatusWrapper(st.id,st.name, st.abbreviation,st.status,st.hashColor) FROM Status st WHERE st.status = TRUE and st.name LIKE CONCAT('%',:name,'%')")
+    @Query("SELECT new com.sd.his.wrapper.StatusWrapper(st.id,st.name, st.abbreviation,st.status,st.hashColor,st.systemStatus) FROM Status st WHERE st.status = TRUE and st.name LIKE CONCAT('%',:name,'%')")
     List<StatusWrapper> findByNameAndStatusTrue(@Param("name")String name , Pageable pageable);
 }

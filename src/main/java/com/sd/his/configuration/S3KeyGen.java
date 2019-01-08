@@ -392,7 +392,37 @@ public class S3KeyGen {
         return url;
     }
 
+    public String getImagePublicURLOrganization(String FULL_PATH_THUMBNAIL_GRAPHIC_NAME) {
 
+        String url = null;
+
+        try {
+            S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+
+            url = s3Bucket.getAccessProtocol()
+                    + s3Bucket.getPublicBaseURL()
+                    + "/"
+                    + s3Bucket.getName()
+                    + FULL_PATH_THUMBNAIL_GRAPHIC_NAME;
+
+            if (!ResourceCheckUtil.urlExists(url)) {
+                url = s3Bucket.getAccessProtocol()
+                        + s3Bucket.getPublicBaseURL()
+                        + "/"
+                        + s3Bucket
+                        + "/"
+                        + HISConstants.S3_CORE_DIRECTORY
+                        + "/"
+                        + HISConstants.S3_CORE_GRAPHICS_DIRECTORY
+                        + "/"
+                        + HISConstants.S3_CORE_PROFILE_GRAPHIC_HOLDER_NAME;
+            }
+
+        } catch (Exception ex) {
+            logger.error("Unknown Error whilst getting object from S3", ex);
+        }
+        return url;
+    }
 
 
 }
