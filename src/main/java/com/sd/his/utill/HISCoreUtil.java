@@ -153,13 +153,13 @@ public class HISCoreUtil {
         }
         return date;
     }
-  public static LocalDateTime convertToLocalDateTimeViaSqlTimestamp(Date dateToConvert) {
+    public static LocalDateTime convertToLocalDateTimeViaSqlTimestamp(Date dateToConvert) {
         if(dateToConvert !=null){
-        return new java.sql.Timestamp(
-                dateToConvert.getTime()).toLocalDateTime();
+            return new java.sql.Timestamp(
+                    dateToConvert.getTime()).toLocalDateTime();
         }
         else{
-        return null;
+            return null;
         }
     }
     public static Date convertToDateViaLocalDateTime(LocalDateTime dateToConvert) {
@@ -218,6 +218,20 @@ public class HISCoreUtil {
         }
         return formatedDate;
     }
+    public static Date convertToDateOnly(String date) {
+        Date formatedDate = null;
+        if (date != null) {
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                formatedDate = form.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return formatedDate;
+    }
+
+
 
     public static Predicate<BranchResponseWrapper> isExist(long id) {
         return p->(p.getId() ==id);
@@ -248,7 +262,7 @@ public class HISCoreUtil {
         sdf.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
         return  sdf.format(date);
 
-            //    return
+        //    return
 
     }
 
@@ -440,6 +454,81 @@ public class HISCoreUtil {
             }
         }
         return containsDigit;
+    }
+    public static boolean isTimeBetweenTwoTime(String argStartTime,
+                                               String argEndTime, String argCurrentTime) throws ParseException {
+        String reg = "^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$";
+        //
+     /*   if (argStartTime.matches(reg) && argEndTime.matches(reg)
+                && argCurrentTime.matches(reg)) {*/
+        boolean valid = false;
+        // Start Time
+        java.util.Date startTime = new SimpleDateFormat("HH:mm")
+                .parse(argStartTime);
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(startTime);
+        java.util.Date currentTime = new SimpleDateFormat("HH:mm")
+                .parse(argCurrentTime);
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.setTime(currentTime);
+        java.util.Date endTime = new SimpleDateFormat("HH:mm")
+                .parse(argEndTime);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(endTime);
+        if (currentTime.compareTo(endTime) < 0) {
+
+            currentCalendar.add(Calendar.DATE, 1);
+            currentTime = currentCalendar.getTime();
+
+        }
+
+        if (startTime.compareTo(endTime) < 0) {
+            startCalendar.add(Calendar.DATE, 1);
+            startTime = startCalendar.getTime();
+        }
+
+        if (currentTime.before(startTime)) {
+            valid = false;
+        } else {
+
+            if (currentTime.after(endTime)) {
+                endCalendar.add(Calendar.DATE, 1);
+                endTime = endCalendar.getTime();
+            }
+
+            if (currentTime.before(endTime)) {
+                valid = true;
+            } else {
+                valid = false;
+            }
+
+        }
+        return valid;
+
+        /*} else {
+            throw new IllegalArgumentException(
+                    "Not a valid time, expecting HH:mm format");
+        }
+*/
+    }
+
+    public static String getDayFromDate(String in_date){
+        SimpleDateFormat format1=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        Date dt1= null;
+        try {
+            dt1 = format1.parse(in_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        DateFormat format2=new SimpleDateFormat("EEEE");
+        String finalDay=format2.format(dt1);
+        return finalDay;
+    }
+    public static String convertTimeTozone(String time,String zone){
+        Date date = HISCoreUtil.convertToTime(time);
+        String format ="HH:mm";
+        String convertedResult = HISCoreUtil.convertDateToTimeZone(date,format,zone);
+        return convertedResult;
     }
 
 }

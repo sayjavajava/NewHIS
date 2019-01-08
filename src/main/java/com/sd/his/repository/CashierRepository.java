@@ -50,7 +50,7 @@ public interface CashierRepository extends JpaRepository<Cashier, Long> {
     String primaryBranch,String email,String homePhone,String cellPhone,String expiryDate,Boolean active,
     List<Branch> branchLi*/
 
-    @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,cr.id,du.userType,cr.firstName,cr.lastName,du.username,cr.email,br.name,cr.homePhone,cr.cellPhone,du.active,br.id,cr.accountExpiry,cr.sendBillingReport,cr.useReceiptDashboard,cr.otherDoctorDashboard) FROM Cashier cr INNER JOIN cr.user du INNER JOIN cr.branchCashiers branchCr INNER JOIN branchCr.branch br WHERE cr.id =:id AND du.active = TRUE AND branchCr.primaryBranch=TRUE")
+    @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,cr.id,du.userType,cr.firstName,cr.lastName,du.username,cr.email,br.name,cr.homePhone,cr.cellPhone,du.active,br.id,cr.accountExpiry,cr.sendBillingReport,cr.useReceiptDashboard,cr.otherDoctorDashboard,cr) FROM Cashier cr INNER JOIN cr.user du INNER JOIN cr.branchCashiers branchCr INNER JOIN branchCr.branch br WHERE cr.id =:id AND du.active = TRUE AND branchCr.primaryBranch=TRUE")
     StaffResponseWrapper findAllByIdAndStatusActive(@Param("id") Long id);
     Cashier findByUser(User user);
 

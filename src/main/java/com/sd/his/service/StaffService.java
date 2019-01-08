@@ -6,7 +6,6 @@ import com.sd.his.model.*;
 import com.sd.his.repository.*;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DepartmentWrapper;
-import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.ServiceComission;
 import com.sd.his.wrapper.request.DoctorPaymentRequestWrapper;
 import com.sd.his.wrapper.request.StaffRequestWrapper;
@@ -76,12 +75,14 @@ public class StaffService {
     NurseDepartmentRepository nurseDepartmentRepository;
     @Autowired
     DepartmentRepository departmentRepository;
-
     @Autowired
     StaffPaymentRepository staffPaymentRepository;
-
     @Autowired
     PaymentTypeRepository paymentTypeRepository;
+    @Autowired
+    private OrganizationService organizationService;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
 
     List<StaffWrapper> finalStaffList = new ArrayList<>();
@@ -148,6 +149,16 @@ public class StaffService {
             cashier.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
             cashier.setAllowDiscount(createRequest.getAllowDiscount());
             cashier.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
+            cashier.setCanReceivePayment(createRequest.isReceivePayment());
+
+            if (createRequest.getSelectedDoctorDashboard().size() > 0) {
+                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                Map<Long, String> dashMap = new HashMap<>();
+                selectedDashboardDoctor.stream()
+                        .filter(x -> x.getId() != null)
+                        .forEach(x -> dashMap.put(x.getId(), x.getEmail()));
+                cashier.setSelectedDoctorDashboard(dashMap);
+            }
 
             List<Branch> allowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
             List<BranchCashier> cashierVisitBranchesData = new ArrayList<>();
@@ -226,6 +237,15 @@ public class StaffService {
             receptionist.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
             receptionist.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
             receptionist.setAllowDiscount(createRequest.getAllowDiscount());
+            receptionist.setCanReceivePayment(createRequest.isReceivePayment());
+            if (createRequest.getSelectedDoctorDashboard().size() > 0) {
+                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                Map<Long, String> dashMap = new HashMap<>();
+                selectedDashboardDoctor.stream()
+                        .filter(x -> x.getId() != null)
+                        .forEach(x -> dashMap.put(x.getId(), x.getEmail()));
+                receptionist.setSelectedDoctorDashboard(dashMap);
+            }
 
             receptionist.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
             List<Long> listbr = Arrays.asList(createRequest.getSelectedVisitBranches());
@@ -242,6 +262,7 @@ public class StaffService {
                 }
                 branchReceptionistRepository.save(receptionistVisitBranchesData);
             }
+
 
             BranchReceptionist branchReceptionist = new BranchReceptionist();
             branchReceptionist.setBranch(branch);
@@ -322,6 +343,14 @@ public class StaffService {
 */
             List<Branch> allowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
             List<BranchNurse> nurseVisitBranchesData = new ArrayList<>();
+            if (createRequest.getSelectedDoctorDashboard().size() > 0) {
+                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                Map<Long, String> dashMap = new HashMap<>();
+                selectedDashboardDoctor.stream()
+                        .filter(x -> x.getId() != null)
+                        .forEach(x -> dashMap.put(x.getId(), x.getEmail()));
+                nurse.setSelectedDoctorDashboard(dashMap);
+            }
 
             nurseRepository.save(nurse);
 
@@ -370,6 +399,10 @@ public class StaffService {
         }
 
         if (usertype.equalsIgnoreCase(DOCTOR.name())) {
+            Organization dbOrganization = organizationService.getAllOrgizationData();
+            String zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+            String shift1From = HISCoreUtil.convertTimeTozone(createRequest.getFirstShiftFromTime(), zone);
+            String shift1To = HISCoreUtil.convertTimeTozone(createRequest.getFirstShiftToTime(), zone);
 
             user = new User();
             user.setActive(true);
@@ -393,7 +426,6 @@ public class StaffService {
                 //}
                 userRoleRepository.save(userRole);//recAssignedRole);
             }
-
             Doctor doctor = new Doctor();
             doctor.setUser(user);
             doctor.setFirstName(createRequest.getFirstName());
@@ -405,17 +437,23 @@ public class StaffService {
             doctor.setCheckUpInterval(createRequest.getInterval());
             doctor.setEmail(createRequest.getEmail());
             doctor.setStatus(createRequest.isActive());
-            doctor.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
-            doctor.setVacation(createRequest.isVacation());
-            doctor.setVacationFrom(HISCoreUtil.convertToDate(createRequest.getDateFrom()));
+            if (!HISCoreUtil.isNull(createRequest.getAccountExpiry()))
+                doctor.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
+            if (!HISCoreUtil.isNull(createRequest.getDateFrom()) && !HISCoreUtil.isNull(createRequest.getDateTo())) {
+                doctor.setVacation(createRequest.isVacation());
+                String zonedFrom = HISCoreUtil.convertDateToTimeZone(HISCoreUtil.convertToDate(createRequest.getDateFrom()), "YYYY-MM-dd", zone);
+                String zonedTo = HISCoreUtil.convertDateToTimeZone(HISCoreUtil.convertToDate(createRequest.getDateTo()), "YYYY-MM-dd", zone);
+                doctor.setVacationFrom(HISCoreUtil.convertToDateOnly(zonedFrom)); //write date format only
+                doctor.setVacationTO(HISCoreUtil.convertToDateOnly(zonedTo));
+            }
 
             doctor.setActive(createRequest.isActive());
             doctor.setSendBillingReport(createRequest.isSendBillingReport());
             doctor.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
             doctor.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
             doctor.setAllowDiscount(createRequest.getAllowDiscount());
+            doctor.setCanReceivePayment(createRequest.isReceivePayment());
 
-            doctor.setVacationTO(HISCoreUtil.convertToDate(createRequest.getDateTo()));
             List<String> daysList = Arrays.asList(createRequest.getSelectedWorkingDays());
             doctor.setWorkingDays(daysList);
 
@@ -424,22 +462,35 @@ public class StaffService {
             if (createRequest.getSelectedDepartment().length > 0) {
                 selectedDocDept = departmentRepository.findOne((createRequest.getSelectedDepartment())[0]);
             }
+            if (createRequest.getSelectedDoctorDashboard().size() > 0) {
+                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                Map<Long, String> dashMap = new HashMap<>();
+                selectedDashboardDoctor.stream()
+                        .filter(x -> x.getId() != null)
+                        .forEach(x -> dashMap.put(x.getId(), x.getEmail()));
+
+                doctor.setSelectedDoctorDashboard(dashMap);
+            }
             doctor.setDepartment(selectedDocDept);
             doctorRepository.save(doctor);
 //            profile.setWorkingDays(daysList);
             //duty shift portion
             DutyShift dutyShift = new DutyShift();
             dutyShift.setShiftName(DutyShiftEnum.SHIFT1);
-            dutyShift.setStartTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftFromTime()));
-            dutyShift.setEndTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftToTime()));
+            //  dutyShift.setStartTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftFromTime()));
+            //  dutyShift.setEndTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftToTime()));
+            dutyShift.setStartTime(HISCoreUtil.convertToTime(shift1From));
+            dutyShift.setEndTime(HISCoreUtil.convertToTime(shift1To));
             dutyShift.setDoctor(doctor);
             dutyShiftRepository.save(dutyShift);
 
             if (!HISCoreUtil.isNull(createRequest.getSecondShiftFromTime())) {
+                String shift2From = HISCoreUtil.convertTimeTozone(createRequest.getSecondShiftFromTime(), zone);
+                String shift2To = HISCoreUtil.convertTimeTozone(createRequest.getSecondShiftToTime(), zone);
                 DutyShift dutyShift2 = new DutyShift();
                 dutyShift2.setShiftName(DutyShiftEnum.SHIFT2);
-                dutyShift2.setStartTime(HISCoreUtil.convertToTime(createRequest.getSecondShiftFromTime()));
-                dutyShift2.setEndTime(HISCoreUtil.convertToTime(createRequest.getSecondShiftToTime()));
+                dutyShift2.setStartTime(HISCoreUtil.convertToTime(shift2From));
+                dutyShift2.setEndTime(HISCoreUtil.convertToTime(shift2To));
                 dutyShift2.setDoctor(doctor);
                 dutyShiftRepository.save(dutyShift2);
             }
@@ -460,20 +511,20 @@ public class StaffService {
             }
 
             //doctor services portion
-            List<Long> selectedServces = createRequest.getServiceComission().stream().map(x->x.getId()).collect(Collectors.toList());
-            List<MedicalService> medicalServicesList = medicalServiceRepository.findAllByIdIn(selectedServces);
+            List<Long> selectedServices = createRequest.getServiceComission().stream().map(x -> x.getId()).collect(Collectors.toList());
+            List<MedicalService> medicalServicesList = medicalServiceRepository.findAllByIdIn(selectedServices);
             List<DoctorMedicalService> doctorMedicalServiceList = new ArrayList<>();
-            Optional<Double> serviceCom =null;
+            Optional<Double> serviceCom = null;
             if (!HISCoreUtil.isListEmpty(medicalServicesList)) {
-            for (MedicalService ms : medicalServicesList) {
-                DoctorMedicalService dms = new DoctorMedicalService();
-                dms.setDoctor(doctor);
-                dms.setMedicalService(ms);
-                serviceCom = this.getComissionOfServices(createRequest.getServiceComission(),ms.getId());
-                if(serviceCom.isPresent())
-                    dms.setComission(serviceCom.get());
-                doctorMedicalServiceList.add(dms);
-            }
+                for (MedicalService ms : medicalServicesList) {
+                    DoctorMedicalService dms = new DoctorMedicalService();
+                    dms.setDoctor(doctor);
+                    dms.setMedicalService(ms);
+                    serviceCom = this.getComissionOfServices(createRequest.getServiceComission(), ms.getId());
+                    if (serviceCom.isPresent())
+                        dms.setComission(serviceCom.get());
+                    doctorMedicalServiceList.add(dms);
+                }
             }
             doctorMedicalServiceRepository.save(doctorMedicalServiceList);
 
@@ -511,13 +562,15 @@ public class StaffService {
         }
         return null;
     }
-    private Optional<Double> getComissionOfServices(List<ServiceComission> list, long id){
-        return list.stream().filter(x-> x.getId() == id).map(x->x.getComission()).findFirst();
+
+    private Optional<Double> getComissionOfServices(List<ServiceComission> list, long id) {
+        return Optional.ofNullable(list).orElseGet(Collections::emptyList).stream().filter(x -> x.getComission() != null).filter(x -> x.getId() == id).map(x -> x.getComission()).findFirst();
     }
 
     public User findById(long id) {
         return userRepository.findOne(id);
     }
+
 
     public StaffResponseWrapper findByIdAndResponse(long id, String userType) {
         StaffResponseWrapper staffResponseWrapper = null;
@@ -533,9 +586,9 @@ public class StaffService {
             return staffResponseWrapper;//cashierRepository.findAllByIdAndStatusActive(id);
         }
         if (userType.equalsIgnoreCase("DOCTOR")) {
-             staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(id);
-             staffResponseWrapper.setStaffBranches(branchDoctorRepository.getDoctorBranches(id));
-             staffResponseWrapper.setDoctorServiceComission(doctorMedicalServiceRepository.getDocServicesAndComissions(id));
+            staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(id);
+            staffResponseWrapper.setStaffBranches(branchDoctorRepository.getDoctorBranches(id));
+            staffResponseWrapper.setDoctorServiceComission(doctorMedicalServiceRepository.getDocServicesAndComissions(id));
             return staffResponseWrapper;
         }
         if (userType.equalsIgnoreCase("NURSE")) {
@@ -661,11 +714,16 @@ public class StaffService {
     public User updateStaffData(StaffRequestWrapper createRequest, User alreadyExistsUser) {
         switch (alreadyExistsUser.getUserType().toUpperCase()) {
             case "DOCTOR":
+                Organization dbOrganization = organizationService.getAllOrgizationData();
+                String zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+                String shift1From = HISCoreUtil.convertTimeTozone(createRequest.getFirstShiftFromTime(), zone);
+                String shift1To = HISCoreUtil.convertTimeTozone(createRequest.getFirstShiftToTime(), zone);
+
                 Doctor doctor = doctorRepository.findByUser(alreadyExistsUser);
                 alreadyExistsUser.setActive(createRequest.isActive());
                 userRepository.save(alreadyExistsUser);
                 doctor.getDoctorMedicalServices().clear();
-                doctor.setEmail(createRequest.getEmail());
+                // doctor.setEmail(createRequest.getEmail());
                 doctor.setHomePhone(createRequest.getHomePhone());
                 doctor.setCellPhone(createRequest.getCellPhone());
                 doctor.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
@@ -676,6 +734,8 @@ public class StaffService {
                 doctor.setVacationFrom(HISCoreUtil.convertToDate(createRequest.getDateFrom()));
                 doctor.setVacationTO(HISCoreUtil.convertToDate(createRequest.getDateTo()));
                 doctor.setCheckUpInterval(createRequest.getInterval());
+                doctor.setCanReceivePayment(createRequest.isReceivePayment());
+                doctor.setAllowDiscount(createRequest.getAllowDiscount());
                 //doctor working days
                 List<String> daysList = new LinkedList<String>(Arrays.asList(createRequest.getSelectedWorkingDays()));
                 if (!HISCoreUtil.isListEmpty(daysList)) {
@@ -687,27 +747,38 @@ public class StaffService {
                 if (createRequest.getSelectedDepartment().length > 0) {
                     //departmentRepository.findOne( (createRequest.getSelectedDepartment())[0] );
                     selectedDocDept = departmentRepository.findOne((createRequest.getSelectedDepartment())[0]);
+                    doctor.setDepartment(selectedDocDept);
                 }
-                doctor.setDepartment(selectedDocDept);
+                if (createRequest.getSelectedDoctorDashboard().size() > 0) {
+                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                    Map<Long, String> dashMap = new HashMap<>();
+                    selectedDashboardDoctor.stream()
+                            .filter(x -> x.getId() != null)
+                            .forEach(x -> dashMap.put(x.getId(), x.getEmail()));
+                    doctor.setSelectedDoctorDashboard(dashMap);
+                }
+
                 doctorRepository.save(doctor);
                 //doctor medical services
-                List<Long> selectedServces = createRequest.getServiceComission().stream().map(x->x.getId()).collect(Collectors.toList());
+
+                List<Long> selectedServces = createRequest.getServiceComission().stream().map(x -> x.getId()).collect(Collectors.toList());
                 List<MedicalService> medicalServiceList = medicalServiceRepository.findAllByIdIn(selectedServces);
                 List<DoctorMedicalService> doctorMedicalServiceList = new ArrayList<>();
                 if (!HISCoreUtil.isListEmpty(medicalServiceList)) {
                     doctorMedicalServiceRepository.deleteDoctorMedicalServiceByDoctor_Id(doctor.getId());
-                    Optional<Double> serviceCom =null;
+                    Optional<Double> serviceCom = null;
                     for (MedicalService ms : medicalServiceList) {
                         DoctorMedicalService dms = new DoctorMedicalService();
                         dms.setDoctor(doctor);
                         dms.setMedicalService(ms);
-                        serviceCom = this.getComissionOfServices(createRequest.getServiceComission(),ms.getId());
-                        if(serviceCom.isPresent())
+                        serviceCom = this.getComissionOfServices(createRequest.getServiceComission(), ms.getId());
+                        if (serviceCom.isPresent())
                             dms.setComission(serviceCom.get());
                         doctorMedicalServiceList.add(dms);
                     }
+                    doctorMedicalServiceRepository.save(doctorMedicalServiceList);
                 }
-                doctorMedicalServiceRepository.save(doctorMedicalServiceList);
+
                 Branch branchDoc = branchRepository.findOne(createRequest.getPrimaryBranch());
                 BranchDoctor branchDoctor = branchDoctorRepository.findByDoctorAndPrimaryBranchTrue(doctor);
                 branchDoctor.setBranch(branchDoc);
@@ -733,18 +804,19 @@ public class StaffService {
                 if (!HISCoreUtil.isNull(createRequest.getFirstShiftFromTime())) {
                     DutyShift dutyShift = new DutyShift();//dutyShiftRepository.findByDoctorAndShiftName(doctor, DutyShiftEnum.SHIFT1);
                     dutyShift.setShiftName(DutyShiftEnum.SHIFT1);
-                    dutyShift.setStartTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftFromTime()));
-                    dutyShift.setEndTime(HISCoreUtil.convertToTime(createRequest.getFirstShiftToTime()));
+                    dutyShift.setStartTime(HISCoreUtil.convertToTime(shift1From));
+                    dutyShift.setEndTime(HISCoreUtil.convertToTime(shift1To));
                     dutyShift.setDoctor(doctor);
                     dutyShiftRepository.save(dutyShift);
                 }
 
                 if (!HISCoreUtil.isNull(createRequest.getSecondShiftFromTime())) {
-//                    dutyShiftRepository.deleteAllByDoctorAndShiftName(doctor,DutyShiftEnum.EVENING);
-                    DutyShift dutyShift2 = new DutyShift();//dutyShiftRepository.findByDoctorAndShiftName(doctor, DutyShiftEnum.SHIFT2);
+                    String shift2From = HISCoreUtil.convertTimeTozone(createRequest.getSecondShiftFromTime(), zone);
+                    String shift2To = HISCoreUtil.convertTimeTozone(createRequest.getSecondShiftToTime(), zone);
+                    DutyShift dutyShift2 = new DutyShift();
                     dutyShift2.setShiftName(DutyShiftEnum.SHIFT2);
-                    dutyShift2.setStartTime(HISCoreUtil.convertToTime(createRequest.getSecondShiftFromTime()));
-                    dutyShift2.setEndTime(HISCoreUtil.convertToTime(createRequest.getSecondShiftToTime()));
+                    dutyShift2.setStartTime(HISCoreUtil.convertToTime(shift2From));
+                    dutyShift2.setEndTime(HISCoreUtil.convertToTime(shift2To));
                     dutyShift2.setDoctor(doctor);
                     dutyShiftRepository.save(dutyShift2);
                 }
@@ -760,6 +832,16 @@ public class StaffService {
                 receptionist.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 receptionist.setLastName(createRequest.getLastName());
                 receptionist.setFirstName(createRequest.getFirstName());
+                receptionist.setCanReceivePayment(createRequest.isReceivePayment());
+                receptionist.setAllowDiscount(createRequest.getAllowDiscount());
+                if (createRequest.getSelectedDoctorDashboard().size() > 0) {
+                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                    Map<Long, String> dashMap = new HashMap<>();
+                    selectedDashboardDoctor.stream()
+                            .filter(x -> x.getId() != null)
+                            .forEach(x -> dashMap.put(x.getId(), x.getEmail()));
+                    receptionist.setSelectedDoctorDashboard(dashMap);
+                }
                 receptionistRepository.save(receptionist);
                 Branch primaryBranchReceptionist = branchRepository.findOne(createRequest.getPrimaryBranch());
                 BranchReceptionist branchReceptionist = branchReceptionistRepository.findByReceptionistAndPrimaryBranchTrue(receptionist);
@@ -795,6 +877,16 @@ public class StaffService {
                 cashier.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 cashier.setLastName(createRequest.getLastName());
                 cashier.setFirstName(createRequest.getFirstName());
+                cashier.setCanReceivePayment(createRequest.isReceivePayment());
+                cashier.setAllowDiscount(createRequest.getAllowDiscount());
+                if (createRequest.getSelectedDoctorDashboard().size() > 0) {
+                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                    Map<Long, String> dashMap = new HashMap<>();
+                    selectedDashboardDoctor.stream()
+                            .filter(x -> x.getId() != null)
+                            .forEach(x -> dashMap.put(x.getId(), x.getEmail()));
+                    cashier.setSelectedDoctorDashboard(dashMap);
+                }
                 cashierRepository.save(cashier);
 
                 Branch primaryBranchCashier = branchRepository.findOne(createRequest.getPrimaryBranch());
@@ -807,6 +899,7 @@ public class StaffService {
                 if (!HISCoreUtil.isListEmpty(cashierAllowBranches)) {
                     branchCashierRepository.deleteAllByCashierAndPrimaryBranchFalse(cashier);
                 }
+
                 if (!HISCoreUtil.isListEmpty(cashierAllowBranches)) {
                     for (Branch userVisitBr : cashierAllowBranches) {
                         if (userVisitBr.getId() == branchCashier.getId())
@@ -831,6 +924,14 @@ public class StaffService {
                 nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 nurse.setLastName(createRequest.getLastName());
                 nurse.setFirstName(createRequest.getFirstName());
+                if (createRequest.getSelectedDoctorDashboard().size() > 0) {
+                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                    Map<Long, String> dashMap = new HashMap<>();
+                    selectedDashboardDoctor.stream()
+                            .filter(x -> x.getId() != null)
+                            .forEach(x -> dashMap.put(x.getId(), x.getEmail()));
+                    nurse.setSelectedDoctorDashboard(dashMap);
+                }
                 nurseRepository.save(nurse);
 
                 //nurse department portion
@@ -846,6 +947,7 @@ public class StaffService {
                     }
 
                 }
+
                 nurseDepartmentRepository.save(nurseDepartmentList);
 
                 //nurse branch portion
@@ -896,22 +998,23 @@ public class StaffService {
     }
 
     @Transactional
-    public User deleteUser(User user) {
+    public String deleteUser(User user) {
         //  user.setDeleted(true);
+
         String userType = user.getUserType();
         if (userType.equalsIgnoreCase("CASHIER")) {
             Cashier cashier = cashierRepository.findByUser(user);
             userRepository.delete(user);
             branchCashierRepository.deleteAllByCashier(cashier);
             cashierRepository.delete(cashier);
-            return user;
+            return "success";
         }
         if (userType.equalsIgnoreCase("RECEPTIONIST")) {
             Receptionist receptionist = receptionistRepository.findByUser(user);
             branchReceptionistRepository.deleteAllByReceptionist(receptionist);
             userRepository.delete(user);
             receptionistRepository.delete(receptionist);
-            return user;
+            return "success";
         }
         if (userType.equalsIgnoreCase("NURSE")) {
             Nurse nurse = nurseRepository.findByUser(user);
@@ -921,10 +1024,14 @@ public class StaffService {
             nurseRepository.delete(nurse);
             //    userRoleRepository.deleteAllByUser(user);
             ;
-            return user;
+            return "success";
         }
         if (userType.equalsIgnoreCase("DOCTOR")) {
             Doctor doctor = doctorRepository.findByUser(user);
+            long apptCount = appointmentRepository.countByDoctor(doctor);
+            if (apptCount != 0) {
+                return "hasChild";
+            }
             branchDoctorRepository.deleteAllByDoctor(doctor);
             //    userRoleRepository.deleteAllByUser(user);
             dutyShiftRepository.deleteAllByDoctor(doctor);
@@ -932,7 +1039,7 @@ public class StaffService {
             userRepository.delete(user);
             doctorRepository.delete(doctor);
 
-            return user;
+            return "success";
         }
         //userRepository.delete(user);
         return null;
@@ -958,7 +1065,7 @@ public class StaffService {
         return staffRespWrapper;
     }
 
-// Added By : Naeem Saeed
+    // Added By : Naeem Saeed
     public List<StaffResponseWrapper> findAllByRole(String role) {
         List<StaffResponseWrapper> staffRespWrapper = new ArrayList<>();
         List<User> userList = userRepository.findAllByUserRoles_role_name(role);
@@ -1006,17 +1113,15 @@ public class StaffService {
     }
 
 
-
     // Save Doctor Payment
     // Added By : Naeem Saeed
     @Transactional
-    public void saveDoctorPayment(DoctorPaymentRequestWrapper paymentRequestWrapper)
-    {
+    public void saveDoctorPayment(DoctorPaymentRequestWrapper paymentRequestWrapper) {
         double remainingBalance = 0.00;
         Doctor doctor = doctorRepository.findOne(paymentRequestWrapper.getDoctorId());
-        if(doctor != null){
-            if(doctor.getBalance() != null)
-            remainingBalance = doctor.getBalance() - paymentRequestWrapper.getAmount();
+        if (doctor != null) {
+            if (doctor.getBalance() != null)
+                remainingBalance = doctor.getBalance() - paymentRequestWrapper.getAmount();
             else
                 remainingBalance = paymentRequestWrapper.getAmount();
             doctor.setBalance(remainingBalance);
@@ -1026,7 +1131,7 @@ public class StaffService {
             staffPayment.setCreatedOn(new Date());
             staffPayment.setUpdatedOn(new Date());
             staffPayment.setPaymentId(paymentRequestWrapper.getPaymentId());
-        //    staffPayment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));
+            //    staffPayment.setPaymentId(hisUtilService.getPrefixId(ModuleEnum.PAYMENT));
             staffPayment.setPaymentId(paymentRequestWrapper.getPaymentId());
             staffPayment.setPaymentAmount(paymentRequestWrapper.getAmount());
             staffPayment.setDoctor(doctor);
@@ -1037,7 +1142,7 @@ public class StaffService {
 
     // Get Doctor ALL Payment List
     // Added By : Naeem Saeed
-    public List<DoctorPaymentRequestWrapper> getDocPaymentList(){
+    public List<DoctorPaymentRequestWrapper> getDocPaymentList() {
         return staffPaymentRepository.findAllList();
     }
 

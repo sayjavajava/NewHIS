@@ -2,23 +2,23 @@ package com.sd.his.wrapper.request;/*
  * @author    : waqas kamran
  * @Date      : 17-Apr-18
  * @version   : ver. 1.0.0
- * 
+ *
  * ________________________________________________________________________________________________
  *
  *  Developer				Date		     Version		Operation		Description
- * ________________________________________________________________________________________________ 
- *	
- * 
+ * ________________________________________________________________________________________________
+ *
+ *
  * ________________________________________________________________________________________________
  *
  * @Project   : HIS
  * @Package   : com.sd.his.*
  * @FileName  : UserAuthAPI
  *
- * Copyright © 
- * SolutionDots, 
+ * Copyright ©
+ * SolutionDots,
  * All rights reserved.
- * 
+ *
  */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,44 +28,48 @@ import java.util.List;
 
 
 public class StaffRequestWrapper {
-    String userType;
-    String userName;
-    String firstName;
-    String lastName;
-    String email;
-    String password;
-    boolean active;
-    boolean sendBillingReport;
-    boolean useReceptDashboard;
-    boolean otherDoctorDashBoard;
-    String accountExpiry;
-    boolean managePatientInvoices;
-    boolean managePatientRecords;
-    boolean shift2;
-    boolean shift1;
-    boolean vacation;
-    String secondShiftFromTime;
-    String secondShiftToTime;
-    String firstShiftFromTime;
-    String firstShiftToTime;
-    Long[] selectedDepartment;
-    Long[] selectedServices;
-    Long[] selectedRoles;
-    Long[] dutyWithDoctors;
-    String[] selectedWorkingDays;
-    String[] selectedDoctors;
-    Boolean allowDiscount;
-    Long interval;
-    String homePhone;
-    String cellPhone;
-    Long primaryBranch;
-    Long[] selectedVisitBranches;
-    String dateFrom;
-    String dateTo;
-    Long createdOn;
-    Long updatedOn;
-    String otherDashboard;
+    private   String userType;
+    private   String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private  boolean active;
+    private  boolean sendBillingReport;
+    private boolean useReceptDashboard;
+    private  boolean otherDoctorDashBoard;
+    private String accountExpiry;
+    private  boolean managePatientInvoices;
+    private  boolean managePatientRecords;
+    private boolean shift2;
+    private  boolean shift1;
+    private boolean vacation;
+    private  boolean receivePayment;
+    private String secondShiftFromTime;
+    private  String secondShiftToTime;
+    private String firstShiftFromTime;
+    private String firstShiftToTime;
+    private Long[] selectedDepartment;
+    private  Long[] selectedServices;
+    private Long[] selectedRoles;
+    private  Long[] dutyWithDoctors;
+    private  String[] selectedWorkingDays;
+    private  String[] selectedDoctors;
+    private  Double allowDiscount;
+    private Long interval;
+    private  String homePhone;
+    private String cellPhone;
+    private  Long primaryBranch;
+    private  Long[] selectedVisitBranches;
+    private  List<Long> selectedDoctorDashboard;
+    private String dateFrom;
+    private  String dateTo;
+    private Long createdOn;
+    private Long updatedOn;
+
+    // String otherDashboard;
     List<ServiceComission> serviceComission;
+
 
     public List<ServiceComission> getServiceComission() {
         return serviceComission;
@@ -73,6 +77,22 @@ public class StaffRequestWrapper {
 
     public void setServiceComission(List<ServiceComission> serviceComission) {
         this.serviceComission = serviceComission;
+    }
+
+    public List<Long> getSelectedDoctorDashboard() {
+        return selectedDoctorDashboard;
+    }
+
+    public void setSelectedDoctorDashboard(List<Long> selectedDoctorDashboard) {
+        this.selectedDoctorDashboard = selectedDoctorDashboard;
+    }
+
+    public boolean isReceivePayment() {
+        return receivePayment;
+    }
+
+    public void setReceivePayment(boolean receivePayment) {
+        this.receivePayment = receivePayment;
     }
 
     public Long[] getSelectedRoles() {
@@ -163,19 +183,11 @@ public class StaffRequestWrapper {
         this.otherDoctorDashBoard = otherDoctorDashBoard;
     }
 
-    public String getOtherDashboard() {
-        return otherDashboard;
-    }
-
-    public void setOtherDashboard(String otherDashboard) {
-        this.otherDashboard = otherDashboard;
-    }
-
-    public Boolean getAllowDiscount() {
+    public Double getAllowDiscount() {
         return allowDiscount;
     }
 
-    public void setAllowDiscount(Boolean allowDiscount) {
+    public void setAllowDiscount(Double allowDiscount) {
         this.allowDiscount = allowDiscount;
     }
 

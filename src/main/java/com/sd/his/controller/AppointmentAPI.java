@@ -227,9 +227,35 @@ public class AppointmentAPI {
                 response.setResponseCode(ResponseEnum.APPT_SAVED_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                 logger.info("Appointment created successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (savedAppointment.equalsIgnoreCase("doctorShift")) {
+                // response.setResponseData(savedAppointment);
+                response.setResponseMessage(messageBundle.getString("doctor.shift.conflict"));
+                response.setResponseCode(ResponseEnum.APPT_DOCTOR_SHIFT_CONFLICT.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Doctor is not available at this time...");
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            } else if (savedAppointment.equalsIgnoreCase("already")) {
+            }
+            if (savedAppointment.equalsIgnoreCase("dayConflict")) {
+                // response.setResponseData(savedAppointment);
+                response.setResponseMessage(messageBundle.getString("working.day.conflict"));
+                response.setResponseCode(ResponseEnum.APPT_DOCTOR_WORKING_DAYS_CONFLICT.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Doctor is not available on this day...");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (savedAppointment.equalsIgnoreCase("onVacation")) {
+                response.setResponseMessage(messageBundle.getString("doctor.on.vacation"));
+                response.setResponseCode(ResponseEnum.APPT_DOCTOR_ON_VACATION.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("Doctor is on vacation...");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            else if (savedAppointment.equalsIgnoreCase("already")) {
                 response.setResponseMessage(messageBundle.getString("appointment.already.exist"));
                 response.setResponseCode(ResponseEnum.APPT_ALREADY_EXISTS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -583,7 +609,7 @@ public class AppointmentAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-   @ApiOperation(httpMethod = "DELETE", value = "Delete Appointment ",
+    @ApiOperation(httpMethod = "DELETE", value = "Delete Appointment ",
             notes = "This method will Delete Appointment on base of id",
             produces = "application/json", nickname = "Appointment Delete ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -595,7 +621,7 @@ public class AppointmentAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteAppointment(HttpServletRequest request,
-                                          @PathVariable("id") long id) {
+                                               @PathVariable("id") long id) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("appointment.delete.error"));

@@ -4,33 +4,27 @@ import com.google.gson.Gson;
 import com.sd.his.enums.*;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
-import com.sd.his.utill.AmazonSESUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
 import com.sd.his.wrapper.response.MedicalServicesDoctorWrapper;
-import org.apache.catalina.core.ApplicationContext;
+import com.sendgrid.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
+import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,8 +77,10 @@ public class AppointmentService {
     private StatusRepository statusRepository;
     @Autowired
     private OrganizationService organizationService;
-
-
+   /* @Autowired
+    private SendGrid sendGrid;*/
+    @Autowired
+    private DutyShiftRepository dutyShiftRepository;
 
 
     Logger logger = LoggerFactory.getLogger(AppointmentService.class);
@@ -92,9 +88,10 @@ public class AppointmentService {
     public List<AppointmentWrapper> findAllPaginatedAppointments(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
         //    List<AppointmentWrapper> list = appointmentRepository.findAllPaginatedAppointments(pageable);
-      //  return appointmentRepository.findAllPaginatedAppointments(pageable);
+        //  return appointmentRepository.findAllPaginatedAppointments(pageable);
         return appointmentRepository.findAllAppointments();
     }
+
     public List<AppointmentWrapper> findAllAppointments() {
      /* appointmentRepository.findAll().stream()
               .map(x -> new AppointmentWrapper(x.getId(), x.getAppointmentId(), x.getName(), x.getNotes(), x.getStatus().getName(), x.getColor(), x.getStatus().getId(), x.getReason(), x.getColor()
@@ -103,7 +100,7 @@ public class AppointmentService {
                       , x.getPatient().getId(), x.getBranch().getId(), x.getBranch().getName(), x.getRoom().getId(), x.getDoctor().getFirstName(), x.getDoctor().getLastName(), x.getDoctor().getId(), x.getFollowUpDate(), x.getMedicalService().getId(), x.getMedicalService().getName()))
               .collect(Collectors.toList());*/
 
-     return appointmentRepository.findAllAppointments();
+        return appointmentRepository.findAllAppointments();
 
 
     }
@@ -136,14 +133,63 @@ public class AppointmentService {
         Appointment appointmentObj2;
         String result = "success";
         Patient patient = null;
+        boolean checkDoctorExist = false;
         Organization dbOrganization = organizationService.getAllOrgizationData();
         String zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+
+        Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
+        if (HISCoreUtil.isValidObject(doctor)) {
+            checkDoctorExist = true;
+        }
+        if (checkDoctorExist && (appointmentWrapper.getDateSchedule() != null)) {
+            if(doctor.getVacationFrom() != null && doctor.getVacationTO() != null){
+                String zonedDateFrom = HISCoreUtil.convertDateToTimeZone(doctor.getVacationFrom(), "YYYY-MM-dd", zone);
+                String zonedDateTo = HISCoreUtil.convertDateToTimeZone(doctor.getVacationTO(), "YYYY-MM-dd", zone);
+                String dateScheduled = HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(), "YYYY-MM-dd", zone);
+                boolean isDrOnVacation = isDateBetweenDRVacation(HISCoreUtil.convertToDateOnly(zonedDateFrom),
+                        HISCoreUtil.convertToDateOnly(zonedDateTo), HISCoreUtil.convertToDateOnly(dateScheduled));
+                if (isDrOnVacation)
+                    return result = "onVacation";
+            }
+        }
+        if(checkDoctorExist && (appointmentWrapper.getDateSchedule() != null )){
+            if(!HISCoreUtil.isListEmpty(doctor.getWorkingDays())){
+                String zonedDate =  HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(),"YYYY-MM-dd hh:mm:ss",zone);
+                String day = HISCoreUtil.getDayFromDate(zonedDate);
+                long dayExist = doctor.getWorkingDays().stream().filter(x->x.equalsIgnoreCase(day)).count();
+                if(dayExist == 0){
+                    return result ="dayConflict";
+                }
+            }
+        }
+        if (checkDoctorExist) {
+            DutyShift dutyShift = dutyShiftRepository.findByDoctorAndShiftName(doctor, DutyShiftEnum.SHIFT1);
+            String currentTime = HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(), "HH:mm:", zone);
+            boolean valid = checkApptTimeLiesBetweenDoctorShifts(dutyShift, currentTime, zone);
+            if (valid) {
+                appointment = this.buildAppointment(appointmentWrapper, appointment, zone);
+            } else {
+                DutyShift dutyShift2 = dutyShiftRepository.findByDoctorAndShiftName(doctor, DutyShiftEnum.SHIFT2);
+                if (HISCoreUtil.isValidObject(dutyShift2)) {
+                    boolean shift2Validator = checkApptTimeLiesBetweenDoctorShifts(dutyShift2, currentTime, zone);
+                    if (shift2Validator) {
+                        appointment = this.buildAppointment(appointmentWrapper, appointment, zone);
+
+                    } else {
+                        return result = "doctorShift";
+                    }
+                } else {
+                    return result = "doctorShift";
+                }
+
+            }
+
+        }
 
         if (appointmentWrapper.getStateOfPatientBox()) {
             patient = this.buildPatient(appointmentWrapper);
             appointment.setPatient(patient);
         }
-        appointment = this.buildAppointment(appointmentWrapper, appointment, zone);
 
         if (appointmentWrapper.isRecurringAppointment()) {
             LocalDate start = HISCoreUtil.convertDateToLocalDate(appointmentWrapper.getFirstAppointment());
@@ -177,9 +223,11 @@ public class AppointmentService {
         //check date time exist already
         if (!checkTimeAndDateAlreadyExist(appointment.getSchdeulledDate(), appointment.getStartedOn(), appointment.getEndedOn(), appointmentWrapper.getDoctorId())) {
             appointmentRepository.save(appointment);
-        //    emailServiceImp.sendSimpleMessage("waqasrana11@gmail.com","Test","Hey Buddy");
-         //   EmailService emailService = EmailService.getInstance(true);
-         //   boolean testSent   = SMTPUtil.sendTestEmail("AKIAJITH6V4G622BCQ6A","ssl://email-smtp.us-east-1.amazonaws.com","465","waqas@solutiondots.net","AnwMXw05Y7JstZEKPtNM9M023fpm5om2DljVqYIGNin5");
+            hisUtilService.updatePrefix(ModuleEnum.APPOINTMENT);
+            //sendMail();
+            //    emailServiceImp.sendSimpleMessage("waqasrana11@gmail.com","Test","Hey Buddy");
+            //   EmailService emailService = EmailService.getInstance(true);
+            //   boolean testSent   = SMTPUtil.sendTestEmail("AKIAJITH6V4G622BCQ6A","ssl://email-smtp.us-east-1.amazonaws.com","465","waqas@solutiondots.net","AnwMXw05Y7JstZEKPtNM9M023fpm5om2DljVqYIGNin5");
             /*try {
               boolean testSent =  AmazonSESUtil.sendTestEmail("noreply@solutiondots.com","ag@solutiondots.com","Test","Hello Body","AKIAICPTDCC6INFXRWGA","KxC1ZF5FJCdD6x43RPg+51ccITDWV++UF6fdmnXA");
               logger.info("email has been"+ testSent);
@@ -193,6 +241,20 @@ public class AppointmentService {
         }
 
         return result;
+    }
+
+    private boolean checkApptTimeLiesBetweenDoctorShifts(DutyShift dutyShift, String currentTime, String zone) {
+        boolean valid = false;
+        Date startTime = dutyShift.getStartTime();
+        Date endTime = dutyShift.getEndTime();
+        String zonedStartTime = HISCoreUtil.convertDateToTimeZone(startTime, "HH:mm", zone);
+        String zonedEndTime = HISCoreUtil.convertDateToTimeZone(endTime, "HH:mm", zone);
+        try {
+            valid = HISCoreUtil.isTimeBetweenTwoTime(zonedStartTime, zonedEndTime, currentTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return valid;
     }
 
     private Patient buildPatient(AppointmentWrapper appointmentWrapper) {
@@ -266,13 +328,14 @@ public class AppointmentService {
     @Transactional
     public String updateAppointment(AppointmentWrapper appointmentWrapper, Appointment alreadyExistAppointment) {
         String result = "success";
+        boolean checkDoctorExist = false;
         Organization dbOrganization = organizationService.getAllOrgizationData();
         String zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
         Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
-
         String readDate = HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(), "YYYY-MM-dd hh:mm:ss", zone);
         Date zoneScheduleDate = HISCoreUtil.convertStringDateObject(readDate);
 
+        //isDateBetweenDRVacation();
         //Date scheduleDate = HISCoreUtil.convertToDate(appointmentWrapper.getScheduleDate());
         /*alreadyExistAppointment.setSchdeulledDate(zoneScheduleDate);
         Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDate()));
@@ -280,7 +343,47 @@ public class AppointmentService {
         Date ended = HISCoreUtil.addTimetoDate(scheduleDate, appointmentWrapper.getDuration());
         alreadyExistAppointment.setEndedOn(ended);*/
 
-        LocalDateTime date2 = HISCoreUtil.convertToLocalDateTimeViaSqlTimestamp(zoneScheduleDate);
+        if(appointmentWrapper.getDoctorId() != null) {
+            Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
+            if (HISCoreUtil.isValidObject(doctor)) {
+                checkDoctorExist = true;
+            }
+
+            if (checkDoctorExist && (appointmentWrapper.getDateSchedule() != null)) {
+                String zonedDateFrom = HISCoreUtil.convertDateToTimeZone(doctor.getVacationFrom(), "YYYY-MM-dd", zone);
+                String zonedDateTo = HISCoreUtil.convertDateToTimeZone(doctor.getVacationTO(), "YYYY-MM-dd", zone);
+                String dateScheduled = HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(), "YYYY-MM-dd", zone);
+                boolean isDrOnVacation = isDateBetweenDRVacation(HISCoreUtil.convertToDateOnly(zonedDateFrom),
+                        HISCoreUtil.convertToDateOnly(zonedDateTo), HISCoreUtil.convertToDateOnly(dateScheduled));
+                if (isDrOnVacation)
+                    return result = "onVacation";
+            }
+            if (checkDoctorExist) {
+                DutyShift dutyShift = dutyShiftRepository.findByDoctorAndShiftName(doctor, DutyShiftEnum.SHIFT1);
+                String currentTime = HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(), "HH:mm:", zone);
+                boolean valid = checkApptTimeLiesBetweenDoctorShifts(dutyShift, currentTime, zone);
+                if (valid) {
+                    alreadyExistAppointment = this.updateBuildAppointment(appointmentWrapper, alreadyExistAppointment, zone);
+                } else {
+                    DutyShift dutyShift2 = dutyShiftRepository.findByDoctorAndShiftName(doctor, DutyShiftEnum.SHIFT2);
+                    if (HISCoreUtil.isValidObject(dutyShift2)) {
+                        boolean shift2Validator = checkApptTimeLiesBetweenDoctorShifts(dutyShift2, currentTime, zone);
+                        if (shift2Validator) {
+                            alreadyExistAppointment = this.updateBuildAppointment(appointmentWrapper, alreadyExistAppointment, zone);
+
+                        } else {
+                            return result = "doctorShift";
+                        }
+                    } else {
+                        return result = "doctorShift";
+                    }
+
+                }
+
+            }
+        }else {alreadyExistAppointment = this.updateBuildAppointment(appointmentWrapper, alreadyExistAppointment, zone);}
+
+      /*  LocalDateTime date2 = HISCoreUtil.convertToLocalDateTimeViaSqlTimestamp(zoneScheduleDate);
 
         alreadyExistAppointment.setSchdeulledDate(zoneScheduleDate);
         logger.info("zone date .." + zoneScheduleDate);
@@ -293,28 +396,30 @@ public class AppointmentService {
         alreadyExistAppointment.setColor(appointmentWrapper.getColor());
         alreadyExistAppointment.setType(new Gson().toJson(appointmentWrapper.getAppointmentType()));
         alreadyExistAppointment.setDuration(appointmentWrapper.getDuration());
-        //   alreadyExistAppointment.setStatus(AppointmentStatusTypeEnum.valueOf(appointmentWrapper.getStatus()));
-        //  alreadyExistAppointment.setName(appointmentWrapper.getProblem());
         alreadyExistAppointment.setBranch(branch);
+
         Room room = findExamRoomById(appointmentWrapper.getRoomId());
         if (HISCoreUtil.isValidObject(room)) {
             alreadyExistAppointment.setRoom(room);
         }
         Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
         alreadyExistAppointment.setDoctor(doctor);
-        MedicalService medicalService = medicalServiceRepository.findOne(appointmentWrapper.getServiceId());
+          MedicalService medicalService = medicalServiceRepository.findOne(appointmentWrapper.getServiceId());
         alreadyExistAppointment.setMedicalService(medicalService);
 
-        Patient patient = null;
+       Patient patient = null;
         if (appointmentWrapper.getPatientId() != null) {
             patient = patientRepository.findOne(appointmentWrapper.getPatientId());
             alreadyExistAppointment.setPatient(patient);
         }
-        if (appointmentWrapper.getStatusId() != null) {
+        if(appointmentWrapper.getStatusId() != null) {
             Status apptStatus = statusRepository.findOne(appointmentWrapper.getStatusId());
             alreadyExistAppointment.setStatus(apptStatus);
         }
-        if (!checkTimeAndDateAlreadyExistForUpdate(alreadyExistAppointment.getSchdeulledDate(), alreadyExistAppointment.getStartedOn(), ended, appointmentWrapper.getDoctorId(), appointmentWrapper.getAppointmentId())) {
+        */
+
+
+        if (!checkTimeAndDateAlreadyExistForUpdate(alreadyExistAppointment.getSchdeulledDate(), alreadyExistAppointment.getStartedOn(), alreadyExistAppointment.getEndedOn(), appointmentWrapper.getDoctorId(), appointmentWrapper.getAppointmentId())) {
             appointmentRepository.save(alreadyExistAppointment);
 
         } else {
@@ -323,6 +428,60 @@ public class AppointmentService {
 
         return result;
     }
+
+    private Appointment updateBuildAppointment(AppointmentWrapper appointmentWrapper, Appointment appointment, String zone) {
+        Patient patient = new Patient();
+        if(appointmentWrapper.getBranchId() !=null){
+            Branch branch = branchRepository.findOne(appointmentWrapper.getBranchId());
+            appointment.setBranch(branch);
+        }
+        String readDate = HISCoreUtil.convertDateToTimeZone(appointmentWrapper.getDateSchedule(), "YYYY-MM-dd hh:mm:ss", zone);
+        Date zoneScheduleDate = HISCoreUtil.convertStringDateObject(readDate);
+
+        //Date date2 = Date.from(Instant.parse(appointmentWrapper.getScheduleDateAndTime()));
+        LocalDateTime date2 = HISCoreUtil.convertToLocalDateTimeViaSqlTimestamp(zoneScheduleDate);
+        appointment.setSchdeulledDate(zoneScheduleDate);
+        logger.info("zone date .." + zoneScheduleDate);
+        appointment.setStartedOn(HISCoreUtil.convertToDateViaLocalDateTime(date2));
+
+        Date ended = HISCoreUtil.addTimetoDate(appointment.getSchdeulledDate(), appointmentWrapper.getDuration());
+        appointment.setEndedOn(ended);
+        appointment.setReason(appointmentWrapper.getReason());
+        appointment.setNotes(appointmentWrapper.getNotes());
+        appointment.setColor(appointmentWrapper.getColor());
+        appointment.setType(new Gson().toJson(appointmentWrapper.getAppointmentType()));
+        appointment.setDuration(appointmentWrapper.getDuration());
+        // appointment.setStatus(AppointmentStatusTypeEnum.valueOf(appointmentWrapper.getStatus()));
+        if (appointmentWrapper.getFollowUpReminder() != null) {
+            // appointment.setFollowUpDate(HISCoreUtil.convertToDate(appointmentWrapper.getFollowUpDate()));
+            appointment.setFollowUpDate(appointmentWrapper.getFollowUpDate());
+            appointment.setFollowUpReasonReminder(appointmentWrapper.getFollowUpReason());
+            appointment.setFollowUpReminder(appointmentWrapper.getFollowUpReminder());
+        }
+
+        Room room = findExamRoomById(appointmentWrapper.getRoomId());
+        if (HISCoreUtil.isValidObject(room)) {
+            appointment.setRoom(room);
+        }
+        if(appointmentWrapper.getDoctorId() !=null){
+            Doctor doctor = doctorRepository.findOne(appointmentWrapper.getDoctorId());
+            appointment.setDoctor(doctor);}
+        if(appointmentWrapper.getServiceId() != null){
+            MedicalService medicalService = medicalServiceRepository.findOne(appointmentWrapper.getServiceId());
+            appointment.setMedicalService(medicalService);
+        }
+
+        if (appointmentWrapper.getPatientId() != null) {
+            patient = patientRepository.findOne(appointmentWrapper.getPatientId());
+            appointment.setPatient(patient);
+        }
+        if (appointmentWrapper.getStatusId() != null) {
+            Status apptStatus = statusRepository.findOne(appointmentWrapper.getStatusId());
+            appointment.setStatus(apptStatus);
+        }
+        return appointment;
+    }
+
 
     public List<AppointmentWrapper> getPageableSearchedAppointments(Long doctorId, Long branchId) {
         return appointmentRepository.findAllAppointmentsByDoctor(doctorId, branchId);
@@ -424,6 +583,14 @@ public class AppointmentService {
         return statusChanged;
     }
 
+    private boolean isDateBetweenDRVacation(Date from, Date To, Date currentDate) {
+        boolean valid = true;
+        if (currentDate.before(from) || currentDate.after(To)) {
+            valid = false;
+        }
+        return valid;
+    }
+
     private boolean checkTimeAndDateAlreadyExist(Date date1, Date startedOn, Date endedOn, Long drId) {
         boolean isExist = false;
         int appointments = appointmentRepository.findAppointmentClash(date1, startedOn, endedOn, drId);
@@ -458,6 +625,31 @@ public class AppointmentService {
     public List<MedicalServicesDoctorWrapper> getMedicalServicesAgainstDoctors() {
         return doctorMedicalServiceRepository.findAllByDoctorAndServices();
     }
+
+    /*void sendMail() {
+        Email from = new Email("waqasrana11@gmail.com");
+        String subject = "Sending with SendGrid is Fun";
+        Email to = new Email("waqasrana11@gmail.com");
+        Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+        Mail mail = new Mail(from, subject, to, content);
+
+        Request request = new Request();
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            try {
+                request.setBody(mail.build());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Response response = this.sendGrid.api(request);
+            sendGrid.api(request);
+
+            // ...
+        } catch (IOException ex) {
+            // ...
+        }
+    }*/
 
     public void deleteAppointment(Appointment appointment) {
 

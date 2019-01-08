@@ -53,6 +53,33 @@ public class DutyShift extends BaseEntity implements Serializable {
     @JoinColumn(name = "DOCTOR_ID")
     private Doctor doctor;
 
+    @Transient
+    private String startDutyTime;
+    @Transient
+    private String endDutyTime;
+    public DutyShift(){}
+
+    public DutyShift(DutyShiftEnum shiftName, String startDutyTime, String endDutyTime) {
+        this.shiftName = shiftName;
+        this.startDutyTime = startDutyTime;
+        this.endDutyTime = endDutyTime;
+    }
+
+    public String getStartDutyTime() {
+        return startDutyTime;
+    }
+
+    public void setStartDutyTime(String startDutyTime) {
+        this.startDutyTime = startDutyTime;
+    }
+
+    public String getEndDutyTime() {
+        return endDutyTime;
+    }
+
+    public void setEndDutyTime(String endDutyTime) {
+        this.endDutyTime = endDutyTime;
+    }
 
     public DutyShiftEnum getShiftName() {
         return shiftName;

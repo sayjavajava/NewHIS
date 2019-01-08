@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
  * @author    : Tahir Mehmood
@@ -43,6 +45,12 @@ public class Doctor extends StaffProfile implements Serializable {
     @ElementCollection
     @Column(name = "WORKING_DAYS")
     private List<String> workingDays;
+
+    @ElementCollection
+    @JoinTable(name="DOCTOR_DASHBOARD", joinColumns=@JoinColumn(name="ID"))
+    @MapKeyColumn (name="DOC_ID")
+    @Column(name="NAME")
+    private Map<Long, String> selectedDoctorDashboard = new HashMap<Long, String>();
 
     @JsonIgnore
     @OneToMany(targetEntity = NurseWithDoctor.class, mappedBy = "doctor")
@@ -94,11 +102,30 @@ public class Doctor extends StaffProfile implements Serializable {
     private  Double balance;
 
     @Column(name = "ALLOW_DISCOUNT")
-    private Boolean allowDiscount;
+    private Double allowDiscount;
 
+    @Column(name = "CAN_RECEIVE_PAYMENT")
+    private Boolean canReceivePayment;
 
     @OneToMany(mappedBy = "doctor")
     private List<StaffPayment> staffPayment;
+
+
+    public Map<Long,String> getSelectedDoctorDashboard() {
+        return selectedDoctorDashboard;
+    }
+
+    public void setSelectedDoctorDashboard(Map<Long, String> selectedDoctorDashboard) {
+        this.selectedDoctorDashboard = selectedDoctorDashboard;
+    }
+
+    public Boolean getCanReceivePayment() {
+        return canReceivePayment;
+    }
+
+    public void setCanReceivePayment(Boolean canReceivePayment) {
+        this.canReceivePayment = canReceivePayment;
+    }
 
     public Boolean getVacation() {
         return vacation;
@@ -132,11 +159,11 @@ public class Doctor extends StaffProfile implements Serializable {
         this.nurseWithDoctorList = nurseWithDoctorList;
     }
 
-    public Boolean getAllowDiscount() {
+    public Double getAllowDiscount() {
         return allowDiscount;
     }
 
-    public void setAllowDiscount(Boolean allowDiscount) {
+    public void setAllowDiscount(Double allowDiscount) {
         this.allowDiscount = allowDiscount;
     }
 

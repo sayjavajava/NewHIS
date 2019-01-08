@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "CASHIER")
@@ -22,7 +24,16 @@ public class Cashier extends StaffProfile implements Serializable {
     private Boolean status;
 
     @Column(name = "ALLOW_DISCOUNT")
-    private Boolean allowDiscount;
+    private Double allowDiscount;
+
+    @Column(name = "CAN_RECEIVE_PAYMENT")
+    private Boolean canReceivePayment;
+
+    @ElementCollection
+    @JoinTable(name="CASHIER_DOCTOR_DASHBOARD", joinColumns=@JoinColumn(name="ID"))
+    @MapKeyColumn (name="DOC_ID")
+    @Column(name="NAME")
+    private Map<Long, String> selectedDoctorDashboard = new HashMap<Long, String>();
 
     @JsonIgnore
     @OneToMany(targetEntity = BranchCashier.class, mappedBy = "cashier")
@@ -34,6 +45,22 @@ public class Cashier extends StaffProfile implements Serializable {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public Map<Long, String> getSelectedDoctorDashboard() {
+        return selectedDoctorDashboard;
+    }
+
+    public void setSelectedDoctorDashboard(Map<Long, String> selectedDoctorDashboard) {
+        this.selectedDoctorDashboard = selectedDoctorDashboard;
+    }
+
+    public Boolean getCanReceivePayment() {
+        return canReceivePayment;
+    }
+
+    public void setCanReceivePayment(Boolean canReceivePayment) {
+        this.canReceivePayment = canReceivePayment;
     }
 
     public User getUser() {
@@ -52,11 +79,11 @@ public class Cashier extends StaffProfile implements Serializable {
         this.branchCashiers = branchCashiers;
     }
 
-    public Boolean getAllowDiscount() {
+    public Double getAllowDiscount() {
         return allowDiscount;
     }
 
-    public void setAllowDiscount(Boolean allowDiscount) {
+    public void setAllowDiscount(Double allowDiscount) {
         this.allowDiscount = allowDiscount;
     }
 }

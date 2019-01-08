@@ -50,6 +50,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     @Query("SELECT new com.sd.his.wrapper.response.StaffResponseWrapper(du.id,dr.id,du.userType,dr.firstName,dr.lastName,du.username,dr.email,br.name,dr.homePhone,dr.cellPhone,du.active,br.id,dr.accountExpiry," +
             "dr.checkUpInterval,dr.vacation,dr.vacationFrom,dr.vacationTO,dr) FROM Doctor dr INNER JOIN dr.user du INNER JOIN dr.branchDoctors branchCr INNER JOIN branchCr.branch br WHERE dr.id =:id AND du.active = TRUE AND branchCr.primaryBranch=TRUE ")
+
     StaffResponseWrapper findAllByIdAndStatusActive(@Param("id") Long id);
 
     Doctor findByUser(User user);

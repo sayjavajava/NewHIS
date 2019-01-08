@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
  * @author    : Tahir Mehmood
@@ -48,6 +50,12 @@ public class Nurse extends StaffProfile implements Serializable {
     @OneToMany(targetEntity = BranchNurse.class, mappedBy = "nurse")
     private List<BranchNurse> branchNurses;
 
+    @ElementCollection
+    @JoinTable(name="NURSE_DOCTOR_DASHBOARD", joinColumns=@JoinColumn(name="ID"))
+    @MapKeyColumn (name="DOC_ID")
+    @Column(name="NAME")
+    private Map<Long, String> selectedDoctorDashboard = new HashMap<Long, String>();
+
     @JsonIgnore
     @OneToMany(targetEntity = NurseDepartment.class, mappedBy = "nurse", cascade=CascadeType.ALL)
     private List<NurseDepartment> nurseDepartments;
@@ -81,6 +89,14 @@ public class Nurse extends StaffProfile implements Serializable {
 
     public void setManagePatientInvoices(Boolean managePatientInvoices) {
         this.managePatientInvoices = managePatientInvoices;
+    }
+
+    public Map<Long, String> getSelectedDoctorDashboard() {
+        return selectedDoctorDashboard;
+    }
+
+    public void setSelectedDoctorDashboard(Map<Long, String> selectedDoctorDashboard) {
+        this.selectedDoctorDashboard = selectedDoctorDashboard;
     }
 
     public Boolean getStatus() {

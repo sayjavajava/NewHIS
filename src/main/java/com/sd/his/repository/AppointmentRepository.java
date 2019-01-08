@@ -49,6 +49,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "FROM Appointment a")
     List<AppointmentWrapper>  findAllPaginatedAppointments(Pageable pageable);
 
+
+    long countByDoctor(Doctor doctor);
     /*@Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId, a.name, a.notes,a.status.name,a.status.hashColor,a.status.id,a.reason, a.color, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.profileImgURL,a.patient.id,a.branch.id, a.branch.name,a.room,a.doctor.firstName,a.doctor.lastName,a.doctor.id ,a.followUpDate,a.medicalService.id,a.medicalService.name) " +

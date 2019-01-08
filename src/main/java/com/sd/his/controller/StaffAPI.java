@@ -36,16 +36,16 @@ import java.util.stream.IntStream;
 @RequestMapping("/user")
 public class StaffAPI {
 
-//
+    //
     @Autowired
     private UserService userService;
     @Autowired
     private StaffService staffService;
 
-//
+    //
     private final Logger logger = LoggerFactory.getLogger(StaffAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
-//    private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
+    //    private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 //
 //    @ApiOperation(httpMethod = "GET", value = "Admin LoggedIn",
 //            notes = "This method will return logged in User",
@@ -365,7 +365,7 @@ public class StaffAPI {
     public ResponseEntity<?> getUserById(HttpServletRequest request,
                                          @PathVariable("id") long id,
                                          @RequestParam(value = "userType", required = false) String userType)
-     {
+    {
 
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -427,11 +427,20 @@ public class StaffAPI {
         try {
             User user = this.staffService.findById(id);
             if (HISCoreUtil.isValidObject(user)) {
-                user = staffService.deleteUser(user);
-                if (HISCoreUtil.isValidObject(user)) {
+                String result = staffService.deleteUser(user);
+                if (result.equalsIgnoreCase("success")) {
                     response.setResponseData(user);
                     response.setResponseMessage(messageBundle.getString("user.delete.success"));
                     response.setResponseCode(ResponseEnum.USER_DELETED_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("User Deleted successfully...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+                else if(result.equalsIgnoreCase("hasChild")){
+                    response.setResponseData(user);
+                    response.setResponseMessage(messageBundle.getString("user.delete.failure"));
+                    response.setResponseCode(ResponseEnum.USER_DELETE_FAILURE.getValue());
                     response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
                     logger.info("User Deleted successfully...");
 
@@ -564,7 +573,7 @@ public class StaffAPI {
                     logger.info("user on base of Type fetched successfully...");
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 }
-               return new ResponseEntity<>(response, HttpStatus.OK);
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
@@ -672,7 +681,7 @@ public class StaffAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
-            } catch (Exception ex) {
+        } catch (Exception ex) {
             logger.error("get all paginated User failed.", ex.fillInStackTrace());
             response.setResponseData("");
             response.setResponseStatus(ResponseEnum.ERROR.getValue());

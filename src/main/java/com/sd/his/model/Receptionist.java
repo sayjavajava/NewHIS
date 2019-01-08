@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "RECEPTIONIST")
@@ -25,11 +27,21 @@ public class Receptionist extends StaffProfile implements Serializable {
     private Boolean status;
 
     @Column(name = "ALLOW_DISCOUNT")
-    private Boolean allowDiscount;
+    private Double allowDiscount;
+
+    @Column(name = "CAN_RECEIVE_PAYMENT")
+    private Boolean canReceivePayment;
+
+    @ElementCollection
+    @JoinTable(name="RECEPTIONIST_DOCTOR_DASHBOARD", joinColumns=@JoinColumn(name="ID"))
+    @MapKeyColumn (name="DOC_ID")
+    @Column(name="NAME")
+    private Map<Long, String> selectedDoctorDashboard = new HashMap<Long, String>();
 
     public User getUser() {
         return user;
     }
+
 
     public List<BranchReceptionist> getBranchReceptionists() {
         return branchReceptionists;
@@ -39,11 +51,19 @@ public class Receptionist extends StaffProfile implements Serializable {
         this.branchReceptionists = branchReceptionists;
     }
 
-    public Boolean getAllowDiscount() {
+    public Boolean getCanReceivePayment() {
+        return canReceivePayment;
+    }
+
+    public void setCanReceivePayment(Boolean canReceivePayment) {
+        this.canReceivePayment = canReceivePayment;
+    }
+
+    public Double getAllowDiscount() {
         return allowDiscount;
     }
 
-    public void setAllowDiscount(Boolean allowDiscount) {
+    public void setAllowDiscount(Double allowDiscount) {
         this.allowDiscount = allowDiscount;
     }
 
@@ -53,6 +73,14 @@ public class Receptionist extends StaffProfile implements Serializable {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public Map<Long, String> getSelectedDoctorDashboard() {
+        return selectedDoctorDashboard;
+    }
+
+    public void setSelectedDoctorDashboard(Map<Long, String> selectedDoctorDashboard) {
+        this.selectedDoctorDashboard = selectedDoctorDashboard;
     }
 
     public void setUser(User user) {
