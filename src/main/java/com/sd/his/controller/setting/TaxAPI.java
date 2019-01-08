@@ -2,7 +2,11 @@ package com.sd.his.controller.setting;
 
 import com.amazonaws.util.DateUtils;
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Organization;
 import com.sd.his.model.Tax;
+import com.sd.his.service.HISUtilService;
+import com.sd.his.service.OrganizationService;
+import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.wrapper.TaxWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -20,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -54,6 +59,8 @@ public class TaxAPI {
 
     @Autowired
     TaxService taxService;
+    @Autowired
+    private OrganizationService organizationService;
 
     @ApiOperation(httpMethod = "GET", value = "All Services Tax",
             notes = "This method will return All Service Tax",
@@ -132,6 +139,38 @@ public class TaxAPI {
         try {
             logger.error("getAllTaxesForDataTable - service tax fetching from DB");
             List<TaxWrapper> taxes = taxService.getAllTaxesForDataTable();
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            //  Date dteFrom=new Date();
+            //  Date dteTo=new Date();
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String systemTimeFormat=dbOrganization.getTimeFormat();
+            String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+            String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
+            System.out.println("Time"+currentTime);
+            //  dte=problemWrapper.getDatePrescribedDate();
+            for(int i=0;i<taxes.size();i++){
+
+          //      LocalDate dteFromLocal=HISCoreUtil.convertToDateLocal(taxes.get(i).getFromDate());
+
+            Date dteFrom=HISCoreUtil.convertStringDateObjectTax(taxes.get(i).getStrfromDate());
+            Date dteTo=HISCoreUtil.convertStringDateObjectTax(taxes.get(i).getStrtoDate());
+            String readDateFrom=HISCoreUtil.convertDateToTimeZone(dteFrom,"yyyy-MM-dd",Zone);
+            String readDateTo=HISCoreUtil.convertDateToTimeZone(dteTo,"yyyy-MM-dd",Zone);
+         //   Date scheduledDateFrom=HISCoreUtil.convertStringDateObject(readDateFrom);
+         //   Date scheduledDateTo=HISCoreUtil.convertStringDateObject(readDateTo);
+                Date fromDte= DateTimeUtil.getDateFromString(readDateFrom,"yyyy-MM-dd");
+                Date toDte=DateTimeUtil.getDateFromString(readDateTo,"yyyy-MM-dd");
+             if(systemDateFormat!=null || !systemDateFormat.equals("")){
+                 String  dtelFrom=HISCoreUtil.convertDateToStringWithDateDisplay(fromDte,systemDateFormat);
+                 taxes.get(i).setStrfromDate(dtelFrom);
+                 String  dtelTo=HISCoreUtil.convertDateToStringWithDateDisplay(toDte,systemDateFormat);
+                 taxes.get(i).setStrtoDate(dtelTo);
+                 taxes.get(i).setFromDate(fromDte);
+                 taxes.get(i).setToDate(toDte);
+             }
+
+            }
             logger.error("getAllServiceTax - tax fetched successfully");
 
             if (HISCoreUtil.isListEmpty(taxes)) {
@@ -311,9 +350,7 @@ public class TaxAPI {
 
         try {
 
-            if (HISCoreUtil.isNull(taxWrapper.getName()) ||
-                    HISCoreUtil.isNull(taxWrapper.getFromDate()) ||
-                    HISCoreUtil.isNull(taxWrapper.getToDate())) {
+            if (HISCoreUtil.isNull(taxWrapper.getName())) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -323,10 +360,16 @@ public class TaxAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            Date fromDate = HISCoreUtil.convertToDateWithTime(taxWrapper.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
-            Date toDate = HISCoreUtil.convertToDateWithTime(taxWrapper.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+            String  fromDate = HISCoreUtil.convertDateToString(taxWrapper.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+            String  toDate = HISCoreUtil.convertDateToString(taxWrapper.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+            Date dteFrom =HISCoreUtil.convertToAPPDateZone(fromDate,"yyyy-MM-dd");
 
-            if (fromDate.after(toDate)) {
+            Date dteToDate=HISCoreUtil.convertToAPPDateZone(toDate,"yyyy-MM-dd");
+            taxWrapper.setFromDate(dteFrom);
+            taxWrapper.setToDate(dteToDate);
+            taxWrapper.setStrfromDate(fromDate);
+            taxWrapper.setStrtoDate(toDate);
+            if (dteFrom.after(dteToDate)) {
                 response.setResponseMessage(messageBundle.getString("service.tax.from.date"));
                 response.setResponseCode(ResponseEnum.SERVICE_TAX_FROM_DATE.getValue());
                 response.setResponseStatus(ResponseEnum.WARN.getValue());
@@ -382,8 +425,8 @@ public class TaxAPI {
 
         try {
             if (updateRequest.getId() <= 0 ||
-                    HISCoreUtil.isNull(updateRequest.getFromDate()) ||
-                    HISCoreUtil.isNull(updateRequest.getToDate())) {
+                    HISCoreUtil.isNull(updateRequest.getStrfromDate()) ||
+                    HISCoreUtil.isNull(updateRequest.getStrtoDate())) {
                 response.setResponseMessage(messageBundle.getString("insufficient.parameter"));
                 response.setResponseCode(ResponseEnum.INSUFFICIENT_PARAMETERS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());
@@ -391,10 +434,19 @@ public class TaxAPI {
                 logger.error("updateTax API - insufficient params.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-            Date fromDate = HISCoreUtil.convertToDateWithTime(updateRequest.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
-            Date toDate = HISCoreUtil.convertToDateWithTime(updateRequest.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+      //      Date fromDate = HISCoreUtil.convertToDateWithTime(updateRequest.getStrfromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+      //      Date toDate = HISCoreUtil.convertToDateWithTime(updateRequest.getStrtoDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
 
-            if (fromDate.after(toDate)) {
+            String  fromDate = HISCoreUtil.convertDateToString(updateRequest.getFromDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+            String  toDate = HISCoreUtil.convertDateToString(updateRequest.getToDate(), HISConstants.DATE_FORMATE_YYY_MM_dd);
+            Date dteFrom =HISCoreUtil.convertToAPPDateZone(fromDate,"yyyy-MM-dd");
+
+            Date dteToDate=HISCoreUtil.convertToAPPDateZone(toDate,"yyyy-MM-dd");
+            updateRequest.setFromDate(dteFrom);
+            updateRequest.setToDate(dteToDate);
+            updateRequest.setStrfromDate(fromDate);
+            updateRequest.setStrtoDate(toDate);
+            if (dteFrom.after(dteToDate)) {
                 response.setResponseMessage(messageBundle.getString("service.tax.update.from.date"));
                 response.setResponseCode(ResponseEnum.SERVICE_TAX_FROM_DATE.getValue());
                 response.setResponseStatus(ResponseEnum.WARN.getValue());

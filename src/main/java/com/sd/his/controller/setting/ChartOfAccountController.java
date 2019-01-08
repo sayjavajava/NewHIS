@@ -16,10 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @RestController
 @RequestMapping("/chartOfAccountConfigurations")
@@ -43,6 +40,11 @@ public class ChartOfAccountController {
        //     response.setResponseData(generalLedgerService.getAll());
 
             HashMap<String, Object> hashMap = new HashMap<String, Object>();
+            List<GeneralLedger> lstofGeneralLedger=generalLedgerService.getAll();
+            for(int i=0;i<lstofGeneralLedger.size();i++){
+                //lstofGeneralLedger.get(i).;
+
+            }
             hashMap.put("accountList", generalLedgerService.getAll());
             hashMap.put("accountConfig", generalLedgerService.getAccountConfig());
 

@@ -59,6 +59,10 @@ public class Status extends BaseEntity implements Serializable {
 
 
 
+    @Column(name = "SYSTEM_STATUS")
+    private boolean systemStatus;
+
+
     public Status() {
     }
 
@@ -106,5 +110,13 @@ public class Status extends BaseEntity implements Serializable {
 
     public void setHashColor(String hashColor) {
         this.hashColor = hashColor;
+    }
+
+    public boolean isSystemStatus() {
+        return systemStatus;
+    }
+
+    public void setSystemStatus(boolean systemStatus) {
+        this.systemStatus = systemStatus;
     }
 }

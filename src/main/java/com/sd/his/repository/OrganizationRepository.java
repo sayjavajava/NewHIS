@@ -39,10 +39,10 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 
 
 
-    @Query("SELECT new com.sd.his.wrapper.response.OrganizationResponseWrapper(o.id, o.companyName,o.officePhone,o.website,o.email,o.fax,o.address) FROM Organization o")
+    @Query("SELECT new com.sd.his.wrapper.response.OrganizationResponseWrapper(o.id, o.companyName,o.officePhone,o.website,o.email,o.fax,o.address,o.specialty,o.hoursFormat,o.currencyFormat,o.url) FROM Organization o")
     List<OrganizationResponseWrapper> findAllByName(Pageable pageable);
 
-    @Query("SELECT new com.sd.his.wrapper.response.OrganizationResponseWrapper(o.id, o.companyName,o.officePhone,o.website,o.email,o.fax,o.address) FROM Organization o  WHERE o.id=:id")
+    @Query("SELECT new com.sd.his.wrapper.response.OrganizationResponseWrapper(o.id, o.companyName,o.officePhone,o.website,o.email,o.fax,o.address,o.specialty,o.hoursFormat,o.currencyFormat,o.url) FROM Organization o  WHERE o.id=:id")
     OrganizationResponseWrapper findById(@Param("id") Long id);
 
     Organization findByCompanyName(String companyName);

@@ -8,12 +8,12 @@ public class StatusWrapper {
     private String colorHash;
     private String label;
     private Long value;
-
+    private boolean systemStatus;
 
     public StatusWrapper() {
     }
 
-    public StatusWrapper(Long id, String name, String abbreviation, boolean active, String colorHash) {
+    public StatusWrapper(Long id, String name, String abbreviation, boolean active, String colorHash,boolean status) {
         this.id = id;
         this.name = name;
         this.abbreviation = abbreviation;
@@ -21,6 +21,7 @@ public class StatusWrapper {
         this.colorHash = colorHash;
         this.label =name;
         this.value = id;
+        this.systemStatus=status;
     }
 
     public String getLabel() {
@@ -77,5 +78,13 @@ public class StatusWrapper {
 
     public void setColorHash(String colorHash) {
         this.colorHash = colorHash;
+    }
+
+    public boolean isSystemStatus() {
+        return systemStatus;
+    }
+
+    public void setSystemStatus(boolean systemStatus) {
+        this.systemStatus = systemStatus;
     }
 }

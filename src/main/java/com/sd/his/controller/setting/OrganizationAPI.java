@@ -23,11 +23,17 @@ package com.sd.his.controller.setting;
          *
          */
 
+import com.sd.his.enums.ModuleEnum;
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Organization;
+import com.sd.his.model.Patient;
+import com.sd.his.model.Prefix;
+import com.sd.his.repository.PrefixRepository;
 import com.sd.his.service.OrganizationService;
 import com.sd.his.service.UserService;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.DocumentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.TimezoneWrapper;
 import com.sd.his.wrapper.request.OrganizationRequestWrapper;
@@ -42,8 +48,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -56,6 +64,9 @@ public class OrganizationAPI {
 
     @Autowired
     private OrganizationService organizationService;
+
+    @Autowired
+    private PrefixRepository prefixRepository;
 
     private final Logger logger = LoggerFactory.getLogger(OrganizationAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
@@ -257,8 +268,10 @@ public class OrganizationAPI {
 
         try {
 
-            OrganizationResponseWrapper dbOrganization = this.organizationService.getOrganizationByIdWithResponse(id);
+           OrganizationResponseWrapper dbOrganization = this.organizationService.getOrganizationByIdWithResponse(id);
             Organization addInfo  =  this.organizationService.getOrganizationByIdWithResponseAdditionalInfo(id);
+            Prefix pr = this.prefixRepository.findByModule(ModuleEnum.APPOINTMENT.name());
+          //  pr.setCurrentValue(pr.getCurrentValue() + 1L);
             Map<String, Object> orgCity;
             orgCity = new HashMap<>();
             if (addInfo.getCity() != null) {
@@ -276,14 +289,16 @@ public class OrganizationAPI {
             }
             orgCity.put("zoneFormat",addInfo.getZone().getName()+""+addInfo.getZone().getZoneTime());
             orgCity.put("zoneId",addInfo.getZone().getZoneId());
-
+            orgCity.put("serAppointId",pr.getStartValue());
             dbOrganization.setAddInfo(orgCity);
             dbOrganization.setDateFormat(addInfo.getDateFormat());
             dbOrganization.setTimeFormat(addInfo.getTimeFormat());
+
             dbOrganization.setZoneFormat(String.valueOf(addInfo.getZone().getZoneId()));
             for (int i = 0; i < addInfo.getBranches().size(); i++) {
-                if (addInfo.getBranches().get(i).getSystemBranch()) {
-                    dbOrganization.setDefaultBranch(addInfo.getBranches().get(i).getBranchId());
+                if (addInfo.getBranches().get(i).getSystemBranch()==true) {
+                    dbOrganization.setDefaultBranch(String.valueOf(addInfo.getBranches().get(i).getId()));
+                    dbOrganization.setBranchName(addInfo.getBranches().get(i).getName());
                 }
             }
             if (HISCoreUtil.isValidObject(dbOrganization)) {
@@ -307,7 +322,7 @@ public class OrganizationAPI {
 
     }
 
-    @ApiOperation(httpMethod = "PUT", value = "Update Organization ",
+    /*@ApiOperation(httpMethod = "PUT", value = "Update Organization ",
             notes = "This method will Update Organization",
             produces = "application/json", nickname = "Update Organization",
             response = GenericAPIResponse.class, protocols = "https")
@@ -318,9 +333,11 @@ public class OrganizationAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+  //  @RequestBody OrganizationRequestWrapper organizationRequestWrapper
     public ResponseEntity<?> updateOrganization(HttpServletRequest request,
                                                 @PathVariable("id") int id,
-                                                @RequestBody OrganizationRequestWrapper organizationRequestWrapper) {
+                                                @RequestPart("myObject") OrganizationRequestWrapper organizationRequestWrapper,
+                                                @RequestPart(name = "img", required = false) MultipartFile image) {
 
         logger.info("update Organization API called..." + organizationRequestWrapper.getFormName());
 
@@ -332,8 +349,12 @@ public class OrganizationAPI {
 
         try {
             Organization alreadyExistOrganization = organizationService.getByID(id);
+
             if (HISCoreUtil.isValidObject(alreadyExistOrganization)) {
                 logger.info("Organization founded...");
+                if (image != null) {
+                    organizationRequestWrapper.setImage(image.getBytes());
+                }
                 OrganizationRequestWrapper organizationUpdated = organizationService.updateOrganization(organizationRequestWrapper, alreadyExistOrganization);
                 if (HISCoreUtil.isValidObject(organizationUpdated)) {
                     logger.info("Organization Updated...");
@@ -363,7 +384,7 @@ public class OrganizationAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
+*/
     //fetch organization account
     @ApiOperation(httpMethod = "GET", value = "Admin Account Organization",
             notes = "This method will return organization's admin Account ",
@@ -439,7 +460,7 @@ public class OrganizationAPI {
         try {
             logger.error("get All Organization API - Organization fetching from DB");
             Organization organizationsData = organizationService.getAllOrgizationData();
-            OrganizationChecker orgChecker=new OrganizationChecker(organizationsData.getId(),organizationsData.getDateFormat(),organizationsData.getTimeFormat(),organizationsData.getZone().getName().replaceAll("\\s",""),organizationsData.getZone().getZoneTime(),organizationsData.getCountry().getCurrency());
+            OrganizationChecker orgChecker=new OrganizationChecker(organizationsData.getId(),organizationsData.getDateFormat(),organizationsData.getTimeFormat(),organizationsData.getZone().getName().replaceAll("\\s",""),organizationsData.getZone().getZoneTime(),organizationsData.getCountry().getCurrency(),organizationsData.getCurrencyFormat(),organizationsData.getHoursFormat());
 
             if (HISCoreUtil.isValidObject(orgChecker)) {
 
@@ -465,6 +486,156 @@ public class OrganizationAPI {
             response.setResponseMessage(messageBundle.getString("exception.occurs"));
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+
+    @ApiOperation(httpMethod = "PUT", value = "Update Organization ",
+            notes = "This method will Update Organization",
+            produces = "application/json", nickname = "Update Organization",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Organization successfully updated", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateOrganization(HttpServletRequest request,
+                                                @PathVariable("id") int id,
+                                                @RequestBody OrganizationRequestWrapper organizationRequestWrapper) {
+
+        logger.info("update Organization API called..." + organizationRequestWrapper.getFormName());
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("organization.update.error"));
+        response.setResponseCode(ResponseEnum.ORGANIZATION_UPDATE_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            Organization alreadyExistOrganization = organizationService.getByID(id);
+            if (HISCoreUtil.isValidObject(alreadyExistOrganization)) {
+                logger.info("Organization founded...");
+                OrganizationRequestWrapper organizationUpdated = organizationService.updateOrganization(organizationRequestWrapper, alreadyExistOrganization);
+                if (HISCoreUtil.isValidObject(organizationUpdated)) {
+                    logger.info("Organization Updated...");
+                    response.setResponseData(organizationUpdated);
+                    response.setResponseMessage(messageBundle.getString("organization.update.success"));
+                    response.setResponseCode(ResponseEnum.ORGANIZATION_UPDATE_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    logger.info("Organization updated successfully...");
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+                logger.info("Organization not found...");
+                response.setResponseMessage(messageBundle.getString("organization.not-found"));
+                response.setResponseCode(ResponseEnum.ORGANIZATION_NOT_FOUND.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+                logger.error("Organization not updated...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+        } catch (Exception ex) {
+            logger.error("Update Organization Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
+    @ApiOperation(httpMethod = "GET", value = "Upload Profile Image",
+            notes = "This method will upload the profile image of any user.",
+            produces = "application/json", nickname = "Upload Profile Image",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Profile image of user uploaded successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/uploadProfileImg/{id}", method = RequestMethod.POST, headers = ("content-type=multipart/*"))
+    public ResponseEntity<?> uploadProfileImage(HttpServletRequest request, @PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
+        logger.info("uploadProfileImage API called for user: " + id);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.error"));
+        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+            String imgURL = null;
+            Organization alreadyExistOrganization = organizationService.getByID(id);
+            String fileName = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf('/')+1, alreadyExistOrganization.getUrl().length());
+            String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+            String fileExtension = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf("."));
+            //    if (HISCoreUtil.isValidObject(user)) {
+            if (HISCoreUtil.isValidObject(file)) {
+                byte[] byteArr = new byte[0];
+                try {
+                    byteArr = file.getBytes();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //InputStream is = new ByteArrayInputStream(byteArr);
+                //Boolean isSaved = awsService.uploadImage(is, id);
+                String dteFileUpload=HISCoreUtil.convertDateToStringUpload(new Date());
+                imgURL = userService.saveBeforeDeleteImg(byteArr, HISConstants.S3_USER_ORGANIZATION_DIRECTORY_PATH, alreadyExistOrganization.getId() + "_" + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_ORGANIZATION_THUMBNAIL_GRAPHIC_NAME, +alreadyExistOrganization.getId()
+                                + "_" + alreadyExistOrganization.getId()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_ORGANIZATION_THUMBNAIL_GRAPHIC_NAME,
+                        "/"
+                                + HISConstants.S3_USER_ORGANIZATION_DIRECTORY_PATH
+                                + alreadyExistOrganization.getId()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_ORGANIZATION_THUMBNAIL_GRAPHIC_NAME,fileName);
+                if (HISCoreUtil.isValidObject(imgURL)) {
+                    //String imgURL = awsService.getProfileImageUrl(id);
+                    //    user.getProfile().setProfileImgURL(imgURL);
+                    alreadyExistOrganization.setUrl(imgURL);
+                    organizationService.saveOrganizationUpadtedImage(alreadyExistOrganization);
+
+                    response.setResponseMessage(messageBundle.getString("organization.profile.image.uploaded.success"));
+                    response.setResponseCode(ResponseEnum.ORGANIZATION_PROFILE_IMG_UPLOAD_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    response.setResponseData(imgURL);
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else {
+                    response.setResponseMessage(messageBundle.getString("organization.profile.invalid.media"));
+                    response.setResponseCode(ResponseEnum.ORGANIZATION_PROFILE_INVALID_FILE_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            } else {
+                response.setResponseMessage(messageBundle.getString("organization.profile.invalid.media"));
+                response.setResponseCode(ResponseEnum.ORGANIZATION_PROFILE_INVALID_FILE_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                //  }
+                //   userService.updateUser(user);
+            }
+        } catch (Exception ex) {
+            logger.error("Organization profile image update failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

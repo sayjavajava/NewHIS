@@ -2,10 +2,14 @@ package com.sd.his.controller;
 
 import com.sd.his.enums.ResponseEnum;
 
+import com.sd.his.model.Organization;
 import com.sd.his.model.PaymentType;
+import com.sd.his.service.HISUtilService;
+import com.sd.his.service.OrganizationService;
 import com.sd.his.service.PaymentTypeService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
+import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.response.PaymentTypeWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -32,29 +36,51 @@ public class PaymentTypeAPI {
 
     @Autowired
     private PaymentTypeService paymentServiceType;
-
+    @Autowired
+    private OrganizationService organizationService;
 
     @ApiOperation(httpMethod = "GET", value = "All Payment Type",
-            notes = "This method will returns all Payment Type",
-            produces = "application/json", nickname = "Payment Type",
-            response = GenericAPIResponse.class, protocols = "https")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "All Payment Type fetched successfully.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
-            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllPaymentType(HttpServletRequest request) {
+                notes = "This method will returns all Payment Type",
+                produces = "application/json", nickname = "Payment Type",
+                response = GenericAPIResponse.class, protocols = "https")
+        @ApiResponses({
+                @ApiResponse(code = 200, message = "All Payment Type fetched successfully.", response = GenericAPIResponse.class),
+                @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+                @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+                @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+                @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+        @RequestMapping(value = "/", method = RequestMethod.GET)
+        public ResponseEntity<?> getAllPaymentType(HttpServletRequest request) {
 
-        logger.error("getAll Payment Type API initiated");
+            logger.error("getAll Payment Type API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
 
         try {
             logger.error("ALL Payment  API - Payment Type fetching from DB");
 //            List<PaymentType> paymentType = paymentServiceType.getAllPaymentType();
             List<PaymentTypeWrapper> paymentType = paymentServiceType.getAllPaymentType();
+            Organization dbOrganization = organizationService.getAllOrgizationData();
+       //     String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+            String systemCurrency = dbOrganization.getCurrencyFormat();
+        //    String hoursFormat = dbOrganization.getHoursFormat();
+        //    String dateFormat = dbOrganization.getDateFormat();
+        //    String timeFormat = dbOrganization.getTimeFormat();
+            for(int i=0;i<paymentType.size();i++){
 
+                if (systemCurrency != null || (!systemCurrency.equals(""))) {
+                    PaymentTypeWrapper ptw=new PaymentTypeWrapper();
+                    ptw.setStrServiceCharges((HISUtilService.formatCurrencyDisplay((paymentType.get(i).getServiceCharges()), systemCurrency)));
+                    ptw.setStrmaxCardCharges(HISUtilService.formatCurrencyDisplay((paymentType.get(i).getMaxCardCharges()), systemCurrency));
+                    if(paymentType.get(i).getPaymentMode().equals("Cash") || paymentType.get(i).getPaymentMode().equals("Others")){
+                        paymentType.get(i).setStrServiceCharges("");
+                        paymentType.get(i).setStrmaxCardCharges("");
+                    }else{
+                    paymentType.get(i).setStrServiceCharges(ptw.getStrServiceCharges());
+                    paymentType.get(i).setStrmaxCardCharges(ptw.getStrmaxCardCharges());
+                    }
+                    //     msLstW.add(ms);
+                }
+            }
             if (HISCoreUtil.isListEmpty(paymentType)) {
                 response.setResponseMessage(messageBundle.getString("paymentType.not.found"));
                 response.setResponseCode(ResponseEnum.PAYMENTTYPE_NOT_FOUND_ERROR.getValue());

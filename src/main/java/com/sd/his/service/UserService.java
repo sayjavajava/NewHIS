@@ -797,6 +797,7 @@ public class UserService implements UserDetailsService {
 
         InputStream is = new ByteArrayInputStream(byteArary);
         boolean isSaved = false;
+
         isSaved = awsService.uploadImageByUserId(is,
                 directoryPath,
                 fullThumbName,
@@ -811,22 +812,23 @@ public class UserService implements UserDetailsService {
 
 
 
-    public String saveOthersByOrder(byte[] byteArary,
+    public String saveBeforeDeleteImg(byte[] byteArary,
                                    String directoryPath,
                                    String fullThumbName,
                                    String fullImgName,
-                                   String fullPathAndThumbNailGraphicName) throws Exception {
+                                   String fullPathAndThumbNailGraphicName,String url) throws Exception {
 
         String imgURL = null;
 
         InputStream is = new ByteArrayInputStream(byteArary);
         boolean isSaved = false;
-        isSaved = awsService.uploadImageByUserId(is,
+
+        isSaved = awsService.uploadImageByUserIdDeleteBefore(is,
                 directoryPath,
                 fullThumbName,
-                fullImgName);
+                fullImgName,url);
         if (isSaved) {
-            imgURL = this.s3KeyGen.getImagePublicURLOrder(fullPathAndThumbNailGraphicName);
+            imgURL = this.s3KeyGen.getImagePublicURLOrganization(fullPathAndThumbNailGraphicName);
         }
 
         return imgURL;
