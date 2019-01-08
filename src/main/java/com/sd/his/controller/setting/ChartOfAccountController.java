@@ -28,7 +28,7 @@ public class ChartOfAccountController {
     @Autowired
     GeneralLedgerService generalLedgerService;
 
-    private final Logger logger = LoggerFactory.getLogger(SmsTemplateController.class);
+    private final Logger logger = LoggerFactory.getLogger(ChartOfAccountController.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @ApiOperation(httpMethod = "GET", value = "get chart of accounts Configurations",
@@ -40,14 +40,41 @@ public class ChartOfAccountController {
     public ResponseEntity<?> getAllAccountsConfigurations() {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
-       //     response.setResponseData(generalLedgerService.getAll());
-
             HashMap<String, Object> hashMap = new HashMap<String, Object>();
-            hashMap.put("accountList", generalLedgerService.getAll());
+//            hashMap.put("accountList", generalLedgerService.getAll());
             hashMap.put("accountConfig", generalLedgerService.getAccountConfig());
 
             response.setResponseData(hashMap);
+            response.setResponseMessage(messageBundle.getString("chart.of.account.configuration.fetched.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Chart of accounts List data fetch successfully");
 
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("Chart of accounts List data  not fetched successfully/ Failed.", ex.fillInStackTrace());
+            System.out.println("Exception : " + ex.getStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("chart.of.account.configuration.fetch.error"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "get all ledgers",
+            notes = "This method will get all ledgers",
+            produces = "application/json", nickname = "Get All ledgers",
+            response = GenericAPIResponse.class, protocols = "https")
+
+    @RequestMapping(value = "/getAllLedgers", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllLedgers() {
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+
+            HashMap<String, Object> hashMap = new HashMap<String, Object>();
+            hashMap.put("accountList", generalLedgerService.getAll());
+
+            response.setResponseData(hashMap);
             response.setResponseMessage(messageBundle.getString("chart.of.account.configuration.fetched.success"));
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -78,7 +105,7 @@ public class ChartOfAccountController {
         try {
             generalLedgerService.saveConfiguration(generalLedgerRequestWrapper);
             generalLedgerService.updateAccountCode();
-            response.setResponseData(generalLedgerService.getAll());
+//            response.setResponseData(generalLedgerService.getAll());
             response.setResponseMessage(messageBundle.getString("chart.of.account.configuration.update.success"));
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -315,23 +342,14 @@ public class ChartOfAccountController {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             GeneralLedger generalLedger = generalLedgerService.getById(accountId);
-//            response.setResponseData(null);
-//            response.setResponseMessage(messageBundle.getString("account.not.found.error"));
-//            response.setResponseCode(ResponseEnum.GENERAL_LEDGER_NOT_FOUND_ERROR.getValue());
-//            response.setResponseStatus(ResponseEnum.ERROR.getValue());
-//            logger.info("General LEDGER not Found ...");
 
             if (HISCoreUtil.isValidObject(generalLedger)) {
-                generalLedgerService.deleteLedger(accountId);
-                if (HISCoreUtil.isValidObject(generalLedger)) {
-                    response.setResponseData(generalLedger);
-                    response.setResponseMessage(messageBundle.getString("account.delete.success"));
-                    response.setResponseCode(ResponseEnum.GENERAL_LEDGER_DELETE_SUCCESS.getValue());
-                    response.setResponseStatus(ResponseEnum.GENERAL_LEDGER_DELETE_SUCCESS.getValue());
-                    logger.info("General Ledger Deleted Successfully...");
-
-                    return new ResponseEntity<>(response, HttpStatus.OK);
-                }
+                generalLedgerService.deleteLedger(generalLedger);
+                response.setResponseMessage(messageBundle.getString("account.delete.success"));
+                response.setResponseCode(ResponseEnum.GENERAL_LEDGER_DELETE_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.GENERAL_LEDGER_DELETE_SUCCESS.getValue());
+                logger.info("General Ledger Deleted Successfully...");
+                return new ResponseEntity<>(response, HttpStatus.OK);
             }
         } catch (DataIntegrityViolationException ex) {
             logger.error("Account Delete Process Failed due to foreign key constraint.", ex.fillInStackTrace());

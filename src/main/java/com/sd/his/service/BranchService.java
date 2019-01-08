@@ -268,7 +268,7 @@ public class BranchService {
         }
         branch.setUpdatedOn(new Date());
         branchRepository.save(branch);
-/*
+
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
         if(!HISCoreUtil.isListEmpty(exRooms)){ // delete branches room for future
              roomRepository.deleteAllByBranch(branch);
@@ -281,6 +281,7 @@ public class BranchService {
             room.setActive(true);
             roomRepository.save(room);
         }
+        /*
         Doctor doctor = doctorRepository.getOne(branchRequestWrapper.getPrimaryDoctor());
         BranchDoctor branchDoctor =branchDoctorRepository.findByBranch(branch);
         branchDoctor.setBranch(branch);

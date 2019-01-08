@@ -1,14 +1,17 @@
 package com.sd.his.service;
 
+import com.sd.his.enums.BalanceTypeEnum;
 import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.AccountConfig;
 import com.sd.his.model.GeneralLedger;
 import com.sd.his.repository.AccountConfigRepository;
 import com.sd.his.repository.GeneralLedgerRepository;
+import com.sd.his.wrapper.GeneralLedgerWrapper;
 import com.sd.his.wrapper.request.AccountConfigRequestWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,12 +31,40 @@ public class GeneralLedgerService {
         return generalLedgerRepository.findOne(id);
     }
 
-    public List<GeneralLedger> getAll(){
-        return generalLedgerRepository.findAll();
+    public List<GeneralLedgerWrapper> getAll(){
+        List<GeneralLedger> list =  generalLedgerRepository.findAll();//generalLedgerRepository.getAll();
+        List<GeneralLedgerWrapper> dataList = new ArrayList<>();
+        double drBalance = 0;
+        double crBalance = 0;
+        for(GeneralLedger gl: list) {
+           drBalance =  gl.getGeneralLedgerTransactions().stream().filter(x -> x.getTransactionType().equals(BalanceTypeEnum.DR.name())).mapToDouble(x -> x.getAmount()).sum();
+           crBalance =  gl.getGeneralLedgerTransactions().stream().filter(x -> x.getTransactionType().equals(BalanceTypeEnum.CR.name())).mapToDouble(x -> x.getAmount()).sum();
+           if(gl.getBalanceType().equals(BalanceTypeEnum.DR)) {
+               dataList.add(new GeneralLedgerWrapper(gl,(drBalance-crBalance)));
+           }
+           else {
+               dataList.add(new GeneralLedgerWrapper(gl,(crBalance-drBalance)));
+           }
+        }
+
+        return dataList;
     }
 
     public void saveConfiguration(GeneralLedger generalLedger){
+
+        switch (generalLedger.getParentType()) {
+            case "Assets":
+            case "Cost of Goods Sold":
+            case "Expense":
+                generalLedger.setBalanceType(BalanceTypeEnum.DR.name());
+                break;
+            case "Revenue":
+            case "Liabilities":
+                generalLedger.setBalanceType(BalanceTypeEnum.CR.name());
+                break;
+        }
         generalLedgerRepository.save(generalLedger);
+
     }
 
 
@@ -115,5 +146,9 @@ public class GeneralLedgerService {
 
     public void deleteLedger(Long generalLedgerId) {
         this.generalLedgerRepository.delete(generalLedgerId);
+    }
+
+    public void deleteLedger(GeneralLedger generalLedger) {
+        this.generalLedgerRepository.delete(generalLedger);
     }
 }

@@ -51,6 +51,7 @@ public class StatusService {
         status1.setAbbreviation(statusWrapper.getAbbreviation());
         status1.setHashColor(statusWrapper.getColorHash());
         status1.setStatus(statusWrapper.isActive());
+        status1.setSystemStatus(statusWrapper.isSystemStatus());
         statusRepository.save(status1);
         return statusWrapper;
     }
@@ -60,14 +61,14 @@ public class StatusService {
             List<Status> list = statusRepository.findBy(pageable);
             return list.stream().map(
                     x ->
-                    new StatusWrapper(x.getId(),x.getName(),x.getAbbreviation(),x.isStatus(),x.getHashColor()))
+                    new StatusWrapper(x.getId(),x.getName(),x.getAbbreviation(),x.isStatus(),x.getHashColor(),x.isSystemStatus()))
                     .collect(Collectors.toList());
      }
     public List<StatusWrapper> getAllStatuses() {
         List<Status> list = statusRepository.findAll();
         return list.stream().map(
                 x ->
-                        new StatusWrapper(x.getId(),x.getName(),x.getAbbreviation(),x.isStatus(),x.getHashColor()))
+                        new StatusWrapper(x.getId(),x.getName(),x.getAbbreviation(),x.isStatus(),x.getHashColor(),x.isSystemStatus()))
                 .collect(Collectors.toList());
     }
 
@@ -89,6 +90,7 @@ public class StatusService {
         status1.setAbbreviation(statusWrapper.getAbbreviation());
         status1.setHashColor(statusWrapper.getColorHash());
         status1.setStatus(statusWrapper.isActive());
+        status1.setSystemStatus(statusWrapper.isSystemStatus());
         statusRepository.save(status1);
         return statusWrapper;
 

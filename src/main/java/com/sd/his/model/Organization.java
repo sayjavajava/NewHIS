@@ -80,6 +80,18 @@ public class Organization extends BaseEntity implements Serializable {
     @JoinColumn(name = "zone_id")
     private Zone zone;
 
+    @Column(name = "HOURS_FORMAT")
+    String hoursFormat;
+
+
+
+    @Column(name = "CURRENCY_FORMAT")
+    String currencyFormat;
+
+
+    @Column(name = "SPECIALTY")
+    private String specialty;
+
     public Zone getZone() {
         return zone;
     }
@@ -142,6 +154,12 @@ public class Organization extends BaseEntity implements Serializable {
     @JoinColumn(name = "Country_id")
     private Country country;
 
+
+
+
+    @Column(name = "URL")
+    private String url;
+
     public Organization(){}
     public Organization(String companyName, String officePhone, String website, String email, String fax, String address,Boolean status) {
         this.companyName = companyName;
@@ -155,6 +173,7 @@ public class Organization extends BaseEntity implements Serializable {
         this.dateFormat=dateFormat;
         this.city=city;
         this.country=country;
+
 
    //     this.prefixList = prefixList;
    //     this.branches = branches;
@@ -247,4 +266,38 @@ public class Organization extends BaseEntity implements Serializable {
     public void setBranches(List<Branch> branches) {
         this.branches = branches;
     }
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getHoursFormat() {
+        return hoursFormat;
+    }
+
+    public void setHoursFormat(String hoursFormat) {
+        this.hoursFormat = hoursFormat;
+    }
+
+    public String getCurrencyFormat() {
+        return currencyFormat;
+    }
+
+    public void setCurrencyFormat(String currencyFormat) {
+        this.currencyFormat = currencyFormat;
+    }
+
 }

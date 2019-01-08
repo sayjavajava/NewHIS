@@ -18,6 +18,9 @@ public class PaymentTypeWrapper {
     private String paymentGlAccountName;
     private long paymentGlAccountId;
 
+
+    private String strServiceCharges;
+    private String strmaxCardCharges;
     public boolean isPatient() {
         return isPatient;
     }
@@ -180,4 +183,21 @@ public class PaymentTypeWrapper {
     public void setHasChild(boolean hasChild) {
         this.hasChild = hasChild;
     }
+
+    public String getStrServiceCharges() {
+        return strServiceCharges;
+    }
+
+    public void setStrServiceCharges(String strServiceCharges) {
+        this.strServiceCharges = strServiceCharges;
+    }
+
+    public String getStrmaxCardCharges() {
+        return strmaxCardCharges;
+    }
+
+    public void setStrmaxCardCharges(String strmaxCardCharges) {
+        this.strmaxCardCharges = strmaxCardCharges;
+    }
+
 }

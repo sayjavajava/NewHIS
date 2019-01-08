@@ -393,8 +393,9 @@ public class HISCoreUtil {
     }
 
     public static Date  convertStringDateObject(String dateinString) {
-        Date dte = new Date();
+       Date dte=new Date();
         if (dateinString != null) {
+
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
                 dte = formatter.parse(dateinString);
@@ -408,7 +409,7 @@ public class HISCoreUtil {
     public static Date convertToDateDetail(String str) {
         Date date = null;
         if (str != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             try {
                 date = formatter.parse(str);
             } catch (ParseException e) {
@@ -444,6 +445,7 @@ public class HISCoreUtil {
         }
         return formatter;
     }*/
+
     public static boolean containsDigit(String s) {
         boolean containsDigit = false;
         if (s != null && !s.isEmpty()) {
@@ -529,6 +531,77 @@ public class HISCoreUtil {
         String format ="HH:mm";
         String convertedResult = HISCoreUtil.convertDateToTimeZone(date,format,zone);
         return convertedResult;
+    }
+
+
+
+    public  static LocalDate convertToDateLocal(String dateInString){
+      //  String string = "January 2, 2010";
+        LocalDate date=null;
+        if (dateInString != null) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+         date = LocalDate.parse(dateInString, formatter);
+        System.out.println(date);
+        }
+        return date;
+    }
+
+
+    public static Date  convertStringDateObjectTax(String dateinString) {
+        Date dte=new Date();
+        if (dateinString != null) {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                dte = formatter.parse(dateinString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return dte;
+    }
+
+
+    public static String convertDateToStringWithDateDisplay(Date dateinString,String format) {
+        String dte="";
+        if (dateinString != null) {
+
+
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat(format);
+                 dte = formatter.format(dateinString);
+              //  dte = formatter.parse(dateinString);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return dte;
+    }
+
+
+    public static int adjustOneOrTwoDigitYearInput(int inputYear, int referenceYear) {
+        if(inputYear > 99) {
+            return inputYear;
+        }
+
+        int currentCentury = referenceYear / 100 * 100;
+        int currentCenturyYear = currentCentury + inputYear;
+        int upperLimit = referenceYear + 20;
+        int lowerLimit = referenceYear - 79;
+
+        // initially place it in current century
+        int adjusted = currentCenturyYear;
+
+        if(adjusted> upperLimit) {
+            // shift a century down
+            adjusted -= 100;
+        }
+        else if(adjusted < lowerLimit) {
+            // shift a century up
+            adjusted += 100;
+        }
+
+        return adjusted;
     }
 
 }

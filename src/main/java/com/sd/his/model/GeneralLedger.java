@@ -1,18 +1,17 @@
 package com.sd.his.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "GENERAL_LEDGER")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GeneralLedger  extends BaseEntity implements Serializable {
-
-
-    private static final long serialVersionUID = 1L;
+public class GeneralLedger  extends BaseEntity {
 
     @Column(name = "PARENT_TYPE")
     private String parentType;
@@ -36,6 +35,10 @@ public class GeneralLedger  extends BaseEntity implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "bank_id")
     private BankAccount bankAccount;
+
+
+    @OneToMany(mappedBy = "generalLedger")
+    private List<GeneralLedgerTransaction> generalLedgerTransactions;
 
     public GeneralLedger() {
     }
@@ -105,5 +108,13 @@ public class GeneralLedger  extends BaseEntity implements Serializable {
 
     public void setBankAccount(BankAccount bankAccount) {
         this.bankAccount = bankAccount;
+    }
+
+    public List<GeneralLedgerTransaction> getGeneralLedgerTransactions() {
+        return generalLedgerTransactions;
+    }
+
+    public void setGeneralLedgerTransactions(List<GeneralLedgerTransaction> generalLedgerTransactions) {
+        this.generalLedgerTransactions = generalLedgerTransactions;
     }
 }

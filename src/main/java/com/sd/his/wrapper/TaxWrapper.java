@@ -4,6 +4,8 @@ import com.sd.his.model.Tax;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 
+import java.util.Date;
+
 /**
  * Created by jamal on 7/31/2018.
  */
@@ -12,13 +14,30 @@ public class TaxWrapper {
     private String name;
     private String description;
     private double rate;
-    private String fromDate;
-    private String toDate;
+
+    public String getStrfromDate() {
+        return strfromDate;
+    }
+
+    public void setStrfromDate(String strfromDate) {
+        this.strfromDate = strfromDate;
+    }
+
+    public String getStrtoDate() {
+        return strtoDate;
+    }
+
+    public void setStrtoDate(String strtoDate) {
+        this.strtoDate = strtoDate;
+    }
+
+    private String strfromDate;
+    private String strtoDate;
     private boolean active;
     private long value;
     private String label;
-
-    /**
+    private Date fromDate;
+    private Date toDate;/**
      * if child record found then true
      * it not then false
      */
@@ -33,8 +52,8 @@ public class TaxWrapper {
         this.name = tax.getName();
         this.description = tax.getDescription();
         this.rate = tax.getRate();
-        this.fromDate = DateTimeUtil.getFormattedDateFromDate(tax.getFromDate(), HISConstants.DATE_FORMATE_THREE);
-        this.toDate = DateTimeUtil.getFormattedDateFromDate(tax.getToDate(), HISConstants.DATE_FORMATE_THREE);
+        this.strfromDate = DateTimeUtil.getFormattedDateFromDate(tax.getFromDate(), HISConstants.DATE_FORMATE_THREE);
+        this.strtoDate = DateTimeUtil.getFormattedDateFromDate(tax.getToDate(), HISConstants.DATE_FORMATE_THREE);
         this.active = tax.getActive();
         this.value = tax.getId();
         this.label = tax.getName();
@@ -97,19 +116,19 @@ public class TaxWrapper {
         this.rate = rate;
     }
 
-    public String getFromDate() {
+    public Date getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(String fromDate) {
+    public void setFromDate(Date fromDate) {
         this.fromDate = fromDate;
     }
 
-    public String getToDate() {
+    public Date getToDate() {
         return toDate;
     }
 
-    public void setToDate(String toDate) {
+    public void setToDate(Date toDate) {
         this.toDate = toDate;
     }
 

@@ -60,7 +60,7 @@ public class ReportPrintService {
         File pdfFile = new File(pdfPath);
 
         if (pdfFile.exists()) {
-            Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + pdfFile.getCanonicalPath());
+            Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + pdfFile.getAbsolutePath());
             p.waitFor();
         }
         return pdfFile.getCanonicalPath();

@@ -103,7 +103,7 @@ public class BulkImportService {
                 }
                 drug.setActive(true);
                 drugRepository.save(drug);
-                System.out.println();
+                records.getAndIncrement();
             }
         }
         workBook.close();
@@ -151,7 +151,7 @@ public class BulkImportService {
                 }
                 labTestSpeciman.setSpecimanId(hisUtilService.getPrefixId(ModuleEnum.LAB_TEST));
                 labTestSpecimanRepository.save(labTestSpeciman);
-                System.out.println();
+                records.getAndIncrement();
             }
         }
         workBook.close();
@@ -226,15 +226,11 @@ public class BulkImportService {
                     icdCodeVersion.setIcd(icdCode);
                     icdCodeVersion.setVersion(allVersions.get(y));
                     codeVersionRepository.save(icdCodeVersion);
-
                     codeVersionsList.add(icdCodeVersion);
                 }
-
                 icdCode.setVersions(codeVersionsList);
                 codeRepository.save(icdCode);
-
-                System.out.println();
-
+                records.getAndIncrement();
             }
         }
         workBook.close();
@@ -386,7 +382,7 @@ public class BulkImportService {
                     appointment.setAppointmentId(hisUtilService.getPrefixId(ModuleEnum.APPOINTMENT));
                     appointmentRepository.save(appointment);
                 }
-                System.out.println();
+                records.getAndIncrement();
             }
         }
         workBook.close();
@@ -394,7 +390,7 @@ public class BulkImportService {
         return records.get();
     }
 
-    public boolean deleteFile(File file) {
+    private boolean deleteFile(File file) {
         return (file.exists() && file.delete());
     }
 }

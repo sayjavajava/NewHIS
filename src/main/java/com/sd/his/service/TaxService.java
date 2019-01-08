@@ -1,6 +1,7 @@
 package com.sd.his.service;
 
 import com.sd.his.enums.ModuleEnum;
+import com.sd.his.model.Organization;
 import com.sd.his.model.Tax;
 import com.sd.his.repository.TaxRepository;
 import com.sd.his.utill.HISCoreUtil;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -43,6 +45,8 @@ public class TaxService {
     TaxRepository taxRepository;
     @Autowired
     HISUtilService hisUtilService;
+    @Autowired
+    private OrganizationService organizationService;
 
     public List<TaxWrapper> findAllActiveTax() {
         return taxRepository.findAllByActiveTrue(true);
@@ -73,6 +77,25 @@ public class TaxService {
     public void saveTax(TaxWrapper taxWrapper) throws ParseException {
         Tax tax = new Tax(taxWrapper);
         tax.setTaxId(this.hisUtilService.generatePrefix(ModuleEnum.TAX));
+        // Implement Time Zone
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+      //  Date dteFrom=new Date();
+      //  Date dteTo=new Date();
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String systemTimeFormat=dbOrganization.getTimeFormat();
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
+        System.out.println("Time"+currentTime);
+      //  dte=problemWrapper.getDatePrescribedDate();
+     //   Date dteFrom=HISCoreUtil.convertStringDateObjectTax(taxWrapper.getFromDate());
+     //   Date dteTo=HISCoreUtil.convertStringDateObjectTax(taxWrapper.getToDate());
+        String readDateFrom=HISCoreUtil.convertDateToTimeZone(taxWrapper.getFromDate(),"yyyy-MM-dd",Zone);
+        String readDateTo=HISCoreUtil.convertDateToTimeZone(taxWrapper.getToDate(),"yyyy-MM-dd",Zone);
+        Date scheduledDateFrom=HISCoreUtil.convertStringDateObjectTax(readDateFrom);
+        Date scheduledDateTo=HISCoreUtil.convertStringDateObjectTax(readDateTo);
+        tax.setFromDate(scheduledDateFrom);
+        tax.setToDate(scheduledDateTo);
         taxRepository.save(tax);
         hisUtilService.updatePrefix(ModuleEnum.TAX);
     }
@@ -97,6 +120,21 @@ public class TaxService {
     public void updateTaxService(TaxWrapper updateRequest) throws ParseException {
         Tax dbTax = this.taxRepository.findOne(updateRequest.getId());
         new Tax(dbTax, updateRequest);
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String systemTimeFormat=dbOrganization.getTimeFormat();
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
+        System.out.println("Time"+currentTime);
+        Date dteFrom=HISCoreUtil.convertStringDateObjectTax(updateRequest.getStrfromDate());
+        Date dteTo=HISCoreUtil.convertStringDateObjectTax(updateRequest.getStrtoDate());
+        String readDateFrom=HISCoreUtil.convertDateToTimeZone(dteFrom,"yyyy-MM-dd",Zone);
+        String readDateTo=HISCoreUtil.convertDateToTimeZone(updateRequest.getToDate(),"yyyy-MM-dd",Zone);
+        Date scheduledDateFrom=HISCoreUtil.convertStringDateObjectTax(readDateFrom);
+        Date scheduledDateTo=HISCoreUtil.convertStringDateObjectTax(readDateTo);
+        dbTax.setFromDate(scheduledDateFrom);
+        dbTax.setToDate(scheduledDateTo);
         this.taxRepository.save(dbTax);
     }
 

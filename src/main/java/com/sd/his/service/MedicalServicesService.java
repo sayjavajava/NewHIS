@@ -14,7 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -56,15 +59,29 @@ public class MedicalServicesService {
     private DepartmentMedicalServiceRepository departmentMedicalServiceRepository;
     @Autowired
     private DepartmentService departmentService;
+    @Autowired
+    private OrganizationService organizationService;
 
     public List<MedicalServiceWrapper> findAllPaginatedMedicalServices(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String systemCurrency=dbOrganization.getCurrencyFormat();
+        String hoursFormat=dbOrganization.getHoursFormat();
+        String dateFormat=dbOrganization.getDateFormat();
+        String timeFormat=dbOrganization.getTimeFormat();
+
         List<MedicalService> mSList = medicalServiceRepository.findAllByCreatedOnNotNull(pageable);
         List<MedicalServiceWrapper> mSWList = null;
         if (mSList != null) {
             mSWList = new ArrayList<>();
             for (MedicalService ms : mSList) {
+                if(systemCurrency!=null || (!systemCurrency.equals(""))){
+                ms.setFee(Double.valueOf(formatCurrency((ms.getFee()),systemCurrency)));
+                ms.setCost(Double.valueOf(formatCurrency((ms.getCost()),systemCurrency)));
+                }
                 MedicalServiceWrapper mSW = new MedicalServiceWrapper(ms);
+
                 mSWList.add(mSW);
             }
         }
@@ -76,9 +93,29 @@ public class MedicalServicesService {
     }
 
     public List<MedicalServiceWrapper> findAllMedicalServicesForDataTable() {
-        return medicalServiceRepository.findAllMedicalServiceWrappersForDataTable();
-    }
+       /* List<MedicalServiceWrapper> mSWList = null;
+        List<MedicalServiceWrapper> msLstW = new ArrayList<MedicalServiceWrapper>();*/
 
+        return  medicalServiceRepository.findAllMedicalServiceWrappersForDataTable();
+       /* for(int i=0;i<mSWList.size();i++){
+            MedicalServiceWrapper ms=new MedicalServiceWrapper(mSWList.get(i));
+            if (systemCurrency != null || (!systemCurrency.equals(""))) {
+                mSWList.get(i).setFee(Double.valueOf(formatCurrency(String.valueOf(mSWList.get(i).getFee()), systemCurrency)));
+                mSWList.get(i).setCost(Double.valueOf(formatCurrency(String.valueOf(mSWList.get(i).getCost()), systemCurrency)));
+                msLstW.add(ms);
+            }
+        }*/
+        /*for (MedicalServiceWrapper ms : mSWList) {
+            if (systemCurrency != null || (!systemCurrency.equals(""))) {
+                ms.setFee(Double.valueOf(formatCurrency(String.valueOf(ms.getFee()), systemCurrency)));
+                ms.setCost(Double.valueOf(formatCurrency(String.valueOf(ms.getCost()), systemCurrency)));
+                mSWList.add(ms);
+            }
+
+
+        }*/
+      //  return msLstW;
+    }
     public List<MedicalServiceWrapper> getAllMedicalServicesForAppointment() {
         return medicalServiceRepository.findAllMedicalServicesForAppointment();
     }
@@ -111,6 +148,18 @@ public class MedicalServicesService {
         if (tax != null) {
             medicalService.setTax(tax);
         }
+        /*Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String systemCurrency=dbOrganization.getCurrencyFormat();
+        String hoursFormat=dbOrganization.getHoursFormat();
+        String dateFormat=dbOrganization.getDateFormat();
+        String timeFormat=dbOrganization.getTimeFormat();*/
+        medicalService.setFee(Double.valueOf(createRequest.getStrFee()));
+        medicalService.setCost(Double.valueOf(createRequest.getStrCost()));
+       /* if(systemCurrency!=null || (!systemCurrency.equals(""))){
+            medicalService.setFee(Double.valueOf(formatCurrencyDisplay((createRequest.getFee()),systemCurrency)));
+            medicalService.setCost(Double.valueOf(formatCurrencyDisplay((createRequest.getCost()),systemCurrency)));
+        }*/
         medicalServiceRepository.save(medicalService);
         if (HISCoreUtil.isListValid(createRequest.getBranches())) {
             List<BranchMedicalService> list = new ArrayList<>();
@@ -150,6 +199,18 @@ public class MedicalServicesService {
         } else {
             medicalService.setTax(null);
         }
+     /*   Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String systemCurrency=dbOrganization.getCurrencyFormat();
+        String hoursFormat=dbOrganization.getHoursFormat();
+        String dateFormat=dbOrganization.getDateFormat();
+        String timeFormat=dbOrganization.getTimeFormat();*/
+        medicalService.setFee(Double.valueOf(createRequest.getStrFee()));
+        medicalService.setCost(Double.valueOf(createRequest.getStrCost()));
+        /*if(systemCurrency!=null || (!systemCurrency.equals(""))){
+            medicalService.setFee(Double.valueOf(formatCurrencyDisplay((createRequest.getFee()),systemCurrency)));
+            medicalService.setCost(Double.valueOf(formatCurrencyDisplay((createRequest.getCost()),systemCurrency)));
+        }*/
         medicalServiceRepository.save(medicalService);
         if (HISCoreUtil.isListValid(createRequest.getBranches())) {
             List<BranchMedicalService> list = new ArrayList<>();
@@ -248,5 +309,115 @@ public class MedicalServicesService {
         return mSW;
     }
 
+    public static String formatCurrency(double amount,String format) {
+        String returnFormat="";
+        if(format.equals("123,456")){
+            String doubleValue=String.valueOf(amount);
+            if(doubleValue.length()==3){
+                DecimalFormat formatter = new DecimalFormat("###,000");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            }
+             if(doubleValue.length()==2){
+                DecimalFormat formatter = new DecimalFormat("0##,000");
+                 amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+             }
+            if(doubleValue.length()==1){
+                DecimalFormat formatter = new DecimalFormat("#00,000");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            } if(doubleValue.length()==4){
+                DecimalFormat formatter = new DecimalFormat("###,#00");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            }if(doubleValue.length()==5){
+                DecimalFormat formatter = new DecimalFormat("###,##0");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            }else{
+                DecimalFormat formatter = new DecimalFormat("###,000");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            }
 
+        }else if(format.equals("123,456.00")){
+            String doubleValue=String.valueOf(amount);
+            if(doubleValue.length()==3){
+                DecimalFormat formatter = new DecimalFormat("###,000");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            }
+            if(doubleValue.length()==2){
+                DecimalFormat formatter = new DecimalFormat("0##,000");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            }
+            if(doubleValue.length()==1){
+                DecimalFormat formatter = new DecimalFormat("#00,000");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            } if(doubleValue.length()==4){
+                DecimalFormat formatter = new DecimalFormat("###,#00");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            }if(doubleValue.length()==5){
+                DecimalFormat formatter = new DecimalFormat("###,##0");
+                amount=Double.valueOf(doubleValue);
+                returnFormat= formatter.format(new BigDecimal(amount));
+            }
+            else{
+            DecimalFormat formatter = new DecimalFormat("###,000.00");
+            returnFormat=formatter.format((amount));}
+        }else if(format.equals("123456")){
+            DecimalFormat formatter = new DecimalFormat("000000");
+            returnFormat = formatter.format((amount));
+        }else if(format.equals("123456.00")){
+            DecimalFormat formatter = new DecimalFormat("000000.00");
+            returnFormat= formatter.format((amount));
+        }
+        return returnFormat;
+    }
+
+
+//Latest Function
+    public static String formatCurrencyDisplay(double amount, String format) {
+        String returnFormat = "";
+        if (format.equals("123,456")) {
+
+            String pattern = "###,###";
+            DecimalFormat decimalFormat = new DecimalFormat(pattern);
+
+            returnFormat= decimalFormat.format(amount);
+            System.out.println("Currency Format"+returnFormat);
+        //    DecimalFormat formatter = new DecimalFormat("###,000");
+        //    returnFormat = formatter.format(Double.parseDouble(amount));
+            // "###,###,##0.00"
+        } else if (format.equals("123,456.00")) {
+
+            String pattern = "###,###.00";
+            DecimalFormat decimalFormat = new DecimalFormat(pattern);
+
+            returnFormat = decimalFormat.format(amount);
+            System.out.println("Currency Format"+returnFormat);
+
+            /*DecimalFormat formatter = new DecimalFormat("###,###.00");
+            returnFormat = formatter.format(Double.parseDouble(amount));*/
+        } else if (format.equals("123456")) {
+
+            returnFormat = new DecimalFormat("###").format(amount);
+            System.out.println(returnFormat);
+            return returnFormat;
+      //      DecimalFormat formatter = new DecimalFormat("######");
+      //      returnFormat = formatter.format(Double.parseDouble(amount));
+        } else if (format.equals("123456.00")) {
+
+            returnFormat = new DecimalFormat("###.00").format(amount);
+            System.out.println(returnFormat);
+            return returnFormat;
+       //     DecimalFormat formatter = new DecimalFormat("###.00");
+        //    returnFormat = formatter.format(Double.parseDouble(amount));
+        }
+        return returnFormat;
+    }
 }

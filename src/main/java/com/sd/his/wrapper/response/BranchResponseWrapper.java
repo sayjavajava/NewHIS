@@ -86,7 +86,7 @@ public class BranchResponseWrapper {
                 .map(x -> new Room(x.getId(), x.getRoomName(), x.getAllowOnlineScheduling()))
                 .collect(Collectors.toList());
         this.rooms = Long.valueOf(this.examRooms.size());
-        this.user = user;
+//        this.user = user;
         if (branch.getCity() != null) {
             this.city = branch.getCity().getName();
             this.state = branch.getCity().getState().getName();
