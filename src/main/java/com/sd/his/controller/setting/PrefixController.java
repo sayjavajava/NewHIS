@@ -69,7 +69,7 @@ public class PrefixController {
     @RequestMapping(value = "/savePrefixConfiguration", method = RequestMethod.POST)
     public ResponseEntity<?> savePrefixConfiguration(@RequestBody PrefixWrapper configurationRequestWrapper) {
 
-        logger.error("save SMS Configuration API initiated");
+        logger.error("Prefix Configuration API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
         try
         {
@@ -88,6 +88,7 @@ public class PrefixController {
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("prefix.configuration.update.error"));
+            response.setErrorMessageData(ex.getLocalizedMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -175,6 +175,54 @@ public class StateAPI {
     }
 
 
+    @ApiOperation(httpMethod = "GET", value = "States",
+            notes = "This method will return States",
+            produces = "application/json", nickname = "Get Single User",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "States", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/getById/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getStatesByIdAPI(HttpServletRequest request, @PathVariable("id") long id) {
+
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("state.not.found"));
+        response.setResponseCode(ResponseEnum.STATE_NOT_FOUND_ERROR.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+
+        try {
+            State states = this.stateService.getStateById(id);
+            if (HISCoreUtil.isValidObject(states)) {
+                response.setResponseData(states);
+                response.setResponseMessage(messageBundle.getString("state.found"));
+                response.setResponseCode(ResponseEnum.STATE_FETCHED_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                logger.info("State Found successfully...");
+
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.setResponseData(null);
+                response.setResponseMessage(messageBundle.getString("state.search.not.found"));
+                response.setResponseCode(ResponseEnum.STATE_FETCHED_SUCCESS.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                logger.info("State Not Found ...");
+            }
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("State Not Found", ex.fillInStackTrace());
+            response.setResponseData("");
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 
 
