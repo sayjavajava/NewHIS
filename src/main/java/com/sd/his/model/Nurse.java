@@ -66,6 +66,8 @@ public class Nurse extends StaffProfile implements Serializable {
     private Boolean managePatientInvoices;
     @Column(name = "STATUS")
     private Boolean status;
+    @Column(name = "HIDE_PATIENT_PH_NUMBER")
+    private Boolean hidePatientPhoneNumber;
 
     public List<NurseWithDoctor> getNurseWithDoctorList() {
         return nurseWithDoctorList;
@@ -89,6 +91,14 @@ public class Nurse extends StaffProfile implements Serializable {
 
     public void setManagePatientInvoices(Boolean managePatientInvoices) {
         this.managePatientInvoices = managePatientInvoices;
+    }
+
+    public Boolean getHidePatientPhoneNumber() {
+        return hidePatientPhoneNumber;
+    }
+
+    public void setHidePatientPhoneNumber(Boolean hidePatientPhoneNumber) {
+        this.hidePatientPhoneNumber = hidePatientPhoneNumber;
     }
 
     public Map<Long, String> getSelectedDoctorDashboard() {

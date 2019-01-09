@@ -28,48 +28,66 @@ import java.util.List;
 
 
 public class StaffRequestWrapper {
-    private   String userType;
-    private   String userName;
+    private String userType;
+    private String userName;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
-    private  boolean active;
-    private  boolean sendBillingReport;
+    private boolean active;
+    private boolean sendBillingReport;
     private boolean useReceptDashboard;
-    private  boolean otherDoctorDashBoard;
+    private boolean otherDoctorDashBoard;
     private String accountExpiry;
-    private  boolean managePatientInvoices;
-    private  boolean managePatientRecords;
+    private boolean managePatientInvoices;
+    private boolean managePatientRecords;
     private boolean shift2;
-    private  boolean shift1;
+    private boolean shift1;
     private boolean vacation;
-    private  boolean receivePayment;
+    private boolean receivePayment;
     private String secondShiftFromTime;
-    private  String secondShiftToTime;
+    private String secondShiftToTime;
     private String firstShiftFromTime;
     private String firstShiftToTime;
     private Long[] selectedDepartment;
-    private  Long[] selectedServices;
+    private Long[] selectedServices;
     private Long[] selectedRoles;
-    private  Long[] dutyWithDoctors;
-    private  String[] selectedWorkingDays;
-    private  String[] selectedDoctors;
-    private  Double allowDiscount;
+    private Long[] dutyWithDoctors;
+    private String[] selectedWorkingDays;
+    private String[] selectedDoctors;
+    private Double allowDiscount;
     private Long interval;
-    private  String homePhone;
+    private String homePhone;
     private String cellPhone;
-    private  Long primaryBranch;
-    private  Long[] selectedVisitBranches;
-    private  List<Long> selectedDoctorDashboard;
+    private Long primaryBranch;
+    private Long[] selectedVisitBranches;
+    private List<Long> selectedDoctorDashboard;
     private String dateFrom;
-    private  String dateTo;
+    private String dateTo;
     private Long createdOn;
     private Long updatedOn;
+    private boolean canAccessPatientRecord;
+    private boolean allowDiscountCheck;
+    private boolean hidePatientPhoneNumber;
 
     // String otherDashboard;
     List<ServiceComission> serviceComission;
 
+    public boolean isCanAccessPatientRecord() {
+        return canAccessPatientRecord;
+    }
+
+    public void setCanAccessPatientRecord(boolean canAccessPatientRecord) {
+        this.canAccessPatientRecord = canAccessPatientRecord;
+    }
+
+    public boolean isAllowDiscountCheck() {
+        return allowDiscountCheck;
+    }
+
+    public void setAllowDiscountCheck(boolean allowDiscountCheck) {
+        this.allowDiscountCheck = allowDiscountCheck;
+    }
 
     public List<ServiceComission> getServiceComission() {
         return serviceComission;
@@ -381,5 +399,13 @@ public class StaffRequestWrapper {
 
     public void setUpdatedOn(Long updatedOn) {
         this.updatedOn = updatedOn;
+    }
+
+    public boolean isHidePatientPhoneNumber() {
+        return hidePatientPhoneNumber;
+    }
+
+    public void setHidePatientPhoneNumber(boolean hidePatientPhoneNumber) {
+        this.hidePatientPhoneNumber = hidePatientPhoneNumber;
     }
 }

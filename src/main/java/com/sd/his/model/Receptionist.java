@@ -29,8 +29,17 @@ public class Receptionist extends StaffProfile implements Serializable {
     @Column(name = "ALLOW_DISCOUNT")
     private Double allowDiscount;
 
+    @Column(name = "ALLOW_DISCOUNT_CHECK")
+    private Boolean allowDiscountCheck;
+
     @Column(name = "CAN_RECEIVE_PAYMENT")
     private Boolean canReceivePayment;
+
+    @Column(name = "HIDE_PATIENT_PH_NUMBER")
+    private Boolean hidePatientPhoneNumber;
+
+    @Column(name = "CAN_ACCESS_PATIENT_RECORD")
+    private Boolean canAccessPatientRecord;
 
     @ElementCollection
     @JoinTable(name="RECEPTIONIST_DOCTOR_DASHBOARD", joinColumns=@JoinColumn(name="ID"))
@@ -51,6 +60,22 @@ public class Receptionist extends StaffProfile implements Serializable {
         this.branchReceptionists = branchReceptionists;
     }
 
+    public Boolean getCanAccessPatientRecord() {
+        return canAccessPatientRecord;
+    }
+
+    public Boolean getAllowDiscountCheck() {
+        return allowDiscountCheck;
+    }
+
+    public void setAllowDiscountCheck(Boolean allowDiscountCheck) {
+        this.allowDiscountCheck = allowDiscountCheck;
+    }
+
+    public void setCanAccessPatientRecord(Boolean canAccessPatientRecord) {
+        this.canAccessPatientRecord = canAccessPatientRecord;
+    }
+
     public Boolean getCanReceivePayment() {
         return canReceivePayment;
     }
@@ -69,6 +94,14 @@ public class Receptionist extends StaffProfile implements Serializable {
 
     public Boolean getStatus() {
         return status;
+    }
+
+    public Boolean getHidePatientPhoneNumber() {
+        return hidePatientPhoneNumber;
+    }
+
+    public void setHidePatientPhoneNumber(Boolean hidePatientPhoneNumber) {
+        this.hidePatientPhoneNumber = hidePatientPhoneNumber;
     }
 
     public void setStatus(Boolean status) {

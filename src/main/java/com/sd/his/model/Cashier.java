@@ -25,9 +25,17 @@ public class Cashier extends StaffProfile implements Serializable {
 
     @Column(name = "ALLOW_DISCOUNT")
     private Double allowDiscount;
+    @Column(name = "ALLOW_DISCOUNT_CHECK")
+    private Boolean allowDiscountCheck;
 
     @Column(name = "CAN_RECEIVE_PAYMENT")
     private Boolean canReceivePayment;
+
+    @Column(name = "CAN_ACCESS_PATIENT_RECORD")
+    private Boolean canAccessPatientRecord;
+
+    @Column(name = "HIDE_PATIENT_PH_NUMBER")
+    private Boolean hidePatientPhoneNumber;
 
     @ElementCollection
     @JoinTable(name="CASHIER_DOCTOR_DASHBOARD", joinColumns=@JoinColumn(name="ID"))
@@ -43,6 +51,14 @@ public class Cashier extends StaffProfile implements Serializable {
         return status;
     }
 
+    public Boolean getCanAccessPatientRecord() {
+        return canAccessPatientRecord;
+    }
+
+    public void setCanAccessPatientRecord(Boolean canAccessPatientRecord) {
+        this.canAccessPatientRecord = canAccessPatientRecord;
+    }
+
     public void setStatus(Boolean status) {
         this.status = status;
     }
@@ -53,6 +69,22 @@ public class Cashier extends StaffProfile implements Serializable {
 
     public void setSelectedDoctorDashboard(Map<Long, String> selectedDoctorDashboard) {
         this.selectedDoctorDashboard = selectedDoctorDashboard;
+    }
+
+    public Boolean getAllowDiscountCheck() {
+        return allowDiscountCheck;
+    }
+
+    public Boolean getHidePatientPhoneNumber() {
+        return hidePatientPhoneNumber;
+    }
+
+    public void setHidePatientPhoneNumber(Boolean hidePatientPhoneNumber) {
+        this.hidePatientPhoneNumber = hidePatientPhoneNumber;
+    }
+
+    public void setAllowDiscountCheck(Boolean allowDiscountCheck) {
+        this.allowDiscountCheck = allowDiscountCheck;
     }
 
     public Boolean getCanReceivePayment() {

@@ -103,9 +103,17 @@ public class Doctor extends StaffProfile implements Serializable {
 
     @Column(name = "ALLOW_DISCOUNT")
     private Double allowDiscount;
+    @Column(name = "HIDE_PATIENT_PH_NUMBER")
+    private Boolean hidePatientPhoneNumber;
+
+    @Column(name = "ALLOW_DISCOUNT_CHECK")
+    private Boolean allowDiscountCheck;
 
     @Column(name = "CAN_RECEIVE_PAYMENT")
     private Boolean canReceivePayment;
+
+    @Column(name = "CAN_ACCESS_PATIENT")
+    private Boolean canAccessPatientRecord;
 
     @OneToMany(mappedBy = "doctor")
     private List<StaffPayment> staffPayment;
@@ -117,6 +125,30 @@ public class Doctor extends StaffProfile implements Serializable {
 
     public void setSelectedDoctorDashboard(Map<Long, String> selectedDoctorDashboard) {
         this.selectedDoctorDashboard = selectedDoctorDashboard;
+    }
+
+    public Boolean getCanAccessPatientRecord() {
+        return canAccessPatientRecord;
+    }
+
+    public Boolean getAllowDiscountCheck() {
+        return allowDiscountCheck;
+    }
+
+    public void setAllowDiscountCheck(Boolean allowDiscountCheck) {
+        this.allowDiscountCheck = allowDiscountCheck;
+    }
+
+    public void setCanAccessPatientRecord(Boolean canAccessPatientRecord) {
+        this.canAccessPatientRecord = canAccessPatientRecord;
+    }
+
+    public Boolean getHidePatientPhoneNumber() {
+        return hidePatientPhoneNumber;
+    }
+
+    public void setHidePatientPhoneNumber(Boolean hidePatientPhoneNumber) {
+        this.hidePatientPhoneNumber = hidePatientPhoneNumber;
     }
 
     public Boolean getCanReceivePayment() {
