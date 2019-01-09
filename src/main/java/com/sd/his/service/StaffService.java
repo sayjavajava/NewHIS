@@ -85,6 +85,7 @@ public class StaffService {
     private AppointmentRepository appointmentRepository;
 
 
+
     List<StaffWrapper> finalStaffList = new ArrayList<>();
     private final Logger logger = LoggerFactory.getLogger(StaffService.class);
 
@@ -140,6 +141,9 @@ public class StaffService {
             cashier.setEmail(createRequest.getEmail());
             cashier.setFirstName(createRequest.getFirstName());
             cashier.setLastName(createRequest.getLastName());
+            cashier.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
+            cashier.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
+            cashier.setHidePatientPhoneNumber(createRequest.isHidePatientPhoneNumber());
             cashier.setProfileId(prefID);
             cashier.setUser(user);
 
@@ -183,7 +187,7 @@ public class StaffService {
             branchCashierRepository.save(branchCashier);
 
             // cashier.setBranchCashiers(cashierVisitBranchesData);
-
+            hisUtilService.updatePrefix(ModuleEnum.PROFILE);
             return user;
         }
 
@@ -230,6 +234,9 @@ public class StaffService {
             receptionist.setStatus(createRequest.isActive());
             receptionist.setFirstName(createRequest.getFirstName());
             receptionist.setLastName(createRequest.getLastName());
+            receptionist.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
+            receptionist.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
+            receptionist.setHidePatientPhoneNumber(createRequest.isHidePatientPhoneNumber());
             receptionist.setUser(user);
 
             receptionist.setActive(createRequest.isActive());
@@ -269,7 +276,7 @@ public class StaffService {
             branchReceptionist.setPrimaryBranch(true);
             branchReceptionist.setReceptionist(receptionist);
             branchReceptionistRepository.save(branchReceptionist);
-
+            hisUtilService.updatePrefix(ModuleEnum.PROFILE);
             // cashier.setBranchCashiers(cashierVisitBranchesData);
             return user;
         }
@@ -318,7 +325,7 @@ public class StaffService {
             nurse.setLastName(createRequest.getLastName());
             nurse.setUser(user);
             nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
-
+            nurse.setHidePatientPhoneNumber(createRequest.isHidePatientPhoneNumber());
             nurse.setActive(createRequest.isActive());
             nurse.setSendBillingReport(createRequest.isSendBillingReport());
             nurse.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
@@ -395,6 +402,7 @@ public class StaffService {
                 dutyWithDoctorsData.add(dutyWithDoctor1);
             }
             nurseWithDoctorRepository.save(dutyWithDoctorsData);
+            hisUtilService.updatePrefix(ModuleEnum.PROFILE);
             return user;
         }
 
@@ -436,6 +444,8 @@ public class StaffService {
             doctor.setHomePhone(createRequest.getHomePhone());
             doctor.setCheckUpInterval(createRequest.getInterval());
             doctor.setEmail(createRequest.getEmail());
+            doctor.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
+            doctor.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
             doctor.setStatus(createRequest.isActive());
             if (!HISCoreUtil.isNull(createRequest.getAccountExpiry()))
                 doctor.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
@@ -453,7 +463,7 @@ public class StaffService {
             doctor.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
             doctor.setAllowDiscount(createRequest.getAllowDiscount());
             doctor.setCanReceivePayment(createRequest.isReceivePayment());
-
+            doctor.setHidePatientPhoneNumber(createRequest.isHidePatientPhoneNumber());
             List<String> daysList = Arrays.asList(createRequest.getSelectedWorkingDays());
             doctor.setWorkingDays(daysList);
 
@@ -558,6 +568,7 @@ public class StaffService {
             }
             departmentUserRepository.save(docDepartmentUser);
 */
+            hisUtilService.updatePrefix(ModuleEnum.PROFILE);
             return user;
         }
         return null;
@@ -735,6 +746,8 @@ public class StaffService {
                 doctor.setVacationTO(HISCoreUtil.convertToDate(createRequest.getDateTo()));
                 doctor.setCheckUpInterval(createRequest.getInterval());
                 doctor.setCanReceivePayment(createRequest.isReceivePayment());
+                doctor.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
+                doctor.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
                 doctor.setAllowDiscount(createRequest.getAllowDiscount());
                 //doctor working days
                 List<String> daysList = new LinkedList<String>(Arrays.asList(createRequest.getSelectedWorkingDays()));
@@ -834,6 +847,8 @@ public class StaffService {
                 receptionist.setFirstName(createRequest.getFirstName());
                 receptionist.setCanReceivePayment(createRequest.isReceivePayment());
                 receptionist.setAllowDiscount(createRequest.getAllowDiscount());
+                receptionist.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
+                receptionist.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
                 if (createRequest.getSelectedDoctorDashboard().size() > 0) {
                     List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
                     Map<Long, String> dashMap = new HashMap<>();
@@ -879,6 +894,8 @@ public class StaffService {
                 cashier.setFirstName(createRequest.getFirstName());
                 cashier.setCanReceivePayment(createRequest.isReceivePayment());
                 cashier.setAllowDiscount(createRequest.getAllowDiscount());
+                cashier.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
+                cashier.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
                 if (createRequest.getSelectedDoctorDashboard().size() > 0) {
                     List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
                     Map<Long, String> dashMap = new HashMap<>();

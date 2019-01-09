@@ -84,14 +84,17 @@ public class StaffResponseWrapper {
     private String formatedTime = "HH:mm:ss";
     private String formatedDate = "dd:MM:yyyy";
     private String zone = "Asia/Karachi";
-    private boolean receivePayment;
+    private Boolean receivePayment;
     private Double allowDiscount;
+    private Boolean canAccessPatientRecord;
+    private Boolean allowDiscountCheck;
+    private Boolean hidePatientPhoneNumber;
 
     public StaffResponseWrapper() {
     }
 
     //du.id,nr.id,du.userType,nr.firstName,nr.lastName,du.username,nr.email,br.name,nr.homePhone,nr.cellPhone,du.active,br.id,nr.accountExpiry
-    //constructor for cashier and receptionist
+    //constructor for cashier
     public StaffResponseWrapper(Long uId, Long pId, String userType, String firstName, String lastName, String userName,
                                 String email, String primaryBranch, String homePhone, String cellPhone, Boolean active, Long primaryId,
                                 Date expiryDate, Boolean sendBillingReport, Boolean useReceptDashboard, Boolean otherDoctorDashBoard,Cashier cr
@@ -117,9 +120,13 @@ public class StaffResponseWrapper {
         this.permittedDoctorDashboard = cr.getSelectedDoctorDashboard().keySet().stream().collect(Collectors.toList());
         this.allowDiscount = cr.getAllowDiscount();
         this.receivePayment = cr.getCanReceivePayment();
+        this.canAccessPatientRecord = cr.getCanAccessPatientRecord();
+        this.allowDiscountCheck = cr.getAllowDiscountCheck();
+        this.hidePatientPhoneNumber =cr.getHidePatientPhoneNumber();
         // this.visitBranches=branchCashiers;
 
     }
+    //constructor for receptionist
     public StaffResponseWrapper(Long uId, Long pId, String userType, String firstName, String lastName, String userName,
                                 String email, String primaryBranch, String homePhone, String cellPhone, Boolean active, Long primaryId,
                                 Date expiryDate, Boolean sendBillingReport, Boolean useReceptDashboard, Boolean otherDoctorDashBoard,Receptionist rt
@@ -144,6 +151,10 @@ public class StaffResponseWrapper {
         this.otherDoctorDashBoard = otherDoctorDashBoard;
         this.permittedDoctorDashboard = rt.getSelectedDoctorDashboard().keySet().stream().collect(Collectors.toList());
         this.receivePayment = rt.getCanReceivePayment();
+        this.canAccessPatientRecord = rt.getCanAccessPatientRecord();
+        this.allowDiscountCheck = rt.getAllowDiscountCheck();
+        this.hidePatientPhoneNumber =rt.getHidePatientPhoneNumber();
+     //   this.canAccessPatientRecord = rt.;
         //   this.permittedDoctorDashboard = permitDocDashboard.keySet().stream().collect(Collectors.toList());
 
         // this.visitBranches=branchCashiers;
@@ -220,6 +231,8 @@ public class StaffResponseWrapper {
         this.docDepartmentId = doctor.getDepartment() != null ? doctor.getDepartment().getId() : null;
         this.allowDiscount = doctor.getAllowDiscount();
         this.receivePayment = doctor.getCanReceivePayment();
+        this.allowDiscountCheck = doctor.getAllowDiscountCheck();
+        this.hidePatientPhoneNumber =doctor.getHidePatientPhoneNumber();
     }
 
   /*  public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
@@ -275,6 +288,7 @@ public class StaffResponseWrapper {
         this.managePatientInvoices = managePatientInvoices;
         this.managePatientRecords = managePatientRecords;
         this.permittedDoctorDashboard = nurse.getSelectedDoctorDashboard().keySet().stream().collect(Collectors.toList());
+        this.hidePatientPhoneNumber =nurse.getHidePatientPhoneNumber();
         // this.visitBranches=branchCashiers;
 
     }
@@ -295,6 +309,7 @@ public class StaffResponseWrapper {
         this.homePhone = nurse.getHomePhone();
         this.cellPhone = nurse.getCellPhone();
         this.primaryBranch = nurse.getBranchNurses().stream().filter(p -> p.getPrimaryBranch() == true).map(pb -> pb.getBranch().getName()).findAny().get();
+        this.hidePatientPhoneNumber =nurse.getHidePatientPhoneNumber();
         //List<Branch> branches = nurse.getBranchNurses().stream().map(b->b.getBranch()).collect(Collectors.toList());
         //this.staffBranches = branches;
         //this.dutyWithDoctors = nurse.getNurseWithDoctorList().stream().map(d->d.getDoctor()).collect(Collectors.toList());
@@ -352,190 +367,6 @@ public class StaffResponseWrapper {
         }
     }
 
-    public Double getAllowDiscount() {
-        return allowDiscount;
-    }
-
-    public void setAllowDiscount(Double allowDiscount) {
-        this.allowDiscount = allowDiscount;
-    }
-
-    public boolean isReceivePayment() {
-        return receivePayment;
-    }
-
-    public void setReceivePayment(boolean receivePayment) {
-        this.receivePayment = receivePayment;
-    }
-
-    public List<Long> getPermittedDoctorDashboard() {
-        return permittedDoctorDashboard;
-    }
-
-    public void setPermittedDoctorDashboard(List<Long> permittedDoctorDashboard) {
-        this.permittedDoctorDashboard = permittedDoctorDashboard;
-    }
-
-    public List<DutyShift> getShift1() {
-        return shift1;
-    }
-
-    public void setShift1(List<DutyShift> shift1) {
-        this.shift1 = shift1;
-    }
-
-    public List<DutyShift> getShift2() {
-        return shift2;
-    }
-
-    public void setShift2(List<DutyShift> shift2) {
-        this.shift2 = shift2;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Boolean getSendBillingReport() {
-        return sendBillingReport;
-    }
-
-    public void setSendBillingReport(Boolean sendBillingReport) {
-        this.sendBillingReport = sendBillingReport;
-    }
-
-    public Boolean getUseReceptDashboard() {
-        return useReceptDashboard;
-    }
-
-    public void setUseReceptDashboard(Boolean useReceptDashboard) {
-        this.useReceptDashboard = useReceptDashboard;
-    }
-
-    public Boolean getOtherDoctorDashBoard() {
-        return otherDoctorDashBoard;
-    }
-
-    public void setOtherDoctorDashBoard(Boolean otherDoctorDashBoard) {
-        this.otherDoctorDashBoard = otherDoctorDashBoard;
-    }
-
-    public List<MedicalServiceWrapper> getDoctorServiceComission() {
-        return doctorServiceComission;
-    }
-
-    public void setDoctorServiceComission(List<MedicalServiceWrapper> doctorServiceComission) {
-        this.doctorServiceComission = doctorServiceComission;
-    }
-
-    public List<ServiceComission> getComissionServices() {
-        return comissionServices;
-    }
-
-    public void setComissionServices(List<ServiceComission> comissionServices) {
-        this.comissionServices = comissionServices;
-    }
-
-    public long getValue() {
-        return value;
-    }
-
-    public void setValue(long value) {
-        this.value = value;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getNaturalId() {
-        return naturalId;
-    }
-
-    public void setNaturalId(String naturalId) {
-        this.naturalId = naturalId;
-    }
-
-    public Boolean getManagePatientRecords() {
-        return managePatientRecords;
-    }
-
-    public void setManagePatientRecords(Boolean managePatientRecords) {
-        this.managePatientRecords = managePatientRecords;
-    }
-
-    public Boolean getManagePatientInvoices() {
-        return managePatientInvoices;
-    }
-
-    public void setManagePatientInvoices(Boolean managePatientInvoices) {
-        this.managePatientInvoices = managePatientInvoices;
-    }
-
-    public List<DutyShift> getDutyShifts() {
-        return dutyShifts;
-    }
-
-    public void setDutyShifts(List<DutyShift> dutyShifts) {
-        this.dutyShifts = dutyShifts;
-    }
-
-    public List<String> getWorkingDays() {
-        return workingDays;
-    }
-
-    public void setWorkingDays(List<String> workingDays) {
-        this.workingDays = workingDays;
-    }
-
-    public Long getCheckUpInterval() {
-        return checkUpInterval;
-    }
-
-    public void setCheckUpInterval(Long checkUpInterval) {
-        this.checkUpInterval = checkUpInterval;
-    }
-
-    public Boolean getVacation() {
-        return vacation;
-    }
-
-    public void setVacation(Boolean vacation) {
-        this.vacation = vacation;
-    }
-
-    public String getVacationFrom() {
-        return vacationFrom;
-    }
-
-    public void setVacationFrom(String vacationFrom) {
-        this.vacationFrom = vacationFrom;
-    }
-
-    public String getVacationTo() {
-        return vacationTo;
-    }
-
-    public void setVacationTo(String vacationTo) {
-        this.vacationTo = vacationTo;
-    }
-
-    public Long getPrimaryBranchId() {
-        return primaryBranchId;
-    }
-
-    public void setPrimaryBranchId(Long primaryBranchId) {
-        this.primaryBranchId = primaryBranchId;
-    }
-
     public Long getUid() {
         return uid;
     }
@@ -544,12 +375,28 @@ public class StaffResponseWrapper {
         this.uid = uid;
     }
 
+    public Boolean getHidePatientPhoneNumber() {
+        return hidePatientPhoneNumber;
+    }
+
+    public void setHidePatientPhoneNumber(Boolean hidePatientPhoneNumber) {
+        this.hidePatientPhoneNumber = hidePatientPhoneNumber;
+    }
+
     public Long getpId() {
         return pId;
     }
 
     public void setpId(Long pId) {
         this.pId = pId;
+    }
+
+    public Long getPrimaryBranchId() {
+        return primaryBranchId;
+    }
+
+    public void setPrimaryBranchId(Long primaryBranchId) {
+        this.primaryBranchId = primaryBranchId;
     }
 
     public String getUserType() {
@@ -656,12 +503,84 @@ public class StaffResponseWrapper {
         this.active = active;
     }
 
-    public Long getId() {
-        return id;
+    public Long getCheckUpInterval() {
+        return checkUpInterval;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCheckUpInterval(Long checkUpInterval) {
+        this.checkUpInterval = checkUpInterval;
+    }
+
+    public Boolean getVacation() {
+        return vacation;
+    }
+
+    public void setVacation(Boolean vacation) {
+        this.vacation = vacation;
+    }
+
+    public String getVacationFrom() {
+        return vacationFrom;
+    }
+
+    public void setVacationFrom(String vacationFrom) {
+        this.vacationFrom = vacationFrom;
+    }
+
+    public String getVacationTo() {
+        return vacationTo;
+    }
+
+    public void setVacationTo(String vacationTo) {
+        this.vacationTo = vacationTo;
+    }
+
+    public List<String> getWorkingDays() {
+        return workingDays;
+    }
+
+    public void setWorkingDays(List<String> workingDays) {
+        this.workingDays = workingDays;
+    }
+
+    public List<Long> getPermittedDoctorDashboard() {
+        return permittedDoctorDashboard;
+    }
+
+    public void setPermittedDoctorDashboard(List<Long> permittedDoctorDashboard) {
+        this.permittedDoctorDashboard = permittedDoctorDashboard;
+    }
+
+    public List<DutyShift> getDutyShifts() {
+        return dutyShifts;
+    }
+
+    public void setDutyShifts(List<DutyShift> dutyShifts) {
+        this.dutyShifts = dutyShifts;
+    }
+
+    public Boolean getManagePatientRecords() {
+        return managePatientRecords;
+    }
+
+    public void setManagePatientRecords(Boolean managePatientRecords) {
+        this.managePatientRecords = managePatientRecords;
+    }
+
+    public Boolean getManagePatientInvoices() {
+        return managePatientInvoices;
+    }
+
+    public void setManagePatientInvoices(Boolean managePatientInvoices) {
+        this.managePatientInvoices = managePatientInvoices;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getAddress() {
@@ -688,6 +607,14 @@ public class StaffResponseWrapper {
         this.country = country;
     }
 
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
     public String getProfileImg() {
         return profileImg;
     }
@@ -696,12 +623,52 @@ public class StaffResponseWrapper {
         this.profileImg = profileImg;
     }
 
-    public Boolean getStatus() {
-        return status;
+    public Long getId() {
+        return id;
     }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNaturalId() {
+        return naturalId;
+    }
+
+    public void setNaturalId(String naturalId) {
+        this.naturalId = naturalId;
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public Long getDocDepartmentId() {
+        return docDepartmentId;
+    }
+
+    public void setDocDepartmentId(Long docDepartmentId) {
+        this.docDepartmentId = docDepartmentId;
+    }
+
+    public List<Department> getNurseDepartmentList() {
+        return nurseDepartmentList;
+    }
+
+    public void setNurseDepartmentList(List<Department> nurseDepartmentList) {
+        this.nurseDepartmentList = nurseDepartmentList;
     }
 
     public List<Branch> getStaffBranches() {
@@ -728,22 +695,6 @@ public class StaffResponseWrapper {
         this.checkedDoc = checkedDoc;
     }
 
-    public Long getDocDepartmentId() {
-        return docDepartmentId;
-    }
-
-    public void setDocDepartmentId(Long docDepartmentId) {
-        this.docDepartmentId = docDepartmentId;
-    }
-
-    public List<Department> getNurseDepartmentList() {
-        return nurseDepartmentList;
-    }
-
-    public void setNurseDepartmentList(List<Department> nurseDepartmentList) {
-        this.nurseDepartmentList = nurseDepartmentList;
-    }
-
     public List<MedicalService> getDoctorMedicalSrvcList() {
         return doctorMedicalSrvcList;
     }
@@ -752,11 +703,123 @@ public class StaffResponseWrapper {
         this.doctorMedicalSrvcList = doctorMedicalSrvcList;
     }
 
+    public List<MedicalServiceWrapper> getDoctorServiceComission() {
+        return doctorServiceComission;
+    }
+
+    public void setDoctorServiceComission(List<MedicalServiceWrapper> doctorServiceComission) {
+        this.doctorServiceComission = doctorServiceComission;
+    }
+
+    public List<ServiceComission> getComissionServices() {
+        return comissionServices;
+    }
+
+    public void setComissionServices(List<ServiceComission> comissionServices) {
+        this.comissionServices = comissionServices;
+    }
+
     public Double getBalance() {
         return balance;
     }
 
     public void setBalance(Double balance) {
         this.balance = balance;
+    }
+
+    public Boolean getSendBillingReport() {
+        return sendBillingReport;
+    }
+
+    public void setSendBillingReport(Boolean sendBillingReport) {
+        this.sendBillingReport = sendBillingReport;
+    }
+
+    public Boolean getUseReceptDashboard() {
+        return useReceptDashboard;
+    }
+
+    public void setUseReceptDashboard(Boolean useReceptDashboard) {
+        this.useReceptDashboard = useReceptDashboard;
+    }
+
+    public Boolean getOtherDoctorDashBoard() {
+        return otherDoctorDashBoard;
+    }
+
+    public void setOtherDoctorDashBoard(Boolean otherDoctorDashBoard) {
+        this.otherDoctorDashBoard = otherDoctorDashBoard;
+    }
+
+    public List<DutyShift> getShift1() {
+        return shift1;
+    }
+
+    public void setShift1(List<DutyShift> shift1) {
+        this.shift1 = shift1;
+    }
+
+    public List<DutyShift> getShift2() {
+        return shift2;
+    }
+
+    public void setShift2(List<DutyShift> shift2) {
+        this.shift2 = shift2;
+    }
+
+    public String getFormatedTime() {
+        return formatedTime;
+    }
+
+    public void setFormatedTime(String formatedTime) {
+        this.formatedTime = formatedTime;
+    }
+
+    public String getFormatedDate() {
+        return formatedDate;
+    }
+
+    public void setFormatedDate(String formatedDate) {
+        this.formatedDate = formatedDate;
+    }
+
+    public String getZone() {
+        return zone;
+    }
+
+    public void setZone(String zone) {
+        this.zone = zone;
+    }
+
+    public Boolean getReceivePayment() {
+        return receivePayment;
+    }
+
+    public void setReceivePayment(Boolean receivePayment) {
+        this.receivePayment = receivePayment;
+    }
+
+    public Double getAllowDiscount() {
+        return allowDiscount;
+    }
+
+    public void setAllowDiscount(Double allowDiscount) {
+        this.allowDiscount = allowDiscount;
+    }
+
+    public Boolean getCanAccessPatientRecord() {
+        return canAccessPatientRecord;
+    }
+
+    public void setCanAccessPatientRecord(Boolean canAccessPatientRecord) {
+        this.canAccessPatientRecord = canAccessPatientRecord;
+    }
+
+    public Boolean getAllowDiscountCheck() {
+        return allowDiscountCheck;
+    }
+
+    public void setAllowDiscountCheck(Boolean allowDiscountCheck) {
+        this.allowDiscountCheck = allowDiscountCheck;
     }
 }

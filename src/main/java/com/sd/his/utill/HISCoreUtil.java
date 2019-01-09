@@ -515,7 +515,7 @@ public class HISCoreUtil {
     }
 
     public static String getDayFromDate(String in_date){
-        SimpleDateFormat format1=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        SimpleDateFormat format1=new SimpleDateFormat("yyyy-MM-dd");
         Date dt1= null;
         try {
             dt1 = format1.parse(in_date);
