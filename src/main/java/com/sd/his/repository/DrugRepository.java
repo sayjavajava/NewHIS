@@ -47,7 +47,7 @@ public interface DrugRepository extends JpaRepository<Drug, Long> {
     List<String> searchDrugByParams(@Param("name") String drugName);
 
     @Query("SELECT new com.sd.his.wrapper.DrugWrapper(drug) " +
-            "FROM Drug drug ")
+            "FROM Drug drug ORDER BY drug.drugName")
     List<DrugWrapper> getAllDrugWrappers();
 
     @Query("SELECT drug FROM Drug drug " +

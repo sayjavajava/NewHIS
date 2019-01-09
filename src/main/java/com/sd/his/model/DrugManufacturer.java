@@ -4,11 +4,13 @@ import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
-@Table(name = "DRUG_MANUFACTURERS")
-public class DrugManufacturers  extends BaseEntity {
+@Table(name = "DRUG_MANUFACTURER")
+public class DrugManufacturer extends BaseEntity {
 
     @NaturalId
     @Column(name = "drug_manufacturer_natural")
@@ -17,11 +19,14 @@ public class DrugManufacturers  extends BaseEntity {
     private String name;
     @Column(name = "ACTIVE")
     private Boolean status;
+    @OneToMany(mappedBy = "drugManufacturer")
+    private List<Drug> drug;
 
-    public DrugManufacturers() {
+    public DrugManufacturer() {
     }
 
-    public DrugManufacturers(String drugManufacturerNaturalId, String name, Boolean status) {
+    public DrugManufacturer(Long id, String drugManufacturerNaturalId, String name, Boolean status) {
+        this.setId(id);
         this.drugManufacturerNaturalId = drugManufacturerNaturalId;
         this.name = name;
         this.status = status;
@@ -49,6 +54,14 @@ public class DrugManufacturers  extends BaseEntity {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public List<Drug> getDrug() {
+        return drug;
+    }
+
+    public void setDrug(List<Drug> drug) {
+        this.drug = drug;
     }
 }
 

@@ -22,56 +22,11 @@ public class DrugWrapper extends BaseWrapper {
     private List<String> strengths;
     private String strength = "";
     private String uOM;
-    private String selectedCountry;
+    private String drugMaker;
     private String drugInfo;
     private boolean active = true;
     private boolean hasChild;
-
-    public String getCountryView() {
-        return countryView;
-    }
-
-    public void setCountryView(String country) {
-        this.countryView = country;
-    }
-
-    private String countryView;
-
-    public String getDrugInfo() {
-        return drugInfo;
-    }
-
-    public void setDrugInfo(String drugInfo) {
-        this.drugInfo = drugInfo;
-    }
-
-    public String getSelectedCountry() {
-        return selectedCountry;
-    }
-
-    public void setSelectedCountry(String selectedCountry) {
-        this.selectedCountry = selectedCountry;
-    }
-
-    /* public Country getCountry() {
-         return country;
-     }
-
-     public void setCountry(Country country) {
-         this.country = country;
-     }
-
-     // private String origin;
-     private Country country;*/
-
-    public Map<String, Object> getAddInfo() {
-        return addInfo;
-    }
-
-    public void setAddInfo(Map<String, Object> addInfo) {
-        this.addInfo = addInfo;
-    }
-
+    private String drugMakerView;
     Map<String, Object> addInfo;
 
     public DrugWrapper() {
@@ -82,31 +37,6 @@ public class DrugWrapper extends BaseWrapper {
         this.route = route;
     }
 
-    public DrugWrapper(Long id, Date createdOn, Date updatedOn,
-                       String drugNaturalId, String drugName, String genericName, String companyName, String route,
-                       List<String> strengths, String uOM, Country origin, boolean active, boolean hasChild, String drugInfo) {
-        super(id,
-                HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_dd),
-                HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMATE_YYY_MM_dd));
-        this.drugNaturalId = drugNaturalId;
-        this.drugName = drugName;
-        this.genericName = genericName;
-        this.companyName = companyName;
-        this.route = route;
-        this.strengths = strengths;
-
-        if (strengths != null && strengths.size() > 0) {
-            for (String s : strengths) {
-                this.strength = this.strength.concat(s + ",");
-            }
-        }
-        this.uOM = uOM;
-        //    this.selectedCountry = origin;
-        this.active = active;
-        this.hasChild = hasChild;
-        this.drugInfo = drugInfo;
-    }
-
     public DrugWrapper(Drug drug) {
         super(drug.getId(),
                 HISCoreUtil.convertDateToString(drug.getCreatedOn(), HISConstants.DATE_FORMATE_YYY_MM_dd),
@@ -115,10 +45,17 @@ public class DrugWrapper extends BaseWrapper {
         this.drugName = drug.getDrugName();
         this.genericName = drug.getGenericName();
         this.companyName = drug.getCompanyName();
-        if (drug.getCountry() != null)
-            this.countryView = drug.getCountry().getName();
+        this.uOM = drug.getuOM();
         this.route = drug.getRoute();
         this.strengths = drug.getStrengths();
+        this.active = drug.isActive();
+        this.hasChild = false;
+        this.drugInfo = drug.getDruginfo();
+
+        if (drug.getDrugManufacturer() != null) {
+            this.drugMakerView = drug.getDrugManufacturer().getName();
+            this.drugMaker = drug.getDrugManufacturer().getName();
+        }
 
         if (drug.getStrengths() != null && drug.getStrengths().size() > 0) {
             for (String s : drug.getStrengths()) {
@@ -126,13 +63,38 @@ public class DrugWrapper extends BaseWrapper {
             }
             this.strength = this.strength.substring(0, this.getStrength().length() - 1);
         }
-        this.uOM = drug.getuOM();
-        // this.origin = drug.getOrigin();
-        // this.selectedCountry=drug.getCountry();
-        this.active = drug.isActive();
-        this.hasChild = false;
-        this.drugInfo = drug.getDruginfo();
-        this.selectedCountry = drug.getCountry().getName();
+    }
+
+    public String getDrugMakerView() {
+        return drugMakerView;
+    }
+
+    public void setDrugMakerView(String drugMakerView) {
+        this.drugMakerView = drugMakerView;
+    }
+
+    public String getDrugInfo() {
+        return drugInfo;
+    }
+
+    public void setDrugInfo(String drugInfo) {
+        this.drugInfo = drugInfo;
+    }
+
+    public String getDrugMaker() {
+        return drugMaker;
+    }
+
+    public void setDrugMaker(String drugMaker) {
+        this.drugMaker = drugMaker;
+    }
+
+    public Map<String, Object> getAddInfo() {
+        return addInfo;
+    }
+
+    public void setAddInfo(Map<String, Object> addInfo) {
+        this.addInfo = addInfo;
     }
 
     public String getDrugNaturalId() {
@@ -190,14 +152,6 @@ public class DrugWrapper extends BaseWrapper {
     public void setuOM(String uOM) {
         this.uOM = uOM;
     }
-
-   /* public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }*/
 
     public boolean isActive() {
         return active;

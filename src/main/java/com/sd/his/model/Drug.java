@@ -32,15 +32,15 @@ public class Drug extends BaseEntity {
     @Column(name = "Drug_info")
     private String druginfo;
     @ManyToOne
-    @JoinColumn(name = "Country_id")
-    private Country country;
+    @JoinColumn(name = "Drug_Manufacturer_ID")
+    private DrugManufacturer drugManufacturer;
 
-    public Country getCountry() {
-        return country;
+    public DrugManufacturer getDrugManufacturer() {
+        return drugManufacturer;
     }
 
-    public void setCountry(Country country) {
-        this.country = country;
+    public void setDrugManufacturer(DrugManufacturer drugManufacturer) {
+        this.drugManufacturer = drugManufacturer;
     }
 
     public Drug() {
@@ -72,11 +72,12 @@ public class Drug extends BaseEntity {
         drug.route = drugWrapper.getRoute();
         drug.strengths = drugWrapper.getStrengths();
         drug.uOM = drugWrapper.getuOM();
-   //     drug.country = drugWrapper.getSelectedCountry();
         drug.active = drugWrapper.isActive();
-        drug.druginfo = ((drugWrapper.getDrugInfo().contains("http:") || drugWrapper.getDrugInfo().contains("https:"))
-                ? drugWrapper.getDrugInfo()
-                : ("http://" + drugWrapper.getDrugInfo()));
+        if (drugWrapper.getDrugInfo() != null) {
+            drug.druginfo = ((drugWrapper.getDrugInfo().contains("http:") || drugWrapper.getDrugInfo().contains("https:"))
+                    ? drugWrapper.getDrugInfo()
+                    : ("http://" + drugWrapper.getDrugInfo()));
+        }
     }
 
     public String getDrugNaturalId() {

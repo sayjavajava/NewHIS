@@ -2,8 +2,8 @@ package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Drug;
-import com.sd.his.repository.CountryRepository;
 import com.sd.his.service.BulkImportService;
+import com.sd.his.service.DrugManufacturerService;
 import com.sd.his.service.DrugService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DrugWrapper;
@@ -32,17 +32,15 @@ import java.util.stream.IntStream;
 @RequestMapping("/setting/drug/")
 public class DrugAPI {
 
-
     private final org.slf4j.Logger logger = LoggerFactory.getLogger(DrugAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @Autowired
     private DrugService drugService;
     @Autowired
-    private BulkImportService bulkImportService;
-
+    private DrugManufacturerService drugManufacturerService;
     @Autowired
-    private CountryRepository countryRepository;
+    private BulkImportService bulkImportService;
 
     @ApiOperation(httpMethod = "GET", value = "Drug Natural Id",
             notes = "This method will return drug Natural Id",
@@ -310,27 +308,19 @@ public class DrugAPI {
         try {
             DrugWrapper drugWrapper = this.drugService.getDrugWrapper(id);
             Drug drug = this.drugService.getDrugById(id);
-            Map<String, Object> countryInfo = new HashMap<>();
-            countryInfo.put("countryId", drug.getCountry().getId());
-            countryInfo.put("country", drug.getCountry().getName());
-            drugWrapper.setSelectedCountry(drug.getCountry().getName());
+            Map<String, Object> drugMakerInfo = new HashMap<>();
+            drugMakerInfo.put("drugMakerId", drug.getDrugManufacturer().getId());
+            drugMakerInfo.put("drugMaker", drug.getDrugManufacturer().getName());
+            drugWrapper.setDrugMaker(drug.getDrugManufacturer().getName());
             drugWrapper.setDrugInfo(drug.getDruginfo());
-            drugWrapper.setAddInfo(countryInfo);
-            if (HISCoreUtil.isValidObject(drugWrapper)) {
-                response.setResponseData(drugWrapper);
-                response.setResponseMessage(messageBundle.getString("drug.get.success"));
-                response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());
-                response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-                logger.info("getDrugById Found successfully...");
+            drugWrapper.setAddInfo(drugMakerInfo);
 
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } else {
-                response.setResponseData(null);
-                response.setResponseMessage(messageBundle.getString("drug.deleted"));
-                response.setResponseCode(ResponseEnum.PATIENT_GROUP_GET_SUCCESS.getValue());
-                response.setResponseStatus(ResponseEnum.ERROR.getValue());
-                logger.info("getDrugById Not Found Or deleted by other user before your click.");
-            }
+            response.setResponseData(drugWrapper);
+            response.setResponseMessage(messageBundle.getString("drug.get.success"));
+            response.setResponseCode(ResponseEnum.DRUG_GET_SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("getDrugById Found successfully...");
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("getDrugById Exception", ex.fillInStackTrace());
