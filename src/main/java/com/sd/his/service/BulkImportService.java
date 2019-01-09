@@ -55,6 +55,8 @@ public class BulkImportService {
     private AppointmentRepository appointmentRepository;
     @Autowired
     private BranchRepository branchRepository;
+    @Autowired
+    private DrugManufacturerRepository drugManufacturerRepository;
 
     @Value("${spring.http.multipart.location}")
     private String tmpFilePath;
@@ -97,7 +99,7 @@ public class BulkImportService {
                             drug.setuOM(row.getCell(j).getStringCellValue());
                             break;
                         case 6:
-                            drug.setCountry(countryRepository.findOne((long) row.getCell(j).getNumericCellValue()));
+                            drug.setDrugManufacturer(drugManufacturerRepository.findOne((long) row.getCell(j).getNumericCellValue()));
                             break;
                     }
                 }
