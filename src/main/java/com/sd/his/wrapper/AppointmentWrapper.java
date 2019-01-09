@@ -52,7 +52,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
     private String colorHash;
     private String status;//AppointmentStatusTypeEnum
     private Integer duration; //minutes
-    private Boolean followUpReminder;
+    private boolean followUpReminder;
     private String followUpReason;
     private Long startedOn;
     private Long ended;
@@ -121,16 +121,17 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.branchId = appointment.getBranch().getId();
         this.branchName =appointment.getBranch().getName();
 
-        this.hashColor =appointment.getStatus().getHashColor();
-        this.statusId =appointment.getStatus().getId();
-        this.status =appointment.getStatus().getName();
+        if(appointment.getStatus() != null){this.hashColor =appointment.getStatus().getHashColor();
+            this.statusId =appointment.getStatus().getId();
+            this.status =appointment.getStatus().getName();}
+
 
         this.serviceName =appointment.getMedicalService().getName();
         this.serviceId =appointment.getMedicalService().getId();
 
 
         this.notes =appointment.getNotes();
-   //     this.recurringAppointment =appointment.getRecurring();
+        //     this.recurringAppointment =appointment.getRecurring();
 
         this.profileImgURL=appointment.getPatient().getProfileImgURL();
         this.patientFirstName =appointment.getPatient().getFirstName();
@@ -140,8 +141,8 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.docFirstName =appointment.getDoctor().getFirstName();
         this.docLastName =appointment.getDoctor().getLastName();
         if(HISCoreUtil.isValidObject(appointment.getRoom())){
-          this.examName = appointment.getRoom().getRoomName();
-          this.roomId =  appointment.getRoom().getId();
+            this.examName = appointment.getRoom().getRoomName();
+            this.roomId =  appointment.getRoom().getId();
         }
         this.zonedDate = HISCoreUtil.convertDateToTimeZone(appointment.getSchdeulledDate(),this.formatedDate,zone);
         this.label = appointmentId+","+HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(appointment.getSchdeulledDate());
@@ -199,7 +200,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.patientLastName = lastName;
         this.branchId = branchId;
         this.roomId = roomId;
-   //     this.examName = room.getRoomName();
+        //     this.examName = room.getRoomName();
         this.branchName = branchName;
         this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
         this.followUpDateResponse = HISCoreUtil.convertDateToString(followUpDate);

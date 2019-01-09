@@ -116,6 +116,7 @@ public class StaffResponseWrapper {
         this.otherDoctorDashBoard = otherDoctorDashBoard;
         this.permittedDoctorDashboard = cr.getSelectedDoctorDashboard().keySet().stream().collect(Collectors.toList());
         this.allowDiscount = cr.getAllowDiscount();
+        this.receivePayment = cr.getCanReceivePayment();
         // this.visitBranches=branchCashiers;
 
     }
@@ -142,6 +143,7 @@ public class StaffResponseWrapper {
         this.useReceptDashboard = useReceptDashboard;
         this.otherDoctorDashBoard = otherDoctorDashBoard;
         this.permittedDoctorDashboard = rt.getSelectedDoctorDashboard().keySet().stream().collect(Collectors.toList());
+        this.receivePayment = rt.getCanReceivePayment();
         //   this.permittedDoctorDashboard = permitDocDashboard.keySet().stream().collect(Collectors.toList());
 
         // this.visitBranches=branchCashiers;
@@ -206,7 +208,6 @@ public class StaffResponseWrapper {
         this.vacationTo = HISCoreUtil.convertDateToString(vacationTo);
         this.workingDays = doctor.getWorkingDays();
         this.permittedDoctorDashboard = doctor.getSelectedDoctorDashboard().keySet().stream().collect(Collectors.toList());
-        System.out.println(doctor.getSelectedDoctorDashboard());
         // this.dutyShifts = doctor.getDutyShifts();
         this.shift1 = doctor.getDutyShifts().stream().filter(x -> x.getShiftName().name().equalsIgnoreCase("SHIFT1"))
                 .map(x -> new DutyShift(x.getShiftName(), (HISCoreUtil.convertDateToTimeZone(x.getStartTime(), formatedTime, zone)), (HISCoreUtil.convertDateToTimeZone(x.getEndTime(), formatedTime, zone)))).collect(Collectors.toList());
@@ -217,6 +218,8 @@ public class StaffResponseWrapper {
         this.otherDoctorDashBoard = doctor.getOtherDoctorDashboard();
         // this.visitBranches=branchCashiers;
         this.docDepartmentId = doctor.getDepartment() != null ? doctor.getDepartment().getId() : null;
+        this.allowDiscount = doctor.getAllowDiscount();
+        this.receivePayment = doctor.getCanReceivePayment();
     }
 
   /*  public StaffResponseWrapper(Long uId,Long pId,String userType,String firstName,String lastName,String userName,
@@ -347,6 +350,14 @@ public class StaffResponseWrapper {
             this.profileImg = receptionist.getProfileImgURL();
             this.status = receptionist.getStatus();
         }
+    }
+
+    public Double getAllowDiscount() {
+        return allowDiscount;
+    }
+
+    public void setAllowDiscount(Double allowDiscount) {
+        this.allowDiscount = allowDiscount;
     }
 
     public boolean isReceivePayment() {

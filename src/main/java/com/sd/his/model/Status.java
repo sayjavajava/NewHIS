@@ -56,11 +56,8 @@ public class Status extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "status")
     public List<Appointment> appointments ;
 
-
-
-
     @Column(name = "SYSTEM_STATUS")
-    private boolean systemStatus;
+    private boolean systemStatus = false;
 
 
     public Status() {
