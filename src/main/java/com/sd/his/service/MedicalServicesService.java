@@ -2,6 +2,7 @@ package com.sd.his.service;
 
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.BranchWrapper;
 import com.sd.his.wrapper.BranchWrapperPart;
@@ -61,6 +62,8 @@ public class MedicalServicesService {
     private DepartmentService departmentService;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private UserService userService;
 
     public List<MedicalServiceWrapper> findAllPaginatedMedicalServices(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
@@ -148,18 +151,54 @@ public class MedicalServicesService {
         if (tax != null) {
             medicalService.setTax(tax);
         }
-        /*Organization dbOrganization=organizationService.getAllOrgizationData();
-        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
-        String systemCurrency=dbOrganization.getCurrencyFormat();
-        String hoursFormat=dbOrganization.getHoursFormat();
-        String dateFormat=dbOrganization.getDateFormat();
-        String timeFormat=dbOrganization.getTimeFormat();*/
-        medicalService.setFee(Double.valueOf(createRequest.getStrFee()));
-        medicalService.setCost(Double.valueOf(createRequest.getStrCost()));
-       /* if(systemCurrency!=null || (!systemCurrency.equals(""))){
-            medicalService.setFee(Double.valueOf(formatCurrencyDisplay((createRequest.getFee()),systemCurrency)));
-            medicalService.setCost(Double.valueOf(formatCurrencyDisplay((createRequest.getCost()),systemCurrency)));
-        }*/
+
+        medicalService.setFee(Double.parseDouble(createRequest.getStrFee()));
+        medicalService.setCost(Double.parseDouble(createRequest.getStrCost()));
+        String dteFileUpload=HISCoreUtil.convertDateToStringUpload(new Date());
+        String url = null;
+        String imgURL = null;
+        if (createRequest.getImage() != null) {
+            try {
+                imgURL = userService.saveImageMedical(createRequest.getImage(),
+                        HISConstants.S3_USER_MEDICAL_DIRECTORY_PATH, createRequest.getCode() + "_" + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME, createRequest.getCode()
+                                + "_" + createRequest.getCode()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME,
+                        "/"
+                                + HISConstants.S3_USER_MEDICAL_DIRECTORY_PATH
+                                + createRequest.getCode()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            /*userService.saveImage(createRequest.getImage(), HISConstants.S3_USER_MEDICAL_DIRECTORY_PATH, createRequest.getCode() + "_" + dteFileUpload
+                            + "_"
+                            + HISConstants.S3_USER_ORGANIZATION_THUMBNAIL_GRAPHIC_NAME, +createRequest.getId()
+                            + "_" + createRequest.getCode()
+                            + "_"
+                            + dteFileUpload
+                            + "_"
+                            + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME,
+                    "/"
+                            + HISConstants.S3_USER_MEDICAL_DIRECTORY_PATH
+                            + createRequest.getCode()
+                            + "_"
+                            + dteFileUpload
+                            + "_"
+                            + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME,fileName);*/
+            if (HISCoreUtil.isValidObject(imgURL)) {
+                medicalService.setUrl(imgURL);
+
+
+            }
+        }
         medicalServiceRepository.save(medicalService);
         if (HISCoreUtil.isListValid(createRequest.getBranches())) {
             List<BranchMedicalService> list = new ArrayList<>();
@@ -182,6 +221,8 @@ public class MedicalServicesService {
                     list.add(departmentMedicalService);
                 }
             }
+
+
             if (HISCoreUtil.isListValid(list)) {
                 departmentMedicalServiceRepository.save(list);
             }
@@ -202,18 +243,58 @@ public class MedicalServicesService {
                 medicalService.setTax(null);
             }
         }
-     /*   Organization dbOrganization=organizationService.getAllOrgizationData();
-        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
-        String systemCurrency=dbOrganization.getCurrencyFormat();
-        String hoursFormat=dbOrganization.getHoursFormat();
-        String dateFormat=dbOrganization.getDateFormat();
-        String timeFormat=dbOrganization.getTimeFormat();*/
-        medicalService.setFee(Double.valueOf(createRequest.getStrFee()));
-        medicalService.setCost(Double.valueOf(createRequest.getStrCost()));
+
+        medicalService.setFee(Double.parseDouble(createRequest.getStrFee()));
+        medicalService.setCost(Double.parseDouble(createRequest.getStrCost()));
         /*if(systemCurrency!=null || (!systemCurrency.equals(""))){
             medicalService.setFee(Double.valueOf(formatCurrencyDisplay((createRequest.getFee()),systemCurrency)));
             medicalService.setCost(Double.valueOf(formatCurrencyDisplay((createRequest.getCost()),systemCurrency)));
         }*/
+        String dteFileUpload=HISCoreUtil.convertDateToStringUpload(new Date());
+        String url = null;
+        String imgURL = null;
+        if (createRequest.getImage() != null) {
+            try {
+                imgURL = userService.saveImageMedical(createRequest.getImage(),
+                        HISConstants.S3_USER_MEDICAL_DIRECTORY_PATH, createRequest.getCode() + "_" + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME, createRequest.getCode()
+                                + "_" + createRequest.getCode()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME,
+                        "/"
+                                + HISConstants.S3_USER_MEDICAL_DIRECTORY_PATH
+                                + createRequest.getCode()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            /*userService.saveImage(createRequest.getImage(), HISConstants.S3_USER_MEDICAL_DIRECTORY_PATH, createRequest.getCode() + "_" + dteFileUpload
+                            + "_"
+                            + HISConstants.S3_USER_ORGANIZATION_THUMBNAIL_GRAPHIC_NAME, +createRequest.getId()
+                            + "_" + createRequest.getCode()
+                            + "_"
+                            + dteFileUpload
+                            + "_"
+                            + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME,
+                    "/"
+                            + HISConstants.S3_USER_MEDICAL_DIRECTORY_PATH
+                            + createRequest.getCode()
+                            + "_"
+                            + dteFileUpload
+                            + "_"
+                            + HISConstants.S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME,fileName);*/
+            if (HISCoreUtil.isValidObject(imgURL)) {
+                medicalService.setUrl(imgURL);
+
+
+            }
+        }
         medicalServiceRepository.save(medicalService);
         if (HISCoreUtil.isListValid(createRequest.getBranches())) {
             List<BranchMedicalService> list = new ArrayList<>();
@@ -308,6 +389,7 @@ public class MedicalServicesService {
                     }
                 }
             }
+            mSW.setImgUrl(mS.getUrl());
         }
         return mSW;
     }

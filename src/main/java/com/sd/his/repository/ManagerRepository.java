@@ -33,5 +33,7 @@ public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
     Manager findByUser(User user);
 
+
+
 }
 

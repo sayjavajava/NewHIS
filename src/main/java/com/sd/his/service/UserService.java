@@ -834,8 +834,49 @@ public class UserService implements UserDetailsService {
         return imgURL;
     }
 //
+public String saveImageMedical(byte[] byteArary,
+                        String directoryPath,
+                        String fullThumbName,
+                        String fullImgName,
+                        String fullPathAndThumbNailGraphicName) throws Exception {
 
+    String imgURL = null;
 
+    // byte[] byteArr = Files.readAllBytes(path);
+    InputStream is = new ByteArrayInputStream(byteArary);
+    boolean isSaved = false;
+    isSaved = awsService.uploadImageByUserId(is,
+            directoryPath,
+            fullThumbName,
+            fullImgName);
+    if (isSaved) {
+        imgURL = this.s3KeyGen.getImagePublicURLOrganization(fullPathAndThumbNailGraphicName);
+    }
+
+    return imgURL;
+}
+
+    public String saveBeforeDeleteImgProfile(byte[] byteArary,
+                                      String directoryPath,
+                                      String fullThumbName,
+                                      String fullImgName,
+                                      String fullPathAndThumbNailGraphicName,String url) throws Exception {
+
+        String imgURL = null;
+
+        InputStream is = new ByteArrayInputStream(byteArary);
+        boolean isSaved = false;
+
+        isSaved = awsService.uploadImageByUserIdDeleteBefore(is,
+                directoryPath,
+                fullThumbName,
+                fullImgName,url);
+        if (isSaved) {
+            imgURL = this.s3KeyGen.getImagePublicURLOrganization(fullPathAndThumbNailGraphicName);
+        }
+
+        return imgURL;
+    }
 
 //    public boolean isUserNameAlreadyExists(String userName) {
 //        List<User> users = this.userRepository.findAllByUsername(userName);

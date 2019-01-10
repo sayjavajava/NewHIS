@@ -26,6 +26,7 @@ import java.util.Date;
 
 import static com.sd.his.utill.HISConstants.S3_USER_ORDER_DIRECTORY_PATH;
 import static com.sd.his.utill.HISConstants.S3_USER_ORGANIZATION_DIRECTORY_PATH;
+import static com.sd.his.utill.HISConstants.S3_USER_PROFILE_NEW_DIRECTORY_PATH;
 
 /*
  * @author    : irfan Nasim
@@ -365,6 +366,53 @@ public class AWSService {
 
         if(!oldFileUrl.equals("user-yellow.png")){
         this.awss3.deleteObjectSingle(keyName);
+        }
+        awss3.imageToS3(
+                bufferedImage,
+                s3Key[1],
+                S3ContentTypes.PNG,
+                CannedAccessControlList.PublicRead);
+
+        // Save the thumbnails image to S3
+
+        awss3.imageToS3(
+                resizeImageJpg,
+                s3ThumbnailKey[1],
+                S3ContentTypes.PNG,
+                CannedAccessControlList.PublicRead);
+
+        return true;
+    }
+
+
+
+
+    public boolean uploadImageByUserIdDeleteBeforeProfile(InputStream inputStream,
+                                                   String directoryPath,
+                                                   String thumbnailGraphicName,
+                                                   String graphicName,String oldFileUrl) throws Exception {
+        /**
+         * Convert the event input stream into a buffered image
+         * */
+        BufferedImage bufferedImage = ImageIO.read(inputStream);
+        int type = bufferedImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : bufferedImage.getType();
+        IMG_WIDTH = bufferedImage.getWidth() / 5;
+        IMG_HEIGHT = bufferedImage.getHeight() / 5;
+
+        BufferedImage resizeImageJpg = resizeImage(bufferedImage, type);
+
+        String[] s3ThumbnailKey = s3KeyGen.thumbnailGraphic(
+                directoryPath + thumbnailGraphicName);
+
+        String[] s3Key = s3KeyGen.graphic(
+                directoryPath + graphicName);
+
+        // Save the full image to S3
+        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+        String keyName=S3_USER_PROFILE_NEW_DIRECTORY_PATH+oldFileUrl;
+
+        if(!oldFileUrl.equals("user-yellow.png")){
+            this.awss3.deleteObjectSingle(keyName);
         }
         awss3.imageToS3(
                 bufferedImage,

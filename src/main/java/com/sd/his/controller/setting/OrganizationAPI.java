@@ -638,4 +638,90 @@ public class OrganizationAPI {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+
+    @ApiOperation(httpMethod = "GET", value = "Upload Profile Image",
+            notes = "This method will upload the profile image of any user.",
+            produces = "application/json", nickname = "Upload Profile Image",
+            response = GenericAPIResponse.class, protocols = "https")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Profile image of user uploaded successfully.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 401, message = "Oops, your fault. You are not authorized to access.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
+            @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
+    @RequestMapping(value = "/uploadProfileImgAccount/{id}", method = RequestMethod.POST, headers = ("content-type=multipart/*"))
+    public ResponseEntity<?> uploadProfileImageAccount(HttpServletRequest request, @PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
+        logger.info("uploadProfileImage API called for user: " + id);
+        GenericAPIResponse response = new GenericAPIResponse();
+        response.setResponseMessage(messageBundle.getString("user.profile.image.uploaded.error"));
+        response.setResponseCode(ResponseEnum.USER_PROFILE_IMG_UPLOAD_FAILED.getValue());
+        response.setResponseStatus(ResponseEnum.ERROR.getValue());
+        response.setResponseData(null);
+        try {
+            String imgURL = null;
+            Organization alreadyExistOrganization = organizationService.getByID(id);
+            String fileName = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf('/')+1, alreadyExistOrganization.getUrl().length());
+            String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+            String fileExtension = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf("."));
+            if (HISCoreUtil.isValidObject(file)) {
+                byte[] byteArr = new byte[0];
+                try {
+                    byteArr = file.getBytes();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                String dteFileUpload=HISCoreUtil.convertDateToStringUpload(new Date());
+                imgURL = userService.saveBeforeDeleteImgProfile(byteArr, HISConstants.S3_USER_PROFILE_NEW_DIRECTORY_PATH, alreadyExistOrganization.getId() + "_" + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_PROFILE_NEW_THUMBNAIL_GRAPHIC_NAME, +alreadyExistOrganization.getId()
+                                + "_" + alreadyExistOrganization.getId()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_PROFILE_NEW_THUMBNAIL_GRAPHIC_NAME,
+                        "/"
+                                + HISConstants.S3_USER_PROFILE_NEW_DIRECTORY_PATH
+                                + alreadyExistOrganization.getId()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_PROFILE_NEW_THUMBNAIL_GRAPHIC_NAME,fileName);
+                if (HISCoreUtil.isValidObject(imgURL)) {
+
+                    organizationService.saveProfileUpadtedImage(imgURL);
+                    response.setResponseMessage(messageBundle.getString("organization.profile.image.uploaded.success"));
+                    response.setResponseCode(ResponseEnum.ORGANIZATION_PROFILE_IMG_UPLOAD_SUCCESS.getValue());
+                    response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+                    response.setResponseData(imgURL);
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else {
+                    response.setResponseMessage(messageBundle.getString("organization.profile.invalid.media"));
+                    response.setResponseCode(ResponseEnum.ORGANIZATION_PROFILE_INVALID_FILE_ERROR.getValue());
+                    response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                    response.setResponseData(null);
+
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }
+            } else {
+                response.setResponseMessage(messageBundle.getString("organization.profile.invalid.media"));
+                response.setResponseCode(ResponseEnum.ORGANIZATION_PROFILE_INVALID_FILE_ERROR.getValue());
+                response.setResponseStatus(ResponseEnum.ERROR.getValue());
+                response.setResponseData(null);
+
+                //  }
+                //   userService.updateUser(user);
+            }
+        } catch (Exception ex) {
+            logger.error("Organization profile image update failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("exception.occurs"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

@@ -56,6 +56,13 @@ public class MedicalServiceWrapper {
 
 
 
+    private String imgUrl;
+
+
+    private byte[] image;
+
+
+
     private String  strFee;
     private String  strCost;
     public MedicalServiceWrapper() {
@@ -356,4 +363,20 @@ public class MedicalServiceWrapper {
 
     }
 
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 }

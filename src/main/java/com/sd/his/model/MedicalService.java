@@ -81,6 +81,12 @@ public class MedicalService extends BaseEntity implements Serializable {
     @OneToMany(targetEntity = DoctorMedicalService.class, mappedBy = "medicalService",orphanRemoval = true)
     private List<DoctorMedicalService> doctorMedicalServices;
 
+
+
+
+    @Column(name = "URL")
+    private String url;
+
     public MedicalService() {
     }
 
@@ -219,5 +225,13 @@ public class MedicalService extends BaseEntity implements Serializable {
 
     public void setDoctorMedicalServices(List<DoctorMedicalService> doctorMedicalServices) {
         this.doctorMedicalServices = doctorMedicalServices;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

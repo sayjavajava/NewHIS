@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -157,11 +158,11 @@ public class MedicalServiceAPI {
             List<MedicalServiceWrapper> msLstW = new ArrayList<MedicalServiceWrapper>();
             List<MedicalServiceWrapper> mss = medicalServicesService.findAllMedicalServicesForDataTable();
             Organization dbOrganization = organizationService.getAllOrgizationData();
-            String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+       //     String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
             String systemCurrency = dbOrganization.getCurrencyFormat();
-            String hoursFormat = dbOrganization.getHoursFormat();
-            String dateFormat = dbOrganization.getDateFormat();
-            String timeFormat = dbOrganization.getTimeFormat();
+         //   String hoursFormat = dbOrganization.getHoursFormat();
+        //    String dateFormat = dbOrganization.getDateFormat();
+         //   String timeFormat = dbOrganization.getTimeFormat();
             for(int i=0;i<mss.size();i++){
                 MedicalServiceWrapper ms=new MedicalServiceWrapper(mss.get(i));
                 if (systemCurrency != null && (!systemCurrency.equals(""))) {
@@ -170,6 +171,9 @@ public class MedicalServiceAPI {
                     mss.get(i).setStrCost(ms.getStrCost());
                     mss.get(i).setStrFee(ms.getStrFee());
                //     msLstW.add(ms);
+                }else{
+                    mss.get(i).setStrCost(String.valueOf(ms.getFee()));
+                    mss.get(i).setStrFee(String.valueOf(ms.getCost()));
                 }
             }
             logger.info("getAllMedicalServices - Medical Services fetched successfully" + mss.size());
@@ -371,10 +375,13 @@ public class MedicalServiceAPI {
             logger.error("getMedicalServiceById - Medical Service fetched successfully");
             if (HISCoreUtil.isValidObject(mss)) {
 
-                if (systemCurrency != null || (!systemCurrency.equals(""))) {
+                if (systemCurrency != null &&  (!systemCurrency.equals(""))) {
                     mss.setStrFee((medicalServicesService.formatCurrencyDisplay((mss.getFee()), systemCurrency)));
                     mss.setStrCost(medicalServicesService.formatCurrencyDisplay((mss.getCost()), systemCurrency));
 
+                }else{
+                    mss.setStrFee(String.valueOf(mss.getFee()));
+                    mss.setStrCost(String.valueOf(mss.getCost()));
                 }
 
                 response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
@@ -407,7 +414,9 @@ public class MedicalServiceAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public ResponseEntity<?> saveMedicalService(@RequestBody MedicalServiceWrapper createRequest) {
+    public ResponseEntity<?> saveMedicalService(HttpServletRequest request,
+            @RequestPart("myObject") MedicalServiceWrapper createRequest,
+            @RequestPart(name = "img", required = false) MultipartFile image) {
         logger.info("saveMedicalService API initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
 
@@ -421,6 +430,9 @@ public class MedicalServiceAPI {
 
                 logger.error("saveMedicalService API - Already Exist.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (image != null) {
+                createRequest.setImage(image.getBytes());
             }
             medicalServicesService.saveMedicalService(createRequest);
             response.setResponseMessage(messageBundle.getString("med.service.save.success"));
@@ -500,7 +512,9 @@ public class MedicalServiceAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateMedicalService(@RequestBody MedicalServiceWrapper createRequest) {
+    public ResponseEntity<?> updateMedicalService(HttpServletRequest request,
+            @RequestPart("myObject") MedicalServiceWrapper createRequest,
+            @RequestPart(name = "img", required = false) MultipartFile image) {
         logger.info("updateMedicalService API initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
 
@@ -512,6 +526,9 @@ public class MedicalServiceAPI {
 
                 logger.error("updateMedicalService API - Already Exist.");
                 return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+            if (image != null) {
+                createRequest.setImage(image.getBytes());
             }
             medicalServicesService.updateMedicalService(createRequest);
             response.setResponseData(null);
