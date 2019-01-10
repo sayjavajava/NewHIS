@@ -15,6 +15,11 @@ public class TaxWrapper {
     private String description;
     private double rate;
 
+
+
+    private String dateFormat;
+   // private String dateFormat;
+
     public String getStrfromDate() {
         return strfromDate;
     }
@@ -146,6 +151,14 @@ public class TaxWrapper {
 
     public void setHasChild(boolean hasChild) {
         this.hasChild = hasChild;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
     }
 
 }

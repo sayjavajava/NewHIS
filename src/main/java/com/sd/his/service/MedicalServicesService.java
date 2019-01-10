@@ -191,13 +191,16 @@ public class MedicalServicesService {
 
     @Transactional(rollbackOn = Throwable.class)
     public String updateMedicalService(MedicalServiceWrapper createRequest) {
-        Tax tax = taxRepository.findOne(createRequest.getTax().getId());
+
         MedicalService medicalService = this.medicalServiceRepository.findOne(createRequest.getId());
         new MedicalService(medicalService, createRequest);
-        if (tax != null) {
-            medicalService.setTax(tax);
-        } else {
-            medicalService.setTax(null);
+        if (createRequest.getTax() != null) {
+            Tax tax = taxRepository.findOne(createRequest.getTax().getId());
+            if (tax != null) {
+                medicalService.setTax(tax);
+            } else {
+                medicalService.setTax(null);
+            }
         }
      /*   Organization dbOrganization=organizationService.getAllOrgizationData();
         String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");

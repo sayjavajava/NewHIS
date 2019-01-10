@@ -2,9 +2,11 @@ package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.MedicalService;
+import com.sd.his.model.Organization;
 import com.sd.his.service.BranchService;
 import com.sd.his.service.DepartmentService;
 import com.sd.his.service.MedicalServicesService;
+import com.sd.his.service.OrganizationService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
 import io.swagger.annotations.ApiOperation;
@@ -56,6 +58,8 @@ public class MedicalServiceAPI {
     private DepartmentService departmentService;
     @Autowired
     private BranchService branchService;
+    @Autowired
+    private OrganizationService organizationService;
 
     @ApiOperation(httpMethod = "GET", value = "Paginated Medical Services",
             notes = "This method will return Paginated Medical Services",
@@ -150,8 +154,24 @@ public class MedicalServiceAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             logger.error("getAllMedicalServices - Medical Services fetching from DB");
+            List<MedicalServiceWrapper> msLstW = new ArrayList<MedicalServiceWrapper>();
             List<MedicalServiceWrapper> mss = medicalServicesService.findAllMedicalServicesForDataTable();
-
+            Organization dbOrganization = organizationService.getAllOrgizationData();
+            String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+            String systemCurrency = dbOrganization.getCurrencyFormat();
+            String hoursFormat = dbOrganization.getHoursFormat();
+            String dateFormat = dbOrganization.getDateFormat();
+            String timeFormat = dbOrganization.getTimeFormat();
+            for(int i=0;i<mss.size();i++){
+                MedicalServiceWrapper ms=new MedicalServiceWrapper(mss.get(i));
+                if (systemCurrency != null || (!systemCurrency.equals(""))) {
+                    ms.setStrFee((medicalServicesService.formatCurrencyDisplay((ms.getFee()), systemCurrency)));
+                    ms.setStrCost(medicalServicesService.formatCurrencyDisplay((ms.getCost()), systemCurrency));
+                    mss.get(i).setStrCost(ms.getStrCost());
+                    mss.get(i).setStrFee(ms.getStrFee());
+               //     msLstW.add(ms);
+                }
+            }
             logger.info("getAllMedicalServices - Medical Services fetched successfully" + mss.size());
             response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
             response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
@@ -321,6 +341,7 @@ public class MedicalServiceAPI {
             logger.error("getMedicalServiceById - Medical Service fetching from DB");
             MedicalServiceWrapper mss = medicalServicesService.findMedicalServicesDetailsById(id);
 
+
             mss.setBranches(new ArrayList<>());
             mss.getBranches().addAll(this.branchService.getAllBranches());
             for (BranchWrapperPart b : mss.getBranches()) {
@@ -340,9 +361,22 @@ public class MedicalServiceAPI {
                         d.setCheckedDepartment(true);
                 }
             }
+            Organization dbOrganization = organizationService.getAllOrgizationData();
+            String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+            String systemCurrency = dbOrganization.getCurrencyFormat();
+            String hoursFormat = dbOrganization.getHoursFormat();
+            String dateFormat = dbOrganization.getDateFormat();
+            String timeFormat = dbOrganization.getTimeFormat();
 
             logger.error("getMedicalServiceById - Medical Service fetched successfully");
             if (HISCoreUtil.isValidObject(mss)) {
+
+                if (systemCurrency != null || (!systemCurrency.equals(""))) {
+                    mss.setStrFee((medicalServicesService.formatCurrencyDisplay((mss.getFee()), systemCurrency)));
+                    mss.setStrCost(medicalServicesService.formatCurrencyDisplay((mss.getCost()), systemCurrency));
+
+                }
+
                 response.setResponseMessage(messageBundle.getString("med.service.fetch.success"));
                 response.setResponseCode(ResponseEnum.MED_SERVICE_FETCH_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());

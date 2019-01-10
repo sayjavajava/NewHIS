@@ -74,10 +74,7 @@ public class TaxAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<?> getAllTax(HttpServletRequest request) {
-/***
- * only active Taxes will return
- *
- * ***/
+
         logger.error("getAllServiceTax API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("service.tax.fetch.error"));
@@ -88,6 +85,10 @@ public class TaxAPI {
         try {
             logger.error("getAllServiceTax - service tax fetching from DB");
             List<TaxWrapper> taxes = taxService.findAllActiveTax();
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            String systemDateFormat=dbOrganization.getDateFormat();
+
             logger.error("getAllServiceTax - tax fetched successfully");
 
             if (HISCoreUtil.isListEmpty(taxes)) {
@@ -101,7 +102,7 @@ public class TaxAPI {
             }
             response.setResponseMessage(messageBundle.getString("service.tax.fetch.success"));
             response.setResponseCode(ResponseEnum.SERVICE_TAX_FETCH_SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(systemDateFormat);
             response.setResponseData(taxes);
 
             logger.error("getAllServiceTax API successfully executed.");
@@ -184,7 +185,7 @@ public class TaxAPI {
             }
             response.setResponseMessage(messageBundle.getString("service.tax.fetch.success"));
             response.setResponseCode(ResponseEnum.SERVICE_TAX_FETCH_SUCCESS.getValue());
-            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(systemDateFormat);
             response.setResponseData(taxes);
 
             logger.error("getAllTaxesForDataTable API successfully executed.");
