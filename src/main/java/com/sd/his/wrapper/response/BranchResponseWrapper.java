@@ -75,8 +75,8 @@ public class BranchResponseWrapper {
 
     public BranchResponseWrapper(Branch branch) {
         this.branchName = branch.getName();
-        this.officeHoursEnd = HISCoreUtil.convertTimeToString(branch.getOfficeEndTime());
-        this.officeHoursStart = HISCoreUtil.convertTimeToString(branch.getOfficeStartTime());
+        this.officeHoursEnd = HISCoreUtil.convertTimeToString(branch.getOfficeEndTime(), "HH:mm:ss");
+        this.officeHoursStart = HISCoreUtil.convertTimeToString(branch.getOfficeStartTime(), "HH:mm:ss");
         this.fax = branch.getFax();
         this.officePhone = branch.getOfficePhone();
         this.name = branch.getName();

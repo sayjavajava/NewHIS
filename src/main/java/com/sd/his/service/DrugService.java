@@ -9,6 +9,7 @@ import com.sd.his.repository.CountryRepository;
 import com.sd.his.repository.DrugManufacturerRepository;
 import com.sd.his.repository.DrugRepository;
 import com.sd.his.repository.PrefixRepository;
+import com.sd.his.wrapper.DrugManufacturerWrapper;
 import com.sd.his.wrapper.DrugWrapper;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -52,17 +53,23 @@ public class DrugService {
     public void saveDrug(DrugWrapper drugWrapper) {
         Drug drug = new Drug(drugWrapper);
         drug.setStrengths(drugWrapper.getStrengths());
-        boolean chkStatusDrugMaker = containsDigit(drugWrapper.getDrugMaker());
-        Long numMaker;
+        DrugManufacturer drugManufacturer = null;
 
-        if (chkStatusDrugMaker) {
-            numMaker = Long.parseLong(drugWrapper.getDrugMaker());
-        } else {
-            Country countryObj = countryRepository.findByName(drugWrapper.getDrugMaker());
-            numMaker = countryObj.getId();
+        if (drugWrapper.getDrugMaker() != null && !drugWrapper.getDrugMaker().trim().equals("")
+                && !drugWrapper.getDrugMaker().trim().equals("Select Manufacturer")) {
+            boolean chkStatusDrugMaker = containsDigit(drugWrapper.getDrugMaker());
+            Long numMaker;
+
+            if (chkStatusDrugMaker) {
+                numMaker = Long.parseLong(drugWrapper.getDrugMaker());
+                drugManufacturer = drugManufacturerRepository.findOne(numMaker);
+            } else {
+                DrugManufacturerWrapper drugManufacturerWrapper = drugManufacturerRepository.getDrugManufacturerByCompanyName(drugWrapper.getDrugMaker());
+                numMaker = drugManufacturerWrapper.getId();
+                drugManufacturer = drugManufacturerRepository.findOne(numMaker);
+            }
         }
 
-        DrugManufacturer drugManufacturer = drugManufacturerRepository.findOne(numMaker);
         drug.setDrugManufacturer(drugManufacturer);
         Prefix pr = this.prefixRepository.findByModule(ModuleEnum.DRUG.name());
         pr.setCurrentValue(pr.getCurrentValue() + 1L);
@@ -95,18 +102,23 @@ public class DrugService {
     @Transactional
     public void updateDrug(DrugWrapper drugWrapper) {
         Drug drug = this.drugRepository.findOne(drugWrapper.getId());
-        boolean chkStatusCountry = containsDigit(drugWrapper.getDrugMaker());
-        String numCountry;
         DrugManufacturer drugManufacturer = null;
 
-        if (chkStatusCountry) {
-            drugManufacturer = drugManufacturerRepository.findOne(Long.valueOf(drugWrapper.getDrugMaker()));
-            numCountry = drugManufacturer.getName();
-        } else {
-            numCountry = drugWrapper.getDrugMaker();
+        if (drugWrapper.getDrugMaker() != null && !drugWrapper.getDrugMaker().trim().equals("")
+                && !drugWrapper.getDrugMaker().trim().equals("Select Manufacturer")) {
+            boolean chkStatusDrugMaker = containsDigit(drugWrapper.getDrugMaker());
+            String numCountry;
+
+            if (chkStatusDrugMaker) {
+                drugManufacturer = drugManufacturerRepository.findOne(Long.valueOf(drugWrapper.getDrugMaker()));
+                numCountry = drugManufacturer.getName();
+            } else {
+                numCountry = drugWrapper.getDrugMaker();
+            }
+
+            drugWrapper.setDrugMaker(numCountry);
         }
 
-        drugWrapper.setDrugMaker(numCountry);
         new Drug(drug, drugWrapper);
         Drug saveDrug = this.drugRepository.save(drug);
         if (drugManufacturer != null) saveDrug.setDrugManufacturer(drugManufacturer);

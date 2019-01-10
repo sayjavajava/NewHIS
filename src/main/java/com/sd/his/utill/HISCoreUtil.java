@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -117,6 +118,15 @@ public class HISCoreUtil {
         String formatedDate = null;
         if (time != null) {
             SimpleDateFormat form = new SimpleDateFormat("hh:mm:ss");
+            formatedDate = form.format(time);
+        }
+        return formatedDate;
+    }
+
+    public static String convertTimeToString(Date time, String format) {
+        String formatedDate = null;
+        if (time != null) {
+            SimpleDateFormat form = new SimpleDateFormat(format);
             formatedDate = form.format(time);
         }
         return formatedDate;
@@ -602,6 +612,46 @@ public class HISCoreUtil {
         }
 
         return adjusted;
+    }
+
+    public static String formatCurrencyDisplay(double amount, String format) {
+        String returnFormat = "";
+        if (format.equals("123,456")) {
+
+            String pattern = "###,###";
+            DecimalFormat decimalFormat = new DecimalFormat(pattern);
+
+            returnFormat= decimalFormat.format(amount);
+            System.out.println("Currency Format"+returnFormat);
+            //    DecimalFormat formatter = new DecimalFormat("###,000");
+            //    returnFormat = formatter.format(Double.parseDouble(amount));
+            // "###,###,##0.00"
+        } else if (format.equals("123,456.00")) {
+
+            String pattern = "###,###.00";
+            DecimalFormat decimalFormat = new DecimalFormat(pattern);
+
+            returnFormat = decimalFormat.format(amount);
+            System.out.println("Currency Format"+returnFormat);
+
+            /*DecimalFormat formatter = new DecimalFormat("###,###.00");
+            returnFormat = formatter.format(Double.parseDouble(amount));*/
+        } else if (format.equals("123456")) {
+
+            returnFormat = new DecimalFormat("###").format(amount);
+            System.out.println(returnFormat);
+            return returnFormat;
+            //      DecimalFormat formatter = new DecimalFormat("######");
+            //      returnFormat = formatter.format(Double.parseDouble(amount));
+        } else if (format.equals("123456.00")) {
+
+            returnFormat = new DecimalFormat("###.00").format(amount);
+            System.out.println(returnFormat);
+            return returnFormat;
+            //     DecimalFormat formatter = new DecimalFormat("###.00");
+            //    returnFormat = formatter.format(Double.parseDouble(amount));
+        }
+        return returnFormat;
     }
 
 }
