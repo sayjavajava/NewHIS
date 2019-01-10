@@ -34,5 +34,6 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
 void deleteAllByBranch(Branch branchList);
+List<Room> findAllByBranch(Branch branches);
 }
 

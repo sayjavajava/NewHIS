@@ -21,11 +21,11 @@ package com.sd.his.wrapper.request;/*
  *
  */
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sd.his.wrapper.ServiceComission;
 
 import java.util.List;
-
 
 public class StaffRequestWrapper {
     private String userType;
@@ -61,7 +61,7 @@ public class StaffRequestWrapper {
     private String cellPhone;
     private Long primaryBranch;
     private Long[] selectedVisitBranches;
-    private List<Long> selectedDoctorDashboard;
+    private Long[] selectedDoctorDashboard;
     private String dateFrom;
     private String dateTo;
     private Long createdOn;
@@ -97,11 +97,11 @@ public class StaffRequestWrapper {
         this.serviceComission = serviceComission;
     }
 
-    public List<Long> getSelectedDoctorDashboard() {
+    public Long[] getSelectedDoctorDashboard() {
         return selectedDoctorDashboard;
     }
 
-    public void setSelectedDoctorDashboard(List<Long> selectedDoctorDashboard) {
+    public void setSelectedDoctorDashboard(Long[] selectedDoctorDashboard) {
         this.selectedDoctorDashboard = selectedDoctorDashboard;
     }
 

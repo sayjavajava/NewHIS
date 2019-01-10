@@ -71,8 +71,7 @@ public class MedicalServiceWrapper {
         this.description = medicalServiceWrapper.getDescription();
         this.duration = medicalServiceWrapper.getDuration();
     }
-
-    public MedicalServiceWrapper(MedicalService ms, double comissionService, long medDocID) {
+    public MedicalServiceWrapper(MedicalService ms,Double comissionService,long medDocID){
         this.id = ms.getId();
         this.name = ms.getName();
         this.name = ms.getName();
@@ -80,7 +79,7 @@ public class MedicalServiceWrapper {
         this.cost = ms.getCost();
         this.status = ms.getStatus();
         this.description = ms.getDescription();
-        this.comissionService = comissionService;
+        this.comissionService = comissionService != null ? comissionService : 0;
 
     }
 
