@@ -155,8 +155,9 @@ public class StaffService {
             cashier.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
             cashier.setCanReceivePayment(createRequest.isReceivePayment());
 
-            if (createRequest.getSelectedDoctorDashboard().size() > 0) {
-                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+            if (createRequest.getSelectedDoctorDashboard() != null) {
+                List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
+                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
                 Map<Long, String> dashMap = new HashMap<>();
                 selectedDashboardDoctor.stream()
                         .filter(x -> x.getId() != null)
@@ -245,8 +246,9 @@ public class StaffService {
             receptionist.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
             receptionist.setAllowDiscount(createRequest.getAllowDiscount());
             receptionist.setCanReceivePayment(createRequest.isReceivePayment());
-            if (createRequest.getSelectedDoctorDashboard().size() > 0) {
-                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+            if (createRequest.getSelectedDoctorDashboard() != null) {
+                List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
+                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
                 Map<Long, String> dashMap = new HashMap<>();
                 selectedDashboardDoctor.stream()
                         .filter(x -> x.getId() != null)
@@ -350,8 +352,9 @@ public class StaffService {
 */
             List<Branch> allowBranches = branchRepository.findAllByIdIn(Arrays.asList(createRequest.getSelectedVisitBranches()));
             List<BranchNurse> nurseVisitBranchesData = new ArrayList<>();
-            if (createRequest.getSelectedDoctorDashboard().size() > 0) {
-                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+            if (createRequest.getSelectedDoctorDashboard() != null) {
+                List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
+                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
                 Map<Long, String> dashMap = new HashMap<>();
                 selectedDashboardDoctor.stream()
                         .filter(x -> x.getId() != null)
@@ -472,8 +475,9 @@ public class StaffService {
             if (createRequest.getSelectedDepartment().length > 0) {
                 selectedDocDept = departmentRepository.findOne((createRequest.getSelectedDepartment())[0]);
             }
-            if (createRequest.getSelectedDoctorDashboard().size() > 0) {
-                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+            if (createRequest.getSelectedDoctorDashboard() != null) {
+                List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
+                List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
                 Map<Long, String> dashMap = new HashMap<>();
                 selectedDashboardDoctor.stream()
                         .filter(x -> x.getId() != null)
@@ -762,8 +766,9 @@ public class StaffService {
                     selectedDocDept = departmentRepository.findOne((createRequest.getSelectedDepartment())[0]);
                     doctor.setDepartment(selectedDocDept);
                 }
-                if (createRequest.getSelectedDoctorDashboard().size() > 0) {
-                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                if (createRequest.getSelectedDoctorDashboard() != null) {
+                    List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
+                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
                     Map<Long, String> dashMap = new HashMap<>();
                     selectedDashboardDoctor.stream()
                             .filter(x -> x.getId() != null)
@@ -849,8 +854,9 @@ public class StaffService {
                 receptionist.setAllowDiscount(createRequest.getAllowDiscount());
                 receptionist.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
                 receptionist.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
-                if (createRequest.getSelectedDoctorDashboard().size() > 0) {
-                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                if (createRequest.getSelectedDoctorDashboard() != null) {
+                    List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
+                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
                     Map<Long, String> dashMap = new HashMap<>();
                     selectedDashboardDoctor.stream()
                             .filter(x -> x.getId() != null)
@@ -896,8 +902,9 @@ public class StaffService {
                 cashier.setAllowDiscount(createRequest.getAllowDiscount());
                 cashier.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
                 cashier.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
-                if (createRequest.getSelectedDoctorDashboard().size() > 0) {
-                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                if (createRequest.getSelectedDoctorDashboard() != null) {
+                    List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
+                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
                     Map<Long, String> dashMap = new HashMap<>();
                     selectedDashboardDoctor.stream()
                             .filter(x -> x.getId() != null)
@@ -941,8 +948,9 @@ public class StaffService {
                 nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 nurse.setLastName(createRequest.getLastName());
                 nurse.setFirstName(createRequest.getFirstName());
-                if (createRequest.getSelectedDoctorDashboard().size() > 0) {
-                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(createRequest.getSelectedDoctorDashboard());
+                if (createRequest.getSelectedDoctorDashboard() != null) {
+                    List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
+                    List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
                     Map<Long, String> dashMap = new HashMap<>();
                     selectedDashboardDoctor.stream()
                             .filter(x -> x.getId() != null)

@@ -1,9 +1,12 @@
 package com.sd.his.wrapper.response;
 
 import com.sd.his.model.*;
+import com.sd.his.repository.OrganizationRepository;
+import com.sd.his.service.OrganizationService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.MedicalServiceWrapper;
 import com.sd.his.wrapper.ServiceComission;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,7 +84,7 @@ public class StaffResponseWrapper {
     private Boolean otherDoctorDashBoard;
     private List<DutyShift> shift1;
     private List<DutyShift> shift2;
-    private String formatedTime = "HH:mm:ss";
+    private String formatedTime = "hh:mm:ss";
     private String formatedDate = "dd:MM:yyyy";
     private String zone = "Asia/Karachi";
     private Boolean receivePayment;
@@ -90,7 +93,14 @@ public class StaffResponseWrapper {
     private Boolean allowDiscountCheck;
     private Boolean hidePatientPhoneNumber;
 
+    @Autowired
+    private OrganizationService organizationService;
+
     public StaffResponseWrapper() {
+       /*String timeFormate =  organizationService.getAllOrgizationData().getTimeFormat();
+       if(timeFormate != null){
+           this.formatedTime = timeFormate;
+       }*/
     }
 
     //du.id,nr.id,du.userType,nr.firstName,nr.lastName,du.username,nr.email,br.name,nr.homePhone,nr.cellPhone,du.active,br.id,nr.accountExpiry

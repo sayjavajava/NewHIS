@@ -24,6 +24,8 @@ import javax.transaction.Transactional;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /*
  * @author    : waqas kamran
@@ -272,6 +274,12 @@ public class BranchService {
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
         if(!HISCoreUtil.isListEmpty(exRooms)){ // delete branches room for future
              roomRepository.deleteAllByBranch(branch);
+          /* List<Room> roomList = roomRepository.findAllByBranch(branch);
+           for(Room rm :roomList){
+               rm.setActive(false);
+
+           }*/
+
         }
         for (ExamRooms ex : exRooms) {
             Room room = new Room();
