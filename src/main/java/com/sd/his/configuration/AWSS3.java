@@ -275,7 +275,7 @@ public class AWSS3 {
                 try {
                     result = s3Client.client.deleteObjects(multiObjectDeleteRequest);
                 } catch (MultiObjectDeleteException mode) {
-                    System.out.println(mode);
+            //        System.out.println(mode);
                 }
 
             }
@@ -546,7 +546,7 @@ public class AWSS3 {
 
             String path="users/patient/history/order";
             S3Object object = s3Client.client.getObject("hisdev/"+path,fileName);
-            System.out.println("Etag:" + object.getKey() + "-->" + object.getBucketName());
+       //     System.out.println("Etag:" + object.getKey() + "-->" + object.getBucketName());
             if (object == null) {
 
             }else{

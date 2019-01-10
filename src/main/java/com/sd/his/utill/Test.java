@@ -63,7 +63,7 @@ public class Test {
                 .toInstant();
        // System.out.println("In 'GMT+01:00' Time Zone:"+ loc.getT);
         ZoneId zoneId = ZoneId.of("Asia/Karachi");
-        System.out.println("In Check:"+ zoneId);
+    //    System.out.println("In Check:"+ zoneId);
     }
 
 

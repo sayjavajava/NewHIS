@@ -148,7 +148,7 @@ public class TaxAPI {
             String systemTimeFormat=dbOrganization.getTimeFormat();
             String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
             String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
-            System.out.println("Time"+currentTime);
+        //    System.out.println("Time"+currentTime);
             //  dte=problemWrapper.getDatePrescribedDate();
             for(int i=0;i<taxes.size();i++){
 

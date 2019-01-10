@@ -121,6 +121,13 @@ public class UserService implements UserDetailsService {
             PermissionWrapper permissionWrapper = new PermissionWrapper(per);
             permissionWrappers.add(permissionWrapper);
         }*/
+        Manager manager = managerRepository.findByUser(dbUser);
+        if(manager!=null){
+            if(user.getUserName().equals("admin")){
+                user.setProfileImg(manager.getProfileImgURL());
+            }
+        }
+
          user.setPermissions(permissionWrappers);
         //user.setPermissionMap(permissionWrapperMap);
         return user;
@@ -210,6 +217,7 @@ public class UserService implements UserDetailsService {
 
     public UserWrapper buildLoggedInUserWrapper(User dbUser) {
         UserWrapper user = new UserWrapper(dbUser);
+
         List<PermissionWrapper> permissionWrappers = new ArrayList<>();
         List<RoleWrapper> roleWrappers = new ArrayList<>();
         //List<Permission> userPermissions = getIdenticalUserPermissions(dbUser);
@@ -218,18 +226,23 @@ public class UserService implements UserDetailsService {
         switch( UserTypeEnum.valueOf(dbUser.getUserType()) ){
             case DOCTOR:
                 staffResponseWrapper = doctorRepository.findAllByIdAndStatusActive(dbUser.getId());
+              //  user.setProfileImg(staffResponseWrapper.getProfileImg());
             break;
             case CASHIER:
                 staffResponseWrapper = cashierRepository.findAllByIdAndStatusActive(dbUser.getId());
+           //     user.setProfileImg(staffResponseWrapper.getProfileImg());
             break;
             case RECEPTIONIST:
                  staffResponseWrapper = receptionistRepository.findAllByIdAndStatusActive(dbUser.getId());
+           //      user.setProfileImg(staffResponseWrapper.getProfileImg());
             break;
             case MANAGER:
                 manager = managerRepository.findByUser(dbUser);
+                user.setProfileImg(manager.getProfileImgURL());
             break;
             case ADMIN:
                 manager = managerRepository.findByUser(dbUser);
+                user.setProfileImg(manager.getProfileImgURL());
             break;
         }
         if(staffResponseWrapper!=null){

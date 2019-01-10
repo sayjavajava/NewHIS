@@ -102,6 +102,7 @@ public class UserAuthAPI {
             User dbAdmin = userService.findByUsername(loggedInUser);
 
             if (!HISCoreUtil.isValidObject(dbAdmin)) {
+
                 response.setResponseMessage(messageBundle.getString("admin.not.found"));
                 response.setResponseCode(ResponseEnum.ADMIN_NOT_FOUND.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());

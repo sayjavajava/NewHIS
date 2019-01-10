@@ -52,7 +52,7 @@ public class ProblemService {
         String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
         String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
         String standardFormatDateTime=systemDateFormat+" "+systemtimeFormat;
-        System.out.println("Time"+currentTime);
+    //    System.out.println("Time"+currentTime);
         dte=problemWrapper.getDatePrescribedDate();
         String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
         Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
@@ -118,7 +118,7 @@ public class ProblemService {
         String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
         String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
         String standardFormatDateTime=systemDateFormat+" "+systemtimeFormat;
-        System.out.println("Time"+currentTime);
+     //   System.out.println("Time"+currentTime);
         dte=problemWrapper.getDatePrescribedDate();
         String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
         Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
