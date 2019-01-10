@@ -4,8 +4,10 @@ import com.sd.his.enums.BalanceTypeEnum;
 import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.AccountConfig;
 import com.sd.his.model.GeneralLedger;
+import com.sd.his.model.Organization;
 import com.sd.his.repository.AccountConfigRepository;
 import com.sd.his.repository.GeneralLedgerRepository;
+import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GeneralLedgerWrapper;
 import com.sd.his.wrapper.request.AccountConfigRequestWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +19,14 @@ import java.util.List;
 @Service
 public class GeneralLedgerService {
 
-
     @Autowired
     GeneralLedgerRepository generalLedgerRepository;
-
     @Autowired
     AccountConfigRepository accountConfigRepository;
-
     @Autowired
     private HISUtilService hisUtilService;
+    @Autowired
+    private OrganizationService organizationService;
 
     public GeneralLedger getById(long id){
         return generalLedgerRepository.findOne(id);
@@ -36,15 +37,16 @@ public class GeneralLedgerService {
         List<GeneralLedgerWrapper> dataList = new ArrayList<>();
         double drBalance = 0;
         double crBalance = 0;
-        for(GeneralLedger gl: list) {
-           drBalance =  gl.getGeneralLedgerTransactions().stream().filter(x -> x.getTransactionType().equals(BalanceTypeEnum.DR.name())).mapToDouble(x -> x.getAmount()).sum();
-           crBalance =  gl.getGeneralLedgerTransactions().stream().filter(x -> x.getTransactionType().equals(BalanceTypeEnum.CR.name())).mapToDouble(x -> x.getAmount()).sum();
-           if(gl.getBalanceType().equals(BalanceTypeEnum.DR)) {
-               dataList.add(new GeneralLedgerWrapper(gl,(drBalance-crBalance)));
-           }
-           else {
-               dataList.add(new GeneralLedgerWrapper(gl,(crBalance-drBalance)));
-           }
+        for (GeneralLedger gl : list) {
+            drBalance = gl.getGeneralLedgerTransactions().stream().filter(x -> x.getTransactionType().equals(BalanceTypeEnum.DR.name())).mapToDouble(x -> x.getAmount()).sum();
+            crBalance = gl.getGeneralLedgerTransactions().stream().filter(x -> x.getTransactionType().equals(BalanceTypeEnum.CR.name())).mapToDouble(x -> x.getAmount()).sum();
+            Organization dbOrganization = organizationService.getAllOrgizationData();
+            String systemCurrency = dbOrganization.getCurrencyFormat();
+            if (gl.getBalanceType().equals(BalanceTypeEnum.DR.name())) {
+                dataList.add(new GeneralLedgerWrapper(gl, Double.valueOf(HISCoreUtil.formatCurrencyDisplay(drBalance - crBalance, systemCurrency))));
+            } else {
+                dataList.add(new GeneralLedgerWrapper(gl, Double.valueOf(HISCoreUtil.formatCurrencyDisplay(crBalance - drBalance, systemCurrency))));
+            }
         }
 
         return dataList;

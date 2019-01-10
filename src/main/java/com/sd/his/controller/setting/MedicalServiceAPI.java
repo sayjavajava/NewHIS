@@ -164,7 +164,7 @@ public class MedicalServiceAPI {
             String timeFormat = dbOrganization.getTimeFormat();
             for(int i=0;i<mss.size();i++){
                 MedicalServiceWrapper ms=new MedicalServiceWrapper(mss.get(i));
-                if (systemCurrency != null || (!systemCurrency.equals(""))) {
+                if (systemCurrency != null && (!systemCurrency.equals(""))) {
                     ms.setStrFee((medicalServicesService.formatCurrencyDisplay((ms.getFee()), systemCurrency)));
                     ms.setStrCost(medicalServicesService.formatCurrencyDisplay((ms.getCost()), systemCurrency));
                     mss.get(i).setStrCost(ms.getStrCost());

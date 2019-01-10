@@ -73,7 +73,7 @@ public class Drug extends BaseEntity {
         drug.strengths = drugWrapper.getStrengths();
         drug.uOM = drugWrapper.getuOM();
         drug.active = drugWrapper.isActive();
-        if (drugWrapper.getDrugInfo() != null) {
+        if (drugWrapper.getDrugInfo() != null && !drugWrapper.getDrugInfo().trim().equals("")) {
             drug.druginfo = ((drugWrapper.getDrugInfo().contains("http:") || drugWrapper.getDrugInfo().contains("https:"))
                     ? drugWrapper.getDrugInfo()
                     : ("http://" + drugWrapper.getDrugInfo()));

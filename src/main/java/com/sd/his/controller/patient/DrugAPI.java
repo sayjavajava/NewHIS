@@ -309,9 +309,15 @@ public class DrugAPI {
             DrugWrapper drugWrapper = this.drugService.getDrugWrapper(id);
             Drug drug = this.drugService.getDrugById(id);
             Map<String, Object> drugMakerInfo = new HashMap<>();
-            drugMakerInfo.put("drugMakerId", drug.getDrugManufacturer().getId());
-            drugMakerInfo.put("drugMaker", drug.getDrugManufacturer().getName());
-            drugWrapper.setDrugMaker(drug.getDrugManufacturer().getName());
+            if (drug.getDrugManufacturer() != null) {
+                drugMakerInfo.put("drugMakerId", drug.getDrugManufacturer().getId());
+                drugMakerInfo.put("drugMaker", drug.getDrugManufacturer().getName());
+                drugWrapper.setDrugMaker(drug.getDrugManufacturer().getName());
+            } else {
+                drugMakerInfo.put("drugMakerId", -1);
+                drugMakerInfo.put("drugMaker", "Select Manufacturer");
+                drugWrapper.setDrugMaker("Select Manufacturer");
+            }
             drugWrapper.setDrugInfo(drug.getDruginfo());
             drugWrapper.setAddInfo(drugMakerInfo);
 

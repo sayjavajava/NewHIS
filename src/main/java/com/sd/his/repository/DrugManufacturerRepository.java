@@ -14,4 +14,7 @@ public interface DrugManufacturerRepository extends JpaRepository<DrugManufactur
 
     @Query("SELECT new com.sd.his.wrapper.DrugManufacturerWrapper(dm) FROM DrugManufacturer dm WHERE dm.id = :id ")
     DrugManufacturerWrapper getDrugManufacturerById(@Param("id") Long id);
+
+    @Query("SELECT new com.sd.his.wrapper.DrugManufacturerWrapper(dm) FROM DrugManufacturer dm WHERE dm.name LIKE :drugMaker ")
+    DrugManufacturerWrapper getDrugManufacturerByCompanyName(@Param("drugMaker") String drugMaker);
 }
