@@ -63,4 +63,14 @@ public class HISConstants {
     public final static String S3_USER_ORGANIZATION_DIRECTORY_PATH = "users/organization/documents/";
     public final static String S3_USER_ORGANIZATION_THUMBNAIL_GRAPHIC_NAME = "organization-document-thumbnail-image.jpg";
     public final static String S3_USER_ORGANIZATION_GRAPHIC_NAME = "organization-document-image.jpg";
+
+    public final static String S3_USER_MEDICAL_DIRECTORY_PATH = "users/medical/documents/";
+    public final static String S3_USER_MEDICAL_THUMBNAIL_GRAPHIC_NAME = "medical-document-thumbnail-image.jpg";
+    public final static String S3_USER_MEDICAL_GRAPHIC_NAME = "medical-document-image.jpg";
+
+    public final static String S3_USER_PROFILE_NEW_DIRECTORY_PATH = "users/profileAccount/documents/";
+    public final static String S3_USER_PROFILE_NEW_THUMBNAIL_GRAPHIC_NAME = "profile-document-thumbnail-image.jpg";
+    public final static String S3_USER_PROFILE_NEW_GRAPHIC_NAME = "profile-document-image.jpg";
+
+
 }

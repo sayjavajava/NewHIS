@@ -34,6 +34,7 @@ import com.sd.his.wrapper.response.OrganizationResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -64,6 +65,8 @@ public class OrganizationService {
 
     @Autowired
     private CountryRepository countryRepository;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private UserService userService;
@@ -308,6 +311,8 @@ public class OrganizationService {
         if (organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.ACCOUNT.name())) {
 
             User user = userRepository.findOne(organizationRequestWrapper.getUserId());
+            user.setPassword(new BCryptPasswordEncoder().encode(organizationRequestWrapper.getPassword()));
+            userRepository.save(user);
             Manager manager = managerRepository.findByUser(user);
             manager.setCellPhone(organizationRequestWrapper.getCellPhone());
             manager.setHomePhone(organizationRequestWrapper.getHomePhone());
@@ -337,7 +342,7 @@ public class OrganizationService {
         Branch branch = branchRepository.findBySystemBranchTrue();
         OrganizationResponseWrapper organizationResponseWrapper = new OrganizationResponseWrapper(user.getId(), user.getUserType().toString()
                 , user.getUsername(), manager.getEmail(), manager.getFirstName(), manager.getLastName(), manager.getCellPhone(), manager.getHomePhone(), manager.getAddress()
-        ,branch.getName(),branch.getId());
+        ,branch.getName(),branch.getId(),manager.getProfileImgURL());
         return organizationResponseWrapper;
     }
 
@@ -374,5 +379,13 @@ public class OrganizationService {
         }
 
         return containsDigit;
+    }
+
+    public void saveProfileUpadtedImage(String url) {
+        User user = userRepository.findByUsernameAndActiveTrue("admin");
+        Manager manager = managerRepository.findByUser(user);
+        manager.setProfileImgURL(url);
+        managerRepository.save(manager);
+
     }
 }

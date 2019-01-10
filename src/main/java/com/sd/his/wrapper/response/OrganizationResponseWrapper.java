@@ -201,7 +201,7 @@ public class OrganizationResponseWrapper {
     }*/
 
     public OrganizationResponseWrapper(Long id,String userType,String userName,String email,String firstName,String lastName,
-                                       String cellPhone,String homePhone,String address,String branchName,Long branchId) {
+                                       String cellPhone,String homePhone,String address,String branchName,Long branchId,String imgUrl) {
         this.id = id;
         this.cellPhone = cellPhone;
         this.homePhone = homePhone;
@@ -213,6 +213,7 @@ public class OrganizationResponseWrapper {
         this.address =address;
         this.branchId =branchId;
         this.branchName = branchName;
+        this.profileImgUrl=imgUrl;
 
 
     }

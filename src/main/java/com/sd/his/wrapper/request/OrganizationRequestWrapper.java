@@ -50,6 +50,10 @@ public class OrganizationRequestWrapper {
 
     String currencyFormat;
 
+
+
+    private String password;
+
     public OrganizationRequestWrapper(){}
 
 
@@ -404,5 +408,13 @@ public class OrganizationRequestWrapper {
 
     public void setCurrencyFormat(String currencyFormat) {
         this.currencyFormat = currencyFormat;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
