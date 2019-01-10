@@ -273,12 +273,10 @@ public class BranchService {
 
         List<ExamRooms> exRooms = new ArrayList<>(Arrays.asList(branchRequestWrapper.getExamRooms()));
         if(!HISCoreUtil.isListEmpty(exRooms)){ // delete branches room for future
-             roomRepository.deleteAllByBranch(branch);
-          /* List<Room> roomList = roomRepository.findAllByBranch(branch);
-           for(Room rm :roomList){
-               rm.setActive(false);
-
-           }*/
+           //  roomRepository.deleteAllByBranch(branch);
+           List<Room> roomList = roomRepository.findAllByBranch(branch);
+           roomList.forEach(x->x.setActive(false));
+            roomRepository.save(roomList);
 
         }
         for (ExamRooms ex : exRooms) {

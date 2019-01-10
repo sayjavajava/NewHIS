@@ -82,7 +82,7 @@ public class BranchResponseWrapper {
         this.name = branch.getName();
         this.id = branch.getId();
         this.address = branch.getAddress();
-        this.examRooms = branch.getRooms().stream().filter(x -> x.getRoomName() != null)
+        this.examRooms = branch.getRooms().stream().filter(x -> x.getActive().booleanValue() == true)
                 .map(x -> new Room(x.getId(), x.getRoomName(), x.getAllowOnlineScheduling()))
                 .collect(Collectors.toList());
         this.rooms = Long.valueOf(this.examRooms.size());
