@@ -595,7 +595,7 @@ public class OrganizationAPI {
                         "/"
                                 + HISConstants.S3_USER_ORGANIZATION_DIRECTORY_PATH
                                 + alreadyExistOrganization.getId()
-                                + "_"
+                                + "_"+alreadyExistOrganization.getId()+"_"
                                 + dteFileUpload
                                 + "_"
                                 + HISConstants.S3_USER_ORGANIZATION_THUMBNAIL_GRAPHIC_NAME,fileName);

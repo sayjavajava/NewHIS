@@ -364,9 +364,9 @@ public class AWSService {
         S3Bucket s3Bucket = s3BucketService.findActiveBucket();
         String keyName=S3_USER_ORGANIZATION_DIRECTORY_PATH+oldFileUrl;
 
-        if(!oldFileUrl.equals("user-yellow.png")){
+        /*if(!oldFileUrl.equals("user-yellow.png")){
         this.awss3.deleteObjectSingle(keyName);
-        }
+        }*/
         awss3.imageToS3(
                 bufferedImage,
                 s3Key[1],
