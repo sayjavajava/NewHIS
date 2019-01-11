@@ -361,8 +361,8 @@ public class AWSService {
                 directoryPath + graphicName);
 
         // Save the full image to S3
-        S3Bucket s3Bucket = s3BucketService.findActiveBucket();
-        String keyName=S3_USER_ORGANIZATION_DIRECTORY_PATH+oldFileUrl;
+     //   S3Bucket s3Bucket = s3BucketService.findActiveBucket();
+     //   String keyName=S3_USER_ORGANIZATION_DIRECTORY_PATH+oldFileUrl;
 
         /*if(!oldFileUrl.equals("user-yellow.png")){
         this.awss3.deleteObjectSingle(keyName);
