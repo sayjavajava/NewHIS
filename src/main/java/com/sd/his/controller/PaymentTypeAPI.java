@@ -69,8 +69,8 @@ public class PaymentTypeAPI {
 
                 if (systemCurrency != null || (!systemCurrency.equals(""))) {
                     PaymentTypeWrapper ptw=new PaymentTypeWrapper();
-                    ptw.setStrServiceCharges((HISUtilService.formatCurrencyDisplay((paymentType.get(i).getServiceCharges()), systemCurrency)));
-                    ptw.setStrmaxCardCharges(HISUtilService.formatCurrencyDisplay((paymentType.get(i).getMaxCardCharges()), systemCurrency));
+                    ptw.setStrServiceCharges((HISCoreUtil.formatCurrencyDisplay((paymentType.get(i).getServiceCharges()), systemCurrency)));
+                    ptw.setStrmaxCardCharges(HISCoreUtil.formatCurrencyDisplay((paymentType.get(i).getMaxCardCharges()), systemCurrency));
                     if(paymentType.get(i).getPaymentMode().equals("Cash") || paymentType.get(i).getPaymentMode().equals("Others")){
                         paymentType.get(i).setStrServiceCharges("");
                         paymentType.get(i).setStrmaxCardCharges("");

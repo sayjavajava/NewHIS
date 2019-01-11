@@ -11,7 +11,7 @@ public class GeneralLedgerWrapper {
     private String code;
     private String description;
     private String balanceType; //BalanceTypeEnum
-    private Double balance;
+    private String balance;
 
     /* Bank Account */
     private String title;
@@ -23,7 +23,7 @@ public class GeneralLedgerWrapper {
     }
 
     public GeneralLedgerWrapper(Long id, String parentType, String accountType, String name, String code, String description,
-                                String balanceType, Double balance, String title, String accountNumber, String iban, String branch) {
+                                String balanceType, String balance, String title, String accountNumber, String iban, String branch) {
         this.id = id;
         this.parentType = parentType;
         this.accountType = accountType;
@@ -48,7 +48,7 @@ public class GeneralLedgerWrapper {
         this.balanceType = generalLedger.getBalanceType();
     }
 
-    public GeneralLedgerWrapper(GeneralLedger generalLedger, double balance) {
+    public GeneralLedgerWrapper(GeneralLedger generalLedger, String balance) {
         this.id = generalLedger.getId();
         this.parentType = generalLedger.getParentType();
         this.accountType = generalLedger.getAccountType();
@@ -115,11 +115,11 @@ public class GeneralLedgerWrapper {
         this.balanceType = balanceType;
     }
 
-    public Double getBalance() {
+    public String getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setBalance(String balance) {
         this.balance = balance;
     }
 

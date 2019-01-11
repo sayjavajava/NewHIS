@@ -142,8 +142,7 @@ this method use for update current sequence in database after saving new entity 
 
     // This Method  get Current Date time of Specific TimeZone
     //
-    public String getDateTimefromTimeZone(Date date, String format,
-                                          String timeZone) {
+    public String getDateTimefromTimeZone(Date date, String format, String timeZone) {
 
         if (date == null)
             return null;
@@ -155,7 +154,6 @@ this method use for update current sequence in database after saving new entity 
         }
 
         sdf.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
-
         return sdf.format(date);
     }
 
@@ -171,8 +169,7 @@ this method use for update current sequence in database after saving new entity 
         calendarA.set(Calendar.SECOND, calendarB.get(Calendar.SECOND));
         calendarA.set(Calendar.MILLISECOND, calendarB.get(Calendar.MILLISECOND));
 
-        Date result = calendarA.getTime();
-        return result;
+        return calendarA.getTime();
     }
 
     public List<DateFormatEnum> getDateFormatList() {
@@ -192,21 +189,17 @@ this method use for update current sequence in database after saving new entity 
     }
 
 
-    public String convertDateToTimeZone(Date date, String format,
-                                        String timeZone) {
-
+    public String convertDateToTimeZone(Date date, String format, String timeZone) {
         if (date == null)
             return null;
 
         SimpleDateFormat sdf = new SimpleDateFormat(format);
-
 
         if (timeZone == null || "".equalsIgnoreCase(timeZone.trim())) {
             return null;
         }
 
         sdf.setTimeZone(java.util.TimeZone.getTimeZone(timeZone));
-
         return sdf.format(date);
     }
 

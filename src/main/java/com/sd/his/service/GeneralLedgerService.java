@@ -43,9 +43,9 @@ public class GeneralLedgerService {
             Organization dbOrganization = organizationService.getAllOrgizationData();
             String systemCurrency = dbOrganization.getCurrencyFormat();
             if (gl.getBalanceType().equals(BalanceTypeEnum.DR.name())) {
-                dataList.add(new GeneralLedgerWrapper(gl, Double.valueOf(HISCoreUtil.formatCurrencyDisplay(drBalance - crBalance, systemCurrency))));
+                dataList.add(new GeneralLedgerWrapper(gl, HISCoreUtil.formatCurrencyDisplay(drBalance - crBalance, systemCurrency)));
             } else {
-                dataList.add(new GeneralLedgerWrapper(gl, Double.valueOf(HISCoreUtil.formatCurrencyDisplay(crBalance - drBalance, systemCurrency))));
+                dataList.add(new GeneralLedgerWrapper(gl, HISCoreUtil.formatCurrencyDisplay(crBalance - drBalance, systemCurrency)));
             }
         }
 
