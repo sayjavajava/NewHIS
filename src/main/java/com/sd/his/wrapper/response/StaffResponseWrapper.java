@@ -133,6 +133,7 @@ public class StaffResponseWrapper {
         this.canAccessPatientRecord = cr.getCanAccessPatientRecord();
         this.allowDiscountCheck = cr.getAllowDiscountCheck();
         this.hidePatientPhoneNumber =cr.getHidePatientPhoneNumber();
+        this.allowDiscount =cr.getAllowDiscount();
         // this.visitBranches=branchCashiers;
 
     }
@@ -163,6 +164,7 @@ public class StaffResponseWrapper {
         this.receivePayment = rt.getCanReceivePayment();
         this.canAccessPatientRecord = rt.getCanAccessPatientRecord();
         this.allowDiscountCheck = rt.getAllowDiscountCheck();
+        this.allowDiscount =rt.getAllowDiscount();
         this.hidePatientPhoneNumber =rt.getHidePatientPhoneNumber();
      //   this.canAccessPatientRecord = rt.;
         //   this.permittedDoctorDashboard = permitDocDashboard.keySet().stream().collect(Collectors.toList());

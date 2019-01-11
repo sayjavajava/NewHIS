@@ -120,7 +120,7 @@ public class BranchResponseWrapper {
         this.firstName = drFirstName;
         this.lastName = drLastName;
         this.doctorId = drId;
-        this.examRooms = branch.getRooms().stream().filter(x -> x.getRoomName() != null)
+        this.examRooms = branch.getRooms().stream().filter(x -> x.getActive().booleanValue() != false)
                 .map(x -> new Room(x.getId(), x.getRoomName(), x.getAllowOnlineScheduling()))
                 .collect(Collectors.toList());
         this.label =branch.getName();

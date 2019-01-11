@@ -753,6 +753,9 @@ public class StaffService {
                 doctor.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
                 doctor.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
                 doctor.setAllowDiscount(createRequest.getAllowDiscount());
+                doctor.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
+                doctor.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
+                doctor.setHidePatientPhoneNumber(createRequest.isHidePatientPhoneNumber());
                 //doctor working days
                 List<String> daysList = new LinkedList<String>(Arrays.asList(createRequest.getSelectedWorkingDays()));
                 if (!HISCoreUtil.isListEmpty(daysList)) {
@@ -854,6 +857,10 @@ public class StaffService {
                 receptionist.setAllowDiscount(createRequest.getAllowDiscount());
                 receptionist.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
                 receptionist.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
+                receptionist.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
+                receptionist.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
+                receptionist.setHidePatientPhoneNumber(createRequest.isHidePatientPhoneNumber());
+
                 if (createRequest.getSelectedDoctorDashboard() != null) {
                     List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
                     List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
@@ -902,6 +909,9 @@ public class StaffService {
                 cashier.setAllowDiscount(createRequest.getAllowDiscount());
                 cashier.setCanAccessPatientRecord(createRequest.isCanAccessPatientRecord());
                 cashier.setAllowDiscountCheck(createRequest.isAllowDiscountCheck());
+                cashier.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
+                cashier.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
+                cashier.setHidePatientPhoneNumber(createRequest.isHidePatientPhoneNumber());
                 if (createRequest.getSelectedDoctorDashboard() != null) {
                     List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
                     List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
@@ -948,6 +958,11 @@ public class StaffService {
                 nurse.setAccountExpiry(HISCoreUtil.convertToDate(createRequest.getAccountExpiry()));
                 nurse.setLastName(createRequest.getLastName());
                 nurse.setFirstName(createRequest.getFirstName());
+                nurse.setOtherDoctorDashboard(createRequest.isOtherDoctorDashBoard());
+                nurse.setUseReceiptDashboard(createRequest.isUseReceptDashboard());
+                nurse.setHidePatientPhoneNumber(createRequest.isHidePatientPhoneNumber());
+                nurse.setManagePatientRecords(createRequest.isManagePatientRecords());
+                nurse.setManagePatientInvoices(createRequest.isManagePatientInvoices());
                 if (createRequest.getSelectedDoctorDashboard() != null) {
                     List<Long> listOfDrDashboards = Arrays.asList(createRequest.getSelectedDoctorDashboard());
                     List<Doctor> selectedDashboardDoctor = doctorRepository.findAllByIdIn(listOfDrDashboards);
