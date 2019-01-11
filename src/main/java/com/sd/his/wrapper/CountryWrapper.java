@@ -57,6 +57,17 @@ public class CountryWrapper extends BaseWrapper {
         this.status = c.isStatus();
     }
 
+    public CountryWrapper(CountryWrapper countryWrapper, Country country) {
+        countryWrapper.name = country.getName();
+        countryWrapper.iso3 = country.getIso3();
+        countryWrapper.iso2 = country.getIso2();
+        countryWrapper.countryCode = country.getCountryCode();
+        countryWrapper.phoneCode = country.getPhoneCode();
+        countryWrapper.capital = country.getCapital();
+        countryWrapper.currency = country.getCurrency();
+        countryWrapper.status = country.isStatus();
+    }
+
     public String getName() {
         return name;
     }

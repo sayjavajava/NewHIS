@@ -23,6 +23,9 @@ public class State extends BaseEntity {
     @OneToMany(targetEntity = City.class, mappedBy = "state")
     private List<City> cities;
 
+    @OneToMany(targetEntity = Branch.class, mappedBy = "state")
+    private List<Branch> branch;
+
     @Column(name = "STATUS")
     private boolean status;
 
@@ -59,5 +62,13 @@ public class State extends BaseEntity {
 
     public void setCities(List<City> cities) {
         this.cities = cities;
+    }
+
+    public List<Branch> getBranch() {
+        return branch;
+    }
+
+    public void setBranch(List<Branch> branch) {
+        this.branch = branch;
     }
 }

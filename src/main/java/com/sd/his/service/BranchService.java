@@ -135,6 +135,12 @@ public class BranchService {
         if (branchRequestWrapper.getCityId() != null) {
             branch.setCity(cityRepository.findOne(Long.valueOf(branchRequestWrapper.getCityId())));
         }
+        if (branchRequestWrapper.getStateId() != null && HISCoreUtil.containsDigit(branchRequestWrapper.getStateId())) {
+            branch.setState(stateRepository.findOne(Long.valueOf(branchRequestWrapper.getStateId())));
+        }
+        if (branchRequestWrapper.getCountryId() != null && HISCoreUtil.containsDigit(branchRequestWrapper.getCountryId())) {
+            branch.setCountry(countryRepository.findOne(Long.valueOf(branchRequestWrapper.getCountryId())));
+        }
         branch.setFlow(branchRequestWrapper.getFlow());
         Organization organization = organizationRepository.findOne(1L);
         branch.setOrganization(organization);
@@ -267,6 +273,12 @@ public class BranchService {
         branch.setZipCode(branchRequestWrapper.getZipCode());
         if (branchRequestWrapper.getCityId() != null && HISCoreUtil.containsDigit(branchRequestWrapper.getCityId())) {
             branch.setCity(cityRepository.findOne(Long.valueOf(branchRequestWrapper.getCityId())));
+        }
+        if (branchRequestWrapper.getStateId() != null && HISCoreUtil.containsDigit(branchRequestWrapper.getStateId())) {
+            branch.setState(stateRepository.findOne(Long.valueOf(branchRequestWrapper.getStateId())));
+        }
+        if (branchRequestWrapper.getCountryId() != null && HISCoreUtil.containsDigit(branchRequestWrapper.getCountryId())) {
+            branch.setCountry(countryRepository.findOne(Long.valueOf(branchRequestWrapper.getCountryId())));
         }
         branch.setUpdatedOn(new Date());
         branchRepository.save(branch);

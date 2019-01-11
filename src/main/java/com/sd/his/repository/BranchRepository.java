@@ -82,10 +82,10 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     @Query("SELECT new com.sd.his.wrapper.CityWrapper(cty) FROM Branch b JOIN b.city cty WHERE b.id = :branchId")
     CityWrapper findCityByBranchId(@Param("branchId") Long branchId);
 
-    @Query("SELECT new com.sd.his.wrapper.StateWrapper(st) FROM Branch b JOIN b.city cty JOIN cty.state st WHERE b.id = :branchId")
+    @Query("SELECT new com.sd.his.wrapper.StateWrapper(st) FROM Branch b JOIN b.state st WHERE b.id = :branchId")
     StateWrapper findStateByBranchId(@Param("branchId") Long branchId);
 
-    @Query("SELECT new com.sd.his.wrapper.CountryWrapper(cntry) FROM Branch b JOIN b.city cty JOIN cty.country cntry WHERE b.id = :branchId")
+    @Query("SELECT new com.sd.his.wrapper.CountryWrapper(cntry) FROM Branch b JOIN b.country cntry WHERE b.id = :branchId")
     CountryWrapper findCountryByBranchId(@Param("branchId") Long branchId);
 
     @Query("SELECT br from Branch br WHERE br.branchId=:branchId ")

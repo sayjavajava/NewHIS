@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.Country;
@@ -69,7 +68,8 @@ public class StateAPI {
     private final Logger logger = LoggerFactory.getLogger(StateAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
-
+    @Autowired
+    private CountryService countryService;
 
     @Autowired
     private StateService stateService;
@@ -137,8 +137,8 @@ public class StateAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
-    public ResponseEntity<?> getStatesByCountryIdAPI(HttpServletRequest request, @PathVariable("id") long id) {
+    @RequestMapping(value = "/get/{countryId}", method = RequestMethod.GET)
+    public ResponseEntity<?> getStatesByCountryIdAPI(HttpServletRequest request, @PathVariable("countryId") long countryId) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("state.not.found"));
@@ -147,9 +147,15 @@ public class StateAPI {
         response.setResponseData(null);
 
         try {
-            List<StateWrapper> statesLst = this.stateService.getAllStatesByCountryId(id);
-            if (HISCoreUtil.isValidObject(statesLst)) {
-                response.setResponseData(statesLst);
+            List<StateWrapper> statesList = this.stateService.getAllStatesByCountryId(countryId);
+            if (HISCoreUtil.isValidObject(statesList)) {
+                CountryWrapper country = countryService.getCountryWrapperById(countryId);
+
+                Map<String, Object> returnValues = new LinkedHashMap<>();
+                returnValues.put("statesList", statesList);
+                returnValues.put("country", country);
+
+                response.setResponseData(returnValues);
                 response.setResponseMessage(messageBundle.getString("state.found"));
                 response.setResponseCode(ResponseEnum.STATE_FETCHED_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());

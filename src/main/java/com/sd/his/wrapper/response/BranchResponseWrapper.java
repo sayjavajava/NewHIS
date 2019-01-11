@@ -86,21 +86,39 @@ public class BranchResponseWrapper {
                 .map(x -> new Room(x.getId(), x.getRoomName(), x.getAllowOnlineScheduling()))
                 .collect(Collectors.toList());
         this.rooms = Long.valueOf(this.examRooms.size());
-//        this.user = user;
-        if (branch.getCity() != null) {
-            this.city = branch.getCity().getName();
-            this.state = branch.getCity().getState().getName();
-            this.country = branch.getCity().getState().getCountry().getName();
-            // Update section
-            this.cityId = String.valueOf(branch.getCity().getId());
-            this.stateId = String.valueOf(branch.getCity().getState().getId());
-            this.countryId = String.valueOf(branch.getCity().getState().getCountry().getId());
+
+        if (branch.getCountry() != null) {
+            this.country = branch.getCountry().getName();
+            this.countryId = String.valueOf(branch.getCountry().getId());
+
+            if (branch.getState() != null) {
+                this.state = branch.getState().getName();
+                this.stateId = String.valueOf(branch.getState().getId());
+            } else {
+                this.state = "Not Applicable";
+                this.stateId = String.valueOf("-1");
+            }
+
+            if (branch.getCity() != null) {
+                this.city = branch.getCity().getName();
+                this.cityId = String.valueOf(branch.getCity().getId());
+            } else {
+                this.city = "Not Applicable";
+                this.cityId = String.valueOf("-1");
+            }
+
+        } else {
+            this.country = "Not Applicable";
+            this.countryId = String.valueOf("-1");
+            this.state = "Not Applicable";
+            this.stateId = String.valueOf("-1");
+            this.city = "Not Applicable";
+            this.cityId = String.valueOf("-1");
         }
+        
         this.value = branch.getId();
         this.label = branch.getName();
         this.flow = branch.getFlow();
-        this.label = branch.getName();
-        this.value = branch.getId();
         this.formattedAddress = branch.getFormattedAddress();
         this.zipCode = branch.getZipCode();
     }
