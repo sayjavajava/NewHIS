@@ -109,7 +109,7 @@ public class PatientOrderService {
 
                         imageUrls.add(url);
                     }
-                    System.out.println(url);
+             //       System.out.println(url);
                 if (!HISCoreUtil.isListEmpty(imageUrls)) {
                     patientOrder.setUrl(imageUrls);
                     this.patientOrderRepository.save(patientOrder);
@@ -258,10 +258,10 @@ public class PatientOrderService {
 
         File file = new File(fileName);
         if(file.exists()){
-            System.out.println("File existed");
+       //     System.out.println("File existed");
             //   file.delete();
         }else{
-            System.out.println("File not found!");
+     //       System.out.println("File not found!");
         }
 
         return file;
@@ -328,7 +328,7 @@ public class PatientOrderService {
             input.close();
             output.close();
 
-            System.out.println("File '" + file + "' downloaded successfully!");
+       //     System.out.println("File '" + file + "' downloaded successfully!");
         }
         catch(IOException ioEx) {
             ioEx.printStackTrace();

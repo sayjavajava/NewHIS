@@ -248,13 +248,13 @@ public class HISCoreUtil {
     }
 
     public static String  getCurrentDateWithZone(String ZoneName,String format){
-        System.out.println("-----Current Date  of a  time zone using -----");
+  //      System.out.println("-----Current Date  of a  time zone using -----");
         ZoneId zoneId = ZoneId.of(ZoneName);
         LocalTime localTime=LocalTime.now(zoneId);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         String formattedTime=localTime.format(formatter);
-        System.out.println("Current Date : " + formattedTime);
+  //      System.out.println("Current Date : " + formattedTime);
         return formattedTime;
     }
 
@@ -328,9 +328,9 @@ public class HISCoreUtil {
     public static String convertToTimeFormat(String str,String timeFormat) {
 
         LocalTime time = LocalTime.parse(str);
-        System.out.println(time);
+    //    System.out.println(time);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
-        System.out.println(formatter.format(time));
+   //     System.out.println(formatter.format(time));
         return  formatter.format(time);
     }
     public static LocalDate convertDateToLocalDate(Date date) {
@@ -551,7 +551,7 @@ public class HISCoreUtil {
         if (dateInString != null) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.ENGLISH);
          date = LocalDate.parse(dateInString, formatter);
-        System.out.println(date);
+   //     System.out.println(date);
         }
         return date;
     }
@@ -622,7 +622,7 @@ public class HISCoreUtil {
             DecimalFormat decimalFormat = new DecimalFormat(pattern);
 
             returnFormat= decimalFormat.format(amount);
-            System.out.println("Currency Format"+returnFormat);
+    //        System.out.println("Currency Format"+returnFormat);
             //    DecimalFormat formatter = new DecimalFormat("###,000");
             //    returnFormat = formatter.format(Double.parseDouble(amount));
             // "###,###,##0.00"
@@ -632,21 +632,21 @@ public class HISCoreUtil {
             DecimalFormat decimalFormat = new DecimalFormat(pattern);
 
             returnFormat = decimalFormat.format(amount);
-            System.out.println("Currency Format"+returnFormat);
+     //       System.out.println("Currency Format"+returnFormat);
 
             /*DecimalFormat formatter = new DecimalFormat("###,###.00");
             returnFormat = formatter.format(Double.parseDouble(amount));*/
         } else if (format.equals("123456")) {
 
             returnFormat = new DecimalFormat("###").format(amount);
-            System.out.println(returnFormat);
+       //     System.out.println(returnFormat);
             return returnFormat;
             //      DecimalFormat formatter = new DecimalFormat("######");
             //      returnFormat = formatter.format(Double.parseDouble(amount));
         } else if (format.equals("123456.00")) {
 
             returnFormat = new DecimalFormat("###.00").format(amount);
-            System.out.println(returnFormat);
+      //      System.out.println(returnFormat);
             return returnFormat;
             //     DecimalFormat formatter = new DecimalFormat("###.00");
             //    returnFormat = formatter.format(Double.parseDouble(amount));

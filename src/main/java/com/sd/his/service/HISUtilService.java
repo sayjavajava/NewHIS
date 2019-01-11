@@ -219,7 +219,7 @@ this method use for update current sequence in database after saving new entity 
             DecimalFormat decimalFormat = new DecimalFormat(pattern);
 
             returnFormat= decimalFormat.format(amount);
-            System.out.println("Currency Format"+returnFormat);
+     //       System.out.println("Currency Format"+returnFormat);
             //    DecimalFormat formatter = new DecimalFormat("###,000");
             //    returnFormat = formatter.format(Double.parseDouble(amount));
             // "###,###,##0.00"
@@ -229,21 +229,21 @@ this method use for update current sequence in database after saving new entity 
             DecimalFormat decimalFormat = new DecimalFormat(pattern);
 
             returnFormat = decimalFormat.format(amount);
-            System.out.println("Currency Format"+returnFormat);
+      //      System.out.println("Currency Format"+returnFormat);
 
             /*DecimalFormat formatter = new DecimalFormat("###,###.00");
             returnFormat = formatter.format(Double.parseDouble(amount));*/
         } else if (format.equals("123456")) {
 
             returnFormat = new DecimalFormat("###").format(amount);
-            System.out.println(returnFormat);
+      //      System.out.println(returnFormat);
             return returnFormat;
             //      DecimalFormat formatter = new DecimalFormat("######");
             //      returnFormat = formatter.format(Double.parseDouble(amount));
         } else if (format.equals("123456.00")) {
 
             returnFormat = new DecimalFormat("###.00").format(amount);
-            System.out.println(returnFormat);
+        //    System.out.println(returnFormat);
             return returnFormat;
             //     DecimalFormat formatter = new DecimalFormat("###.00");
             //    returnFormat = formatter.format(Double.parseDouble(amount));

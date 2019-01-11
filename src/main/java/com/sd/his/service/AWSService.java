@@ -275,7 +275,7 @@ public class AWSService {
 
             try {
                 PutObjectResult result = this.awss3.putObject(bucketName, fis, metadata, CannedAccessControlList.PublicRead);
-                System.out.println("Etag:" + result.getETag() + "-->" + result);
+             //   System.out.println("Etag:" + result.getETag() + "-->" + result);
                 if(result==null){
                  //   fileName="";
                 }else{
@@ -315,10 +315,10 @@ public class AWSService {
             logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
         }finally {
             if(file.exists()){
-                System.out.println("File existed");
+           //     System.out.println("File existed");
                 file.delete();
             }else{
-                System.out.println("File not found!");
+          //      System.out.println("File not found!");
             }
         }
         return fileName;

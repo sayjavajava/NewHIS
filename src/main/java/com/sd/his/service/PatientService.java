@@ -486,7 +486,7 @@ public class PatientService {
         Date dte = labOrderWrapper.getTestDate();
         String utcDate = HISCoreUtil.convertDateToTimeZone(dte, systemDateFormat, Zone);
         String currentTime = HISCoreUtil.getCurrentTimeByzone(Zone);
-        System.out.println("Time" + currentTime);
+      //  System.out.println("Time" + currentTime);
         String readDate = HISCoreUtil.convertDateToTimeZone(dte, "YYYY-MM-dd hh:mm:ss", Zone);
         //  System.out.println("Read Date"+readDate);
         Date scheduledDate = HISCoreUtil.convertStringDateObject(readDate);
@@ -543,7 +543,7 @@ public class PatientService {
         Date dte = labOrderWrapper.getTestDate();
         String utcDate = HISCoreUtil.convertDateToTimeZone(dte, systemDateFormat, Zone);
         String currentTime = HISCoreUtil.getCurrentTimeByzone(Zone);
-        System.out.println("Time" + currentTime);
+    //    System.out.println("Time" + currentTime);
         String readDate = HISCoreUtil.convertDateToTimeZone(dte, "YYYY-MM-dd hh:mm:ss", Zone);
         //  System.out.println("Read Date"+readDate);
         Date scheduledDate = HISCoreUtil.convertStringDateObject(readDate);
@@ -755,7 +755,7 @@ public class PatientService {
         Date dte = labOrderWrapper.getTestDate();
         String utcDate = HISCoreUtil.convertDateToTimeZone(dte, systemDateFormat, Zone);
         String currentTime = HISCoreUtil.getCurrentTimeByzone(Zone);
-        System.out.println("Time" + currentTime);
+      //  System.out.println("Time" + currentTime);
         String readDate = HISCoreUtil.convertDateToTimeZone(dte, "YYYY-MM-dd hh:mm:ss", Zone);
         //  System.out.println("Read Date"+readDate);
         Date scheduledDate = HISCoreUtil.convertStringDateObject(readDate);

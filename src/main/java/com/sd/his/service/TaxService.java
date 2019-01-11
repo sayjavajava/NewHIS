@@ -86,7 +86,7 @@ public class TaxService {
         String systemTimeFormat=dbOrganization.getTimeFormat();
         String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
         String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
-        System.out.println("Time"+currentTime);
+    //    System.out.println("Time"+currentTime);
       //  dte=problemWrapper.getDatePrescribedDate();
      //   Date dteFrom=HISCoreUtil.convertStringDateObjectTax(taxWrapper.getFromDate());
      //   Date dteTo=HISCoreUtil.convertStringDateObjectTax(taxWrapper.getToDate());
@@ -126,7 +126,7 @@ public class TaxService {
         String systemTimeFormat=dbOrganization.getTimeFormat();
         String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
         String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
-        System.out.println("Time"+currentTime);
+    //    System.out.println("Time"+currentTime);
         Date dteFrom=HISCoreUtil.convertStringDateObjectTax(updateRequest.getStrfromDate());
         Date dteTo=HISCoreUtil.convertStringDateObjectTax(updateRequest.getStrtoDate());
         String readDateFrom=HISCoreUtil.convertDateToTimeZone(dteFrom,"yyyy-MM-dd",Zone);

@@ -34,6 +34,7 @@ public class UserWrapper {
         this.id = user.getId();
         this.userType = user.getUserType();
         this.userName=user.getUsername();
+       // this.profileImg=user.get
         /*this.email = user.getUEmail();
         this.userName = user.getUsername();
         this.firstName = user.getProfile().getFirstName();
