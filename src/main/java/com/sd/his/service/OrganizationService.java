@@ -311,7 +311,9 @@ public class OrganizationService {
         if (organizationRequestWrapper.getFormName().equalsIgnoreCase(OrganizationFormTypeEnum.ACCOUNT.name())) {
 
             User user = userRepository.findOne(organizationRequestWrapper.getUserId());
+            if(organizationRequestWrapper.getPassword()!=null){
             user.setPassword(new BCryptPasswordEncoder().encode(organizationRequestWrapper.getPassword()));
+            }
             userRepository.save(user);
             Manager manager = managerRepository.findByUser(user);
             manager.setCellPhone(organizationRequestWrapper.getCellPhone());

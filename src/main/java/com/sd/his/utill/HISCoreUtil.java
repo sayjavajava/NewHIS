@@ -617,32 +617,17 @@ public class HISCoreUtil {
     public static String formatCurrencyDisplay(double amount, String format) {
         String returnFormat = "";
         if (format.equals("123,456")) {
-
             String pattern = "###,###";
             DecimalFormat decimalFormat = new DecimalFormat(pattern);
-
             returnFormat= decimalFormat.format(amount);
-    //        System.out.println("Currency Format"+returnFormat);
-            //    DecimalFormat formatter = new DecimalFormat("###,000");
-            //    returnFormat = formatter.format(Double.parseDouble(amount));
-            // "###,###,##0.00"
         } else if (format.equals("123,456.00")) {
-
             String pattern = "###,###.00";
             DecimalFormat decimalFormat = new DecimalFormat(pattern);
-
             returnFormat = decimalFormat.format(amount);
-     //       System.out.println("Currency Format"+returnFormat);
-
-            /*DecimalFormat formatter = new DecimalFormat("###,###.00");
-            returnFormat = formatter.format(Double.parseDouble(amount));*/
         } else if (format.equals("123456")) {
 
             returnFormat = new DecimalFormat("###").format(amount);
-       //     System.out.println(returnFormat);
             return returnFormat;
-            //      DecimalFormat formatter = new DecimalFormat("######");
-            //      returnFormat = formatter.format(Double.parseDouble(amount));
         } else if (format.equals("123456.00")) {
 
             returnFormat = new DecimalFormat("###.00").format(amount);
