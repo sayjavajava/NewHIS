@@ -215,11 +215,10 @@ public class MedicalServicesService {
         if (HISCoreUtil.isListValid(createRequest.getDepartments())) {
             List<DepartmentMedicalService> list = new ArrayList<>();
             for (DepartmentWrapper departmentWrapper : createRequest.getDepartments()) {
-                if (departmentWrapper.isCheckedDepartment()) {
-                    Department department = this.departmentRepository.findOne(departmentWrapper.getId());
-                    DepartmentMedicalService departmentMedicalService = new DepartmentMedicalService(department, medicalService);
-                    list.add(departmentMedicalService);
-                }
+                Department department = this.departmentRepository.findOne(departmentWrapper.getId());
+                DepartmentMedicalService departmentMedicalService = new DepartmentMedicalService(department, medicalService);
+                list.add(departmentMedicalService);
+
             }
 
 
@@ -244,8 +243,8 @@ public class MedicalServicesService {
             }
         }
 
-        medicalService.setFee(Double.parseDouble(createRequest.getStrFee()));
-        medicalService.setCost(Double.parseDouble(createRequest.getStrCost()));
+     //   medicalService.setFee(Double.parseDouble(createRequest.getStrFee()));
+     //   medicalService.setCost(Double.parseDouble(createRequest.getStrCost()));
         /*if(systemCurrency!=null || (!systemCurrency.equals(""))){
             medicalService.setFee(Double.valueOf(formatCurrencyDisplay((createRequest.getFee()),systemCurrency)));
             medicalService.setCost(Double.valueOf(formatCurrencyDisplay((createRequest.getCost()),systemCurrency)));

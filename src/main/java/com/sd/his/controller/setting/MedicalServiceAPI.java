@@ -375,7 +375,7 @@ public class MedicalServiceAPI {
             logger.error("getMedicalServiceById - Medical Service fetched successfully");
             if (HISCoreUtil.isValidObject(mss)) {
 
-                if (systemCurrency != null &&  (!systemCurrency.equals(""))) {
+                if (systemCurrency != null ||  (!systemCurrency.equals(""))) {
                     mss.setStrFee((medicalServicesService.formatCurrencyDisplay((mss.getFee()), systemCurrency)));
                     mss.setStrCost(medicalServicesService.formatCurrencyDisplay((mss.getCost()), systemCurrency));
 

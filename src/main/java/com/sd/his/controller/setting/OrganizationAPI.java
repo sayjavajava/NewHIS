@@ -570,10 +570,7 @@ public class OrganizationAPI {
         try {
             String imgURL = null;
             Organization alreadyExistOrganization = organizationService.getByID(id);
-          //  String fileName = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf('/')+1, alreadyExistOrganization.getUrl().length());
-        //    if(fileName==null){
-       //         fileName="";
-        //    }
+
         //    String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
         //    String fileExtension = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf("."));
             //    if (HISCoreUtil.isValidObject(user)) {
@@ -664,9 +661,9 @@ public class OrganizationAPI {
         try {
             String imgURL = null;
             Organization alreadyExistOrganization = organizationService.getByID(id);
-            String fileName = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf('/')+1, alreadyExistOrganization.getUrl().length());
-            String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
-            String fileExtension = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf("."));
+          //  String fileName = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf('/')+1, alreadyExistOrganization.getUrl().length());
+          ///  String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
+          //  String fileExtension = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf("."));
             if (HISCoreUtil.isValidObject(file)) {
                 byte[] byteArr = new byte[0];
                 try {
@@ -690,7 +687,7 @@ public class OrganizationAPI {
                                 + "_"
                                 + dteFileUpload
                                 + "_"
-                                + HISConstants.S3_USER_PROFILE_NEW_THUMBNAIL_GRAPHIC_NAME,fileName);
+                                + HISConstants.S3_USER_PROFILE_NEW_THUMBNAIL_GRAPHIC_NAME,"");
                 if (HISCoreUtil.isValidObject(imgURL)) {
 
                     organizationService.saveProfileUpadtedImage(imgURL);

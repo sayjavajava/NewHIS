@@ -936,8 +936,9 @@ public class StaffService {
 
                 if (!HISCoreUtil.isListEmpty(cashierAllowBranches)) {
                     for (Branch userVisitBr : cashierAllowBranches) {
-                        if (userVisitBr.getId() == branchCashier.getId())
-                            continue;
+                        if(branchCashier.getBranch() != null){
+                        if (userVisitBr.getId() == branchCashier.getBranch().getId())
+                            continue;}
                         BranchCashier userVisitBranches = new BranchCashier();
                         userVisitBranches.setBranch(userVisitBr);
                         userVisitBranches.setCashier(cashier);
@@ -1003,7 +1004,7 @@ public class StaffService {
                 }
                 if (!HISCoreUtil.isListEmpty(nurseAllowBranches)) {
                     for (Branch userVisitBr : nurseAllowBranches) {
-                        if (userVisitBr.getId() == branchNurse.getId())
+                        if (userVisitBr.getId() == branchNurse.getBranch().getId())
                             continue;
                         BranchNurse userVisitBranches = new BranchNurse();
                         userVisitBranches.setBranch(userVisitBr);
