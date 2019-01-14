@@ -16,10 +16,11 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import java.text.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /*
  * @author    : Qari Muhammad Jamal
@@ -152,8 +153,8 @@ public class MedicalServicesService {
             medicalService.setTax(tax);
         }
 
-        medicalService.setFee(Double.parseDouble(createRequest.getStrFee()));
-        medicalService.setCost(Double.parseDouble(createRequest.getStrCost()));
+    //    medicalService.setFee(Double.parseDouble(createRequest.getStrFee()));
+    //    medicalService.setCost(Double.parseDouble(createRequest.getStrCost()));
         String dteFileUpload=HISCoreUtil.convertDateToStringUpload(new Date());
         String url = null;
         String imgURL = null;
@@ -215,10 +216,11 @@ public class MedicalServicesService {
         if (HISCoreUtil.isListValid(createRequest.getDepartments())) {
             List<DepartmentMedicalService> list = new ArrayList<>();
             for (DepartmentWrapper departmentWrapper : createRequest.getDepartments()) {
-                Department department = this.departmentRepository.findOne(departmentWrapper.getId());
-                DepartmentMedicalService departmentMedicalService = new DepartmentMedicalService(department, medicalService);
-                list.add(departmentMedicalService);
-
+           //     if (departmentWrapper.isCheckedDepartment()) {
+                    Department department = this.departmentRepository.findOne(departmentWrapper.getId());
+                    DepartmentMedicalService departmentMedicalService = new DepartmentMedicalService(department, medicalService);
+                    list.add(departmentMedicalService);
+            //    }
             }
 
 
@@ -242,9 +244,14 @@ public class MedicalServicesService {
                 medicalService.setTax(null);
             }
         }
-
-     //   medicalService.setFee(Double.parseDouble(createRequest.getStrFee()));
-     //   medicalService.setCost(Double.parseDouble(createRequest.getStrCost()));
+       /* DecimalFormat df = new DecimalFormat();
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator(' ');
+        df.setDecimalFormatSymbols(symbols);
+            = df.parse(createRequest.getStrFee();*/
+       /* medicalService.setFee(Double.parseDouble(createRequest.getStrFee()));
+        medicalService.setCost(Double.parseDouble(createRequest.getStrCost().replace(',','.')));*/
         /*if(systemCurrency!=null || (!systemCurrency.equals(""))){
             medicalService.setFee(Double.valueOf(formatCurrencyDisplay((createRequest.getFee()),systemCurrency)));
             medicalService.setCost(Double.valueOf(formatCurrencyDisplay((createRequest.getCost()),systemCurrency)));
@@ -313,11 +320,11 @@ public class MedicalServicesService {
             List<DepartmentMedicalService> list = new ArrayList<>();
             this.departmentMedicalServiceRepository.deleteByMedicalService_id(medicalService.getId());
             for (DepartmentWrapper departmentWrapper : createRequest.getDepartments()) {
-                if (departmentWrapper.isCheckedDepartment()) {
+             //   if (departmentWrapper.isCheckedDepartment()) {
                     Department department = this.departmentRepository.findOne(departmentWrapper.getId());
                     DepartmentMedicalService departmentMedicalService = new DepartmentMedicalService(department, medicalService);
                     list.add(departmentMedicalService);
-                }
+          //     }
             }
             if (HISCoreUtil.isListValid(list)) {
                 departmentMedicalServiceRepository.save(list);
@@ -503,5 +510,18 @@ public class MedicalServicesService {
         //    returnFormat = formatter.format(Double.parseDouble(amount));
         }
         return returnFormat;
+    }
+
+
+    public static  double parseDecimal(String input) throws ParseException {
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+        ParsePosition parsePosition = new ParsePosition(0);
+        Number number = numberFormat.parse(input, parsePosition);
+
+        if(parsePosition.getIndex() != input.length()){
+            throw new ParseException("Invalid input", parsePosition.getIndex());
+        }
+
+        return number.doubleValue();
     }
 }

@@ -359,12 +359,12 @@ public class MedicalServiceAPI {
             mss.getDepartments().addAll(this.departmentService.getDepartmentsActive());
 
             /***/
-            for (DepartmentWrapper d : mss.getDepartments()) {
+            /*for (DepartmentWrapper d : mss.getDepartments()) {
                 for (DepartmentWrapper checked : mss.getCheckedDepartments()) {
                     if (checked.getId() == d.getId())
                         d.setCheckedDepartment(true);
                 }
-            }
+            }*/
             Organization dbOrganization = organizationService.getAllOrgizationData();
             String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
             String systemCurrency = dbOrganization.getCurrencyFormat();

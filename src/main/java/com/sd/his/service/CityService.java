@@ -33,4 +33,8 @@ public class CityService  {
     }
 
 
+    public List<CityWrapper> getCitiesByCountryId(long stateId){
+        return this.cityRepository.getAllCitiesByCountryId(stateId);
+    }
+
 }
