@@ -33,4 +33,10 @@ public interface CityRepository extends JpaRepository<City, Long> {
     City findTitleById(@Param("name") String paraName);
 
 
+    @Query("SELECT new com.sd.his.wrapper.CityWrapper(c) " +
+            "FROM City c " +
+            "WHERE c.country.id=:id")
+    List<CityWrapper> getAllCitiesByCountryId(@Param("id") Long countryId);
+
+
 }

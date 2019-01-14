@@ -570,7 +570,7 @@ public class OrganizationAPI {
         try {
             String imgURL = null;
             Organization alreadyExistOrganization = organizationService.getByID(id);
-        //    String fileName = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf('/')+1, alreadyExistOrganization.getUrl().length());
+
         //    String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf('.'));
         //    String fileExtension = alreadyExistOrganization.getUrl().substring(alreadyExistOrganization.getUrl().lastIndexOf("."));
             //    if (HISCoreUtil.isValidObject(user)) {

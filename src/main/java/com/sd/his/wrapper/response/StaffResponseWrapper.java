@@ -84,7 +84,7 @@ public class StaffResponseWrapper {
     private Boolean otherDoctorDashBoard;
     private List<DutyShift> shift1;
     private List<DutyShift> shift2;
-    private String formatedTime = "hh:mm:ss";
+    private String formatedTime = "HH:mm:ss";
     private String formatedDate = "dd:MM:yyyy";
     private String zone = "Asia/Karachi";
     private Boolean receivePayment;
