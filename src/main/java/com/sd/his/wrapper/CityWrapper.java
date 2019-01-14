@@ -26,6 +26,8 @@ public class CityWrapper extends BaseWrapper {
                 HISCoreUtil.convertDateToString(c.getUpdatedOn(), HISConstants.DATE_FORMATE_YYY_MM_dd));
         this.name = c.getName();
         this.status = c.isStatus();
+        this.stateWrapper = new StateWrapper();
+        new StateWrapper(this.stateWrapper, c.getState());
     }
 
     public CityWrapper(Long id, Date createdOn, Date updatedOn,

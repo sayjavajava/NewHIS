@@ -127,6 +127,16 @@ public class Branch extends BaseEntity implements Serializable {
     @JsonBackReference
     private City city;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STATE_ID")
+    @JsonBackReference
+    private State state;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COUNTRY_ID")
+    @JsonBackReference
+    private Country country;
+
     public Branch(String name, String address, String fax, String officePhone, String flow, Date officeStartTime, Date officeEndTime, Boolean status, Boolean systemBranch, Organization organization) {
         this.name = name;
         this.address = address;
@@ -317,5 +327,21 @@ public class Branch extends BaseEntity implements Serializable {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
     }
 }

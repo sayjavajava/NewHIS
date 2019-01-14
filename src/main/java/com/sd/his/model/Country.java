@@ -44,6 +44,9 @@ public class Country extends BaseEntity {
     @OneToMany(targetEntity = City.class, mappedBy = "country")
     private List<City> cities;
 
+    @OneToMany(targetEntity = Branch.class, mappedBy = "country")
+    private List<Branch> branch;
+
     public Country() {
     }
 
@@ -151,4 +154,11 @@ public class Country extends BaseEntity {
         this.cities = cities;
     }
 
+    public List<Branch> getBranch() {
+        return branch;
+    }
+
+    public void setBranch(List<Branch> branch) {
+        this.branch = branch;
+    }
 }

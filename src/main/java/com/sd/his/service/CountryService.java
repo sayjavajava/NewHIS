@@ -28,6 +28,10 @@ public class CountryService {
         return this.countryRepository.findOne(id);
     }
 
+    public CountryWrapper getCountryWrapperById(Long id) {
+        return this.countryRepository.getByCountryId(id);
+    }
+
     public Country getCountryByName(String name) {
         return this.countryRepository.findByName("%"+name+"%");
     }
