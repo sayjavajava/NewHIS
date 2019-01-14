@@ -677,6 +677,7 @@ public class OrganizationAPI {
                                 + "_"
                                 + HISConstants.S3_USER_PROFILE_NEW_THUMBNAIL_GRAPHIC_NAME, +alreadyExistOrganization.getId()
                                 + "_" + alreadyExistOrganization.getId()
+
                                 + "_"
                                 + dteFileUpload
                                 + "_"
