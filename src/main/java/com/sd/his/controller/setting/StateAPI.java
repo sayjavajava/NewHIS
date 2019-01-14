@@ -145,13 +145,13 @@ public class StateAPI {
         response.setResponseCode(ResponseEnum.STATE_NOT_FOUND_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
+        Map<String, Object> returnValues = new LinkedHashMap<>();
 
         try {
             List<StateWrapper> statesList = this.stateService.getAllStatesByCountryId(countryId);
-            if (HISCoreUtil.isValidObject(statesList)) {
-                CountryWrapper country = countryService.getCountryWrapperById(countryId);
+            CountryWrapper country = countryService.getCountryWrapperById(countryId);
+            if (HISCoreUtil.isListValid(statesList)) {
 
-                Map<String, Object> returnValues = new LinkedHashMap<>();
                 returnValues.put("statesList", statesList);
                 returnValues.put("country", country);
 
@@ -163,7 +163,10 @@ public class StateAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
-                response.setResponseData(null);
+                returnValues.put("statesList", statesList);
+                returnValues.put("country", country);
+
+                response.setResponseData(returnValues);
                 response.setResponseMessage(messageBundle.getString("state.search.not.found"));
                 response.setResponseCode(ResponseEnum.STATE_FETCHED_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());

@@ -29,4 +29,7 @@ public interface StateRepository extends JpaRepository<State, Long> {
 
     @Query("SELECT t FROM State t where t.name = :name")
     State findTitleById(@Param("name") String paraName);
+
+    @Query("SELECT new com.sd.his.wrapper.StateWrapper(s) FROM com.sd.his.model.State s WHERE s.id =:id ")
+    StateWrapper getByIdOne(@Param("id") Long stateId);
 }

@@ -90,6 +90,8 @@ public class CityAPI {
 
     @Autowired
     private CityService cityService;
+    @Autowired
+    private StateService stateService;
     private final Logger logger = LoggerFactory.getLogger(CityAPI.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
@@ -113,7 +115,7 @@ public class CityAPI {
         response.setResponseData(null);
         try {
             List<City> cityLst = this.cityService.getCities();
-            if (HISCoreUtil.isValidObject(cityLst)) {
+            if (HISCoreUtil.isListValid(cityLst)) {
                 response.setResponseData(cityLst);
                 response.setResponseMessage(messageBundle.getString("city.found"));
                 response.setResponseCode(ResponseEnum.CITY_FETCHED_SUCCESS.getValue());
@@ -157,13 +159,13 @@ public class CityAPI {
         response.setResponseCode(ResponseEnum.CITY_NOT_FOUND_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
+        Map<String, Object> returnValues = new LinkedHashMap<>();
 
         try {
             List<CityWrapper> cityList = this.cityService.getCitiesByStateId(stateId);
-            if (HISCoreUtil.isValidObject(cityList)) {
-                StateWrapper state = cityList.get(0).getStateWrapper();
+            StateWrapper state = stateService.getStateWrapperById(stateId);
+            if (HISCoreUtil.isListValid(cityList)) {
 
-                Map<String, Object> returnValues = new LinkedHashMap<>();
                 returnValues.put("cityList", cityList);
                 returnValues.put("state", state);
 
@@ -175,7 +177,10 @@ public class CityAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
-                response.setResponseData(null);
+                returnValues.put("cityList", cityList);
+                returnValues.put("state", state);
+
+                response.setResponseData(returnValues);
                 response.setResponseMessage(messageBundle.getString("city.search.not.found"));
                 response.setResponseCode(ResponseEnum.CITY_FETCHED_SUCCESS.getValue());
                 response.setResponseStatus(ResponseEnum.ERROR.getValue());

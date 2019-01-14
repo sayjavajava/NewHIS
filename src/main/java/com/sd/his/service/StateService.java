@@ -27,9 +27,12 @@ public class StateService {
         return this.stateRepository.getAllStatesByCountry(countryId);
     }
 
-
     public State getStateById(long stateId){
         return this.stateRepository.getOne(stateId);
+    }
+
+    public StateWrapper getStateWrapperById(Long stateId){
+        return this.stateRepository.getByIdOne(stateId);
     }
 
 }
