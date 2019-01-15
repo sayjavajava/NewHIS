@@ -41,7 +41,7 @@ public class ChartOfAccountController {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             HashMap<String, Object> hashMap = new HashMap<String, Object>();
-//            hashMap.put("accountList", generalLedgerService.getAll());
+            hashMap.put("accountList", generalLedgerService.getAll());
             hashMap.put("accountConfig", generalLedgerService.getAccountConfig());
 
             response.setResponseData(hashMap);

@@ -1,5 +1,6 @@
 package com.sd.his.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.annotations.NaturalId;
@@ -36,8 +37,8 @@ public class GeneralLedger  extends BaseEntity {
     @JoinColumn(name = "bank_id")
     private BankAccount bankAccount;
 
-
     @OneToMany(mappedBy = "generalLedger")
+    @JsonBackReference
     private List<GeneralLedgerTransaction> generalLedgerTransactions;
 
     public GeneralLedger() {
