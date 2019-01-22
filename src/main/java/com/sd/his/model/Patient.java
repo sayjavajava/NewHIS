@@ -17,10 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "PATIENT")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Patient extends BaseEntity implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class Patient extends BaseEntity {
 
     @NaturalId
     @Column(name = "PATIENT_ID", unique = true, nullable = false, updatable = false)

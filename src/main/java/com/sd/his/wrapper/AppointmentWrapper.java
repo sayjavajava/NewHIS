@@ -162,6 +162,13 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
     public AppointmentWrapper(Long id, String name, String notes) {
     }
 
+    /*
+    (a.id, a.appointmentId ,a.name, a.notes,a.status.name,a.status.hashColor,a.status.id, a.reason, a.color, a.type, a.duration," +
+            "  a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, " +
+            "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.profileImgURL,a.patient.id,
+            a.branch.id, a.branch.name,a.room.id,a.doctor.firstName,a.doctor.lastName,a.doctor.id,a.followUpDate,a.medicalService.id,a.medicalService.name)
+     */
+
     public AppointmentWrapper(Long id, String appointmentId, String title, String notes, String statusName, String hashColor, Long statusId, String reason, String color, String appointmentType, Integer duration,
                               Boolean followUpReminder, String followUpReasonReminder, Date scheduleDate, Date startedOn, Date endedOn,
                               Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, String profileImgURL, Long patientId,
@@ -187,7 +194,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.doctorId = docId;
         this.status = statusName;
         this.statusId =statusId;
-        this.followUpReminder = followUpReminder;
+//        this.followUpReminder = followUpReminder;
         this.duration = duration;
         this.compareDate = scheduleDate;
         this.appointmentType = JSONUtil.convertJsonToList(appointmentType);

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -57,6 +58,8 @@ public class BulkImportService {
     private BranchRepository branchRepository;
     @Autowired
     private DrugManufacturerRepository drugManufacturerRepository;
+    @Autowired
+    private ImportFileService importFileService;
 
     @Value("${spring.http.multipart.location}")
     private String tmpFilePath;
@@ -240,6 +243,29 @@ public class BulkImportService {
         return records.get();
     }
 
+
+
+    public List<String> patientFileFields(String fileName) throws IllegalStateException, InvalidFormatException, IOException, ParseException {
+        // Creating a Workbook from an Excel file (.xls or .xlsx)
+        File file = new File(fileName);
+        Workbook workBook = WorkbookFactory.create(file);
+        Sheet excelSheet = workBook.getSheetAt(0);
+        List<String> fileFields = new ArrayList<>();
+
+        Row row = excelSheet.getRow(0);
+        if (row != null && row.getRowNum() == 0){
+            if (row.getCell(0) != null && row.getCell(1) != null && row.getCell(2) != null
+                    && row.getCell(3) != null && row.getCell(4) != null) {
+                for (int i = 0; i < 5; i++){
+                    fileFields.add(row.getCell(i).getStringCellValue());
+                }
+            }
+        }
+        // Closing the workbook
+        workBook.close();
+        return fileFields;
+    }
+
     public int importPatientRecords(String fileName) throws IllegalStateException, InvalidFormatException, IOException, ParseException {
         // Creating a Workbook from an Excel file (.xls or .xlsx)
         File file = new File(this.tmpFilePath + fileName);
@@ -314,6 +340,135 @@ public class BulkImportService {
         workBook.close();
         this.deleteFile(file);
         return records.get();
+    }
+
+    public int importPatientRecords(File file) throws IllegalStateException, InvalidFormatException, IOException, ParseException {
+        // Creating a Workbook from an Excel file (.xls or .xlsx)
+        AtomicInteger records = new AtomicInteger(0);
+        Workbook workBook = WorkbookFactory.create(file);
+        Sheet excelSheet = workBook.getSheetAt(0);
+
+        Patient patient = null;
+        for (Row row : excelSheet) {
+            if (row != null && row.getRowNum() > 0 && row.getCell(0) != null) {
+                if (row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null
+                        || row.getCell(3) == null || row.getCell(4) == null)
+                    continue;
+                Patient oldPatient = patientRepository.findDuplicatePatientForBulkImport(row.getCell(0).getStringCellValue() + "",
+                        row.getCell(1).getStringCellValue() + "", row.getCell(2).getStringCellValue() + "", row.getCell(3).getDateCellValue());
+                if (oldPatient != null)
+                    continue;
+
+                patient = new Patient();
+                for (int j = 0; j < row.getLastCellNum(); j++) {
+                    switch (j) {
+                        case 0:
+                            patient.setFirstName(row.getCell(j).getStringCellValue());
+                            break;
+                        case 1:
+                            patient.setLastName(row.getCell(j).getStringCellValue());
+                            break;
+                        case 2:
+                            patient.setCellPhone(row.getCell(j).getStringCellValue());
+                            break;
+                        case 3:
+                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            String date = dateFormat.format(row.getCell(j).getDateCellValue());
+                            patient.setDob(dateFormat.parse(date));
+                            break;
+                        case 4:
+                            if (row.getCell(j).getStringCellValue().trim().toUpperCase().equals(GenderTypeEnum.MALE.name())) {
+                                patient.setGender(GenderTypeEnum.MALE);
+                            } else {
+                                patient.setGender(GenderTypeEnum.FEMALE);
+                            }
+                            break;
+                    }
+                }
+                patient.setStatus(PatientStatusTypeEnum.ACTIVE);
+                patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+                patientRepository.save(patient);
+                records.incrementAndGet();
+            }
+        }
+        // Closing the workbook
+        workBook.close();
+        this.deleteFile(file);
+        return records.get();
+    }
+
+    public List importPatientRecordsMapFields(List<String> fileMappedList, String fileName) throws IllegalStateException, InvalidFormatException, IOException, ParseException {
+        List systemFieldsList = Arrays.asList("First Name~Last Name~Cell Phone~Date of Birth (yyyy-MM-dd)~Gender (Male, Female, Other)".split("~"));
+        File file = new File(fileName);
+        // Creating a Workbook from an Excel file (.xls or .xlsx)
+        Workbook workBook = WorkbookFactory.create(file);
+        Sheet excelSheet = workBook.getSheetAt(0);
+        List<Object> listOfLists = new ArrayList<>();
+
+        if (fileMappedList.size() == systemFieldsList.size()) {
+            for (Row row : excelSheet) {
+//                List<Object> data = new ArrayList<>();
+                PatientImportRecord patientImportRecord = new PatientImportRecord();
+                StringBuilder sb = new StringBuilder();
+                if (row != null && row.getRowNum() > 0 && row.getCell(0) != null) {
+                    if (row.getCell(0) == null || row.getCell(1) == null || row.getCell(2) == null
+                            || row.getCell(3) == null || row.getCell(4) == null) {
+                        patientImportRecord.setStatus(false);
+                    } else {
+                        patientImportRecord.setStatus(true);
+                    }
+                    for (int j = 0; j < fileMappedList.size(); j++) {
+                    String mappedField = fileMappedList.get(j);
+//                    for (String mappedField: fileMappedList) {
+                        if ("First Name".equals(mappedField)) {
+                            sb = new StringBuilder(row.getCell(0) == null ? "" : row.getCell(0).getStringCellValue());
+                        } else if ("Last Name".equals(mappedField)) {
+                            sb = new StringBuilder(row.getCell(1) == null ? "" : row.getCell(1).getStringCellValue());
+                        } else if ("Cell Phone".equals(mappedField)) {
+                            sb = new StringBuilder(row.getCell(2) == null ? "" : row.getCell(2).getStringCellValue());
+                        } else if ("Date of Birth (yyyy-MM-dd)".equals(mappedField)) {
+                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            sb = new StringBuilder(row.getCell(3) == null ? "" : dateFormat.format(row.getCell(3).getDateCellValue()));
+                        } else if ("Gender (Male, Female, Other)".equals(mappedField)) {
+                            if (row.getCell(4) == null){
+                                sb = new StringBuilder(GenderTypeEnum.OTHER.name());
+                            } else {
+                                if (row.getCell(4).getStringCellValue().trim().equalsIgnoreCase(GenderTypeEnum.MALE.name())) {
+                                    sb = new StringBuilder(GenderTypeEnum.MALE.name());
+                                } else if (row.getCell(4).getStringCellValue().trim().equalsIgnoreCase(GenderTypeEnum.FEMALE.name())) {
+                                    sb = new StringBuilder(GenderTypeEnum.FEMALE.name());
+                                } else {
+                                    sb = new StringBuilder(GenderTypeEnum.OTHER.name());
+                                }
+                            }
+                        }
+
+                        switch (j) {
+                            case 0:
+                                patientImportRecord.setFirstName(sb.toString());
+                                break;
+                            case 1:
+                                patientImportRecord.setLastName(sb.toString());
+                                break;
+                            case 2:
+                                patientImportRecord.setCellPhone(sb.toString());
+                                break;
+                            case 3:
+                                patientImportRecord.setDob(sb.toString());
+                                break;
+                            case 4:
+                                patientImportRecord.setGender(sb.toString());
+                                break;
+                        }
+//                      data.add(sb.toString());
+                    }
+                    listOfLists.add(patientImportRecord);
+                }
+            }
+        }
+//      Closing the workbook
+        workBook.close();
+        return listOfLists;
     }
 
     public int importAppointmentRecords(String fileName) throws IllegalStateException, InvalidFormatException, IOException, ParseException {
@@ -394,5 +549,49 @@ public class BulkImportService {
 
     private boolean deleteFile(File file) {
         return (file.exists() && file.delete());
+    }
+
+    public int savePatientData(ArrayList<PatientImportRecord> allData, String duplicateRecordOperation) {
+        AtomicInteger records = new AtomicInteger(0);
+        int skipDupRecOps = duplicateRecordOperation.equalsIgnoreCase("Skip") ? 1 : 0;
+        Patient patient = null;
+        for (PatientImportRecord patientImportRecord : allData) {
+            if (patientImportRecord.getFirstName().trim().equalsIgnoreCase("") || patientImportRecord.getLastName().trim().equalsIgnoreCase("")
+                    || patientImportRecord.getCellPhone().trim().equalsIgnoreCase("") || patientImportRecord.getDob().trim().equalsIgnoreCase("")
+                    || patientImportRecord.getGender().trim().equalsIgnoreCase(""))
+                continue;
+            else {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//                String date = dateFormat.format(patientImportRecord.getDob().trim());
+                Date dob = null;
+                try {
+                    dob = dateFormat.parse(patientImportRecord.getDob().trim());
+                    GenderTypeEnum genderTypeEnum = patientImportRecord.getGender().trim().equalsIgnoreCase(GenderTypeEnum.MALE.name()) ? GenderTypeEnum.MALE :
+                            (patientImportRecord.getGender().trim().equalsIgnoreCase(GenderTypeEnum.FEMALE.name()) ? GenderTypeEnum.FEMALE :
+                                    GenderTypeEnum.OTHER);
+                    patient = patientRepository.findDuplicatePatientForBulkImport(patientImportRecord.getFirstName().trim() + "", patientImportRecord.getLastName().trim()+"",
+                            patientImportRecord.getCellPhone().trim() + "", dob);
+                    if (patient == null) {
+                        patient = new Patient();
+                        patient.setFirstName(patientImportRecord.getFirstName().trim());
+                        patient.setLastName(patientImportRecord.getLastName().trim());
+                        patient.setCellPhone(patientImportRecord.getCellPhone().trim());
+                        patient.setDob(dob);
+                        patient.setGender(genderTypeEnum);
+                        records.incrementAndGet();
+                    } else if (skipDupRecOps == 0) {              //Mean overwrite
+                        patient.setFirstName(patientImportRecord.getFirstName().trim());
+                        patient.setLastName(patientImportRecord.getLastName().trim());
+                        patient.setCellPhone(patientImportRecord.getCellPhone().trim());
+                        patient.setDob(dob);
+                        patient.setGender(genderTypeEnum);
+                        records.incrementAndGet();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return records.get();
     }
 }

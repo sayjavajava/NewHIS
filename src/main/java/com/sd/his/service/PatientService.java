@@ -1,9 +1,7 @@
 package com.sd.his.service;
 
-import com.sd.his.enums.GenderTypeEnum;
-import com.sd.his.enums.MaritalStatusTypeEnum;
-import com.sd.his.enums.ModuleEnum;
-import com.sd.his.enums.PatientStatusTypeEnum;
+import com.sd.his.controller.patient.PatientAPI;
+import com.sd.his.enums.*;
 import com.sd.his.model.*;
 import com.sd.his.model.LabTest;
 import com.sd.his.repository.*;
@@ -11,9 +9,12 @@ import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PatientService {
+
     @Autowired
     private PatientRepository patientRepository;
     @Autowired
@@ -51,8 +53,6 @@ public class PatientService {
     @Autowired
     private PatientGroupRepository patientGroupRepository;
 
-
-
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
         patientWrapper.setId(patient.getId());//patient pk
@@ -62,7 +62,6 @@ public class PatientService {
         patientWrapper.setFirstName(patient.getFirstName());
         patientWrapper.setMiddleName(patient.getMiddleName());
         patientWrapper.setLastName(patient.getLastName());
-
         if (patient.getDob() != null) {
             patientWrapper.setDob(patient.getDob() + "");
         }
@@ -419,7 +418,7 @@ public class PatientService {
             patientWrapper.setPrimaryDoctorFirstName(patient.getPrimaryDoctor().getFirstName());
             patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
         }
-        patientWrapper.setSmokingStatuses(patient.getSmokingStatusList() != null ? patient.getSmokingStatusList() : null);
+        patientWrapper.setSmokingStatuses(patient.getSmokingStatusList());
         this.populateAppointments(patientWrapper, patient);
         this.populateInsurance(patientWrapper, patient);
         return patientWrapper;
@@ -430,8 +429,6 @@ public class PatientService {
     }
 
     private void populateAppointments(PatientWrapper patientWrapper, Patient patient) {
-        List<AppointmentWrapper> apptFutureWrapperList = new ArrayList<>();
-        List<AppointmentWrapper> apptPastWrapperList = new ArrayList<>();
         List<AppointmentWrapper> listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patient.getId());
         Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream()
                 .collect(Collectors.partitioningBy(x -> x.getCompareDate()
@@ -792,8 +789,6 @@ public class PatientService {
     }
 
 
-
-
     public LabOrderUpdateWrapper saveLabOrderNew(LabOrderUpdateWrapper labOrderWrapper) {
         LabOrder labOrder = new LabOrder();
 
@@ -829,4 +824,5 @@ public class PatientService {
         }
         return labOrderWrapper;
     }
+
 }
