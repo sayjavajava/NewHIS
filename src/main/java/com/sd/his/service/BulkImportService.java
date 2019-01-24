@@ -5,6 +5,7 @@ import com.sd.his.enums.ModuleEnum;
 import com.sd.his.enums.PatientStatusTypeEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
+import com.sd.his.utill.HISCoreUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -33,7 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class BulkImportService {
 
-
     @Autowired
     private DrugRepository drugRepository;
     @Autowired
@@ -58,8 +58,6 @@ public class BulkImportService {
     private BranchRepository branchRepository;
     @Autowired
     private DrugManufacturerRepository drugManufacturerRepository;
-    @Autowired
-    private ImportFileService importFileService;
 
     @Value("${spring.http.multipart.location}")
     private String tmpFilePath;
@@ -397,13 +395,13 @@ public class BulkImportService {
         return records.get();
     }
 
-    public List importPatientRecordsMapFields(List<String> fileMappedList, String fileName) throws IllegalStateException, InvalidFormatException, IOException, ParseException {
+    public List<PatientImportRecord> importPatientRecordsMapFields(List<String> fileMappedList, String fileName) throws IllegalStateException, InvalidFormatException, IOException, ParseException {
         List systemFieldsList = Arrays.asList("First Name~Last Name~Cell Phone~Date of Birth (yyyy-MM-dd)~Gender (Male, Female, Other)".split("~"));
         File file = new File(fileName);
         // Creating a Workbook from an Excel file (.xls or .xlsx)
         Workbook workBook = WorkbookFactory.create(file);
         Sheet excelSheet = workBook.getSheetAt(0);
-        List<Object> listOfLists = new ArrayList<>();
+        List<PatientImportRecord> listOfLists = new ArrayList<>();
 
         if (fileMappedList.size() == systemFieldsList.size()) {
             for (Row row : excelSheet) {
@@ -430,7 +428,7 @@ public class BulkImportService {
                             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                             sb = new StringBuilder(row.getCell(3) == null ? "" : dateFormat.format(row.getCell(3).getDateCellValue()));
                         } else if ("Gender (Male, Female, Other)".equals(mappedField)) {
-                            if (row.getCell(4) == null){
+                            if (row.getCell(4) == null) {
                                 sb = new StringBuilder(GenderTypeEnum.OTHER.name());
                             } else {
                                 if (row.getCell(4).getStringCellValue().trim().equalsIgnoreCase(GenderTypeEnum.MALE.name())) {
@@ -460,7 +458,6 @@ public class BulkImportService {
                                 patientImportRecord.setGender(sb.toString());
                                 break;
                         }
-//                      data.add(sb.toString());
                     }
                     listOfLists.add(patientImportRecord);
                 }
@@ -578,6 +575,9 @@ public class BulkImportService {
                         patient.setCellPhone(patientImportRecord.getCellPhone().trim());
                         patient.setDob(dob);
                         patient.setGender(genderTypeEnum);
+                        patient.setPatientId(hisUtilService.getPrefixId(ModuleEnum.PATIENT));
+                        patient.setStatus(PatientStatusTypeEnum.ACTIVE);
+                        patientRepository.save(patient);
                         records.incrementAndGet();
                     } else if (skipDupRecOps == 0) {              //Mean overwrite
                         patient.setFirstName(patientImportRecord.getFirstName().trim());
@@ -585,6 +585,8 @@ public class BulkImportService {
                         patient.setCellPhone(patientImportRecord.getCellPhone().trim());
                         patient.setDob(dob);
                         patient.setGender(genderTypeEnum);
+                        patient.setStatus(PatientStatusTypeEnum.ACTIVE);
+                        patientRepository.save(patient);
                         records.incrementAndGet();
                     }
                 } catch (ParseException e) {

@@ -25,8 +25,6 @@ public class ImportFileService {
     }
 
     public ImportFile saveImportFileData(String fileName, String dupRecOp, String charEncoding){
-//        fileName = this.tmpFilePath + fileName;
-//        ImportFile importFile = new ImportFile(this.tmpFilePath + fileName, dupRecOp, charEncoding);
         return importFileRepository.save(new ImportFile(fileName, dupRecOp, charEncoding));
     }
 
