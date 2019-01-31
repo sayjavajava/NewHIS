@@ -84,6 +84,14 @@ public class Appointment extends BaseEntity implements Serializable {
     @Column(name = "SCHEDULE_DATE")
     private Date schdeulledDate;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CHECK_IN")
+    private Date checkIn;
+
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User creator;
+
     @Temporal(TemporalType.TIME)
     @Column(name = "STARTED_ON")
     private Date startedOn;
@@ -132,6 +140,33 @@ public class Appointment extends BaseEntity implements Serializable {
     @JoinColumn(name = "STATUS_ID")
     private Status status;
 
+    @Column(name = "IS_ACTIVE")
+    private boolean active;
+
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Date getCheckIn() {
+        return checkIn;
+    }
+
+    public void setCheckIn(Date checkIn) {
+        this.checkIn = checkIn;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
 
     public Status getStatus() {
         return status;

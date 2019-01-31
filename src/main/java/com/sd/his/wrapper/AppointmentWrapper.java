@@ -1,6 +1,7 @@
 package com.sd.his.wrapper;
 
 
+import com.amazonaws.util.DateUtils;
 import com.sd.his.model.Appointment;
 import com.sd.his.model.Organization;
 import com.sd.his.model.Room;
@@ -10,6 +11,7 @@ import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.utill.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -59,7 +61,6 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
     private Long createdOn;
     private Long updatedOn;
     private boolean recurringAppointment;
-    private String recurseEvery;
     private Long recurringPeriod;
     private String gender;
     private String age;
@@ -111,6 +112,13 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
     private String profileImgURL;
     private String base_S3_URL ="https://s3.amazonaws.com/hisdev/users/patient/history/order/";
     private String default_photo ="/public/images/patient-photo.jpg";
+    private Long creatorId;
+    private String creatorName;
+    private String checkInTime;
+    private boolean pastAppt;
+    private String apptType;
+    private Long recurseEvery;
+
 
     public AppointmentWrapper() {
     }
@@ -137,6 +145,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.patientFirstName =appointment.getPatient().getFirstName();
         this.patientLastName =appointment.getPatient().getLastName();
         this.patient = this.getPatientFirstName() + this.getPatientLastName();
+        this.patientId = appointment.getPatient().getId();
 
         this.docFirstName =appointment.getDoctor().getFirstName();
         this.docLastName =appointment.getDoctor().getLastName();
@@ -149,6 +158,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.profileImgURL = profileImgURL != null ? this.base_S3_URL+profileImgURL : this.default_photo ;
         this.value = id;
         this.scheduleDate = this.zonedDate;
+        this.pastAppt = appointment.getSchdeulledDate().before(new Date());
         this.appointmentConvertedTime = convertAppointmentTime(appointment.getStartedOn());
 //        this.appointmentEndedConvertedTime = convertAppointmentTime(appointment.getStartedOn()) + duration;
         this.appointmentEndedOn = HISCoreUtil.convertTimeToString(appointment.getEndedOn());
@@ -156,7 +166,11 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.followUpReason =appointment.getFollowUpReasonReminder();
         this.duration = appointment.getDuration();
         this.compareDate = appointment.getSchdeulledDate();
-        this.appointmentType = JSONUtil.convertJsonToList(appointment.getType());
+       // this.appointmentType = JSONUtil.convertJsonToList(appointment.getType());
+        this.apptType = appointment.getType();
+        this.creatorId = appointment.getCreator().getId();
+        this.creatorName = appointment.getCreator().getUsername();
+        this.checkInTime = HISCoreUtil.convertDateToTimeZone(appointment.getCheckIn(),this.formatedDate,zone);
     }
 
     public AppointmentWrapper(Long id, String name, String notes) {
@@ -167,7 +181,6 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
                               Boolean recurring, Date firstAppointmentOn, Date lastAppointmentOn, String firstName, String lastName, String profileImgURL, Long patientId,
                               Long branchId, String branchName,Long roomId, String docFirstName, String docLastName, Long docId, Date followUpDate, Long serviceId, String serviceName
     ) {
-
 
         this.id = id;
         this.appointmentId=appointmentId;
@@ -187,10 +200,11 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         this.doctorId = docId;
         this.status = statusName;
         this.statusId =statusId;
-        this.followUpReminder = followUpReminder;
+     //   this.followUpReminder = followUpReminder;
         this.duration = duration;
         this.compareDate = scheduleDate;
-        this.appointmentType = JSONUtil.convertJsonToList(appointmentType);
+        this.apptType = appointmentType;
+       // this.appointmentType = JSONUtil.convertJsonToList(appointmentType);
         this.followUpReason=followUpReasonReminder;
         this.recurringPeriod = recurringPeriod;
        /* this.firstAppointmentOn = firstAppointmentOn;
@@ -259,6 +273,54 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
                 ", type='" + type + '\'' +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public Long getRecurseEvery() {
+        return recurseEvery;
+    }
+
+    public void setRecurseEvery(Long recurseEvery) {
+        this.recurseEvery = recurseEvery;
+    }
+
+    public String getApptType() {
+        return apptType;
+    }
+
+    public void setApptType(String apptType) {
+        this.apptType = apptType;
+    }
+
+    public boolean isPastAppt() {
+        return pastAppt;
+    }
+
+    public void setPastAppt(boolean pastAppt) {
+        this.pastAppt = pastAppt;
+    }
+
+    public String getCheckInTime() {
+        return checkInTime;
+    }
+
+    public void setCheckInTime(String checkInTime) {
+        this.checkInTime = checkInTime;
+    }
+
+    public Long getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(Long creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 
     public String getProfileImgURL() {
@@ -513,14 +575,6 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
 
     public void setCellPhone(String cellPhone) {
         this.cellPhone = cellPhone;
-    }
-
-    public String getRecurseEvery() {
-        return recurseEvery;
-    }
-
-    public void setRecurseEvery(String recurseEvery) {
-        this.recurseEvery = recurseEvery;
     }
 
     public Long getId() {

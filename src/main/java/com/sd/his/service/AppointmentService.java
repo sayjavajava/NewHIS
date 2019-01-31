@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -195,10 +197,29 @@ public class AppointmentService {
             LocalDate start = HISCoreUtil.convertDateToLocalDate(appointmentWrapper.getFirstAppointment());
             LocalDate end = HISCoreUtil.convertDateToLocalDate(appointmentWrapper.getLastAppointment());
             List<LocalDate> listOfDates = new ArrayList<>();
-            List<LocalDate> dates = Stream.iterate(start, date -> date.plusDays(1))
+            /*List<LocalDate> dates = Stream.iterate(start, date -> date.plusDays(1))
                     .limit(ChronoUnit.DAYS.between(start, end))
-                    .collect(Collectors.toList());
-            for (LocalDate locald : dates) {
+                    .collect(Collectors.toList());*/
+            boolean checkDate =true;
+            LocalDate week = start.plus(appointmentWrapper.getRecurseEvery() != null ?appointmentWrapper.getRecurseEvery():0 , ChronoUnit.WEEKS);
+            List<LocalDate> finalLocalDates = new ArrayList<>();
+
+            while (checkDate){
+                if(week.isBefore(end)){
+                    LocalDate addWeekRecurs = week;
+                    LocalDate addWeek = week.plusDays(7);
+                    List<LocalDate> dates = Stream.iterate(week, date -> date.plusDays(1))
+                            .limit(ChronoUnit.DAYS.between(week, addWeek))
+                            .collect(Collectors.toList());
+                    finalLocalDates.addAll(dates);
+                    week = addWeekRecurs;
+                    week = week.plus(2,ChronoUnit.WEEKS);
+
+                }else
+                    checkDate =false;
+            }
+
+            for (LocalDate locald : finalLocalDates) {
                 for (String s : appointmentWrapper.getSelectedRecurringDays()) {
                     if (locald.getDayOfWeek().toString().equalsIgnoreCase(s)) {
                         listOfDates.add(locald);
@@ -295,7 +316,9 @@ public class AppointmentService {
         appointment.setReason(appointmentWrapper.getReason());
         appointment.setNotes(appointmentWrapper.getNotes());
         appointment.setColor(appointmentWrapper.getColor());
-        appointment.setType(new Gson().toJson(appointmentWrapper.getAppointmentType()));
+        appointment.setActive(true);
+       // appointment.setType(new Gson().toJson(appointmentWrapper.getAppointmentType()));
+        appointment.setType(appointmentWrapper.getApptType());
         appointment.setDuration(appointmentWrapper.getDuration());
         // appointment.setStatus(AppointmentStatusTypeEnum.valueOf(appointmentWrapper.getStatus()));
         if (appointmentWrapper.getFollowUpReminder() == true) {
@@ -318,6 +341,13 @@ public class AppointmentService {
             patient = patientRepository.findOne(appointmentWrapper.getPatientId());
             appointment.setPatient(patient);
         }
+        Authentication auth= SecurityContextHolder.getContext().getAuthentication();
+        logger.info("creating appoint" + auth.getName());
+        if(auth.getName() != null){
+           User user = userRepository.findByUsernameAndActiveTrue(auth.getName());
+           appointment.setCreator(user);
+        }
+
         if (appointmentWrapper.getStatusId() != null) {
             Status apptStatus = statusRepository.findOne(appointmentWrapper.getStatusId());
             appointment.setStatus(apptStatus);
@@ -652,7 +682,8 @@ public class AppointmentService {
     }*/
 
     public void deleteAppointment(Appointment appointment) {
-
+        appointment.setActive(false);
+        appointmentRepository.save(appointment);
     }
 
 }

@@ -57,7 +57,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "FROM Appointment a")
     List<AppointmentWrapper> findAllAppointments();*/
 
-    @Query("SELECT new com.sd.his.wrapper.AppointmentWrapper(apt) FROM Appointment apt ")
+    @Query("SELECT new com.sd.his.wrapper.AppointmentWrapper(apt) FROM Appointment apt where apt.active = true ")
     List<AppointmentWrapper> findAllAppointments();
 
 
@@ -65,7 +65,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes,a.status.name,a.status.hashColor,a.status.id, a.reason, a.color, a.type," +
             " a.duration, a.followUpReminder, a.followUpReasonReminder,a.schdeulledDate, a.startedOn, a.endedOn, " +
             "a.recurring, a.firstAppointmentOn, a.lastAppointmentOn, a.patient.firstName,a.patient.lastName,a.patient.profileImgURL,a.patient.id,a.branch.id, a.branch.name,a.room.id,a.doctor.firstName,a.doctor.lastName,a.doctor.id,a.followUpDate,a.medicalService.id,a.medicalService.name) " +
-            "FROM Appointment a WHERE a.doctor.id =?1 or a.branch.id =?2")
+            "FROM Appointment a WHERE (a.doctor.id =?1 or a.branch.id =?2) AND a.active = true ")
     List<AppointmentWrapper> findAllAppointmentsByDoctor(Long doctorId, Long branchId);
 
     @Query("SELECT NEW  com.sd.his.wrapper.AppointmentWrapper(a.id,a.appointmentId ,a.name, a.notes,a.status.name,a.status.hashColor,a.status.id, a.reason, a.color, a.type," +
