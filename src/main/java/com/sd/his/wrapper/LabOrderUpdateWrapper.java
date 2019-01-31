@@ -18,6 +18,8 @@ public class LabOrderUpdateWrapper {
     private String testNameId;
 
 
+    private byte[] image;
+
 
 
 
@@ -104,6 +106,14 @@ public class LabOrderUpdateWrapper {
     public void setTestNameId(LabTest testNameId) {
         this.testNameId = testNameId;
     }*/
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 
 
 }

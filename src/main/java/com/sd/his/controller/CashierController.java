@@ -21,7 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.util.ResourceBundle;
 
 @RestController
@@ -140,11 +143,16 @@ public class CashierController {
         response.setResponseCode(ResponseEnum.APPT_NOT_FOUND_ERROR.getValue());
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
+        BufferedImage img = null;
         try {
             Invoice invoice = patientInvoiceService.getInvoiceById(id);
             AppointmentWrapper dbAppointment = this.appointmentService.findAppointmentById(invoice.getAppointment().getId());    // this.appointmentService.findById(id);
             dbAppointment.setReceivedAmount(invoice.getPaidAmount());
             dbAppointment.setPatientAdvanceDeposit(invoice.getPatient().getAdvanceBalance());
+        //    img = ImageIO.read(new ByteArrayInputStream(HISCoreUtil.getBarCodeImage(String.valueOf(invoice.getInvoiceId()),100,100)));
+
+       //     dbAppointment.setImgBarcode(img);
+            dbAppointment.setImg((HISCoreUtil.getBarCodeImage(String.valueOf(invoice.getInvoiceId()),100,100)));
             // invoice.getPatientRefunds().stream().filter(i ->i.getRefundType()=="Invoice").mapToDouble(i-> i.getRefundAmount()).sum()
             dbAppointment.setRefundAmount(invoice.getPatientRefunds().stream().filter(i ->i.getRefundType().equalsIgnoreCase("Invoice")).mapToDouble(i -> i.getRefundAmount()).sum());
 

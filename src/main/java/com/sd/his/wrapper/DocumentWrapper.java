@@ -18,13 +18,15 @@ public class DocumentWrapper extends BaseWrapper {
     private String url;
     private byte[] image;
 
+
+
     public DocumentWrapper() {
     }
 
     public DocumentWrapper(Long id, Date createdOn, Date updatedOn, String name, String type, String description, String url, long patientId) {
         super(id,
-                HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM),
-                HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMATE_YYY_MM_DD_T_HH_MM));
+                HISCoreUtil.convertDateToString(createdOn, HISConstants.DATE_FORMAT_APP),
+                HISCoreUtil.convertDateToString(updatedOn, HISConstants.DATE_FORMAT_APP));
         this.patientId = patientId;
         this.name = name;
         this.type = type;
@@ -79,4 +81,6 @@ public class DocumentWrapper extends BaseWrapper {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
 }

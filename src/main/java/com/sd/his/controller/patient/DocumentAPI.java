@@ -1,7 +1,11 @@
 package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Organization;
 import com.sd.his.service.DocumentService;
+import com.sd.his.service.OrganizationService;
+import com.sd.his.utill.DateTimeUtil;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.DocumentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -19,10 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.text.ParseException;
+import java.util.*;
 import java.util.stream.IntStream;
 
 
@@ -34,7 +36,8 @@ public class DocumentAPI {
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
     @Autowired
     private DocumentService documentService;
-
+    @Autowired
+    private OrganizationService organizationService;
 
     @ApiOperation(httpMethod = "POST", value = "Save Document",
             notes = "This method will save the Document.",
@@ -132,6 +135,43 @@ public class DocumentAPI {
             Pageable pageable = new PageRequest(page, pageSize);
             List<DocumentWrapper> documentWrappers = this.documentService.getPaginatedDocuments(pageable, Long.valueOf(patientId));
             int documentWrappersCount = documentService.countPaginatedDocuments();
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String systemTimeFormat=dbOrganization.getTimeFormat();
+            String hoursFormat = dbOrganization.getHoursFormat();
+            if(hoursFormat.equals("12")){
+                if(systemTimeFormat.equals("hh:mm")){
+                    systemTimeFormat="hh:mm";
+                }else{
+                    systemTimeFormat="hh:mm:ss";
+                }
+            }else{
+                if(systemTimeFormat.equals("hh:mm")){
+                    systemTimeFormat="HH:mm";
+                }else{
+                    systemTimeFormat="HH:mm:ss";
+                }
+            }
+            String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
+            for(int i=0;i<documentWrappers.size();i++){
+                Date fromDte= null;
+                try {
+                    fromDte = DateTimeUtil.getDateFromString(documentWrappers.get(i).getUpdatedOn(), HISConstants.DATE_FORMAT_APP);
+                    String readDateFrom=HISCoreUtil.convertDateToTimeZone(fromDte,standardFormatDateTime,Zone);
+                    documentWrappers.get(i).setCreatedOn(readDateFrom);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+           //     Date updatedDate= DateTimeUtil.getDateFromString(readDateFrom,standardFormatDateTime);
+           //     if(systemDateFormat!=null || !systemDateFormat.equals("")){
+           //         String  dtelFrom=HISCoreUtil.convertDateToStringWithDateDisplay(updatedDate,standardFormatDateTime);
+           //         documentWrappers.get(i).setUpdatedOn(dtelFrom);
+
+                }
+
+
 
             logger.error("getPaginatedDocumentation - fetched successfully");
 

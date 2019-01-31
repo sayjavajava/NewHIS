@@ -8,6 +8,8 @@ import com.sd.his.repository.LabTestRepository;
 import com.sd.his.repository.LabTestSpecimanRepository;
 import com.sd.his.service.OrganizationService;
 import com.sd.his.service.PatientService;
+import com.sd.his.utill.DateTimeUtil;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.AppointmentWrapper;
 import com.sd.his.wrapper.GenericAPIResponse;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
@@ -57,7 +60,8 @@ public class LabOrderAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<?> createLabOrder(HttpServletRequest request,
-                                            @RequestBody LabOrderUpdateWrapper labOrderWrapper) {
+                                            @RequestPart("myObject") LabOrderUpdateWrapper labOrderWrapper,
+                                            @RequestPart(name = "img", required = false) MultipartFile image) {
         logger.info("Create LabOrder API called...");
 
         GenericAPIResponse response = new GenericAPIResponse();
@@ -67,7 +71,9 @@ public class LabOrderAPI {
         response.setResponseData(null);
 
         try {
-
+            if (image != null) {
+                labOrderWrapper.setImage(image.getBytes());
+            }
             LabOrderUpdateWrapper labOrder = patientService.saveLabOrderNew(labOrderWrapper);
             if (HISCoreUtil.isValidObject(labOrder)) {
                 response.setResponseData(labOrder);
@@ -190,7 +196,8 @@ public class LabOrderAPI {
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateLabOrder(HttpServletRequest request,
                                                 @PathVariable("id") long id,
-                                            @RequestBody LabOrderUpdateWrapper labOrderWrapper) {
+                                                @RequestPart("myObject") LabOrderUpdateWrapper labOrderWrapper,
+                                                @RequestPart(name = "img", required = false) MultipartFile image) {
 
         logger.info("update LabOrder API called...");
         GenericAPIResponse response = new GenericAPIResponse();
@@ -199,9 +206,13 @@ public class LabOrderAPI {
         response.setResponseStatus(ResponseEnum.ERROR.getValue());
         response.setResponseData(null);
         try {
+
             LabOrder alreadyExistLabOrder = patientService.findById(id);
             if (HISCoreUtil.isValidObject(alreadyExistLabOrder)) {
                 logger.info("LabOrder founded...");
+                if (image != null) {
+                    labOrderWrapper.setImage(image.getBytes());
+                }
                 LabOrderUpdateWrapper labOrderUpdated = patientService.updateLabOrderNew(labOrderWrapper, alreadyExistLabOrder);
                 if (HISCoreUtil.isValidObject(labOrderUpdated)) {
                     logger.info("LabOrder Updated...");
@@ -437,15 +448,38 @@ public class LabOrderAPI {
             List<LabOrderWrapper> labordersdata = patientService.getAllLabOrdersByPatient(patientId);
             List<String>  objappoiment = new ArrayList<>();
             Organization dbOrganization=organizationService.getAllOrgizationData();
-            String stdDateTime=dbOrganization.getDateFormat()+" "+dbOrganization.getTimeFormat();
-            /*for(int i=0;i<labordersdata.size();i++){
-                String readDate=HISCoreUtil.convertDateToString(labordersdata.get(i).getDateTest(),stdDateTime);
-                //    labordersdata.get(i).setDateTestString(readDate);
-                labordersdata.get(i).setDateTest(HISCoreUtil.convertToDateString(readDate,stdDateTime));
-                //     String doctorFirstName=labordersdata.get(i).getAppointment().get(i).getDoctor().getFirstName();
-                //    String doctorLastName=labordersdata.get(i).getAppointment().get(i).getDoctor().getLastName();
-                //     objappoiment.add(doctorFirstName+""+doctorLastName);
-            }*/
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String systemTimeFormat=dbOrganization.getTimeFormat();
+            String hoursFormat = dbOrganization.getHoursFormat();
+            if(hoursFormat.equals("12")){
+                if(systemTimeFormat.equals("hh:mm")){
+                    systemTimeFormat="hh:mm";
+                }else{
+                    systemTimeFormat="hh:mm:ss";
+                }
+            }else{
+                if(systemTimeFormat.equals("hh:mm")){
+                    systemTimeFormat="HH:mm";
+                }else{
+                    systemTimeFormat="HH:mm:ss";
+                }
+            }
+            String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
+            for(int i=0;i<labordersdata.size();i++){
+                String dteStrTest = DateTimeUtil.getFormattedDateFromDate(labordersdata.get(i).getTestDate(), HISConstants.DATE_FORMAT_APP);
+                String appointDate =DateTimeUtil.getFormattedDateFromDate(labordersdata.get(i).getAppointment().getSchdeulledDate(),HISConstants.DATE_FORMAT_APP);
+                Date dteFrom=HISCoreUtil.convertStringDateObjectOrder(dteStrTest);
+                Date AppDate=HISCoreUtil.convertStringDateObjectOrder(appointDate);
+                String readDateFrom=HISCoreUtil.convertDateToTimeZone(dteFrom,standardFormatDateTime,Zone);
+                Date fromDte= DateTimeUtil.getDateFromString(readDateFrom,standardFormatDateTime);
+                if(systemDateFormat!=null || !systemDateFormat.equals("")){
+                    String  dtelFrom=HISCoreUtil.convertDateToStringWithDateDisplay(fromDte,standardFormatDateTime);
+                    String dteAppoint=HISCoreUtil.convertDateToStringWithDateDisplay(AppDate,standardFormatDateTime);
+                    labordersdata.get(i).setStrDate(dtelFrom);
+                    labordersdata.get(i).setStrAppDate(dteAppoint);
+                }
+            }
             int countOrders = patientService.totaLabOrders();
 
             if (!HISCoreUtil.isListEmpty(labordersdata)) {
@@ -530,8 +564,7 @@ public class LabOrderAPI {
 
 
             if (!HISCoreUtil.isListEmpty(labordersdata)) {
-              /*  Integer nextPage, prePage, currPage;
-                int[] pages;*/
+
 
 
                 Map<String, Object> returnValues = new LinkedHashMap<>();
@@ -573,7 +606,7 @@ public class LabOrderAPI {
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getLabOrderNewById(HttpServletRequest request,
-                                             @PathVariable("id") long id) {
+                                             @PathVariable("id") long id,@RequestParam("orderId") long orderId) {
 
         GenericAPIResponse response = new GenericAPIResponse();
         response.setResponseMessage(messageBundle.getString("laborder.not.found"));
@@ -583,26 +616,58 @@ public class LabOrderAPI {
 
         try {
             List<LabOrder> dbLabOrder = this.patientService.ListByLabOrderByOrderId(id);
+
             List<LabTest> labTests = labTestRepository.findAllByLabOrder(id);
             List<com.sd.his.wrapper.LabTest> returnListofLab = new ArrayList<>();
 
-            for(int j=0;j<labTests.size();j++){
-                com.sd.his.wrapper.LabTest testObj=new com.sd.his.wrapper.LabTest();
-                if(labTests.get(j).getLoincCode()!=null){
-                LabTestSpeciman labTestSpecimanObj = this.labTestSpecimanRepository.findTestEntry(labTests.get(j).getLoincCode());
-                testObj.setNormalRange(labTestSpecimanObj.getMinNormalRange()+"-"+labTestSpecimanObj.getMaxNormalRange());
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String systemTimeFormat=dbOrganization.getTimeFormat();
+            String hoursFormat = dbOrganization.getHoursFormat();
+            if(hoursFormat.equals("12")){
+                if(systemTimeFormat.equals("hh:mm")){
+                    systemTimeFormat="hh:mm";
                 }else{
-                    testObj.setNormalRange("");
+                    systemTimeFormat="hh:mm:ss";
                 }
-                testObj.setDescription(labTests.get(j).getDescription());
-                testObj.setResultValue(labTests.get(j).getResultValue());
-                testObj.setLoincCode(labTests.get(j).getLoincCode());
-                testObj.setUnits(labTests.get(j).getUnits());
+            }else{
+                if(systemTimeFormat.equals("hh:mm")){
+                    systemTimeFormat="HH:mm";
+                }else{
+                    systemTimeFormat="HH:mm:ss";
+                }
+            }
+            String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
+            for(int i=0;i<dbLabOrder.size();i++){
+                String readDateFrom=HISCoreUtil.convertDateToTimeZone(dbLabOrder.get(i).getDateTest(),standardFormatDateTime,Zone);
+                Date dteFrom=HISCoreUtil.convertToDateDetail(readDateFrom,standardFormatDateTime);
+                String readDte=HISCoreUtil.convertDateToString(dteFrom,standardFormatDateTime);
+                Date fromDte= DateTimeUtil.getDateFromString(readDte,standardFormatDateTime);
+                dbLabOrder.get(i).setDateTest(fromDte);
 
-                testObj.setId(String.valueOf(labTests.get(j).getId()));
-                returnListofLab.add(testObj);
             }
 
+            for(int j=0;j<labTests.size();j++) {
+                com.sd.his.wrapper.LabTest testObj = new com.sd.his.wrapper.LabTest();
+                if (orderId == labTests.get(j).getId()) {
+                    if (labTests.get(j).getLoincCode() != null) {
+                        LabTestSpeciman labTestSpecimanObj = this.labTestSpecimanRepository.findTestEntry(labTests.get(j).getLoincCode());
+                        testObj.setTestName(labTestSpecimanObj.getTestName());
+                        testObj.setNormalRange(labTestSpecimanObj.getMinNormalRange() + "-" + labTestSpecimanObj.getMaxNormalRange());
+                    } else {
+                        testObj.setNormalRange("");
+                    }
+
+                    testObj.setDescription(labTests.get(j).getDescription());
+                    testObj.setResultValue(labTests.get(j).getResultValue());
+                    testObj.setLoincCode(labTests.get(j).getLoincCode());
+                    testObj.setUnits(labTests.get(j).getUnits());
+
+                    testObj.setId(String.valueOf(labTests.get(j).getId()));
+                    returnListofLab.add(testObj);
+                }
+            }
             List<AppointmentWrapper> apptFutureWrapperList = new ArrayList<>();
             List<AppointmentWrapper> apptPastWrapperList = new ArrayList<>();
             List<AppointmentWrapper> listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(dbLabOrder.get(0).getPatient().getId());
@@ -618,6 +683,7 @@ public class LabOrderAPI {
                 returnValues.put("data", dbLabOrder);
                 returnValues.put("labTest",returnListofLab);
                 returnValues.put("appointment",listOfApp);
+
                 response.setResponseData(returnValues);
 
                 response.setResponseCode(ResponseEnum.LABORDER_FOUND.getValue());

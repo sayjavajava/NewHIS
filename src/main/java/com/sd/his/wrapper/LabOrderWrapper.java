@@ -24,6 +24,114 @@ public class LabOrderWrapper {
 
 
 
+    private String strAppDate;
+
+
+    private String strDate;
+
+
+    // New Values Added
+    String idNew;
+    String descriptionNew ;
+    String resultValue;
+    String units;
+    String normalRange;
+    String loincCode;
+
+    public String getIdNew() {
+        return idNew;
+    }
+
+    public void setIdNew(String idNew) {
+        this.idNew = idNew;
+    }
+
+    public String getDescriptionNew() {
+        return descriptionNew;
+    }
+
+    public void setDescriptionNew(String descriptionNew) {
+        this.descriptionNew = descriptionNew;
+    }
+
+    public String getResultValue() {
+        return resultValue;
+    }
+
+    public void setResultValue(String resultValue) {
+        this.resultValue = resultValue;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
+    }
+
+    public String getNormalRange() {
+        return normalRange;
+    }
+
+    public void setNormalRange(String normalRange) {
+        this.normalRange = normalRange;
+    }
+
+    public String getLoincCode() {
+        return loincCode;
+    }
+
+    public void setLoincCode(String loincCode) {
+        this.loincCode = loincCode;
+    }
+
+    public String getTestCode() {
+        return testCode;
+    }
+
+    public void setTestCode(String testCode) {
+        this.testCode = testCode;
+    }
+
+    public String getTestName() {
+        return testName;
+    }
+
+    public void setTestName(String testName) {
+        this.testName = testName;
+    }
+
+    public String getMaxNormalRange() {
+        return maxNormalRange;
+    }
+
+    public void setMaxNormalRange(String maxNormalRange) {
+        this.maxNormalRange = maxNormalRange;
+    }
+
+    public String getMinNormalRange() {
+        return minNormalRange;
+    }
+
+    public void setMinNormalRange(String minNormalRange) {
+        this.minNormalRange = minNormalRange;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    String testCode;
+    String testName;
+    String maxNormalRange;
+    String minNormalRange;
+    String unit;
+
     private  Appointment appointment;
 
     public Date getTestDate() {
@@ -140,6 +248,22 @@ public class LabOrderWrapper {
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
+    }
+
+    public String getStrDate() {
+        return strDate;
+    }
+
+    public void setStrDate(String strDate) {
+        this.strDate = strDate;
+    }
+
+    public String getStrAppDate() {
+        return strAppDate;
+    }
+
+    public void setStrAppDate(String strAppDate) {
+        this.strAppDate = strAppDate;
     }
 }
 

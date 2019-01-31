@@ -5,9 +5,11 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.sd.his.configuration.AWSS3;
 import com.sd.his.model.*;
 import com.sd.his.repository.*;
+import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.Patient_OrderWrapper;
+import com.sd.his.wrapper.request.Patient_OrderWrapper_Update;
 import jdk.nashorn.api.scripting.URLReader;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +51,19 @@ public class PatientOrderService {
 
     @Autowired
     AWSS3 awss3;
-
+    @Autowired
+    private OrganizationService organizationService;
     @Transactional
     public String saveOrder(Patient_OrderWrapper orderWrapper) {
+
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String systemTimeFormat=dbOrganization.getTimeFormat();
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        String hoursFormat = dbOrganization.getHoursFormat();
+        String standardSystem=systemDateFormat+" "+systemTimeFormat;
+        Date dteOrder=null;
         try {
 
             Patient_Order patientOrder = null;
@@ -117,7 +129,16 @@ public class PatientOrderService {
                     url = null;
                 }
                     return "";
-                }
+                }else{
+             //   dteDia= DateTimeUtil.getDateFromString(new Date(), "yyyy-MM-dd hh:mm:ss");
+                String dZoneDate = HISCoreUtil.convertDateToTimeZone(new Date(), "yyyy-MM-dd hh:mm:ss", Zone);
+                dteOrder= DateTimeUtil.getDateFromString(dZoneDate, "yyyy-MM-dd hh:mm:ss");
+              //  if (systemDateFormat != null || !systemDateFormat.equals("")) {
+                   // String sdDate=HISCoreUtil.convertDateToStringWithDateDisplay(dteOrder,systemDateFormat);
+                    patientOrder.setDateOrder(dteOrder);
+            //    }
+                this.patientOrderRepository.save(patientOrder);
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -126,11 +147,19 @@ public class PatientOrderService {
     }
 
     @Transactional
-    public String updateDocument(Patient_OrderWrapper orderWrapper) {
-        Patient_Order patientOrder  = this.patientOrderRepository.findOne(orderWrapper.getId());
+    public String updateDocument(Patient_OrderWrapper_Update orderWrapper) {
+        Patient_Order patientOrder  = this.patientOrderRepository.findOne(orderWrapper.getPatientId());
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+     //   String systemDateFormat=dbOrganization.getDateFormat();
+     //   String systemTimeFormat=dbOrganization.getTimeFormat();
+     //   String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+    //    String hoursFormat = dbOrganization.getHoursFormat();
+    //    String standardSystem=systemDateFormat+" "+systemTimeFormat;
+        Date dteOrder=null;
         try {
             if (patientOrder != null) {
-                new Patient_Order(patientOrder, orderWrapper);
+              //  new Patient_OrderWrapper_Update(patientOrder, orderWrapper);
                 Patient patient = this.patientRepository.findOne(Long.valueOf(orderWrapper.getPatientId()));
                 if (patient != null) {
                     patientOrder.setPatient(patient);
@@ -140,6 +169,10 @@ public class PatientOrderService {
                 patientOrder.setDescription(orderWrapper.getDescription());
                 patientOrder.setStatus(orderWrapper.getStatus());
                 patientOrder.setDoctorComment(orderWrapper.getDoctorComment());
+                String dZoneDate = HISCoreUtil.convertDateToTimeZone(new Date(), "yyyy-MM-dd hh:mm:ss", Zone);
+            //    dteOrder= DateTimeUtil.getDateFromString(dZoneDate, "yyyy-MM-dd hh:mm:ss");
+            //    patientOrder.setDateOrder(dteOrder);
+
                 this.patientOrderRepository.save(patientOrder);
 
             }
@@ -166,21 +199,72 @@ public class PatientOrderService {
     }
 
     public List<Patient_OrderWrapper> getPaginatedOrder(Pageable pageable, Long patientId) {
-       List<Patient_OrderWrapper> order=this.patientOrderRepository.getPaginatedOrder(pageable,patientId);
-        List<Patient_OrderWrapper> orderWrapperLst=new ArrayList<Patient_OrderWrapper>();
-        for(int i=0;i<order.size();i++){
-            Patient_OrderWrapper orderWrapper=new Patient_OrderWrapper();
-            orderWrapper.setId(order.get(i).getId());
-            orderWrapper.setDescription(order.get(i).getDescription());
-            orderWrapper.setUrl(order.get(i).getUrl());
-            orderWrapper.setDoctorComment(order.get(i).getDoctorComment());
-            orderWrapper.setOrderObj(order.get(i).getOrderObj());
-            orderWrapperLst.add(orderWrapper);
+        List<Patient_OrderWrapper> order = this.patientOrderRepository.getPaginatedOrder(pageable, patientId);
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String systemTimeFormat=dbOrganization.getTimeFormat();
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        String hoursFormat = dbOrganization.getHoursFormat();
+        String standardSystem=systemDateFormat+" "+systemTimeFormat;
+        Date dteOrder=null;
+        boolean executeFlow = false;
+        List<Patient_OrderWrapper> orderWrapperLst = new ArrayList<Patient_OrderWrapper>();
+        for (int i = 0; i < order.size(); i++) {
+            int size= order.get(i).getUrl().size();
+            Patient patient = patientRepository.findOne(order.get(i).getPatientId());
+
+            if(size==0) {
+                Patient_OrderWrapper orderWrapper = new Patient_OrderWrapper();
+                orderWrapper.setId(order.get(i).getId());
+                orderWrapper.setDescription(order.get(i).getDescription());
+                //  orderWrapper.setUrl(order.get(i).getUrl());
+                orderWrapper.setDoctorComment(order.get(i).getDoctorComment());
+                orderWrapper.setOrderObj(order.get(i).getOrderObj());
+                orderWrapper.setStatus(order.get(i).getStatus());
+                orderWrapper.setPatient(patient);
+                //orderWrapper.setStrUrl(order.get(i).getUrl(j));
+            }
+            for (int j = 0; j < order.get(i).getUrl().size(); j++) {
+
+                if (executeFlow == false) {
+                    Patient_OrderWrapper orderWrapper = new Patient_OrderWrapper();
+                    orderWrapper.setId(order.get(i).getId());
+                    orderWrapper.setDescription(order.get(i).getDescription());
+                    //  orderWrapper.setUrl(order.get(i).getUrl());
+                    orderWrapper.setDoctorComment(order.get(i).getDoctorComment());
+                    orderWrapper.setOrderObj(order.get(i).getOrderObj());
+                    orderWrapper.setStatus(order.get(i).getStatus());
+                    orderWrapper.setPatient(patient);
+                 //   orderWrapper.setUrl(order.get(j).getUrl());
+                    orderWrapper.setStrUrl(order.get(i).getUrl().get(j).toString());
+                    dteOrder= HISCoreUtil.convertStringDateObject(order.get(i).getStrCreatedDate());
+                    String dZoneDate = HISCoreUtil.convertDateToTimeZone(dteOrder, "yyyy-MM-dd hh:mm:ss", Zone);
+                    dteOrder= HISCoreUtil.convertStringDateObject(dZoneDate);
+                      if (systemDateFormat != null || !systemDateFormat.equals("")) {
+                         String sdDate=HISCoreUtil.convertDateToStringWithDateDisplay(dteOrder,systemDateFormat);
+                        orderWrapper.setStrCreatedDate(sdDate);
+                          orderWrapperLst.add(orderWrapper);
+                        }
+                   /* wrapObj.setTestDate(obj.get(i).getDateTest());
+                    wrapObj.setComments(obj.get(i).getComments());
+                    wrapObj.setAppointment(obj.get(i).getAppointment());
+                    wrapObj.setPatient(obj.get(i).getPatient());
+                    wrapObj.setId(obj.get(i).getId());
+                    wrapObj.setOrderStatus(obj.get(i).getStatus());*/
+                }
+
+          //      Patient_OrderWrapper orderWrapper = new Patient_OrderWrapper();
+
+
+            }
+
+
+
+
         }
-       return orderWrapperLst;
-
+        return orderWrapperLst;
     }
-
     public int countPaginatedDocuments() {
         return this.patientOrderRepository.findAll().size();
     }
@@ -201,7 +285,7 @@ public class PatientOrderService {
 
     public Patient_OrderWrapper  getImagesOrderById(long Id) {
         Patient_OrderWrapper wrapperObj= this.patientOrderRepository.findOrderById(Id);
-         return null;
+         return wrapperObj;
     }
 
 

@@ -278,14 +278,20 @@ public class PatientVitalAPI {
             }
             Pageable pageable = new PageRequest(page, pageSize);
             // Patient_OrderWrapper orderWrapper
-            List<PatientVital> vitalList = this.vitalServices.getPaginatedOrder(pageable, Long.valueOf(patientId));
-
-            int documentWrappersCount = vitalServices.countPaginatedDocuments();
+            List<PatientVitalWrapper> vitalList = this.vitalServices.getPaginatedOrder(pageable, Long.valueOf(patientId));
+            String chief="";
+            for(int i=0;i<vitalList.size();i++){
+                chief=vitalList.get(i).getChiefComplaint();
+                vitalList.get(i).setName(vitalList.get(i).getName()+"("+vitalList.get(i).getUnit()+")");
+               // vitalList.get(i).set
+            }
+           // String chief=vitalList.get(0).getChiefComplaint();
+           // int documentWrappersCount = vitalServices.countPaginatedDocuments();
 
             logger.error("getPaginatedDocumentation - fetched successfully");
 
             if (!HISCoreUtil.isListEmpty(vitalList)) {
-                Integer nextPage, prePage, currPage;
+              /*  Integer nextPage, prePage, currPage;
                 int[] pages;
 
                 if (documentWrappersCount > pageSize) {
@@ -305,14 +311,15 @@ public class PatientVitalAPI {
                     currPage = 0;
                     nextPage = null;
                     prePage = null;
-                }
+                }*/
 
                 Map<String, Object> returnValues = new LinkedHashMap<>();
-                returnValues.put("nextPage", nextPage);
+               /* returnValues.put("nextPage", nextPage);
                 returnValues.put("prePage", prePage);
                 returnValues.put("currPage", currPage);
-                returnValues.put("pages", pages);
+                returnValues.put("pages", pages);*/
                 returnValues.put("data", vitalList);
+                returnValues.put("chiefComplaint",chief);
 
                 response.setResponseMessage(messageBundle.getString("document.paginated.success"));
                 response.setResponseCode(ResponseEnum.SUCCESS.getValue());

@@ -6,6 +6,7 @@ import com.sd.his.service.DocumentService;
 import com.sd.his.service.PatientOrderService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
+import com.sd.his.wrapper.request.Patient_OrderWrapper_Update;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -213,7 +214,7 @@ public class PatientOrderAPI {
     }
 
 
-    /*@ApiOperation(httpMethod = "GET", value = "Get Order",
+    @ApiOperation(httpMethod = "GET", value = "Get Order",
             notes = "This method will Get the Order.",
             produces = "application/json", nickname = "Get ",
             response = GenericAPIResponse.class, protocols = "https")
@@ -252,9 +253,9 @@ public class PatientOrderAPI {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-*/
 
-    @ApiOperation(httpMethod = "POST", value = "Update Order",
+
+    @ApiOperation(httpMethod = "PUT", value = "Update Order",
             notes = "This method will Update the Order.",
             produces = "application/json", nickname = "Update Order",
             response = GenericAPIResponse.class, protocols = "https")
@@ -264,10 +265,9 @@ public class PatientOrderAPI {
             @ApiResponse(code = 403, message = "Oops, your fault. You are forbidden.", response = GenericAPIResponse.class),
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
-    @RequestMapping(value = "/update", method = RequestMethod.POST)//, consumes = "multipart/form-data"
+    @RequestMapping(value = "/updateOrder", method = RequestMethod.PUT)//, consumes = "multipart/form-data"
     public ResponseEntity<?> updateDocument(HttpServletRequest request,
-                                            @RequestPart("myObject") Patient_OrderWrapper orderWrapper,
-                                            @RequestPart(name = "img", required = false) MultipartFile image) {
+                                            @RequestBody Patient_OrderWrapper_Update orderWrapper) {
         logger.info(" API - initiated..");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
@@ -279,7 +279,7 @@ public class PatientOrderAPI {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
 
-            if (orderWrapper.getId() <= 0) {
+            if (orderWrapper.getOrderId() <= 0) {
                 response.setResponseCode(ResponseEnum.DOCUMENT_UPDATE_ID_REQUIRED.getValue());
                 response.setResponseMessage(messageBundle.getString("patient.image.delete.id.required"));
                 response.setResponseStatus(ResponseEnum.SUCCESS.getValue());

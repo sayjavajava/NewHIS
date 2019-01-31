@@ -1,5 +1,21 @@
 package com.sd.his.service;
 
+import com.sd.his.model.ICDCode;
+import com.sd.his.model.ICDCodeVersion;
+import com.sd.his.model.ICDVersion;
+import com.sd.his.repository.*;
+import com.sd.his.utill.HISCoreUtil;
+import com.sd.his.wrapper.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+
+
 import com.sd.his.enums.ModuleEnum;
 import com.sd.his.model.*;
 import com.sd.his.repository.ICDCodeRepository;
@@ -31,7 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Transactional
-public class ICDService {
+public class InsurranceService {
 
     @Autowired
     private ICDCodeRepository codeRepository;
@@ -40,17 +56,36 @@ public class ICDService {
     @Autowired
     private ICDCodeVersionRepository codeVersionRepository;
 
+    @Autowired
+    private InsuranceProfileRepository profileRepository;
 
-    public List<ICDVersionWrapper> versios() {
-        return this.versionRepository.findAllByCreatedOnNotNull();
+    @Autowired
+    private InsurancePlanRepository planRepository;
+
+    @Autowired
+    private InsuranceRepository insuranceRep;
+    public List<InsuranceProfileWrapper> getPlans() {
+        return this.planRepository.findAllByCreatedOnNotNull();
     }
 
     public List<ICDVersionWrapper> versiosForDataTable() {
         return this.versionRepository.findAllVersionsForDataTable();
     }
 
-    public List<ICDCodeWrapper> codes() {
-        return this.codeRepository.findAllByCreatedOnNotNull();
+    public List<InsuranceProfileWrapper> getProfiles() {
+        List<InsuranceProfile> lstProfile= this.profileRepository.findAllByCreatedOnNotNull();
+        List<InsuranceProfileWrapper> lstWrapper=new ArrayList<InsuranceProfileWrapper>();
+        if(lstProfile.size()>0){
+            for(int i=0;i<lstProfile.size();i++){
+                InsuranceProfileWrapper obj=new InsuranceProfileWrapper();
+                obj.setId(lstProfile.get(i).getId());
+                obj.setName(lstProfile.get(i).getName());
+                obj.setDescription(lstProfile.get(i).getDescription());
+                obj.setStatus(lstProfile.get(i).isStatus());
+                lstWrapper.add(obj);
+            }
+        }
+        return lstWrapper;
     }
 
     public List<ICDCodeWrapper> codesForDataTable() {
@@ -58,81 +93,58 @@ public class ICDService {
     }
 
 
-    public String saveICDCode(ICDCodeCreateRequest createRequest) {
-        ICDCode icd = new ICDCode(createRequest);
-        icd.setInfoURL((createRequest.getInfoURL().contains("http:") || createRequest.getInfoURL().contains("https:"))
-                ? createRequest.getInfoURL()
-                : ("http://" + createRequest.getInfoURL()));
-        codeRepository.save(icd);
-        this.associateICDCODEBySelectedVersion(icd, createRequest);
-        return "";
+    public String saveplan(InsuranceProfileWrapper createRequest) {
+        InsurancePlan plan=new InsurancePlan(createRequest);
+        planRepository.save(plan);
+        return "" ;
     }
 
-    private void associateICDCODEBySelectedVersion(ICDCode icd, ICDCodeCreateRequest createRequest) {
 
-        this.codeVersionRepository.deleteAllByIcd_id(Long.valueOf(createRequest.getId()));
-
-        List<ICDCodeVersion> codeVersions = new ArrayList<>();
-        ICDCodeVersion codeVersion = null;
-        ICDVersion version = null;
-        for (ICDVersionWrapper selectedVersionWrapper : createRequest.getSelectedVersions()) {
-            if (selectedVersionWrapper.isSelectedVersion()) {
-                version = this.versionRepository.findOne(selectedVersionWrapper.getId());
-                if (version != null) {
-                    codeVersion = new ICDCodeVersion();
-                    codeVersion.setIcd(icd);
-                    codeVersion.setVersion(version);
-                    codeVersions.add(codeVersion);//one code going to save against multiple versions
-                }
-            }
-        }
-
-        if (codeVersions.size() > 0) {
-            this.codeVersionRepository.save(codeVersions);
-        }
+    public String saveProfile(InsuranceProfileWrapper createRequest) {
+        InsuranceProfile plan=new InsuranceProfile(createRequest);
+        profileRepository.save(plan);
+        return "" ;
     }
 
-    public boolean isICDCodeAlreadyExist(String iCDCode) {
-        ICDCode icd = codeRepository.findByCode(iCDCode);
+    public boolean isAlreadyExistAgainstId( long id) {
+        InsuranceProfile icd = profileRepository.findOne(id);
         if (HISCoreUtil.isValidObject(icd)) {
             return true;
         }
         return false;
     }
 
-    public boolean isICDVersionNameAlreadyExist(String iCDVersionName) {
-        ICDVersion icd = versionRepository.findByName(iCDVersionName);
+
+    public boolean isPlanAlreadyExistAgainstId(long id) {
+        InsurancePlan icd = planRepository.findOne(id);
         if (HISCoreUtil.isValidObject(icd)) {
             return true;
         }
         return false;
     }
 
-    public boolean isICDCodeAlreadyExistAgainstICDCodeId(String iCDCode, long iCDCodeId) {
-        ICDCode icd = codeRepository.findByCodeAndIdNot(iCDCode, iCDCodeId);
+
+
+
+
+    public boolean isNameAlreadyExist(String name) {
+        InsurancePlan icd = planRepository.findByName(name);
         if (HISCoreUtil.isValidObject(icd)) {
             return true;
         }
         return false;
     }
 
-    public List<ICDCodeWrapper> findCodes(int offset, int limit) {
-        Pageable pageable = new PageRequest(offset, limit);
-//        List<ICDCodeWrapper> list = codeRepository.findAllByCreatedOnNotNull(pageable);
 
-//        if (list != null) {
-//            for (ICDCodeWrapper codeWrapper : list) {
-//                if (this.codeVersionRepository.isCodeAssociated(codeWrapper.getId())) {
-//                    codeWrapper.setHasChild(true);
-//                }
-//            }
-//        }
-        return codeRepository.findAllByCreatedOnNotNull(pageable);
+    public boolean isProfileNameAlreadyExist(String name) {
+        InsuranceProfile icd = profileRepository.findByName(name);
+        if (HISCoreUtil.isValidObject(icd)) {
+            return true;
+        }
+        return false;
     }
 
-    public int countCodes() {
-        return codeRepository.findAllByCreatedOnNotNull().size();
-    }
+
 
     public List<ICDVersionWrapper> findVersions(int offset, int limit) {
         Pageable pageable = new PageRequest(offset, limit);
@@ -211,11 +223,10 @@ public class ICDService {
     }
 
     @Transactional(rollbackOn = Throwable.class)
-    public boolean deletedICD(Long icdId) {
-        ICDCode icd = codeRepository.findOne(icdId);
+    public boolean deletedPlan(Long icdId) {
+        InsurancePlan icd = planRepository.findOne(icdId);
         if (HISCoreUtil.isValidObject(icd)) {
-            this.codeVersionRepository.deleteAllByIcd_id(icdId);
-            this.codeRepository.delete(icd);
+            this.planRepository.delete(icd);
             return true;
         } else {
             return false;
@@ -223,10 +234,10 @@ public class ICDService {
     }
 
     @Transactional(rollbackOn = Throwable.class)
-    public boolean deletedICDVersion(long icdId) {
-        ICDVersion icdVersion = versionRepository.findOne(icdId);
+    public boolean deletedProfile(long icdId) {
+        InsuranceProfile icdVersion = profileRepository.findOne(icdId);
         if (HISCoreUtil.isValidObject(icdVersion)) {
-            versionRepository.delete(icdVersion);
+            profileRepository.delete(icdVersion);
             return true;
         } else {
             return false;
@@ -248,21 +259,39 @@ public class ICDService {
     }
 
     @Transactional(rollbackOn = Throwable.class)
-    public String updateICDCode(ICDCodeCreateRequest createRequest) {
-        ICDCode icdCode = this.codeRepository.findOne(createRequest.getId());
+    public String updatePlan(InsuranceProfileWrapper createRequest) {
+        InsurancePlan icdCode = this.planRepository.findOne(createRequest.getId());
         if (HISCoreUtil.isValidObject(icdCode)) {
-            icdCode.setCode(createRequest.getCode());
-            icdCode.setProblem(createRequest.getProblem());
+            icdCode.setName(createRequest.getName());
             icdCode.setDescription(createRequest.getDescription());
             icdCode.setStatus(createRequest.isStatus());
-            icdCode.setInfoURL((createRequest.getInfoURL().contains("http:") || createRequest.getInfoURL().contains("https:"))
-                    ? createRequest.getInfoURL()
-                    : ("http://" + createRequest.getInfoURL()));
+
+
         }
-        this.codeRepository.save(icdCode);
-        this.associateICDCODEBySelectedVersion(icdCode, createRequest);
+        this.planRepository.save(icdCode);
+   //     this.associateICDCODEBySelectedVersion(icdCode, createRequest);
         return "";
     }
+
+
+    @Transactional(rollbackOn = Throwable.class)
+    public String updateProfile(InsuranceProfileWrapper createRequest) {
+        InsuranceProfile icdCode = this.profileRepository.findOne(createRequest.getId());
+        if (HISCoreUtil.isValidObject(icdCode)) {
+            icdCode.setName(createRequest.getName());
+            icdCode.setDescription(createRequest.getDescription());
+            icdCode.setStatus(createRequest.isStatus());
+        }
+        this.profileRepository.save(icdCode);
+        return "";
+    }
+
+
+
+
+
+
+
 
     @Transactional(rollbackOn = Throwable.class)
     public ICDVersion saveICDVersion(ICDVersionWrapper createRequest) {
@@ -359,17 +388,36 @@ public class ICDService {
     }
 
     public boolean isCodeAssociated(long codeId) {
-        ICDCode icdCode = this.codeRepository.findOne(codeId);
+        InsurancePlan icdCode = this.planRepository.findOne(codeId);
+        boolean returnStatus;
         if (icdCode != null) {
-//            if (icdCode.getVersions() != null && icdCode.getVersions().size() > 0) {//this.codeVersionRepository.isCodeAssociated(codeId)
-//                return true;
-//            }
-            if (icdCode.getProblems() != null && icdCode.getProblems().size() > 0) {
-                return true;
+            {
+                return returnStatus=this.insuranceRep.isCodeAssociated(codeId);
+
             }
-        }
+
+         }
+
+
         return false;
     }
+
+
+    public boolean isCodeAssociatedProfile(long codeId) {
+        InsuranceProfile icdCode = this.profileRepository.findOne(codeId);
+        boolean returnStatus;
+        if (icdCode != null) {
+            {
+                return returnStatus=this.insuranceRep.isCodeAssociatedProfile(codeId);
+
+            }
+
+        }
+
+
+        return false;
+    }
+
 
     public boolean isVersionAssociated(long versionId) {
         return this.codeVersionRepository.isVersionAssociated(versionId);

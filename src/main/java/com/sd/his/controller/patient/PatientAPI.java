@@ -2,7 +2,10 @@ package com.sd.his.controller.patient;
 
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.*;
+import com.sd.his.model.Insurance;
+import com.sd.his.model.Organization;
+import com.sd.his.model.Patient;
+import com.sd.his.model.SmokingStatus;
 import com.sd.his.service.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
@@ -27,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -75,6 +79,9 @@ public class PatientAPI {
     private BulkImportService bulkImportService;
     @Autowired
     private ImportFileService importFileService;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     @Value("${spring.http.multipart.location}")
     private String tmpFilePath;
@@ -238,6 +245,7 @@ public class PatientAPI {
         try {
             PatientWrapper patientWrapper = this.patientService.getPatientById(id);
             if (HISCoreUtil.isValidObject(patientWrapper)) {
+
                 response.setResponseData(patientWrapper);
                 response.setResponseMessage(messageBundle.getString("patient.found"));
                 response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
@@ -508,8 +516,11 @@ public class PatientAPI {
             @ApiResponse(code = 404, message = "Oops, my fault System did not find your desire resource.", response = GenericAPIResponse.class),
             @ApiResponse(code = 500, message = "Oops, my fault. Something went wrong on the server side.", response = GenericAPIResponse.class)})
     @RequestMapping(value = "/search{page}", method = RequestMethod.GET)
-    public ResponseEntity<?> getSearchAllPaginatedPatients(HttpServletRequest request, @PathVariable("page") int page,
-                                                           @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+    public ResponseEntity<?> getSearchAllPaginatedPatients(HttpServletRequest request,
+                                                           @PathVariable("page") int page,
+                                                           @RequestParam(value = "pageSize",
+                                                                   required = false,
+                                                                   defaultValue = "10") int pageSize,
                                                            @RequestParam(value = "searchString") String searchString) { //searchString may contain patient name or cell number
 
         logger.error("getSearchAllPaginatedPatients API initiated");

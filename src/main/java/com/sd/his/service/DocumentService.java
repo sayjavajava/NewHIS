@@ -1,6 +1,7 @@
 package com.sd.his.service;
 
 import com.sd.his.model.Document;
+import com.sd.his.model.Organization;
 import com.sd.his.model.Patient;
 import com.sd.his.repository.DocumentRepository;
 import com.sd.his.repository.PatientRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +28,8 @@ public class DocumentService {
     private PatientRepository patientRepository;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private OrganizationService organizationService;
 
     @Transactional
     public String saveDocument(DocumentWrapper documentWrapper) {
@@ -38,7 +41,15 @@ public class DocumentService {
                 document = new Document(documentWrapper);
                 document.setPatient(patient);
             }
-
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            Date dte=new Date();
+            String utcDate = HISCoreUtil.convertDateToTimeZone(dte,systemDateFormat,Zone);
+            String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+            String readDate=HISCoreUtil.convertDateToTimeZone(dte,"YYYY-MM-dd hh:mm:ss",Zone);
+            Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);
+            document.setUpdatedOn(scheduledDate);
             this.documentRepository.save(document);
 
             String url = null;

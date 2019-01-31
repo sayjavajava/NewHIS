@@ -36,7 +36,22 @@ public class PatientWrapper {
     private boolean status;
     private String patientGroup;
     private Long patientGroupId;
+    private String insurancePlan;
+    private String insuranceProfile;
 
+
+
+    private String formattedAddress;
+
+    private String dobStr;
+
+    private String createDate;
+
+
+    private int age;
+
+
+    private String foreignName;
     /////// DEMOGRAPHY
     //private long profileId;
     private String patientSSN = "";
@@ -121,14 +136,14 @@ public class PatientWrapper {
         this.id = patient.getId();
         this.patientId = patient.getPatientId();
         this.patientSSN = patient.getPatientSSN();
-        this.firstName = patient.getFirstName();
-        this.lastName = patient.getLastName();
-        this.email = patient.getEmail();
-        this.streetAddress = patient.getStreetAddress();
-        this.cellPhone = patient.getCellPhone();
+        this.firstName = patient.getFirstName()==null ? "-":patient.getFirstName();
+        this.lastName = patient.getLastName()==null ? "-":patient.getLastName();
+        this.email = patient.getEmail()==null ? "-":patient.getEmail();
+        this.streetAddress = patient.getStreetAddress()==null?"-":patient.getStreetAddress();
+        this.cellPhone = patient.getCellPhone()==null ?"-":patient.getCellPhone();
         this.label = patient.getFirstName();
         this.value = patient.getId();
-        this.gender = patient.getGender() == null ? null : patient.getGender().name();
+        this.gender = patient.getGender() == null ? "-" : patient.getGender().name();
         this.status = patient.getStatus().name().equalsIgnoreCase("ACTIVE");
         this.hasChild = !(patient.getAppointments() == null || patient.getAppointments().size() < 1);         // if null then false else true;
 
@@ -163,8 +178,8 @@ public class PatientWrapper {
             Collections.sort(pastAppointments);
             Collections.sort(futureAppointments);
 
-            lastAppointment = pastAppointments.size() > 0 ? pastAppointments.get(pastAppointments.size() - 1).getScheduleDateAndTime() : "";
-            nextAppointment = futureAppointments.size() > 0 ? futureAppointments.get(0).getScheduleDateAndTime() : "";
+            lastAppointment = pastAppointments.size() > 0 ? pastAppointments.get(pastAppointments.size() - 1).getScheduleDateAndTime() : "-";
+            nextAppointment = futureAppointments.size() > 0 ? futureAppointments.get(0).getScheduleDateAndTime() : "-";
         }
 
     }
@@ -656,4 +671,63 @@ public class PatientWrapper {
     public void setNextAppointment(String nextAppointment) {
         this.nextAppointment = nextAppointment;
     }
+
+
+    public String getForeignName() {
+        return foreignName;
+    }
+
+    public void setForeignName(String foreignName) {
+        this.foreignName = foreignName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+
+
+    public String  getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+    public String getDobStr() {
+        return dobStr;
+    }
+
+    public void setDobStr(String dobStr) {
+        this.dobStr = dobStr;
+    }
+
+    public String getInsurancePlan() {
+        return insurancePlan;
+    }
+
+    public void setInsurancePlan(String insurancePlan) {
+        this.insurancePlan = insurancePlan;
+    }
+
+    public String getInsuranceProfile() {
+        return insuranceProfile;
+    }
+
+    public void setInsuranceProfile(String insuranceProfile) {
+        this.insuranceProfile = insuranceProfile;
+    }
+
+    public String getFormattedAddress() {
+        return formattedAddress;
+    }
+
+    public void setFormattedAddress(String formattedAddress) {
+        this.formattedAddress = formattedAddress;
+    }
+
 }

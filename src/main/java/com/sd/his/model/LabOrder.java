@@ -68,6 +68,12 @@ public class LabOrder extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "labOrder",fetch = FetchType.LAZY)
     private List<LabTest> labTests;
 
+
+
+
+    @Column(name = "IMG_URL")
+    private String imgURL;
+
     public LabOrder() {
     }
 
@@ -131,5 +137,14 @@ public class LabOrder extends BaseEntity implements Serializable {
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
+    }
+
+
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
     }
 }

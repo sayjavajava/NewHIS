@@ -2,10 +2,8 @@ package com.sd.his.service;
 
 
 
-import com.sd.his.model.Patient;
-import com.sd.his.model.PatientVital;
+import com.sd.his.model.*;
 
-import com.sd.his.model.Patient_Order;
 import com.sd.his.repository.PatientRepository;
 import com.sd.his.repository.PatientVitalRepository;
 
@@ -35,7 +33,13 @@ public class PatientVitalService{
     @Autowired
     private PatientRepository patientRepository;
 
-    public List<PatientVital> getAll(){
+    @Autowired
+    AppointmentService appointmentService;
+
+    @Autowired
+    private OrganizationService organizationService;
+
+    public List<PatientVitalWrapper> getAll(){
         return patientVitalRepository.getAll();
     }
 
@@ -83,8 +87,8 @@ public class PatientVitalService{
     }
 
 
-    public List<PatientVital> getPaginatedOrder(Pageable pageable, Long patientId) {
-        List<PatientVital> patientVitals=this.patientVitalRepository.getPaginatedOrder(pageable,patientId);
+    public List<PatientVitalWrapper> getPaginatedOrder(Pageable pageable, Long patientId) {
+        List<PatientVitalWrapper> patientVitals=this.patientVitalRepository.getPaginatedOrder(pageable,patientId);
         return patientVitals;
 
     }
@@ -102,10 +106,20 @@ public class PatientVitalService{
             patientVital.setName(vital.get(i).getName());
             patientVital.setUnit(vital.get(i).getUnit());
             patientVital.setStandardValue(vital.get(i).getStandardValue());
+            Appointment app=appointmentService.findById(vital.get(i).getAppointmentId());
+            patientVital.setAppointment(app);
+            patientVital.setChiefComplaint(vital.get(i).getChiefComplaint());
            // patientVital.setStatus(vital.get(i).get);
             patientVital.setCurrentValue(vital.get(i).getCurrentValue());
             Optional<Patient> patient=patientRepository.findById(Long.valueOf(patientId));
             patientVital.setPatient(patient.get());
+            Organization dbOrganization = organizationService.getAllOrgizationData();
+            String systemDateFormat = dbOrganization.getDateFormat();
+            String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+            String readDate = HISCoreUtil.convertDateToTimeZone(new Date(), "YYYY-MM-dd hh:mm:ss", Zone);
+            //  System.out.println("Read Date"+readDate);
+            Date scheduledDate = HISCoreUtil.convertStringDateObject(readDate);
+            patientVital.setDateVital(scheduledDate);
             patientVitalRepository.save(patientVital);
         }
 

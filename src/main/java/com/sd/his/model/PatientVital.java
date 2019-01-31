@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "PATIENT_VITAL")
@@ -53,6 +54,27 @@ public class PatientVital  extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "PATIENT_ID",nullable = false)
     private Patient patient;
+
+
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APPOINTMENT_ID")
+    private Appointment appointment;
+
+
+
+
+    @Column(name = "CHIEF_complaint")
+    private String chiefComplaint;
+
+
+
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "DATE_DIAGNOSIS")
+    private Date dateVital;
+
 
     public PatientVital() {
     }
@@ -101,5 +123,32 @@ public class PatientVital  extends BaseEntity implements Serializable {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+
+    }
+
+    public String getChiefComplaint() {
+        return chiefComplaint;
+    }
+
+    public void setChiefComplaint(String chiefComplaint) {
+        this.chiefComplaint = chiefComplaint;
+    }
+
+
+    public Date getDateVital() {
+        return dateVital;
+    }
+
+    public void setDateVital(Date dateVital) {
+        this.dateVital = dateVital;
     }
 }

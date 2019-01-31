@@ -137,20 +137,20 @@ public class MedicationService {
 
     public List<MedicationWrapper> getPaginatedMedications(Pageable pageable, Long patientId) {
         List<MedicationWrapper> objWrapperMedication= this.medicationRepository.getPaginatedMedications(pageable, patientId);
-        Organization dbOrganization=organizationService.getAllOrgizationData();
+     //   Organization dbOrganization=organizationService.getAllOrgizationData();
      //   String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
        // String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
-        String stdDateTime=dbOrganization.getDateFormat()+" "+dbOrganization.getTimeFormat();
+      //  String stdDateTime=dbOrganization.getDateFormat()+" "+dbOrganization.getTimeFormat();
         for(int i=0;i<objWrapperMedication.size();i++){
         Appointment appointment=appointmentRepository.findOne(objWrapperMedication.get(i).getAppointmentId());
           //  objWrapperMedication.get(i).setAppoint(appointment);
 
-            String readDate=HISCoreUtil.convertDateToString(appointment.getSchdeulledDate(),stdDateTime);
+         //   String readDate=HISCoreUtil.convertDateToString(appointment.getSchdeulledDate(),stdDateTime);
          //   Date scheduledDate=HISCoreUtil.convertStringDateObject(readDate);objWrapperMedication.
-            String prescribedDate=HISCoreUtil.convertDateToString(HISCoreUtil.convertStringDateObject(objWrapperMedication.get(i).getDatePrescribedString()),stdDateTime);
+        //    String prescribedDate=HISCoreUtil.convertStringDateObject(objWrapperMedication.get(i).getDatePrescribedString());
 
-            objWrapperMedication.get(i).setAppointmentDate(readDate);
-            objWrapperMedication.get(i).setDatePrescribedString(prescribedDate);
+         //   objWrapperMedication.get(i).setAppointmentDate(readDate);
+         //   objWrapperMedication.get(i).setDatePrescribedString(prescribedDate);
         }
         return objWrapperMedication;
     }
