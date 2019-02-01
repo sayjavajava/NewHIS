@@ -29,15 +29,15 @@ public class MedicationWrapper extends BaseWrapper {
 
     private Date datePrescribedDate;
     private String datePrescribedString;
-    private long datePrescribedLong;
+
 
     private Date dateStartedTakingDate;
     private String dateStartedTakingString;
-    private long dateStartedTakingLong;
+
 
     private Date dateStoppedTakingDate;
     private String dateStoppedTakingString;
-    private long dateStoppedTakingLong;
+
 
     private double dispenseQuantity;
     private String dispensePackage;
@@ -52,19 +52,19 @@ public class MedicationWrapper extends BaseWrapper {
     private String dteAppointment;
 
 
-    private Appointment appointment;
+ //   private Appointment appointment;
     // New Values Changes
     private String frequency;
     private String route;
     private String strengths;
     private String duration;
     private String durationPeriod;
-
+    private String appointmentDate;
     public String getAppointmentDate() {
         return appointmentDate;
     }
 
-    private String appointmentDate;
+
 
 
     public void setAppointmentDate(String appointmentDate) {
@@ -217,29 +217,9 @@ public class MedicationWrapper extends BaseWrapper {
         this.appointmentId = appointmentId;
     }
 
-    public long getDatePrescribedLong() {
-        return datePrescribedLong;
-    }
 
-    public void setDatePrescribedLong(long datePrescribedLong) {
-        this.datePrescribedLong = datePrescribedLong;
-    }
 
-    public long getDateStartedTakingLong() {
-        return dateStartedTakingLong;
-    }
 
-    public void setDateStartedTakingLong(long dateStartedTakingLong) {
-        this.dateStartedTakingLong = dateStartedTakingLong;
-    }
-
-    public long getDateStoppedTakingLong() {
-        return dateStoppedTakingLong;
-    }
-
-    public void setDateStoppedTakingLong(long dateStoppedTakingLong) {
-        this.dateStoppedTakingLong = dateStoppedTakingLong;
-    }
 
     public double getDispenseQuantity() {
         return dispenseQuantity;
@@ -349,13 +329,13 @@ public class MedicationWrapper extends BaseWrapper {
         this.dateStoppedTakingString = dateStoppedTakingString;
     }
 
-    public Appointment getAppointment() {
+   /* public Appointment getAppointment() {
         return appointment;
     }
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
-    }
+    }*/
 
     public String getDteAppointment() {
         return dteAppointment;
