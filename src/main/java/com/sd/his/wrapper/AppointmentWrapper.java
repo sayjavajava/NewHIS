@@ -123,7 +123,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
 
 
 
-    private BufferedImage imgBarcode;
+ //   private BufferedImage imgBarcode;
 
 
 
@@ -870,14 +870,14 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
         return getCompareDate().compareTo(o.getCompareDate());
     }
 
-    public BufferedImage getImgBarcode() {
+    /*public BufferedImage getImgBarcode() {
         return imgBarcode;
-    }
+    }*/
 
-    public void setImgBarcode(BufferedImage imgBarcode) {
+  /*  public void setImgBarcode(BufferedImage imgBarcode) {
         this.imgBarcode = imgBarcode;
     }
-
+*/
     public byte[] getImg() {
         return img;
     }

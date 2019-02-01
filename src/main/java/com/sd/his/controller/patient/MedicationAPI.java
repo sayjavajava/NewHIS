@@ -217,7 +217,7 @@ public class MedicationAPI {
                             medicationWrappers.get(i).setDteAppointment(scheduleDate);
                             appointment.setSchdeulledDate(scheduledDate);
                             medicationWrappers.get(i).setDteAppointment(scheduleAppointment);
-                            medicationWrappers.get(i).setAppointment(appointment);
+                        //    medicationWrappers.get(i).setAppointment(appointment);
                         }
                     }
                 }
@@ -282,7 +282,7 @@ public class MedicationAPI {
                             appointment.setSchdeulledDate(scheduledDate);
                             medicationWrappersInActive.get(i).setDteAppointment(scheduleAppointment);
                             appointment.setSchdeulledDate(scheduledDate);
-                            medicationWrappersInActive.get(i).setAppointment(appointment);
+                       //    medicationWrappersInActive.get(i).setAppointment(appointment);
                             //          dateDiagnose = dtelFrom + " " + displayTime;
                         }
                     }
