@@ -55,7 +55,7 @@ public class AppointmentAPI {
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
 
     @Autowired
-    AppointmentService appointmentService;
+    private AppointmentService appointmentService;
 
     @Autowired
     private UserService userService;
@@ -370,7 +370,6 @@ public class AppointmentAPI {
         response.setResponseData(null);
 
         try {
-
             List<AppointmentWrapper> appointments = appointmentService.getPageableSearchedAppointments(doctorId, branchId);
             //  int countSearchedAppointments = appointmentService.countSearchedAppointments(doctorId,branchId);
             if (HISCoreUtil.isListEmpty(appointments)) {
@@ -382,8 +381,6 @@ public class AppointmentAPI {
 
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
-
-
             response.setResponseMessage(messageBundle.getString("appointment.fetched.success"));
             response.setResponseCode(ResponseEnum.APPT_FETCHED_SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
@@ -516,7 +513,7 @@ public class AppointmentAPI {
         response.setResponseData(null);
 
         try {
-            AppointmentWrapper singleAppointment = this.appointmentService.findAppointmentById(id);
+            AppointmentWrapper singleAppointment = this.appointmentService.getSingleAppointment(id);
 
             if (HISCoreUtil.isValidObject(singleAppointment)) {
                 response.setResponseData(singleAppointment);
@@ -634,6 +631,8 @@ public class AppointmentAPI {
 
             if (HISCoreUtil.isValidObject(dbAppointment)) {
                 appointmentService.deleteAppointment(dbAppointment);
+               // dbAppointment.setActive(false);
+
 
                 response.setResponseData(null);
                 response.setResponseMessage(messageBundle.getString("appointment.delete.success"));

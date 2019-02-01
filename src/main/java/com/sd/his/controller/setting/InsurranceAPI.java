@@ -1,10 +1,6 @@
 package com.sd.his.controller.setting;
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.ICDCodeVersion;
-import com.sd.his.model.ICDVersion;
-import com.sd.his.service.BulkImportService;
-import com.sd.his.service.ICDService;
 import com.sd.his.service.InsurranceService;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
@@ -14,26 +10,15 @@ import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 
-import com.sd.his.wrapper.ICDCodeVersionWrapper;
-import com.sd.his.wrapper.ICDCodeWrapper;
-import com.sd.his.wrapper.ICDVersionWrapper;
-import com.sd.his.wrapper.ICDCodeCreateRequest;
 import com.sd.his.wrapper.GenericAPIResponse;
-
-import java.util.stream.IntStream;
 
 
 @RequestMapping("/setting/Insurrance")
