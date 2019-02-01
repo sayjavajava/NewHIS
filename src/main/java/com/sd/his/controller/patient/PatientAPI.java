@@ -2,10 +2,7 @@ package com.sd.his.controller.patient;
 
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.Insurance;
-import com.sd.his.model.Organization;
-import com.sd.his.model.Patient;
-import com.sd.his.model.SmokingStatus;
+import com.sd.his.model.*;
 import com.sd.his.service.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
