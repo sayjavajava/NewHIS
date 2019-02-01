@@ -464,7 +464,7 @@ public class PatientService {
             }
 
         }
-        if(patient.getFormattedAddress()!=null || patient.getFormattedAddress().equals("")){
+        if(patient.getFormattedAddress() !=null){
             patientWrapper.setFormattedAddress(patient.getFormattedAddress());
         }else{
             patientWrapper.setFormattedAddress("-");
