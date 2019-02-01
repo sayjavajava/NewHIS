@@ -6,6 +6,7 @@ import com.sd.his.wrapper.Patient_OrderWrapper;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -36,6 +37,9 @@ public class Patient_Order extends BaseEntity implements Serializable {
         private PatientImageSetup order;
 
 
+    @Temporal(TemporalType.TIMESTAMP)
+      @Column(name = "DATE_ORDER")
+      private Date dateOrder;
 
 
     @Column(name = "STATUS")
@@ -136,6 +140,15 @@ public class Patient_Order extends BaseEntity implements Serializable {
         public void setStatus(String status) {
         this.status = status;
         }
-    }
+
+        public Date getDateOrder() {
+        return dateOrder;
+        }
+
+       public void setDateOrder(Date dateOrder) {
+        this.dateOrder = dateOrder;
+        }
+
+}
 
 

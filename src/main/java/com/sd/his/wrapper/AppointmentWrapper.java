@@ -11,6 +11,7 @@ import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.utill.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.awt.image.BufferedImage;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -120,6 +121,13 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
     private Long recurseEvery;
 
 
+
+
+    private BufferedImage imgBarcode;
+
+
+
+    private byte[] img;
     public AppointmentWrapper() {
     }
     public AppointmentWrapper(Appointment appointment){
@@ -182,6 +190,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
                               Long branchId, String branchName,Long roomId, String docFirstName, String docLastName, Long docId, Date followUpDate, Long serviceId, String serviceName
     ) {
 
+
         this.id = id;
         this.appointmentId=appointmentId;
         this.zonedDate = HISCoreUtil.convertDateToTimeZone(scheduleDate,this.formatedDate,zone);
@@ -227,7 +236,12 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
 
 
     }
-    public AppointmentWrapper(Long id,String appointmentId, String title,Date scheduleDate, String firstName, String lastName,String profileImgURL, String docFirstName, String docLastName, Long patientId, String invPrefix, boolean completed)
+    public AppointmentWrapper(Long id,String appointmentId,
+                              String title,Date scheduleDate,
+                              String firstName, String lastName,
+                              String docFirstName,
+                              String docLastName,String profileImgURL, Long patientId,
+                              String invPrefix, boolean completed)
     {
         //Long patientId,Long branchId, String branchName, Long roomId,
         this.id = id;
@@ -255,7 +269,7 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
 //        this.roomId = roomId;
 
         this.branchName = branchName;
-        this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToString(scheduleDate);
+        this.scheduleDateAndTime = HISCoreUtil.convertDateAndTimeToStringNew(scheduleDate);
         this.invoicePrefix = invPrefix;
         this.completed = completed;
         this.label = HISCoreUtil.convertDateAndTimeToStringWithPMAndAM(scheduleDate);
@@ -855,4 +869,21 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
     public int compareTo(AppointmentWrapper o) {
         return getCompareDate().compareTo(o.getCompareDate());
     }
+
+    public BufferedImage getImgBarcode() {
+        return imgBarcode;
+    }
+
+    public void setImgBarcode(BufferedImage imgBarcode) {
+        this.imgBarcode = imgBarcode;
+    }
+
+    public byte[] getImg() {
+        return img;
+    }
+
+    public void setImg(byte[] img) {
+        this.img = img;
+    }
+
 }

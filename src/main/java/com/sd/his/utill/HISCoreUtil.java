@@ -1,10 +1,18 @@
 package com.sd.his.utill;
 
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.Writer;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.oned.Code128Writer;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.sd.his.model.Branch;
 import com.sd.his.wrapper.response.BranchResponseWrapper;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
@@ -416,10 +424,10 @@ public class HISCoreUtil {
         return dte;
     }
 
-    public static Date convertToDateDetail(String str) {
+    public static Date convertToDateDetail(String str,String format) {
         Date date = null;
         if (str != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
             try {
                 date = formatter.parse(str);
             } catch (ParseException e) {
@@ -616,6 +624,7 @@ public class HISCoreUtil {
 
     public static String formatCurrencyDisplay(double amount, String format) {
         String returnFormat = "";
+
         if (format.equals("123,456")) {
             String pattern = "###,###";
             DecimalFormat decimalFormat = new DecimalFormat(pattern);
@@ -631,12 +640,122 @@ public class HISCoreUtil {
         } else if (format.equals("123456.00")) {
 
             returnFormat = new DecimalFormat("###.00").format(amount);
-      //      System.out.println(returnFormat);
+
             return returnFormat;
-            //     DecimalFormat formatter = new DecimalFormat("###.00");
-            //    returnFormat = formatter.format(Double.parseDouble(amount));
+
         }
         return returnFormat;
+    }
+
+    public static Date  convertStringDateObjectLabOrder(String dateinString,String format) {
+        Date dte=new Date();
+        if (dateinString != null) {
+
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            try {
+                dte = formatter.parse(dateinString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return dte;
+    }
+
+    public static Date  convertStringDateObjectOrder(String dateinString) {
+        Date dte=new Date();
+        if (dateinString != null) {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            try {
+                dte = formatter.parse(dateinString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return dte;
+    }
+
+
+    public static String  getTimeFromString(String myTime,String format) {
+
+      //  String myTime = "10:30:54";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date date = null;
+        try {
+            date = sdf.parse(myTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String formattedTime = sdf.format(date);
+        return formattedTime;
+       // System.out.println(formattedTime);
+
+    }
+
+    public static String convertToHourFormat(String Time,String hoursFormat,String timeFormat) {
+        if(timeFormat.equals("hh:mm:ss")){
+        if(hoursFormat.equals("12")){
+            timeFormat="hh:mm:ss";
+        }
+        }else if(timeFormat.equals("hh:mm")){
+          if(hoursFormat.equals("12")){
+              timeFormat="hh:mm";
+          }
+        }
+        if(timeFormat.equals("hh:mm:ss")){
+            if(hoursFormat.equals("24")){
+                timeFormat="HH:mm:ss";
+            }
+        }else if(timeFormat.equals("hh:mm")){
+            if(hoursFormat.equals("24")){
+                timeFormat="HH:mm";
+            }
+        }
+        DateFormat f1 = new SimpleDateFormat(timeFormat); //11:00 pm
+        Date d = null;
+        try {
+            d = f1.parse(Time);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        DateFormat f2 = new SimpleDateFormat(timeFormat);
+        String x = f2.format(d); // "23:00"
+
+        return x;
+    }
+
+
+    public static int calculateAge(Date birthday, Date date) {
+        DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        int d1 = Integer.parseInt(formatter.format(birthday));
+        int d2 = Integer.parseInt(formatter.format(date));
+        int age = (d2-d1)/10000;
+        return age;
+    }
+
+    public static String convertDateAndTimeToStringNew(Date date) {
+        String formatedDate = null;
+        if (date != null) {
+            SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            formatedDate = form.format(date);
+        }
+        return formatedDate;
+    }
+
+
+    public static byte[] getBarCodeImage(String text, int width, int height) {
+        try {
+            Hashtable<EncodeHintType, ErrorCorrectionLevel> hintMap = new Hashtable<>();
+            hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+            Writer writer = new Code128Writer();
+            BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.CODE_128, width, height);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            MatrixToImageWriter.writeToStream(bitMatrix, "png", byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

@@ -1,9 +1,7 @@
 package com.sd.his.service;
 
-import com.sd.his.enums.GenderTypeEnum;
-import com.sd.his.enums.MaritalStatusTypeEnum;
-import com.sd.his.enums.ModuleEnum;
-import com.sd.his.enums.PatientStatusTypeEnum;
+import com.sd.his.controller.patient.PatientAPI;
+import com.sd.his.enums.*;
 import com.sd.his.model.*;
 import com.sd.his.model.LabTest;
 import com.sd.his.repository.*;
@@ -11,9 +9,12 @@ import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PatientService {
+
     @Autowired
     private PatientRepository patientRepository;
     @Autowired
@@ -50,9 +52,16 @@ public class PatientService {
     private CityRepository cityRepository;
     @Autowired
     private PatientGroupRepository patientGroupRepository;
+    @Autowired
+    LabTestSpecimanRepository labTestSpecimanRepository;
+    @Autowired
+    private PatientService patientService;
 
+    @Autowired
+    private InsurancePlanRepository planRepository;
 
-
+    @Autowired
+    private InsuranceProfileRepository profileRepository;
     //response populate
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
         patientWrapper.setId(patient.getId());//patient pk
@@ -62,7 +71,7 @@ public class PatientService {
         patientWrapper.setFirstName(patient.getFirstName());
         patientWrapper.setMiddleName(patient.getMiddleName());
         patientWrapper.setLastName(patient.getLastName());
-
+        patientWrapper.setForeignName(patient.getForeignName());
         if (patient.getDob() != null) {
             patientWrapper.setDob(patient.getDob() + "");
         }
@@ -187,10 +196,25 @@ public class PatientService {
     }
 
     private void populateInsurance(Insurance insurance, PatientWrapper patientWrapper) throws ParseException {
-        insurance.setCompany(patientWrapper.getCompany());
+        InsuranceProfile InsuranceProfile;
+        InsurancePlan icd;
+        if(patientWrapper.getCompany().length()>=4){
+
+             InsuranceProfile = profileRepository.findByName(patientWrapper.getCompany());
+        }else{
+            InsuranceProfile = profileRepository.findOne(Long.valueOf(patientWrapper.getCompany()));
+        }
+       // InsuranceProfile InsuranceProfile = profileRepository.findOne(Long.valueOf(patientWrapper.getCompany()));
+        insurance.setCompany(InsuranceProfile);
         insurance.setInsuranceIDNumber(patientWrapper.getInsuranceIdNumber());// not primary key
         insurance.setGroupNumber(patientWrapper.getGroupNumber());
-        insurance.setPlanName(patientWrapper.getPlanName());
+        if(patientWrapper.getPlanName().length()>=4){
+             icd = planRepository.findByName(patientWrapper.getPlanName());
+        }else{
+             icd = planRepository.findOne(Long.valueOf(patientWrapper.getPlanName()));
+        }
+
+        insurance.setPlanN(icd);
         insurance.setPlanType(patientWrapper.getPlanType());
 
         if (!patientWrapper.getCardIssuedDate().isEmpty())
@@ -203,10 +227,12 @@ public class PatientService {
     private void populateInsurance(PatientWrapper patientWrapper, Patient patient) {
         if (patient.getInsurance() != null) {
             patientWrapper.setInsuranceId(patient.getInsurance().getId());
-            patientWrapper.setCompany(patient.getInsurance().getCompany());
+            InsuranceProfile InsuranceProfile = profileRepository.findOne(Long.valueOf(patient.getInsurance().getCompany().getId()));
+            patientWrapper.setCompany(InsuranceProfile.getName());
             patientWrapper.setInsuranceIdNumber(patient.getInsurance().getInsuranceIDNumber());
             patientWrapper.setGroupNumber(patient.getInsurance().getGroupNumber());
-            patientWrapper.setPlanName(patient.getInsurance().getPlanName());
+            InsurancePlan InsurancePlan = planRepository.findOne(Long.valueOf(patient.getInsurance().getCompany().getId()));
+            patientWrapper.setPlanName(InsurancePlan.getName());
             patientWrapper.setPlanType(patient.getInsurance().getPlanType());
             if (patient.getInsurance().getCardIssuedDate() != null)
                 patientWrapper.setCardIssuedDate(patient.getInsurance().getCardIssuedDate() + "");
@@ -248,7 +274,7 @@ public class PatientService {
         }
         Doctor doctor = doctorRepository.findOne(patientWrapper.getSelectedDoctor());
         patient.setPrimaryDoctor(doctor);
-
+        patient.setForeignName(patientWrapper.getForeignName());
         patient = patientRepository.save(patient);
         //patientWrapper.
 
@@ -408,20 +434,88 @@ public class PatientService {
 
     public PatientWrapper getPatientById(long id) {
         Patient patient = patientRepository.findOne(id);
-        if (patient.getCity() != null) {
+        PatientWrapper patientWrapper = new PatientWrapper(patient);
+        if(patient.getDob()!= null){
+            int age=HISCoreUtil.calculateAge(patient.getDob(),new Date());
+            patientWrapper.setAge(age);
+        }else{
+            patientWrapper.setAge(Integer.parseInt("-"));
+        }
+        /*if (patient.getCity() != null) {
             patient.setState(patient.getCity().getState().getName());
             patient.setCountry(patient.getCity().getCountry().getName());
-        }
-        PatientWrapper patientWrapper = new PatientWrapper();
+        }*/
+     //  PatientWrapper patientWrapper = new PatientWrapper();
         this.populatePatientWrapper(patientWrapper, patient);
-        if (patient.getPrimaryDoctor() != null) {
+       if (patient.getPrimaryDoctor() != null) {
             patientWrapper.setSelectedDoctor(patient.getPrimaryDoctor().getId());
-            patientWrapper.setPrimaryDoctorFirstName(patient.getPrimaryDoctor().getFirstName());
-            patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
+
+            if(patient.getPrimaryDoctor().getFirstName()!=null || patient.getPrimaryDoctor().getFirstName().equals("")){
+
+                patientWrapper.setPrimaryDoctorFirstName(patient.getPrimaryDoctor().getFirstName());
+            }else{
+                patientWrapper.setPrimaryDoctorFirstName("-");
+            }
+
+            if(patient.getPrimaryDoctor().getLastName()!=null || patient.getPrimaryDoctor().getLastName().equals("")) {
+                patientWrapper.setPrimaryDoctorLastName(patient.getPrimaryDoctor().getLastName());
+            }else{
+                patientWrapper.setPrimaryDoctorLastName("-");
+            }
+
         }
-        patientWrapper.setSmokingStatuses(patient.getSmokingStatusList() != null ? patient.getSmokingStatusList() : null);
-        this.populateAppointments(patientWrapper, patient);
-        this.populateInsurance(patientWrapper, patient);
+        if(patient.getFormattedAddress()!=null || patient.getFormattedAddress().equals("")){
+            patientWrapper.setFormattedAddress(patient.getFormattedAddress());
+        }else{
+            patientWrapper.setFormattedAddress("-");
+        }
+     //   patientWrapper.setSmokingStatuses(patient.getSmokingStatusList() != null ? patient.getSmokingStatusList() : null);
+     //     this.populateAppointments(patientWrapper, patient);
+          this.populateInsurance(patientWrapper, patient);
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String systemTimeFormat=dbOrganization.getTimeFormat();
+        String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+        String hoursFormat = dbOrganization.getHoursFormat();
+       // dteFrom = DateTimeUtil.getDateFromString(patientWrapper., "yyyy-MM-dd hh:mm:ss");
+        String readDateFrom = HISCoreUtil.convertDateToTimeZone(patient.getCreatedOn(), "yyyy-MM-dd hh:mm:ss", Zone);
+        Date lastDateStr= null;
+        Date fromDte=null;
+        Date lastDate=null;
+        try{
+             lastDateStr = DateTimeUtil.getDateFromString(patientWrapper.getLastAppointment(),"yyyy-MM-dd hh:mm:ss");
+             fromDte = DateTimeUtil.getDateFromString(readDateFrom, "yyyy-MM-dd hh:mm:ss");
+
+        }
+        catch (ParseException e) {
+        e.printStackTrace();
+        }
+        if (systemDateFormat != null || !systemDateFormat.equals("")) {
+
+            String dtelFrom = HISCoreUtil.convertDateToStringWithDateDisplay(fromDte, systemDateFormat);
+            String dob=HISCoreUtil.convertDateToStringWithDateDisplay(patient.getDob(),systemDateFormat);
+            String lastAppointmentDate=HISCoreUtil.convertDateToStringWithDateDisplay(lastDateStr,systemDateFormat);
+            if(lastAppointmentDate!=null){
+                patientWrapper.setLastAppointment(lastAppointmentDate);
+            }else{
+                patientWrapper.setLastAppointment("-");
+            }
+            if(dob!=null){
+            patientWrapper.setDobStr(dob);
+            }else{
+                patientWrapper.setDobStr("-");
+            }
+           // patientWrapper.setDob(dob);
+            if(dtelFrom!=null){
+            patientWrapper.setCreateDate(dtelFrom);
+            }else{
+                patientWrapper.setCreateDate("-");
+            }
+        }
+        patientWrapper.setSmokingStatuses(patient.getSmokingStatusList());
+     //   this.populateAppointments(patientWrapper, patient);
+     //   this.populateInsurance(patientWrapper, patient);
         return patientWrapper;
     }
 
@@ -433,7 +527,7 @@ public class PatientService {
         List<AppointmentWrapper> apptFutureWrapperList = new ArrayList<>();
         List<AppointmentWrapper> apptPastWrapperList = new ArrayList<>();
         List<AppointmentWrapper> listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patient.getId());
-        Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream()
+        Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream().sorted(Comparator.comparing(AppointmentWrapper::getLabel).reversed())
                 .collect(Collectors.partitioningBy(x -> x.getCompareDate()
                         .toInstant().isAfter(Instant.now())));
         patientWrapper.setFutureAppointments(listOfApp.get(true));
@@ -688,27 +782,60 @@ public class PatientService {
 
     public List<LabOrderWrapper> getAllLabOrdersByPatient(String patientId) {
         Patient patient = patientRepository.findOne(Long.valueOf(patientId));
-      //  Pageable pageable = new PageRequest(offset, limit);
         List<LabOrder> obj = labOrderRepository.findAllByPatient(patient);
+
         List<LabOrderWrapper> listofLab = new ArrayList<>();
+        /*List<LabTest> labTests = labTestRepository.findAllByLabOrder(obj.get(i).getId());
+        List<com.sd.his.wrapper.LabTest> returnListofLab = new ArrayList<>();
+        for(int j=0;j<labTests.size();j++){
+            com.sd.his.wrapper.LabTest testObj=new com.sd.his.wrapper.LabTest();
+            if(labTests.get(j).getLoincCode()!=null){
+                LabTestSpeciman labTestSpecimanObj = this.labTestSpecimanRepository.findTestEntry(labTests.get(j).getLoincCode());
+                testObj.setTestName(labTestSpecimanObj.getTestName());
+            }else{
+                testObj.setTestName("");
+            }
+            testObj.setDescription(labTests.get(j).getDescription());
+            testObj.setResultValue(labTests.get(j).getResultValue());
+            testObj.setLoincCode(labTests.get(j).getLoincCode());
+            testObj.setUnits(labTests.get(j).getUnits());
+            testObj.setNormalRange(labTests.get(j).getNormalRange());
+            testObj.setId(String.valueOf(labTests.get(j).getId()));
+            returnListofLab.add(testObj);
+        }*/
         for (int i = 0; i < obj.size(); i++) {
-            LabOrderWrapper wrapObj = new LabOrderWrapper();
-            wrapObj.setTestDate(obj.get(i).getDateTest());
-            wrapObj.setComments(obj.get(i).getComments());
-            wrapObj.setAppointment(obj.get(i).getAppointment());
-            wrapObj.setPatient(obj.get(i).getPatient());
-            wrapObj.setId(obj.get(i).getId());
-            wrapObj.setOrderStatus(obj.get(i).getStatus());
-            /*for(int j=0;j<obj.get(i).getLabTests().size();j++){
-                LabTest testObj=new LabTest();
-                testObj.setDescription(obj.get(i).getLabTests().get(j).getDescription());
-                testObj.setResultValue(obj.get(i).getLabTests().get(j).getResultValue());
-                testObj.setLoincCode(obj.get(i).getLabTests().get(j).getLoincCode());
-                testObj.setUnits(obj.get(i).getLabTests().get(j).getUnits());
-                testObj.setId(obj.get(i).getLabTests().get(j).getId());
-                wrapObj.setLabTest();
-            }*/
-            listofLab.add(wrapObj);
+            List<LabTest> labTests = labTestRepository.findAllByLabOrder(obj.get(i).getId());
+            boolean executeFlow=false;
+            for(int j=0;j<labTests.size();j++){
+                LabOrderWrapper  wrapObj = new LabOrderWrapper();
+                if(obj.get(i).getId()==labTests.get(j).getLabOrder().getId()){
+                    if(executeFlow==false) {
+
+                        wrapObj.setTestDate(obj.get(i).getDateTest());
+                        wrapObj.setComments(obj.get(i).getComments());
+                        wrapObj.setAppointment(obj.get(i).getAppointment());
+                        wrapObj.setPatient(obj.get(i).getPatient());
+                        wrapObj.setId(obj.get(i).getId());
+                        wrapObj.setOrderStatus(obj.get(i).getStatus());
+                    }
+                        if(labTests.get(j).getLoincCode()!=null){
+                            LabTestSpeciman labTestSpecimanObj = this.labTestSpecimanRepository.findTestEntry(labTests.get(j).getLoincCode());
+                            wrapObj.setTestName(labTestSpecimanObj.getTestName());
+                        }else{
+                            wrapObj.setTestName("");
+                        }
+                        wrapObj.setResultValue(labTests.get(j).getResultValue());
+                        wrapObj.setLoincCode(labTests.get(j).getLoincCode());
+                        wrapObj.setUnits(labTests.get(j).getUnits());
+                        wrapObj.setNormalRange(labTests.get(j).getNormalRange());
+                        wrapObj.setIdNew(String.valueOf(labTests.get(j).getId()));
+                        listofLab.add(wrapObj);
+
+                }
+            }
+
+
+
         }
                 return listofLab;
     }
@@ -720,6 +847,12 @@ public class PatientService {
         List<com.sd.his.wrapper.LabTest> returnListofLab = new ArrayList<>();
         for(int j=0;j<labTests.size();j++){
             com.sd.his.wrapper.LabTest testObj=new com.sd.his.wrapper.LabTest();
+            if(labTests.get(j).getLoincCode()!=null){
+            LabTestSpeciman labTestSpecimanObj = this.labTestSpecimanRepository.findTestEntry(labTests.get(j).getLoincCode());
+                testObj.setTestName(labTestSpecimanObj.getTestName());
+            }else{
+                testObj.setTestName("");
+            }
                 testObj.setDescription(labTests.get(j).getDescription());
                 testObj.setResultValue(labTests.get(j).getResultValue());
                 testObj.setLoincCode(labTests.get(j).getLoincCode());
@@ -765,7 +898,37 @@ public class PatientService {
         patient.ifPresent(labOrder::setPatient);
         Appointment appointment = appointmentRepository.findOne(labOrder.getAppointment().getId());
         labOrder.setAppointment(appointment);
+        String dteFileUpload=HISCoreUtil.convertDateToStringUpload(new Date());
+        String url = null;
+        String imgURL = null;
+        if (labOrderWrapper.getImage() != null) {
+            try {
+                imgURL = userService.saveImageMedical(labOrderWrapper.getImage(),
+                        HISConstants.S3_USER_LABORDER_DIRECTORY_PATH, labOrderWrapper.getPatientId() + "_" + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_LABORDER_THUMBNAIL_GRAPHIC_NAME, labOrderWrapper.getPatientId()
+                                + "_" + labOrderWrapper.getPatientId()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_LABORDER_THUMBNAIL_GRAPHIC_NAME,
+                        "/"
+                                + HISConstants.S3_USER_LABORDER_DIRECTORY_PATH
+                                + labOrderWrapper.getPatientId()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_LABORDER_THUMBNAIL_GRAPHIC_NAME);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
+            if (HISCoreUtil.isValidObject(imgURL)) {
+                labOrder.setImgURL(imgURL);
+
+            }
+        }
+        labOrderRepository.save(labOrder);
       //  List<com.sd.his.wrapper.LabTest> list = Arrays.stream(labOrderWrapper.getLabTest()).collect(Collectors.toList());
         labOrderRepository.save(labOrder);
         List<String> alistCode = new ArrayList<>();
@@ -816,6 +979,36 @@ public class PatientService {
         Appointment appointment = appointmentRepository.findOne(Long.valueOf(labOrderWrapper.getAppointmentId()));
         labOrder.setAppointment(appointment);
         List<com.sd.his.wrapper.LabTest> list =labOrderWrapper.getLabTest();
+        String dteFileUpload=HISCoreUtil.convertDateToStringUpload(new Date());
+        String url = null;
+        String imgURL = null;
+        if (labOrderWrapper.getImage() != null) {
+            try {
+                imgURL = userService.saveImageMedical(labOrderWrapper.getImage(),
+                        HISConstants.S3_USER_LABORDER_DIRECTORY_PATH, labOrderWrapper.getPatientId() + "_" + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_LABORDER_THUMBNAIL_GRAPHIC_NAME, labOrderWrapper.getPatientId()
+                                + "_" + labOrderWrapper.getPatientId()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_LABORDER_THUMBNAIL_GRAPHIC_NAME,
+                        "/"
+                                + HISConstants.S3_USER_LABORDER_DIRECTORY_PATH
+                                + labOrderWrapper.getPatientId()
+                                + "_"
+                                + dteFileUpload
+                                + "_"
+                                + HISConstants.S3_USER_LABORDER_THUMBNAIL_GRAPHIC_NAME);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (HISCoreUtil.isValidObject(imgURL)) {
+                labOrder.setImgURL(imgURL);
+
+            }
+        }
         labOrderRepository.save(labOrder);
         for (com.sd.his.wrapper.LabTest labOrder1 : list) {
             LabTest labTest = new LabTest();

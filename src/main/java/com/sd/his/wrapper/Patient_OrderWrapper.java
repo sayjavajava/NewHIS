@@ -20,8 +20,23 @@ public class Patient_OrderWrapper extends BaseWrapper {
     private String type;
     private String description;
     private String doctorComment;
+    private Date createOrder;
+
+    public String getStrUrl() {
+        return strUrl;
+    }
+
+    public void setStrUrl(String strUrl) {
+        this.strUrl = strUrl;
+    }
+
+    private String strUrl;
 
 
+    private Patient patient;
+
+
+    private String strCreatedDate;
 
 
 
@@ -83,7 +98,7 @@ public class Patient_OrderWrapper extends BaseWrapper {
         this.doctorComment=order.getDoctorComment();
         this.url = order.getUrl();
         this.status=order.getStatus();
-
+        this.strCreatedDate=HISCoreUtil.convertDateToString(order.getCreatedOn(), HISConstants.DATE_FORMAT_APP);
 
     }
 
@@ -212,7 +227,19 @@ public class Patient_OrderWrapper extends BaseWrapper {
         this.url = url;
     }
 
+    public String getStrCreatedDate() {
+        return strCreatedDate;
+    }
 
+    public void setStrCreatedDate(String strCreatedDate) {
+        this.strCreatedDate = strCreatedDate;
+    }
 
+    public Patient getPatient() {
+        return patient;
+    }
 
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 }

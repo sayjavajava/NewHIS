@@ -2,9 +2,12 @@ package com.sd.his.controller.patient;
 
 import com.sd.his.enums.ResponseEnum;
 import com.sd.his.model.ICDCode;
+import com.sd.his.model.Organization;
 import com.sd.his.repository.ICDCodeRepository;
+import com.sd.his.service.OrganizationService;
 import com.sd.his.service.PatientService;
 import com.sd.his.service.ProblemService;
+import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.ProblemWrapper;
@@ -22,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -60,6 +65,10 @@ public class PatientHistoryAPI {
 
     @Autowired
     ICDCodeRepository icdCodeRepository;
+
+    @Autowired
+    private OrganizationService organizationService;
+
     @ApiOperation(httpMethod = "POST", value = "Save patient Problem",
             notes = "This method will save the patient Problem.",
             produces = "application/json", nickname = "Save patient Problem",
@@ -341,13 +350,25 @@ public class PatientHistoryAPI {
             Page<ProblemWrapper> patientProblems = this.problemService.findPaginatedProblem(pageable, Long.valueOf(patientId));
             List<ProblemWrapper> list = new ArrayList<>();
             int count = ((int) (patientProblems.getTotalElements()));
-
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String systemTimeFormat=dbOrganization.getTimeFormat();
+            String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+            String hoursFormat = dbOrganization.getHoursFormat();
+            String standardSystem=systemDateFormat+" "+systemTimeFormat;
             logger.error("getPaginatedProblem - fetched successfully");
-
+                Date dteDia=null;
             if (patientProblems != null) {
                 for (ProblemWrapper problemWrapper : patientProblems) {
                     ICDCode icdCode=icdCodeRepository.findByCode(problemWrapper.getCodeName());
                     problemWrapper.setProblemName(icdCode.getProblem());
+                    dteDia=DateTimeUtil.getDateFromString(problemWrapper.getDateDiagnosis(), "yyyy-MM-dd hh:mm:ss");
+                    String dZoneDate = HISCoreUtil.convertDateToTimeZone(dteDia, "yyyy-MM-dd hh:mm:ss", Zone);
+                    if (systemDateFormat != null || !systemDateFormat.equals("")) {
+                        String sdDate=HISCoreUtil.convertDateToStringWithDateDisplay(dteDia,systemDateFormat);
+                        problemWrapper.setDateDiagnosis(sdDate);
+                    }
                     list.add(new ProblemWrapper(problemWrapper));
                 }
                 Integer nextPage, prePage, currPage;
@@ -424,13 +445,43 @@ public class PatientHistoryAPI {
             List<ProblemWrapper> list = new ArrayList<>();
             int count = ((int) (patientProblems.getTotalElements()));
 
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+        //    asdasdadsa
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            //  Date dteFrom=new Date();
+            //  Date dteTo=new Date();
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String systemTimeFormat=dbOrganization.getTimeFormat();
+            String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+         //   String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
+            String hoursFormat = dbOrganization.getHoursFormat();
             logger.error("getPaginatedProblemByStatus - fetched successfully");
 
             if (patientProblems != null) {
                 for (ProblemWrapper problemWrapper : patientProblems) {
-
+                    String dateDiagnose="";
                     ICDCode icdCode=icdCodeRepository.findByCode(problemWrapper.getCodeName());
                     problemWrapper.setProblemName(icdCode.getProblem());
+                    Date dteFrom=DateTimeUtil.getDateFromString(problemWrapper.getDateDiagnosis(),"yyyy-MM-dd hh:mm:ss");
+                    String readDateFrom=HISCoreUtil.convertDateToTimeZone(dteFrom,"yyyy-MM-dd hh:mm:ss",Zone);
+                    Date fromDte= DateTimeUtil.getDateFromString(readDateFrom,"yyyy-MM-dd hh:mm:ss");
+                    if(systemDateFormat!=null || !systemDateFormat.equals("")){
+
+                        String  dtelFrom=HISCoreUtil.convertDateToStringWithDateDisplay(fromDte,systemDateFormat);
+
+                        if(systemTimeFormat!=null || !systemTimeFormat.equals("")){
+
+                            SimpleDateFormat localDateFormat = new SimpleDateFormat(systemTimeFormat);
+                            String time = localDateFormat.format(fromDte);
+                            System.out.println(time);
+                            String displayTime=HISCoreUtil.convertToHourFormat(time,hoursFormat,systemTimeFormat);
+                            dateDiagnose=dtelFrom+" "+displayTime;
+                        }
+
+                        problemWrapper.setDateDiagnosis(dateDiagnose);
+
+                    }
+                 //   problemWrapper.setDateDiagnosis(readDateFrom);
                     list.add(new ProblemWrapper(problemWrapper));
                 }
 

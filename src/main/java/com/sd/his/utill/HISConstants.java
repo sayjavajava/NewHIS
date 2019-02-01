@@ -73,4 +73,9 @@ public class HISConstants {
     public final static String S3_USER_PROFILE_NEW_GRAPHIC_NAME = "profile-document-image.jpg";
 
 
+    public final static String S3_USER_LABORDER_DIRECTORY_PATH = "users/patient/history/laborder/documents/";
+    public final static String S3_USER_LABORDER_THUMBNAIL_GRAPHIC_NAME = "patient-lab-order-image.jpg";
+    public final static String S3_USER_LABORDER_GRAPHIC_NAME = "patient-lab-order-image.jpg";
+
+
 }

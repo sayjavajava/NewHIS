@@ -16,6 +16,13 @@ public class VitalWrapper {
     private boolean status;
     private String unit;
 
+
+
+    private long appointmentId = -1;
+
+
+
+    private String chiefComplaint;
     private String updatedOn;
 
     public String getCreatedOn() {
@@ -104,5 +111,22 @@ public class VitalWrapper {
 
     public void setUpdatedOn(String updatedOn) {
         this.updatedOn = updatedOn;
+    }
+
+
+    public long getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(long appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public String getChiefComplaint() {
+        return chiefComplaint;
+    }
+
+    public void setChiefComplaint(String chiefComplaint) {
+        this.chiefComplaint = chiefComplaint;
     }
 }

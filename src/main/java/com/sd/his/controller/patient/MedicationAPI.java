@@ -2,13 +2,18 @@ package com.sd.his.controller.patient;
 
 import com.sd.his.controller.AppointmentAPI;
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Appointment;
 import com.sd.his.model.Organization;
+import com.sd.his.repository.AppointmentRepository;
 import com.sd.his.service.DrugService;
 import com.sd.his.service.MedicationService;
 import com.sd.his.service.OrganizationService;
+import com.sd.his.utill.DateTimeUtil;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.GenericAPIResponse;
 import com.sd.his.wrapper.MedicationWrapper;
+import com.sd.his.wrapper.ProblemWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -22,6 +27,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -41,7 +48,8 @@ public class MedicationAPI {
 
     @Autowired
     private OrganizationService organizationService;
-
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
     private DrugService drugService;
@@ -140,9 +148,151 @@ public class MedicationAPI {
             Pageable pageable = new PageRequest(page, pageSize);
       //      List<Medication> medication = this.medicationService.getPaginatedMedicationsData(pageable,Long.valueOf(selectedPatientId));
 
-               List<MedicationWrapper> medicationWrappers = this.medicationService.getPaginatedMedications(pageable,Long.valueOf(selectedPatientId));
+          //  List<MedicationWrapper> medicationWrappers = this.medicationService.getPaginatedMedications(pageable,Long.valueOf(selectedPatientId));
+            List<MedicationWrapper> medicationWrappers= this.medicationService.getPaginatedMedicationsByStatusAndPatientId(pageable,"ACTIVE",Long.valueOf(selectedPatientId));
+            List<MedicationWrapper> medicationWrappersInActive=new ArrayList<MedicationWrapper>();
+            medicationWrappersInActive=this.medicationService.getPaginatedMedicationsByStatusAndPatientId(pageable,"IN-ACTIVE",Long.valueOf(selectedPatientId));
+          //  List<MedicationWrapper> medicationWrappersActive=new ArrayList<MedicationWrapper>();
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String systemTimeFormat=dbOrganization.getTimeFormat();
+            String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+            String hoursFormat = dbOrganization.getHoursFormat();
+            String standardSystem=systemDateFormat+" "+systemTimeFormat;
+            if(medicationWrappers!=null) {
+                for (int i=0;i< medicationWrappers.size();i++) {
 
-               int medicationWrappersCount = this.medicationService.countPaginatedMedications(Long.valueOf(selectedPatientId));
+                    Date dteFrom = null;
+                    Date fromDte = null;
+                    Date dteStartedDate=null;
+                    Date dteStoppedDate=null;
+                    Date scheduledDate=null;
+                    Appointment appointment=new Appointment();
+                    try {
+
+                        appointment=appointmentRepository.findOne(medicationWrappers.get(i).getAppointmentId());
+                        scheduledDate=appointment.getSchdeulledDate();
+                   //     medicationWrappers.get(i).setAppointment(appointment);
+                        String scheduledZoneDate = HISCoreUtil.convertDateToTimeZone(scheduledDate, "yyyy-MM-dd hh:mm:ss", Zone);
+                        dteFrom = DateTimeUtil.getDateFromString(medicationWrappers.get(i).getDatePrescribedString(), "yyyy-MM-dd hh:mm:ss");
+                        dteStartedDate = DateTimeUtil.getDateFromString(medicationWrappers.get(i).getDateStartedTakingString(), "yyyy-MM-dd hh:mm:ss");
+                        dteStoppedDate = DateTimeUtil.getDateFromString(medicationWrappers.get(i).getDateStoppedTakingString(), "yyyy-MM-dd hh:mm:ss");
+                        String readDateFrom = HISCoreUtil.convertDateToTimeZone(dteFrom, "yyyy-MM-dd hh:mm:ss", Zone);
+                        String readDateStarted = HISCoreUtil.convertDateToTimeZone(dteStartedDate, "yyyy-MM-dd hh:mm:ss", Zone);
+                        String readDateStopped = HISCoreUtil.convertDateToTimeZone(dteStoppedDate, "yyyy-MM-dd hh:mm:ss", Zone);
+                        fromDte = DateTimeUtil.getDateFromString(readDateFrom, "yyyy-MM-dd hh:mm:ss");
+                        dteStartedDate = DateTimeUtil.getDateFromString(readDateStarted, "yyyy-MM-dd hh:mm:ss");
+                        dteStoppedDate = DateTimeUtil.getDateFromString(readDateStopped, "yyyy-MM-dd hh:mm:ss");
+                        scheduledDate=DateTimeUtil.getDateFromString(scheduledZoneDate,"yyyy-MM-dd hh:mm:ss");
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (systemDateFormat != null || !systemDateFormat.equals("")) {
+                        String sdDate=HISCoreUtil.convertDateToStringWithDateDisplay(scheduledDate,systemDateFormat);
+                        String dtelFrom = HISCoreUtil.convertDateToStringWithDateDisplay(fromDte, systemDateFormat);
+                        String dteStarted=HISCoreUtil.convertDateToStringWithDateDisplay(dteStartedDate,systemDateFormat);
+                        String dteStoped=HISCoreUtil.convertDateToStringWithDateDisplay(dteStoppedDate,systemDateFormat);
+                        if (systemTimeFormat != null || !systemTimeFormat.equals("")) {
+
+                            SimpleDateFormat localDateFormat = new SimpleDateFormat(systemTimeFormat);
+                            String appointTime=localDateFormat.format(scheduledDate);
+                            String timePrescribed = localDateFormat.format(fromDte);
+                            String timeStarted=localDateFormat.format(dteStartedDate);
+                            String timeStopped=localDateFormat.format(dteStartedDate);
+                            System.out.println(timePrescribed);
+                            System.out.println(timeStarted);
+                            System.out.println(timeStopped);
+                            String appTime=HISCoreUtil.convertToHourFormat(appointTime,hoursFormat, systemTimeFormat);
+                            String displayTime = HISCoreUtil.convertToHourFormat(timePrescribed, hoursFormat, systemTimeFormat);
+                            String displayTimeStarted = HISCoreUtil.convertToHourFormat(timeStarted, hoursFormat, systemTimeFormat);
+                            String displayTimeStopped = HISCoreUtil.convertToHourFormat(timeStopped, hoursFormat, systemTimeFormat);
+                            medicationWrappers.get(i).setDatePrescribedString(dtelFrom+" "+displayTime);
+                            medicationWrappers.get(i).setDatePrescribedString(dteStarted+" "+displayTimeStarted);
+                            medicationWrappers.get(i).setDatePrescribedString(dteStoped+" "+displayTimeStopped);
+                            String scheduleAppointment=(sdDate+" "+appTime);
+                            scheduledDate=DateTimeUtil.getDateFromString(scheduleAppointment, standardSystem);
+                            String scheduleDate = HISCoreUtil.convertDateToStringWithDateDisplay(scheduledDate, systemDateFormat);
+                            medicationWrappers.get(i).setDteAppointment(scheduleDate);
+                            appointment.setSchdeulledDate(scheduledDate);
+                            medicationWrappers.get(i).setDteAppointment(scheduleAppointment);
+                            medicationWrappers.get(i).setAppointment(appointment);
+                        }
+                    }
+                }
+
+            }
+
+            //  For IN-Active
+            if(medicationWrappersInActive!=null) {
+                for (int i=0;i< medicationWrappersInActive.size();i++)
+                 {
+
+                    Date dteFrom = null;
+                    Date fromDte = null;
+                    Date dteStartedDate=null;
+                    Date dteStoppedDate=null;
+                    Date scheduledDate=null;
+                    Appointment appointment=new Appointment();
+                    try {
+                        appointment=appointmentRepository.findOne(medicationWrappersInActive.get(i).getAppointmentId());
+                        scheduledDate=appointment.getSchdeulledDate();
+                        String scheduledZoneDate = HISCoreUtil.convertDateToTimeZone(scheduledDate, "yyyy-MM-dd hh:mm:ss", Zone);
+                    //    medicationWrappersInActive.get(i).setAppointment(appointment);
+                        dteFrom = DateTimeUtil.getDateFromString(medicationWrappersInActive.get(i).getDatePrescribedString(), "yyyy-MM-dd hh:mm:ss");
+                        dteStartedDate = DateTimeUtil.getDateFromString(medicationWrappersInActive.get(i).getDateStartedTakingString(), "yyyy-MM-dd hh:mm:ss");
+                        dteStoppedDate = DateTimeUtil.getDateFromString(medicationWrappersInActive.get(i).getDateStoppedTakingString(), "yyyy-MM-dd hh:mm:ss");
+                        String readDateFrom = HISCoreUtil.convertDateToTimeZone(dteFrom, "yyyy-MM-dd hh:mm:ss", Zone);
+                        String readDateStarted = HISCoreUtil.convertDateToTimeZone(dteStartedDate, "yyyy-MM-dd hh:mm:ss", Zone);
+                        String readDateStopped = HISCoreUtil.convertDateToTimeZone(dteStoppedDate, "yyyy-MM-dd hh:mm:ss", Zone);
+                        fromDte = DateTimeUtil.getDateFromString(readDateFrom, "yyyy-MM-dd hh:mm:ss");
+                        dteStartedDate = DateTimeUtil.getDateFromString(readDateStarted, "yyyy-MM-dd hh:mm:ss");
+                        dteStoppedDate = DateTimeUtil.getDateFromString(readDateStopped, "yyyy-MM-dd hh:mm:ss");
+                        scheduledDate=DateTimeUtil.getDateFromString(scheduledZoneDate,"yyyy-MM-dd hh:mm:ss");
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (systemDateFormat != null || !systemDateFormat.equals("")) {
+                        String sdDate=HISCoreUtil.convertDateToStringWithDateDisplay(scheduledDate,systemDateFormat);
+                        String dtelFrom = HISCoreUtil.convertDateToStringWithDateDisplay(fromDte, systemDateFormat);
+                        String dteStarted=HISCoreUtil.convertDateToStringWithDateDisplay(dteStartedDate,systemDateFormat);
+                        String dteStoped=HISCoreUtil.convertDateToStringWithDateDisplay(dteStoppedDate,systemDateFormat);
+                        if (systemTimeFormat != null || !systemTimeFormat.equals("")) {
+
+                            SimpleDateFormat localDateFormat = new SimpleDateFormat(systemTimeFormat);
+                            String appointTime=localDateFormat.format(scheduledDate);
+                            String timePrescribed = localDateFormat.format(fromDte);
+                            String timeStarted=localDateFormat.format(dteStartedDate);
+                            String timeStopped=localDateFormat.format(dteStartedDate);
+                            System.out.println(timePrescribed);
+                            System.out.println(timeStarted);
+                            System.out.println(timeStopped);
+                            String appTime=HISCoreUtil.convertToHourFormat(appointTime,hoursFormat, systemTimeFormat);
+                            String displayTime = HISCoreUtil.convertToHourFormat(timePrescribed, hoursFormat, systemTimeFormat);
+                            String displayTimeStarted = HISCoreUtil.convertToHourFormat(timeStarted, hoursFormat, systemTimeFormat);
+                            String displayTimeStopped = HISCoreUtil.convertToHourFormat(timeStopped, hoursFormat, systemTimeFormat);
+                            medicationWrappersInActive.get(i).setDatePrescribedString(dtelFrom+" "+displayTime);
+                            medicationWrappersInActive.get(i).setDatePrescribedString(dteStarted+" "+displayTimeStarted);
+                            medicationWrappersInActive.get(i).setDatePrescribedString(dteStoped+" "+displayTimeStopped);
+                            String scheduleAppointment=(sdDate+" "+appTime);
+                            scheduledDate=DateTimeUtil.getDateFromString(scheduleAppointment, standardSystem);
+                            String scheduleDate = HISCoreUtil.convertDateToStringWithDateDisplay(scheduledDate, systemDateFormat);
+                            appointment.setSchdeulledDate(scheduledDate);
+                            medicationWrappersInActive.get(i).setDteAppointment(scheduleAppointment);
+                            appointment.setSchdeulledDate(scheduledDate);
+                            medicationWrappersInActive.get(i).setAppointment(appointment);
+                            //          dateDiagnose = dtelFrom + " " + displayTime;
+                        }
+                    }
+                }
+
+            }
+
+
+
+            int medicationWrappersCount = this.medicationService.countPaginatedMedications(Long.valueOf(selectedPatientId));
 
             logger.error("getPaginatedMedicationByPatient - fetched successfully");
 
@@ -175,6 +325,7 @@ public class MedicationAPI {
                 returnValues.put("currPage", currPage);
                 returnValues.put("pages", pages);
                 returnValues.put("data", medicationWrappers);
+                returnValues.put("data1",medicationWrappersInActive);
 
                 response.setResponseMessage(messageBundle.getString("medication.paginated.success"));
                 response.setResponseCode(ResponseEnum.MEDICATION_PAGINATED_SUCCESS.getValue());
@@ -210,29 +361,35 @@ public class MedicationAPI {
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             MedicationWrapper medicationWrapper = this.medicationService.getMedication(id);
-        //    Drug drugObj=this.drugService.searchByDrugNameAutoCompleteDetail(medicationWrapper.getDrugName());
-        //    medicationWrapper.setRoute(drugObj.getRoute());
             medicationWrapper.setRoute(this.drugService.searchByDrugNameAutoCompleteDetail(medicationWrapper.getDrugName()));
             Organization dbOrganization=organizationService.getAllOrgizationData();
             String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
             Date dte=new Date();
             String prescribedDate="";
             String prescribedStartedDate="";
-        //    String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
             String systemDateFormat=dbOrganization.getDateFormat();
             String systemtimeFormat=dbOrganization.getTimeFormat();
          //   System.out.println("Time"+currentTime);
             String standardFormatDateTime=systemDateFormat+""+systemtimeFormat;
 
-            prescribedDate = HISCoreUtil.convertDateToString(HISCoreUtil.convertToDate(medicationWrapper.getDatePrescribedString()),standardFormatDateTime);
+            Date dteFrom=HISCoreUtil.convertStringDateObjectOrder(medicationWrapper.getDatePrescribedString());
+            String dteStrTest = DateTimeUtil.getFormattedDateFromDate(dteFrom, HISConstants.DATE_FORMAT_APP);
+           // prescribedDate=HISCoreUtil.convertStringDateObjectOrder(medicationWrapper.getDatePrescribedString());
           //  prescribedStartedDate = HISCoreUtil.convertDateToString(medicationWrapper.getDateStartedTakingDate(),standardFormatDateTime);
-            Date prescribedDateFormat=HISCoreUtil.convertToAPPDate(prescribedDate);
-            medicationWrapper.setDatePrescribedDate(HISCoreUtil.convertToDate(medicationWrapper.getDatePrescribedString()));
-            medicationWrapper.setDateStartedTakingDate(HISCoreUtil.convertToDate(medicationWrapper.getDateStartedTakingString()));
-            medicationWrapper.setDateStoppedTakingDate(HISCoreUtil.convertToDate(medicationWrapper.getDateStoppedTakingString()));
-            medicationWrapper.setDatePrescribedDate(prescribedDateFormat);
+            Date prescribedDateFormat=HISCoreUtil.convertToAPPDate(dteStrTest);
+            Date startedTaking=HISCoreUtil.convertToAPPDate(medicationWrapper.getDateStartedTakingString());
+            Date  stoppedTaking=HISCoreUtil.convertToAPPDate(medicationWrapper.getDateStoppedTakingString());
+            String readDateStarted = HISCoreUtil.convertDateToTimeZone(prescribedDateFormat, "yyyy-MM-dd hh:mm:ss", Zone);
+            String readDateDate = HISCoreUtil.convertDateToTimeZone(startedTaking, "yyyy-MM-dd hh:mm:ss", Zone);
+            String readDateStopped= HISCoreUtil.convertDateToTimeZone(stoppedTaking, "yyyy-MM-dd hh:mm:ss", Zone);
+            medicationWrapper.setDatePrescribedDate(HISCoreUtil.convertToDate(readDateStarted));
+            medicationWrapper.setDateStartedTakingDate(HISCoreUtil.convertToDate(readDateDate));
+            medicationWrapper.setDateStoppedTakingDate(HISCoreUtil.convertToDate(readDateStopped));
+          //  medicationWrapper.setDatePrescribedDate(prescribedDateFormat);
             medicationWrapper.setStatus(medicationWrapper.getStatus());
-
+            medicationWrapper.setDatePrescribedString(readDateStarted);
+            medicationWrapper.setDateStartedTakingString(readDateDate);
+            medicationWrapper.setDateStoppedTakingString(readDateStopped);
 
             if (HISCoreUtil.isValidObject(medicationWrapper)) {
                 response.setResponseData(medicationWrapper);
@@ -402,6 +559,65 @@ public class MedicationAPI {
             logger.error("getPaginatedMedicationsByStatusAndPatientId -  fetching from DB");
             Pageable pageable = new PageRequest(page,pageSize);
             List<MedicationWrapper> m = this.medicationService.getPaginatedMedicationsByStatusAndPatientId(pageable,status,Long.valueOf(selectedPatientId));
+
+
+            Organization dbOrganization=organizationService.getAllOrgizationData();
+            String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+            String systemDateFormat=dbOrganization.getDateFormat();
+            String systemTimeFormat=dbOrganization.getTimeFormat();
+            String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+            String hoursFormat = dbOrganization.getHoursFormat();
+            if(m!=null) {
+                for (int i=0;i<m.size(); i++) {
+
+                    Date dteFrom = null;
+                    Date fromDte = null;
+                    Date dteStartedDate=null;
+                    Date dteStoppedDate=null;
+                    try {
+                        dteFrom = DateTimeUtil.getDateFromString(m.get(i).getDatePrescribedString(), "yyyy-MM-dd hh:mm:ss");
+                        dteStartedDate = DateTimeUtil.getDateFromString(m.get(i).getDateStartedTakingString(), "yyyy-MM-dd hh:mm:ss");
+                        dteStoppedDate = DateTimeUtil.getDateFromString(m.get(i).getDateStoppedTakingString(), "yyyy-MM-dd hh:mm:ss");
+                        String readDateFrom = HISCoreUtil.convertDateToTimeZone(dteFrom, "yyyy-MM-dd hh:mm:ss", Zone);
+                        String readDateStarted = HISCoreUtil.convertDateToTimeZone(dteStartedDate, "yyyy-MM-dd hh:mm:ss", Zone);
+                        String readDateStopped = HISCoreUtil.convertDateToTimeZone(dteStoppedDate, "yyyy-MM-dd hh:mm:ss", Zone);
+                        fromDte = DateTimeUtil.getDateFromString(readDateFrom, "yyyy-MM-dd hh:mm:ss");
+                        dteStartedDate = DateTimeUtil.getDateFromString(readDateStarted, "yyyy-MM-dd hh:mm:ss");
+                        dteStoppedDate = DateTimeUtil.getDateFromString(readDateStopped, "yyyy-MM-dd hh:mm:ss");
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (systemDateFormat != null || !systemDateFormat.equals("")) {
+
+                        String dtelFrom = HISCoreUtil.convertDateToStringWithDateDisplay(fromDte, systemDateFormat);
+                        String dteStarted=HISCoreUtil.convertDateToStringWithDateDisplay(dteStartedDate,systemDateFormat);
+                        String dteStoped=HISCoreUtil.convertDateToStringWithDateDisplay(dteStoppedDate,systemDateFormat);
+                        if (systemTimeFormat != null || !systemTimeFormat.equals("")) {
+
+                            SimpleDateFormat localDateFormat = new SimpleDateFormat(systemTimeFormat);
+                            String timePrescribed = localDateFormat.format(fromDte);
+                            String timeStarted=localDateFormat.format(dteStartedDate);
+                            String timeStopped=localDateFormat.format(dteStartedDate);
+                            System.out.println(timePrescribed);
+                            System.out.println(timeStarted);
+                            System.out.println(timeStopped);
+                            String displayTime = HISCoreUtil.convertToHourFormat(timePrescribed, hoursFormat, systemTimeFormat);
+                            String displayTimeStarted = HISCoreUtil.convertToHourFormat(timeStarted, hoursFormat, systemTimeFormat);
+                            String displayTimeStopped = HISCoreUtil.convertToHourFormat(timeStopped, hoursFormat, systemTimeFormat);
+                            String datePrescribed = dtelFrom + " " + displayTime;
+                            String dateStarted=dteStarted+" "+displayTimeStarted;
+                            String dateStopped=dteStoped+ " "+displayTimeStopped;
+                            m.get(i).setDatePrescribedString(datePrescribed);
+                            m.get(i).setDateStartedTakingString(dateStarted);
+                            m.get(i).setDateStoppedTakingString(dateStopped);
+
+                        }
+                    }
+                }
+
+            }
+
             int count = medicationService.countPaginatedMedicationsByStatusAndPatientId(status,Long.valueOf(selectedPatientId));
 
             logger.error("getPaginatedMedicationsByStatusAndPatientId - fetched successfully");

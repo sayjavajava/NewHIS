@@ -2,9 +2,7 @@ package com.sd.his.controller.patient;
 
 
 import com.sd.his.enums.ResponseEnum;
-import com.sd.his.model.Insurance;
-import com.sd.his.model.Patient;
-import com.sd.his.model.SmokingStatus;
+import com.sd.his.model.*;
 import com.sd.his.service.*;
 import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISConstants;
@@ -15,6 +13,7 @@ import com.sd.his.wrapper.SmokingStatusWrapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /*
@@ -76,6 +74,11 @@ public class PatientAPI {
     CityService cityService;
     @Autowired
     private BulkImportService bulkImportService;
+    @Autowired
+    private ImportFileService importFileService;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     @Value("${spring.http.multipart.location}")
     private String tmpFilePath;
@@ -239,6 +242,7 @@ public class PatientAPI {
         try {
             PatientWrapper patientWrapper = this.patientService.getPatientById(id);
             if (HISCoreUtil.isValidObject(patientWrapper)) {
+
                 response.setResponseData(patientWrapper);
                 response.setResponseMessage(messageBundle.getString("patient.found"));
                 response.setResponseCode(ResponseEnum.USER_FOUND.getValue());
@@ -914,28 +918,20 @@ public class PatientAPI {
             notes = "This method will import patients data",
             produces = "application/json", nickname = "Import Patients Data",
             response = GenericAPIResponse.class, protocols = "https")
-    @RequestMapping(value = "/importPatientRecords", method = RequestMethod.POST)
-    public ResponseEntity<?> importPatientRecords(@RequestParam("dataFile") MultipartFile dataFile ) {
-
+    @RequestMapping(value = "/importPatientRecords/{dupRecords}/{charEncoding}", method = RequestMethod.POST)
+    public ResponseEntity<?> importPatientRecords(@PathVariable("dupRecords") String duplicateRecordOp, @PathVariable("charEncoding") String charEncoding,
+                                                  @RequestParam("dataFile") MultipartFile dataFile ) {
         logger.error("importPatientRecords API initiated");
         GenericAPIResponse response = new GenericAPIResponse();
         try {
             String fileName = dataFile.getOriginalFilename();
             File file = HISCoreUtil.multipartToFile(dataFile);
-            int records = bulkImportService.importPatientRecords(fileName);
-
-//            File file = HISCoreUtil.multipartToFile(dataFile);
-//            int records = patientService.readExcel( dataFile );
-
-            if (records > 0) {
-                response.setResponseMessage(messageBundle.getString("patient.records.import.success"));
-            } else {
-                response.setResponseMessage(messageBundle.getString("patient.no.record.import.success"));
-            }
-
+//            int records = bulkImportService.importPatientRecords(fileName);
+            Long importFileId = importFileService.saveImportFileData(this.tmpFilePath + fileName, duplicateRecordOp, charEncoding).getId();
+            response.setResponseData(importFileId);
             response.setResponseCode(ResponseEnum.SUCCESS.getValue());
             response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
-            logger.info(records + " - Patient records imported successfully...");
+            logger.info("Patient record file data is save successfully...");
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (FileNotFoundException fnfe) {
@@ -946,6 +942,137 @@ public class PatientAPI {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception ex) {
             logger.error("importPatientRecords Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("patient.records.import.failed"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "GET", value = "Import Patients Data",
+            notes = "This method will import patients data",
+            produces = "application/json", nickname = "Import Patients Data",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/importPatientMapFields/{importFileId}", method = RequestMethod.GET)
+    public ResponseEntity<?> importPatientMapFields(@PathVariable("importFileId") Long importFileId) {
+        logger.error("importPatientMapFields API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+
+            ImportFile importFile = importFileService.getImportFileDataById(importFileId);
+            String fileName = importFile.getPath();
+//            File file = new File(fileName);
+            List<String> fieldsList = bulkImportService.patientFileFields(fileName);
+            Map<String, Object> returnValues = new LinkedHashMap<>();
+            returnValues.put("fieldsList", fieldsList);
+            returnValues.put("importFileId", importFileId);
+//            int records = bulkImportService.importPatientRecords(file);
+            response.setResponseData(returnValues);
+            response.setResponseMessage(messageBundle.getString("patient.fields.mapped.success"));
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("importPatientMapFields Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("patient.records.import.failed"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Import Patients Data",
+            notes = "This method will import patients data",
+            produces = "application/json", nickname = "Import Patients Data",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/importPatientSaveMapping", method = RequestMethod.POST)
+    public ResponseEntity<?> importPatientSaveMapping(@RequestBody Map<String, Object> fieldMappingList) {
+        logger.error("importPatientSaveMapping API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        Long importFileId = Long.valueOf((String) fieldMappingList.get("importFileId"));
+        ArrayList mappingFields = (ArrayList) fieldMappingList.get("mappingFieldsList");
+        String mappingFieldsMap = StringUtils.join(mappingFields, '~');
+        try {
+            ImportFile importFile = importFileService.getImportFileDataById(importFileId);
+            importFile.setFieldMapping(mappingFieldsMap);
+            importFileService.saveImportFile(importFile);
+            response.setResponseData(importFileId);
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info("Patient records imported successfully...");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("importPatientSaveMapping Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("patient.records.import.failed"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Import Patients Data",
+            notes = "This method will import patients data",
+            produces = "application/json", nickname = "Import Patients Data",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/importPatientImportMappedData", method = RequestMethod.POST)
+    public ResponseEntity<?> importPatientImportMappedData(@RequestBody String importFileId) {
+        logger.error("importPatientImportMappedData API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+            ImportFile importFile = importFileService.getImportFileDataById(Long.valueOf(importFileId));
+            List<String> mappingFields = Arrays.asList(importFile.getFieldMapping().split("~"));
+            List<PatientImportRecord> records = bulkImportService.importPatientRecordsMapFields(mappingFields, importFile.getPath());
+
+            if (records.size() > 0) {
+                response.setResponseData(records);
+            } else {
+                response.setResponseMessage(messageBundle.getString("patient.records.import.failed"));
+            }
+
+            response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info(records.size() + " - Patient records imported successfully...");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("importPatientImportMappedData Process Failed.", ex.fillInStackTrace());
+            response.setResponseStatus(ResponseEnum.ERROR.getValue());
+            response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
+            response.setResponseMessage(messageBundle.getString("patient.records.import.failed"));
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @ApiOperation(httpMethod = "POST", value = "Import Patients Data",
+            notes = "This method will import patients data",
+            produces = "application/json", nickname = "Import Patients Data",
+            response = GenericAPIResponse.class, protocols = "https")
+    @RequestMapping(value = "/importPatientSaveMappedData", method = RequestMethod.POST)
+    public ResponseEntity<?> importPatientSaveMappedData(@RequestParam("importFileId") Long importFileId,
+                                                         @RequestBody List<PatientImportRecord> allPatientDataToImport) {
+        logger.error("importPatientSaveMappedData API initiated");
+        GenericAPIResponse response = new GenericAPIResponse();
+        try {
+//            List<PatientImportRecord> allData = ((ArrayList<PatientImportRecord>) dataList.get("dataList")).stream().filter(PatientImportRecord::isStatus).collect(Collectors.toList());
+            ArrayList<PatientImportRecord> allData = allPatientDataToImport.stream()
+                                                        .filter(PatientImportRecord::isStatus)
+                                                        .collect(Collectors.toCollection(ArrayList::new));
+            ImportFile importFile = importFileService.getImportFileDataById(importFileId);
+            int records = bulkImportService.savePatientData(allData, importFile.getDuplicateRecordOperation());
+            if (records > 0) {
+                response.setResponseData(records);
+                response.setResponseMessage(messageBundle.getString("patient.records.import.success"));
+                response.setResponseCode(ResponseEnum.SUCCESS.getValue());
+            } else {
+                response.setResponseMessage(messageBundle.getString("patient.no.record.import.success"));
+                response.setResponseCode(ResponseEnum.ERROR.getValue());
+            }
+
+            response.setResponseStatus(ResponseEnum.SUCCESS.getValue());
+            logger.info(records + " - Patient records imported successfully...");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception ex) {
+            logger.error("importPatientSaveMappedData Process Failed.", ex.fillInStackTrace());
             response.setResponseStatus(ResponseEnum.ERROR.getValue());
             response.setResponseCode(ResponseEnum.EXCEPTION.getValue());
             response.setResponseMessage(messageBundle.getString("patient.records.import.failed"));

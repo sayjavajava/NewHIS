@@ -1,5 +1,6 @@
 package com.sd.his.wrapper;
 
+import com.sd.his.model.Appointment;
 import com.sd.his.model.Medication;
 import com.sd.his.repository.AppointmentRepository;
 import com.sd.his.utill.DateTimeUtil;
@@ -46,6 +47,12 @@ public class MedicationWrapper extends BaseWrapper {
     private String note;
     private String orderStatus;
 
+
+
+    private String dteAppointment;
+
+
+    private Appointment appointment;
     // New Values Changes
     private String frequency;
     private String route;
@@ -131,13 +138,13 @@ public class MedicationWrapper extends BaseWrapper {
         }
 
         if (medication.getDatePrescribed() != null) {
-            this.datePrescribedString = DateTimeUtil.getFormattedDateFromDate(medication.getDatePrescribed(), "dd MMM yyyy hh:mm:ss");
+            this.datePrescribedString = DateTimeUtil.getFormattedDateFromDate(medication.getDatePrescribed(), HISConstants.DATE_FORMAT_APP);
         }
         if (medication.getDateStartedTaking() != null) {
-            this.dateStartedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStartedTaking(), "dd MMM yyyy hh:mm:ss");
+            this.dateStartedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStartedTaking(), HISConstants.DATE_FORMAT_APP);
         }
         if (medication.getDateStoppedTaking() != null) {
-            this.dateStoppedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStoppedTaking(), "dd MMM yyyy hh:mm:ss");
+            this.dateStoppedTakingString = DateTimeUtil.getFormattedDateFromDate(medication.getDateStoppedTaking(), HISConstants.DATE_FORMAT_APP);
         }
         this.dispenseQuantity = medication.getDispenseQuantity();
         this.dispensePackage = medication.getDispensePackage();
@@ -340,5 +347,21 @@ public class MedicationWrapper extends BaseWrapper {
 
     public void setDateStoppedTakingString(String dateStoppedTakingString) {
         this.dateStoppedTakingString = dateStoppedTakingString;
+    }
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
+    public String getDteAppointment() {
+        return dteAppointment;
+    }
+
+    public void setDteAppointment(String dteAppointment) {
+        this.dteAppointment = dteAppointment;
     }
 }
