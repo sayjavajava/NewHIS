@@ -70,7 +70,7 @@ public class PatientVitalWrapper extends BaseWrapper {
         this.patientId = String.valueOf(patient.getId());
         super.setUpdatedOn(HISCoreUtil.convertDateToString(updatedOn, "dd MMM yyyy hh:mm:ss"));
         this.chiefComplaint=chief;
-        if(dte!=null){
+        if(dte != null){
         Organization dbOrganization=organizationService.getAllOrgizationData();
         String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
         String systemDateFormat=dbOrganization.getDateFormat();
