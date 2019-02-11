@@ -155,7 +155,7 @@ public class CashierController {
             dbAppointment.setImg((HISCoreUtil.getBarCodeImage(String.valueOf(invoice.getInvoiceId()),100,100)));
             // invoice.getPatientRefunds().stream().filter(i ->i.getRefundType()=="Invoice").mapToDouble(i-> i.getRefundAmount()).sum()
             dbAppointment.setRefundAmount(invoice.getPatientRefunds().stream().filter(i ->i.getRefundType().equalsIgnoreCase("Invoice")).mapToDouble(i -> i.getRefundAmount()).sum());
-
+            dbAppointment.setReceive_Patient(invoice.getPatient().getReceive_due());
             if (HISCoreUtil.isValidObject(dbAppointment)) {
                 response.setResponseData(dbAppointment);
                 response.setResponseCode(ResponseEnum.APPT_FOUND_SUCCESS.getValue());

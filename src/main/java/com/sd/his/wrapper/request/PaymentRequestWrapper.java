@@ -1,5 +1,7 @@
 package com.sd.his.wrapper.request;
 
+import java.util.List;
+
 public class PaymentRequestWrapper {
 
 
@@ -16,6 +18,17 @@ public class PaymentRequestWrapper {
     Double  discountAmount;
     long paymentTypeId;
 
+
+
+    boolean completed;
+
+
+
+
+    Double usedReceiveDeposit;
+
+
+    List<PatientInvoiceModeWrapper> patientInvoiceModeWrapperList;
     public PaymentRequestWrapper() {
     }
 
@@ -97,5 +110,29 @@ public class PaymentRequestWrapper {
 
     public void setPaymentTypeId(long paymentTypeId) {
         this.paymentTypeId = paymentTypeId;
+    }
+
+    public List<PatientInvoiceModeWrapper> getPatientInvoiceModeWrapperList() {
+        return patientInvoiceModeWrapperList;
+    }
+
+    public void setPatientInvoiceModeWrapperList(List<PatientInvoiceModeWrapper> patientInvoiceModeWrapperList) {
+        this.patientInvoiceModeWrapperList = patientInvoiceModeWrapperList;
+    }
+
+    public Double getUsedReceiveDeposit() {
+        return usedReceiveDeposit;
+    }
+
+    public void setUsedReceiveDeposit(Double usedReceiveDeposit) {
+        this.usedReceiveDeposit = usedReceiveDeposit;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

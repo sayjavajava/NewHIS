@@ -141,7 +141,7 @@ public class PatientWrapper {
         this.email = patient.getEmail()==null ? "-":patient.getEmail();
         this.streetAddress = patient.getStreetAddress()==null?"-":patient.getStreetAddress();
         this.cellPhone = patient.getCellPhone()==null ?"-":patient.getCellPhone();
-        this.label = patient.getFirstName();
+        this.label = patient.getFirstName()==null ? "-":patient.getFirstName();
         this.value = patient.getId();
         this.gender = patient.getGender() == null ? "-" : patient.getGender().name();
         this.status = patient.getStatus().name().equalsIgnoreCase("ACTIVE");

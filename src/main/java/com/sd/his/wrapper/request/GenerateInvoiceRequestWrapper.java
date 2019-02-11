@@ -9,6 +9,8 @@ public class GenerateInvoiceRequestWrapper {
 
     List<PatientInvoiceRequestWrapper> invoiceRequestWrapper;
 
+    List<PatientInvoiceModeWrapper> invoiceModeWrappers;
+
     public String getInvoicePrefix() {
         return invoicePrefix;
     }
@@ -32,4 +34,13 @@ public class GenerateInvoiceRequestWrapper {
     public void setInvoiceRequestWrapper(List<PatientInvoiceRequestWrapper> invoiceRequestWrapper) {
         this.invoiceRequestWrapper = invoiceRequestWrapper;
     }
+
+    public List<PatientInvoiceModeWrapper> getInvoiceModeWrappers() {
+        return invoiceModeWrappers;
+    }
+
+    public void setInvoiceModeWrappers(List<PatientInvoiceModeWrapper> invoiceModeWrappers) {
+        this.invoiceModeWrappers = invoiceModeWrappers;
+    }
+
 }

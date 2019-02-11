@@ -4,25 +4,24 @@ package com.sd.his.service;
 
 import com.sd.his.model.*;
 
+import com.sd.his.repository.AppointmentRepository;
 import com.sd.his.repository.PatientRepository;
 import com.sd.his.repository.PatientVitalRepository;
 
 import com.sd.his.utill.DateTimeUtil;
+import com.sd.his.utill.HISConstants;
 import com.sd.his.utill.HISCoreUtil;
-import com.sd.his.wrapper.PatientVitalWrapper;
-import com.sd.his.wrapper.Patient_OrderWrapper;
-import com.sd.his.wrapper.VitaPatientWrapper;
-import com.sd.his.wrapper.VitalWrapper;
+import com.sd.his.wrapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -38,6 +37,9 @@ public class PatientVitalService{
 
     @Autowired
     private OrganizationService organizationService;
+
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     public List<PatientVitalWrapper> getAll(){
         return patientVitalRepository.getAll();
@@ -89,9 +91,89 @@ public class PatientVitalService{
 
     public List<PatientVitalWrapper> getPaginatedOrder(Pageable pageable, Long patientId) {
         List<PatientVitalWrapper> patientVitals=this.patientVitalRepository.getPaginatedOrder(pageable,patientId);
-        return patientVitals;
+        List<PatientVitalWrapper> patientVitalsSort=this.patientVitalRepository.getPaginatedOrderSort(pageable,patientId);
+     //   invoice.getPatientRefunds().stream().filter(i ->i.getRefundType().equalsIgnoreCase("Invoice")).mapToDouble(i -> i.getRefundAmount()).sum()
+        /*List<AppointmentWrapper> listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(patientId);*/
+      /*  Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream().sorted(Comparator.comparing(AppointmentWrapper::getLabel).reversed())
+                .collect(Collectors.partitioningBy(x -> x.getCompareDate()
+                        .toInstant().isAfter(Instant.now())));*/
+         /*List<AppointmentWrapper> listOfApp = listOfAppointments.stream().sorted(Comparator.comparing(AppointmentWrapper::getLabel).reversed())
+                .collect(Collectors.partitioningBy(x -> x.getCompareDate()
+                        .toInstant().isAfter(Instant.now())));*/
 
-    }
+        Organization dbOrganization=organizationService.getAllOrgizationData();
+        String Zone=dbOrganization.getZone().getName().replaceAll("\\s","");
+        String systemDateFormat=dbOrganization.getDateFormat();
+        String systemTimeFormat=dbOrganization.getTimeFormat();
+        String hoursFormat = dbOrganization.getHoursFormat();
+        if(hoursFormat.equals("12")){
+            if(systemTimeFormat.equals("hh:mm")){
+                systemTimeFormat="hh:mm";
+            }else{
+                systemTimeFormat="hh:mm:ss";
+            }
+        }else{
+            if(systemTimeFormat.equals("hh:mm")){
+                systemTimeFormat="HH:mm";
+            }else{
+                systemTimeFormat="HH:mm:ss";
+            }
+        }
+
+
+
+        if(patientVitalsSort.size()>0){
+            boolean isFound=false;
+            for(int j=0;j<patientVitalsSort.size();j++){
+
+                long appointment=Long.valueOf(patientVitalsSort.get(0).getAppointmentId());
+                if(isFound==false){
+                patientVitals=patientVitals.stream()
+                        .filter(x -> x.getAppointmentId()==appointment).collect(Collectors.toList());
+                if(patientVitals.size()>0){
+                    isFound=true;
+                    }
+                }
+            }
+
+
+
+            for(int i=0;i<patientVitals.size();i++){
+
+                if(patientVitals.get(i).getVitalStrDate() != null){
+
+
+                        String standardFormatDateTime=systemDateFormat+" "+systemTimeFormat;
+                        Date dteFrom=HISCoreUtil.convertStringDateObjectOrder(patientVitals.get(i).getVitalStrDate());
+                        String readDateFrom=HISCoreUtil.convertDateToTimeZone(dteFrom,standardFormatDateTime,Zone);
+                        Date fromDte= null;
+                        try {
+                            fromDte = DateTimeUtil.getDateFromString(readDateFrom,standardFormatDateTime);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        if(systemDateFormat!=null || !systemDateFormat.equals("")){
+                            String  dtelFrom=HISCoreUtil.convertDateToStringWithDateDisplay(fromDte,standardFormatDateTime);
+
+                            patientVitals.get(i).setVitalStrDate(dtelFrom);
+
+                        }
+
+
+
+
+
+                }else{
+                    patientVitals.get(i).setVitalStrDate("");
+                }
+
+            }
+
+
+        }
+
+        return patientVitals;
+        }
 
 
     public int countPaginatedDocuments() {
@@ -106,8 +188,15 @@ public class PatientVitalService{
             patientVital.setName(vital.get(i).getName());
             patientVital.setUnit(vital.get(i).getUnit());
             patientVital.setStandardValue(vital.get(i).getStandardValue());
-            Appointment app=appointmentService.findById(vital.get(i).getAppointmentId());
-            patientVital.setAppointment(app);
+            List<AppointmentWrapper> listOfAppointments = appointmentRepository.findAllAppointmentsByPatient(Long.valueOf(patientId));
+            Map<Boolean, List<AppointmentWrapper>> listOfApp = listOfAppointments.stream().sorted(Comparator.comparing(AppointmentWrapper::getLabel).reversed())
+                .collect(Collectors.partitioningBy(x -> x.getCompareDate()
+                        .toInstant().isAfter(Instant.now())));
+            if(listOfApp.get(false).get(0).getAppointmentId()!=null){
+            Appointment app=appointmentService.findById(listOfApp.get(false).get(0).getId());
+                patientVital.setAppointment(app);
+            }
+
             patientVital.setChiefComplaint(vital.get(i).getChiefComplaint());
            // patientVital.setStatus(vital.get(i).get);
             patientVital.setCurrentValue(vital.get(i).getCurrentValue());

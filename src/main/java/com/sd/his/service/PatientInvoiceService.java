@@ -55,6 +55,10 @@ public class PatientInvoiceService {
     DoctorMedicalServiceRepository doctorMedicalServiceRepository;
 
 
+    @Autowired
+    PatientInvoiceModeRepository patientInvoiceModeRepository;
+
+
 
     public Invoice getInvoiceById(Long id){
        return patientInvoiceRepository.findOne(id);
@@ -67,6 +71,8 @@ public class PatientInvoiceService {
 
         Invoice invoice = patientInvoiceRepository.findByAppointmentId(appointment.getId());
         invoice.setCompleted(createInvoiceRequest.getCompleted());
+
+        PatientInvoiceModePayment patientInvoiceModePayment=new PatientInvoiceModePayment();
 
         if(invoice == null)
         {
@@ -153,6 +159,10 @@ public class PatientInvoiceService {
         invoice.setTotalInvoiceAmount(ivoiceTotal);
         patientInvoiceRepository.save(invoice);
 
+
+
+
+
         if(invoice.getCompleted()) {
             Doctor dr= appointment.getDoctor();
             double balance = dr.getBalance()== null? 0.0:dr.getBalance();
@@ -166,6 +176,8 @@ public class PatientInvoiceService {
     public void savePayment(PaymentRequestWrapper paymentRequest)
     {
         Invoice invoice = patientInvoiceRepository.findOne(paymentRequest.getId());
+        PatientInvoiceModeWrapper patientInvoiceModeWrapper=new PatientInvoiceModeWrapper();
+     //   patientInvoiceModeWrapper.setPaymentAmount(paymentRequest.getPatientInvoiceModeWrapperList());
 
         if(invoice != null)
         {
@@ -184,6 +196,26 @@ public class PatientInvoiceService {
                 patient.setAdvanceBalance(advanceConsumed);
                 patientRepository.save(patient);
                 receivedAmount = invoice.getTotalInvoiceAmount();
+            }else if(receivedAmount < invoice.getTotalInvoiceAmount()){
+                    double due=patient.getReceive_due();
+                    if(due > 0){
+
+                        double total=invoice.getTotalInvoiceAmount()-receivedAmount;
+                        due=due+total;
+                        patient.setReceive_due(due);
+                    }else{
+
+                        double total=invoice.getTotalInvoiceAmount()-receivedAmount;
+                        patient.setReceive_due(total);
+                    }
+                    if(paymentRequest.getUsedReceiveDeposit()>0) {
+                        double updatedReceived = patient.getReceive_due() - paymentRequest.getUsedReceiveDeposit();
+                        patient.setReceive_due(updatedReceived);
+                    }
+                    patient=patientRepository.save(patient);
+                    patientRepository.flush();
+
+
             }else if(paymentRequest.getUseAdvancedBal() && paymentRequest.getUsedAdvanceDeposit() > 0){
                 patient.setAdvanceBalance(advanceConsumed);
                 patientRepository.save(patient);
@@ -191,7 +223,13 @@ public class PatientInvoiceService {
 
             invoice.setPaidAmount(receivedAmount);
             invoice.setUpdatedOn(new Date());
-            patientInvoiceRepository.save(invoice);
+            if(paymentRequest.isCompleted()==true){
+                invoice.setCompleted(true);
+            }else{
+                invoice.setCompleted(false);
+            }
+            invoice = patientInvoiceRepository.save(invoice);
+            patientInvoiceRepository.flush();
 
             Payment payment = new Payment();
             payment.setCreatedOn(new Date());
@@ -220,7 +258,23 @@ public class PatientInvoiceService {
 
             patientInvoicePayment.setDiscountAmount(paymentRequest.getDiscountAmount());
             patientInvoicePayment.setAdvanceAmount(paymentRequest.getUsedAdvanceDeposit());
+
             patientInvoicePaymentRepository.save(patientInvoicePayment);
+
+
+            for(int i=0;i<paymentRequest.getPatientInvoiceModeWrapperList().size();i++){
+                PatientInvoiceModePayment patientInvoiceModePayment=new PatientInvoiceModePayment();
+                patientInvoiceModePayment.setInvoice(invoice);
+                patientInvoiceModePayment.setPatient(patient);
+                patientInvoiceModePayment.setPaymentAmount(Double.valueOf(paymentRequest.getPatientInvoiceModeWrapperList().get(i).getPaymentAmount()));
+                String paymentid=paymentRequest.getPatientInvoiceModeWrapperList().get(i).getPaymentId();
+                PaymentType paymentObject=paymentTypeRepository.findOne(Long.valueOf(paymentid));
+                patientInvoiceModePayment.setPayment(paymentObject);
+                patientInvoiceModeRepository.save(patientInvoiceModePayment);
+              //  patientInvoiceModeWrapper.setAppointmentId(invoice.getAppointment().getAppointmentId());
+
+
+            }
         }
     }
 

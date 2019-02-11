@@ -66,14 +66,19 @@ public class PatientService {
     private void populatePatientWrapper(PatientWrapper patientWrapper, Patient patient) {
         patientWrapper.setId(patient.getId());//patient pk
         //patientWrapper.setPatientId(patient.getPatientId());//patient natural id
+    //    this.firstName = patient.getFirstName()==null ? "-":patient.getFirstName();
+     //   this.lastName = patient.getLastName()==null ? "-":patient.getLastName();
+     //   this.email = patient.getEmail()==null ? "-":patient.getEmail();
         patientWrapper.setTitlePrefix(patient.getTitle());
         patientWrapper.setPatientSSN(patient.getPatientSSN());
-        patientWrapper.setFirstName(patient.getFirstName());
+        patientWrapper.setFirstName(patient.getFirstName()==null ? "-":patient.getFirstName());
         patientWrapper.setMiddleName(patient.getMiddleName());
-        patientWrapper.setLastName(patient.getLastName());
+        patientWrapper.setLastName(patient.getLastName()==null ? "-":patient.getLastName());
         patientWrapper.setForeignName(patient.getForeignName());
         if (patient.getDob() != null) {
             patientWrapper.setDob(patient.getDob() + "");
+        }else{
+            patientWrapper.setDob("-");
         }
 
         patientWrapper.setHomePhone(patient.getHomePhone());
@@ -82,8 +87,7 @@ public class PatientService {
         if (patient.getGender() != null && !patient.getGender().name().trim().equals(""))
             patientWrapper.setGender(patient.getGender().name());
 
-        //image profile
-        patientWrapper.setEmail(patient.getEmail());
+        patientWrapper.setEmail(patient.getEmail()==null ? "-":patient.getEmail());
         if (patient.getMaritalStatus() != null && !patient.getMaritalStatus().name().trim().equals(""))
             patientWrapper.setMarital(patient.getMaritalStatus().name());
         patientWrapper.setStatus(patient.getStatus() == PatientStatusTypeEnum.ACTIVE);
@@ -91,7 +95,7 @@ public class PatientService {
         patientWrapper.setDisableSMSTxt(patient.getDisableSMSText() == null ? false : patient.getDisableSMSText());
         patientWrapper.setPreferredCommunication(patient.getPreferredCommunication());
 //        patientWrapper.setReminderLanguage(patient.getReminderLanguage());
-        patientWrapper.setStreetAddress(patient.getStreetAddress());
+        patientWrapper.setStreetAddress(patient.getStreetAddress()==null?"-":patient.getStreetAddress());
 
         if (patient.getCity() != null) {
             patientWrapper.setCity(patient.getCity().getName());
@@ -168,7 +172,12 @@ public class PatientService {
             patient.setGender(GenderTypeEnum.valueOf(patientWrapper.getGender().toUpperCase()));
 
         //image profile
-        patient.setEmail(patientWrapper.getEmail());
+        if(patientWrapper.getEmail()!=null){
+            patient.setEmail(patientWrapper.getEmail());
+        }else{
+            patient.setEmail("-");
+        }
+
         if (patientWrapper.getMarital() != null && !patientWrapper.getMarital().trim().equals(""))
             patient.setMaritalStatus(MaritalStatusTypeEnum.valueOf(patientWrapper.getMarital().toUpperCase()));
         patient.setStatus(patientWrapper.getStatus() ? PatientStatusTypeEnum.ACTIVE : PatientStatusTypeEnum.INACTIVE);
@@ -480,13 +489,31 @@ public class PatientService {
         String hoursFormat = dbOrganization.getHoursFormat();
        // dteFrom = DateTimeUtil.getDateFromString(patientWrapper., "yyyy-MM-dd hh:mm:ss");
         String readDateFrom = HISCoreUtil.convertDateToTimeZone(patient.getCreatedOn(), "yyyy-MM-dd hh:mm:ss", Zone);
+        String lastAppointment;
+        try {
+            if(patientWrapper.getLastAppointment()!=null || !patientWrapper.getLastAppointment().equals("")) {
+            Date fromLastDte = DateTimeUtil.getDateFromString(patientWrapper.getLastAppointment(), "yyyy-MM-dd hh:mm:ss");
+            lastAppointment=HISCoreUtil.convertDateToTimeZone(fromLastDte,"yyyy-MM-dd hh:mm:ss", Zone);
+            patientWrapper.setLastAppointment(lastAppointment);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         Date lastDateStr= null;
         Date fromDte=null;
         Date lastDate=null;
+        Date nextDate=null;
+      //  Date nextDate;
         try{
+            if(patientWrapper.getLastAppointment()!=null || !patientWrapper.getLastAppointment().equals("")) {
              lastDateStr = DateTimeUtil.getDateFromString(patientWrapper.getLastAppointment(),"yyyy-MM-dd hh:mm:ss");
              fromDte = DateTimeUtil.getDateFromString(readDateFrom, "yyyy-MM-dd hh:mm:ss");
-
+        }
+            if(patientWrapper.getNextAppointment()!=null || !patientWrapper.getNextAppointment().equals("")) {
+                lastDateStr = DateTimeUtil.getDateFromString(patientWrapper.getNextAppointment(),"yyyy-MM-dd hh:mm:ss");
+                fromDte = DateTimeUtil.getDateFromString(readDateFrom, "yyyy-MM-dd hh:mm:ss");
+            }
         }
         catch (ParseException e) {
         e.printStackTrace();

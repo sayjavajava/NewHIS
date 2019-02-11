@@ -121,6 +121,9 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
     private Long recurseEvery;
 
 
+    private double receive_Patient;
+
+
 
 
  //   private BufferedImage imgBarcode;
@@ -885,5 +888,14 @@ public class AppointmentWrapper implements Comparable<AppointmentWrapper> {
     public void setImg(byte[] img) {
         this.img = img;
     }
+
+    public double getReceive_Patient() {
+        return receive_Patient;
+    }
+
+    public void setReceive_Patient(double receive_Patient) {
+        this.receive_Patient = receive_Patient;
+    }
+
 
 }

@@ -190,6 +190,9 @@ public class Patient extends BaseEntity {
 
 
 
+    @Column(name = "RECEIVE_DUE", columnDefinition = "double default '0.00'")
+    private Double receive_due;
+
     public List<LabOrder> getLabOrders() {
         return labOrders;
     }
@@ -573,4 +576,14 @@ public class Patient extends BaseEntity {
     public void setPatientVitals(List<PatientVital> patientVitals) {
         this.patientVitals = patientVitals;
     }
+
+
+    public Double getReceive_due() {
+        return receive_due;
+    }
+
+    public void setReceive_due(Double receive_due) {
+        this.receive_due = receive_due;
+    }
+
 }

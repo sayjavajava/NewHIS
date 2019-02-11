@@ -2,8 +2,11 @@ package com.sd.his.controller.patient;
 
 import com.sd.his.controller.setting.EmailConfigurationController;
 import com.sd.his.enums.ResponseEnum;
+import com.sd.his.model.Organization;
 import com.sd.his.model.PatientVital;
+import com.sd.his.service.OrganizationService;
 import com.sd.his.service.PatientVitalService;
+import com.sd.his.utill.DateTimeUtil;
 import com.sd.his.utill.HISCoreUtil;
 import com.sd.his.wrapper.*;
 import io.swagger.annotations.ApiOperation;
@@ -19,10 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.IntStream;
 
 
@@ -35,6 +35,9 @@ public class PatientVitalAPI {
 
     private final Logger logger = LoggerFactory.getLogger(EmailConfigurationController.class);
     private ResourceBundle messageBundle = ResourceBundle.getBundle("messages");
+
+    @Autowired
+    private OrganizationService organizationService;
 
     @ApiOperation(httpMethod = "POST", value = "Save Vital Setup Configuration",
             notes = "This method will save Vital Setup Configuration",
@@ -280,10 +283,25 @@ public class PatientVitalAPI {
             // Patient_OrderWrapper orderWrapper
             List<PatientVitalWrapper> vitalList = this.vitalServices.getPaginatedOrder(pageable, Long.valueOf(patientId));
             String chief="";
+            String createdDate="";
+            Organization dbOrganization = organizationService.getAllOrgizationData();
+            String systemDateFormat = dbOrganization.getDateFormat();
+            String Zone = dbOrganization.getZone().getName().replaceAll("\\s", "");
+          //  String systemDateFormat=dbOrganization.getDateFormat();
+          //  String systemTimeFormat=dbOrganization.getTimeFormat();
+          //  String currentTime= HISCoreUtil.getCurrentTimeByzone(Zone);
+          //  String hoursFormat = dbOrganization.getHoursFormat();
+         //   String standardSystem=systemDateFormat;
+
             for(int i=0;i<vitalList.size();i++){
                 chief=vitalList.get(i).getChiefComplaint();
                 vitalList.get(i).setName(vitalList.get(i).getName()+"("+vitalList.get(i).getUnit()+")");
-               // vitalList.get(i).set
+                Date scheduledDate = HISCoreUtil.convertStringDateObject(vitalList.get(i).getVitalStrDate());
+                String readDate = HISCoreUtil.convertDateToTimeZone(scheduledDate, "YYYY-MM-dd hh:mm:ss", Zone);
+                Date dteStartedDate = DateTimeUtil.getDateFromString(readDate, "yyyy-MM-dd hh:mm:ss");
+                String sdDate=HISCoreUtil.convertDateToStringWithDateDisplay(dteStartedDate,systemDateFormat);
+                createdDate=sdDate;
+
             }
            // String chief=vitalList.get(0).getChiefComplaint();
            // int documentWrappersCount = vitalServices.countPaginatedDocuments();
@@ -320,6 +338,7 @@ public class PatientVitalAPI {
                 returnValues.put("pages", pages);*/
                 returnValues.put("data", vitalList);
                 returnValues.put("chiefComplaint",chief);
+                returnValues.put("Date",createdDate);
 
                 response.setResponseMessage(messageBundle.getString("document.paginated.success"));
                 response.setResponseCode(ResponseEnum.SUCCESS.getValue());
